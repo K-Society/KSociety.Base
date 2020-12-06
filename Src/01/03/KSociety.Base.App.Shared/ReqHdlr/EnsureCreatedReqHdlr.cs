@@ -1,0 +1,32 @@
+﻿using System.Threading;
+using System.Threading.Tasks;
+using KSociety.Base.App.Shared.Dto.Res.Control;
+using KSociety.Base.Infra.Shared.Interface;
+using Microsoft.Extensions.Logging;
+
+namespace KSociety.Base.App.Shared.ReqHdlr
+{
+    public class EnsureCreatedReqHdlr : 
+        IRequestHandlerWithResponse<EnsureCreated>, 
+        IRequestHandlerWithResponseAsync<EnsureCreated>
+    {
+        private readonly ILogger<MigrationReqHdlr> _logger;
+        private readonly IDbUnitOfWork _unitOfWork;
+
+        public EnsureCreatedReqHdlr(ILogger<MigrationReqHdlr> logger, IDbUnitOfWork unitOfWork)
+        {
+            _logger = logger;
+            _unitOfWork = unitOfWork;
+        }
+
+        public EnsureCreated Execute()
+        {
+            return new EnsureCreated(_unitOfWork.EnsureCreated());
+        }
+
+        public async ValueTask<EnsureCreated> ExecuteAsync(CancellationToken cancellationToken = default)
+        {
+            return new EnsureCreated(await _unitOfWork.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false));
+        }
+    }
+}
