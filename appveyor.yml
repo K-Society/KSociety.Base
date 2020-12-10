@@ -54,6 +54,8 @@ deploy:
     skip_symbols: true
     symbol_server: 
     artifact: /.*\.nupkg/
+    on:
+      branch: /^(master|develop)$/
       
   - provider: NuGet
     server: 
