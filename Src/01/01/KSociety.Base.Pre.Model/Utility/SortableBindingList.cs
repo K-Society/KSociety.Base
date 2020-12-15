@@ -1,9 +1,9 @@
-﻿using System;
+﻿using KSociety.Base.InfraSub.Shared.Interface;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using KSociety.Base.InfraSub.Shared.Interface;
 
-namespace KSociety.Base.Pre.Shared
+namespace KSociety.Base.Pre.Model.Utility
 {
     /// <inheritdoc />
     /// <summary>
@@ -20,7 +20,7 @@ namespace KSociety.Base.Pre.Shared
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KSociety.Base.Pre.Shared.SortableBindingList`1" /> class.
+        /// Initializes a new instance of the <see cref="T:KSociety.Base.Pre.Model.Utility.SortableBindingList`1" /> class.
         /// </summary>
         public SortableBindingList()
         {
@@ -28,7 +28,7 @@ namespace KSociety.Base.Pre.Shared
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KSociety.Base.Pre.Shared.SortableBindingList`1" /> class.
+        /// Initializes a new instance of the <see cref="T:KSociety.Base.Pre.Model.Utility.SortableBindingList`1" /> class.
         /// </summary>
         /// <param name="list">An <see cref="T:System.Collections.Generic.IList`1" /> of items to be contained in the <see cref="T:System.ComponentModel.BindingList`1" />.</param>
         public SortableBindingList(IList<T> list)
