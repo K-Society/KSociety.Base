@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using KSociety.Base.InfraSub.Shared.Interface;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
-using KSociety.Base.InfraSub.Shared.Interface;
 
-namespace KSociety.Base.Pre.Shared
+namespace KSociety.Base.Pre.Model.Utility
 {
     public class KbBindingList<T> : BindingList<T> where T : IObject
     {
@@ -11,7 +11,7 @@ namespace KSociety.Base.Pre.Shared
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KSociety.Base.Pre.Shared.KbBindingList`1" /> class.
+        /// Initializes a new instance of the <see cref="T:KSociety.Base.Pre.Model.Utility.KbBindingList`1" /> class.
         /// </summary>
         protected KbBindingList()
         {
@@ -19,7 +19,7 @@ namespace KSociety.Base.Pre.Shared
 
         /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KSociety.Base.Pre.Shared.KbBindingList`1" /> class.
+        /// Initializes a new instance of the <see cref="T:KSociety.Base.Pre.Model.Utility.KbBindingList`1" /> class.
         /// </summary>
         /// <param name="list">An <see cref="T:System.Collections.Generic.IList`1" /> of items to be contained in the <see cref="T:System.ComponentModel.BindingList`1" />.</param>
         protected KbBindingList(IList<T> list)

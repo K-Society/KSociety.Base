@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 
-namespace KSociety.Base.Pre.Shared.Class
+namespace KSociety.Base.Pre.Model.Utility
 {
     public static class Utility
     {

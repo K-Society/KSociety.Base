@@ -3,6 +3,7 @@
 
 <Project>
   <PropertyGroup>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\assets\key\KSociety.Base.snk))</AssemblyOriginatorKeyFile>
   </PropertyGroup>
