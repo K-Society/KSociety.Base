@@ -14,7 +14,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
             List<string> assemblyLibList = Directory.EnumerateFiles(assemblyLibPath, "*.dll",
                     SearchOption.TopDirectoryOnly)
-                .Where(filePath => Path.GetFileName(filePath).StartsWith("KSociety.Base"))
+                .Where(filePath => Path.GetFileName(filePath).StartsWith("KSociety"))
                 .ToList();
 
             return assemblyLibList.ToArray();
