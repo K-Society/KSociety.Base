@@ -5,7 +5,7 @@ namespace KSociety.Base.App.Shared
 {
     public interface IRequestListHandlerWithResponseAsync<in TRequest, in TRequestList, TResponse>
         where TRequest : IRequest
-        where TRequestList : IKbAppList<TRequest>
+        where TRequestList : IAppList<TRequest>
         where TResponse : IResponse
     {
         ValueTask<TResponse> ExecuteAsync(TRequestList request, CancellationToken cancellationToken = default);

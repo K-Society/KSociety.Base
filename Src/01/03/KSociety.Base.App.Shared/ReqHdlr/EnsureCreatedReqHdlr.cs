@@ -11,9 +11,9 @@ namespace KSociety.Base.App.Shared.ReqHdlr
         IRequestHandlerWithResponseAsync<EnsureCreated>
     {
         private readonly ILogger<MigrationReqHdlr> _logger;
-        private readonly IDbUnitOfWork _unitOfWork;
+        private readonly IDatabaseUnitOfWork _unitOfWork;
 
-        public EnsureCreatedReqHdlr(ILogger<MigrationReqHdlr> logger, IDbUnitOfWork unitOfWork)
+        public EnsureCreatedReqHdlr(ILogger<MigrationReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;

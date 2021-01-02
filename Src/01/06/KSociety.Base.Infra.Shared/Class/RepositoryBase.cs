@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace KSociety.Base.Infra.Shared.Class
 {
     public abstract class RepositoryBase<TContext, TEntity> : IRepository<TEntity>
-        where TContext : KbDbContext
+        where TContext : DatabaseContext
         where TEntity : class
     {
         private TContext _dataContext;

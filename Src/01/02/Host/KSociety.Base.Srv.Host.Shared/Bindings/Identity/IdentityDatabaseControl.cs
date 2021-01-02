@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity
 {
     public class IdentityDatabaseControl<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : Module 
-        where TContext : KbIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+        where TContext : DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TUser : IdentityUser<TKey>
         where TRole : IdentityRole<TKey>
         where TKey : IEquatable<TKey>
@@ -32,8 +32,8 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity
             builder.RegisterType<MigrationReqHdlr>().Named<IRequestHandler>("MigrationReqHdlr")
                 .Named<IRequestHandlerAsync>("MigrationReqHdlr");
 
-            builder.RegisterType<IdentityDatabaseFactory<ILoggerFactory, KbDatabaseConfiguration, TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>()
-                .As<IIdentityDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>().InstancePerLifetimeScope();
+            builder.RegisterType<DatabaseFactory<ILoggerFactory, Infra.Shared.Class.DatabaseConfiguration, TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>()
+                .As<IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>().InstancePerLifetimeScope();
         }
     }
 }
