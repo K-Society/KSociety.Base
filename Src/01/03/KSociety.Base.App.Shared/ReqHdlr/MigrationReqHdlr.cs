@@ -8,9 +8,9 @@ namespace KSociety.Base.App.Shared.ReqHdlr
     public class MigrationReqHdlr : IRequestHandler, IRequestHandlerAsync
     {
         private readonly ILogger<MigrationReqHdlr> _logger;
-        private readonly IDbUnitOfWork _unitOfWork;
+        private readonly IDatabaseUnitOfWork _unitOfWork;
 
-        public MigrationReqHdlr(ILogger<MigrationReqHdlr> logger, IDbUnitOfWork unitOfWork)
+        public MigrationReqHdlr(ILogger<MigrationReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;

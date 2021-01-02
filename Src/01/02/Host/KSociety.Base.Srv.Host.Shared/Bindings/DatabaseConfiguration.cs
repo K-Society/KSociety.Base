@@ -18,7 +18,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
 
         protected override void Load(ContainerBuilder builder)
         {
-            var conf = new KbDatabaseConfiguration(_masterString, _debugFlag, _migrationsAssembly);
+            var conf = new DatabaseConfiguration(_masterString, _debugFlag, _migrationsAssembly);
             builder.RegisterInstance(conf).AsSelf().SingleInstance();
         }
     }

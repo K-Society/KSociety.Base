@@ -28,7 +28,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             {
                 using var stream = assembly.GetManifestResourceStream(resourceName);
                 using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
-                var reader = new CsvReader(streamReader, KbCsvConfiguration.Configuration);
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
                 return reader.GetRecords<TClass>().ToArray();
             }
@@ -46,7 +46,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             try
             {
                 using var streamReader = new StreamReader(fileName, Encoding.UTF8);
-                var reader = new CsvReader(streamReader, KbCsvConfiguration.Configuration);
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
                 return reader.GetRecords<TClass>().ToList();
             }
@@ -65,7 +65,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             try
             {
                 using var streamReader = new StreamReader(fileName, Encoding.UTF8);
-                var reader = new CsvReader(streamReader, KbCsvConfiguration.Configuration);
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
                 output = reader.GetRecordsAsync<TClass>();
             }

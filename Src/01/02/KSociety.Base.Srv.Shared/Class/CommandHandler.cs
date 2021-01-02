@@ -12,7 +12,7 @@ namespace KSociety.Base.Srv.Shared.Class
 
         public TResponse ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequestList request)
             where TRequest : IRequest, new()
-            where TRequestList : IKbAppList<TRequest>, new()
+            where TRequestList : IAppList<TRequest>, new()
             where TResponse : IResponse, new()
         {
             var logger = loggerFactory.CreateLogger<CommandHandler>();
@@ -25,7 +25,7 @@ namespace KSociety.Base.Srv.Shared.Class
             TRequestList request
         )
             where TRequest : IRequest, new()
-            where TRequestList : IKbAppList<TRequest>, new()
+            where TRequestList : IAppList<TRequest>, new()
             where TResponse : IResponse, new()
         {
             var openType = typeof(IRequestListHandlerWithResponse<,,>); // Generic open type.

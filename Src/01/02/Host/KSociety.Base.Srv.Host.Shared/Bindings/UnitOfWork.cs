@@ -4,11 +4,11 @@ using KSociety.Base.Infra.Shared.Interface;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
-    public class UnitOfWork<TContext> : Module where TContext : KbDbContext
+    public class UnitOfWork<TContext> : Module where TContext : DatabaseContext
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<KbUnitOfWork<TContext>>().As<IDbUnitOfWork>();
+            builder.RegisterType<Infra.Shared.Class.UnitOfWork<TContext>>().As<IDatabaseUnitOfWork>();
         }
     }
 }

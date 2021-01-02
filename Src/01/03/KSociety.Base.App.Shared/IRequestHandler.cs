@@ -2,7 +2,7 @@
 {
     public interface IRequestListHandlerWithResponse<in TRequest, in TRequestList, out TResponse>
         where TRequest : IRequest
-        where TRequestList : IKbAppList<TRequest>
+        where TRequestList : IAppList<TRequest>
         where TResponse : IResponse
     {
         TResponse Execute(TRequestList request);

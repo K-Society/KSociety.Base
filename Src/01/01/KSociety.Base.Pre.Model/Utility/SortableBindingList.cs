@@ -12,7 +12,7 @@ namespace KSociety.Base.Pre.Model.Utility
     /// If the elements are IComparable it uses that; otherwise compares the ToString()
     /// </summary>
     /// <typeparam name="T">The type of elements in the list.</typeparam>
-    public class SortableBindingList<T> : KbBindingList<T> where T : IObject
+    public class SortableBindingList<T> : ObjectBindingList<T> where T : IObject
     {
         private bool _isSorted;
         private ListSortDirection _sortDirection = ListSortDirection.Ascending;
@@ -31,7 +31,7 @@ namespace KSociety.Base.Pre.Model.Utility
         /// Initializes a new instance of the <see cref="T:KSociety.Base.Pre.Model.Utility.SortableBindingList`1" /> class.
         /// </summary>
         /// <param name="list">An <see cref="T:System.Collections.Generic.IList`1" /> of items to be contained in the <see cref="T:System.ComponentModel.BindingList`1" />.</param>
-        public SortableBindingList(IList<T> list)
+        public SortableBindingList(System.Collections.Generic.IList<T> list)
         : base(list)
         {
         }
