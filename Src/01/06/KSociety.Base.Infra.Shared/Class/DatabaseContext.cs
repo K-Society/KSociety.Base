@@ -71,36 +71,44 @@ namespace KSociety.Base.Infra.Shared.Class
                 {
                     _debug = true;
 
-                    if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
-                    {
-                        optionsBuilder
-                            .UseLoggerFactory(LoggerFactory)
-                            .EnableSensitiveDataLogging()
-                            .UseSqlServer(_configuration.ConnectionString);
-                    }
-                    else
-                    {
-                        optionsBuilder
-                            .UseLoggerFactory(LoggerFactory)
-                            .EnableSensitiveDataLogging()
-                            .UseSqlServer(_configuration.ConnectionString, sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
-                    }
+                    optionsBuilder.UseLoggerFactory(LoggerFactory)
+                        .EnableSensitiveDataLogging();
                 }
-                else
+
+                switch (_configuration.DatabaseEngine)
                 {
-                    if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
-                    {
-                        optionsBuilder
-                            .UseSqlServer(_configuration.ConnectionString);
-                    }
-                    else
-                    {
-                        optionsBuilder
-                            .UseSqlServer(_configuration.ConnectionString,
-                                sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
-                    }
+                    case DatabaseEngine.Sqlserver:
+                        if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
+                        {
+                            optionsBuilder
+                                .UseSqlServer(_configuration.ConnectionString);
+                        }
+                        else
+                        {
+                            optionsBuilder
+                                .UseSqlServer(_configuration.ConnectionString,
+                                    sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+                        }
+                        break;
+
+                    case DatabaseEngine.Sqlite:
+                        if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
+                        {
+                            optionsBuilder
+                                .UseSqlite(_configuration.ConnectionString);
+                        }
+                        else
+                        {
+                            optionsBuilder
+                                .UseSqlite(_configuration.ConnectionString,
+                                    sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+                        }
+                        break;
                 }
+
+                
             }
+
             //ToDo
             optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MigrationSqlGenerator>();
 
