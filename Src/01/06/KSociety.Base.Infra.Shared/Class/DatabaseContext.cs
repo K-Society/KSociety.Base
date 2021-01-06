@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KSociety.Base.Infra.Shared.Class.Migration;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using KSociety.Base.Infra.Shared.Interface;
@@ -88,6 +89,8 @@ namespace KSociety.Base.Infra.Shared.Class
                             optionsBuilder
                                 .UseSqlServer(_configuration.ConnectionString,
                                     sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+
+                            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, SqlServerGenerator>();
                         }
                         break;
 
@@ -102,25 +105,30 @@ namespace KSociety.Base.Infra.Shared.Class
                             optionsBuilder
                                 .UseSqlite(_configuration.ConnectionString,
                                     sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+
+                            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, SqliteGenerator>();
+                        }
+                        break;
+
+                    case DatabaseEngine.Npgsql:
+                        if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
+                        {
+                            optionsBuilder
+                                .UseNpgsql(_configuration.ConnectionString);
+                        }
+                        else
+                        {
+                            optionsBuilder
+                                .UseNpgsql(_configuration.ConnectionString,
+                                    sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+
+                            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, NpgsqlGenerator>();
                         }
                         break;
                 }
 
                 
             }
-
-            //ToDo
-            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MigrationSqlGenerator>();
-
-            //No!
-            //try
-            //{
-            //    Database.EnsureCreated();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger?.LogError("EnsureCreated: " + ex.Message + " - " + ex.StackTrace);
-            //}
         }
 
         public string GetConnectionString()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KSociety.Base.Infra.Shared.Class.Migration;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using KSociety.Base.Infra.Shared.Interface;
@@ -109,7 +110,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
                 }
             }
             //ToDo
-            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MigrationSqlGenerator>();
+            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, SqlServerGenerator>();
 
             //No!
             //try

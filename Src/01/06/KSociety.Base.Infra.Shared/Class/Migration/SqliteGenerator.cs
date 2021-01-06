@@ -1,18 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using KSociety.Base.InfraSub.Shared.Class;
+﻿using KSociety.Base.InfraSub.Shared.Class;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using System;
+using System.IO;
+using System.Linq;
 
-namespace KSociety.Base.Infra.Shared.Class
+namespace KSociety.Base.Infra.Shared.Class.Migration
 {
     //No Abstract
-    public class MigrationSqlGenerator : SqlServerMigrationsSqlGenerator
+    public class SqliteGenerator : SqliteMigrationsSqlGenerator
     {
         //It must be public
-        public MigrationSqlGenerator(
+        public SqliteGenerator(
             MigrationsSqlGeneratorDependencies dependencies,
             //IMigrationsAnnotationProvider migrationsAnnotations)
             IRelationalAnnotationProvider migrationsAnnotations)
