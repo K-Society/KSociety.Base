@@ -12,14 +12,14 @@ namespace KSociety.Base.Infra.Shared.Class
         //{
         //    //if (migrationBuilder.IsSqlServer())
         //    //{
-        //        migrationBuilder.Operations.Add(
-        //            new CreateViewOperation
-        //            {
-        //                AssemblyName = assemblyName, 
-        //                ResourceSqlFileName = @"." + resourceSqlFileName + @".sql"
-        //            });
+        //    migrationBuilder.Operations.Add(
+        //        new CreateViewOperation
+        //        {
+        //            AssemblyName = assemblyName,
+        //            ResourceSqlFileName = @"." + resourceSqlFileName + @".sql"
+        //        });
 
-        //        return migrationBuilder;
+        //    return migrationBuilder;
         //    //}
 
         //    //migrationBuilder..Operations.Add(
@@ -57,7 +57,8 @@ namespace KSociety.Base.Infra.Shared.Class
 
             var operation = new CreateViewOperation
             {
-                AssemblyName = assemblyName, ResourceSqlFileName = @"." + resourceSqlFileName + @".sql"
+                AssemblyName = assemblyName,
+                ResourceSqlFileName = @"." + resourceSqlFileName + @".sql"
             };
 
             migrationBuilder.Operations.Add(operation);

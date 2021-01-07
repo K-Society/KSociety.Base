@@ -6,13 +6,13 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace KSociety.Base.Infra.Shared.Class.Migration
+namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
     //No Abstract
-    public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
+    public class SqliteGenerator : SqliteMigrationsSqlGenerator
     {
         //It must be public
-        public SqlServerGenerator(
+        public SqliteGenerator(
             MigrationsSqlGeneratorDependencies dependencies,
             IRelationalAnnotationProvider migrationsAnnotations)
             : base(dependencies, migrationsAnnotations)

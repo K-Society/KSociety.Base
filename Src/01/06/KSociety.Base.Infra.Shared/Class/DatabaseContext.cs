@@ -1,4 +1,4 @@
-﻿using KSociety.Base.Infra.Shared.Class.Migration;
+﻿using KSociety.Base.Infra.Shared.Class.SqlGenerator;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
