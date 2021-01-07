@@ -28,7 +28,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             {
                 using var stream = assembly.GetManifestResourceStream(resourceName);
                 using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
-                var reader = new CsvReader(streamReader, KbCsvConfiguration.Configuration);
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
                 //reader.Configuration.Delimiter = ";";
                 //reader.Configuration.PrepareHeaderForMatch = (s, i) => s.ToLower();
                 //reader.Configuration.GetConstructor = type => type.GetConstructors().First();
@@ -50,7 +50,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             _logger = loggerFactory.CreateLogger("ExportCsv");
 
             using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-            var writer = new CsvWriter(streamWriter, KbCsvConfiguration.Configuration);
+            var writer = new CsvWriter(streamWriter, Configuration.CsvConfiguration);
 
             //writer.Configuration.Delimiter = ";";
             //writer.WriteHeader<TClass>();
@@ -62,7 +62,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             _logger = loggerFactory.CreateLogger("ExportAsyncCsv");
 
             await using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-            var writer = new CsvWriter(streamWriter, KbCsvConfiguration.Configuration);
+            var writer = new CsvWriter(streamWriter, Configuration.CsvConfiguration);
 
             //writer.Configuration.Delimiter = ";";
             //writer.WriteHeader<TClass>();

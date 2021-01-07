@@ -14,7 +14,7 @@ namespace KSociety.Base.Srv.Shared.Class
 
         public async ValueTask<TResponse> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequestList request, CancellationToken cancellationToken = default)
             where TRequest : IRequest, new()
-            where TRequestList : IKbAppList<TRequest>, new()
+            where TRequestList : IAppList<TRequest>, new()
             where TResponse : IResponse, new()
         {
             var logger = loggerFactory.CreateLogger<CommandHandlerAsync>();
@@ -28,7 +28,7 @@ namespace KSociety.Base.Srv.Shared.Class
             CancellationToken cancellationToken = default
         )
             where TRequest : IRequest, new()
-            where TRequestList : IKbAppList<TRequest>, new()
+            where TRequestList : IAppList<TRequest>, new()
             where TResponse : IResponse, new()
         {
             var openType = typeof(IRequestListHandlerWithResponseAsync<,,>); // Generic open type.

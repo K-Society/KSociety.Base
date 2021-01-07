@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity
 {
     public class IdentityUnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : Module
-        where TContext : KbIdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+        where TContext : DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TUser : IdentityUser<TKey>
         where TRole : IdentityRole<TKey>
         where TKey : IEquatable<TKey>
@@ -19,7 +19,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<KbIdentityUnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>().As<IDbUnitOfWork>();
+            builder.RegisterType<UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>().As<IDatabaseUnitOfWork>();
         }
     }
 }

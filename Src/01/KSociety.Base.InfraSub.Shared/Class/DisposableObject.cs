@@ -14,7 +14,6 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
         ~DisposableObject()
         {
-            //Debug.Assert(Disposed, "WARNING: Object finalized without being disposed!");
             Dispose(false);
         }
 

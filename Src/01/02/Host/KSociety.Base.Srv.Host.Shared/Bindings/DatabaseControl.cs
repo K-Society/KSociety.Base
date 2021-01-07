@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
-    public class DatabaseControl<TContext> : Module where TContext : KbDbContext
+    public class DatabaseControl<TContext> : Module where TContext : DatabaseContext
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -20,7 +20,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
             builder.RegisterType<MigrationReqHdlr>().Named<IRequestHandler>("MigrationReqHdlr")
                 .Named<IRequestHandlerAsync>("MigrationReqHdlr");
 
-            builder.RegisterType<DatabaseFactory<ILoggerFactory, KbDatabaseConfiguration, TContext>>()
+            builder.RegisterType<DatabaseFactory<ILoggerFactory, Infra.Shared.Class.DatabaseConfiguration, TContext>>()
                 .As<IDatabaseFactory<TContext>>().InstancePerLifetimeScope();
         }
     }

@@ -10,7 +10,7 @@ namespace KSociety.Base.Srv.Shared.Interface
 
         TResponse ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequestList request)
             where TRequest : IRequest, new()
-            where TRequestList : IKbAppList<TRequest>, new()
+            where TRequestList : IAppList<TRequest>, new()
             where TResponse : IResponse, new();
 
         #endregion

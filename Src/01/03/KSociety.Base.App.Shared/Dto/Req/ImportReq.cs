@@ -4,7 +4,7 @@ using ProtoBuf;
 namespace KSociety.Base.App.Shared.Dto.Req
 {
     [ProtoContract]
-    public class ImportReq : IRequest, IKbImport
+    public class ImportReq : IRequest, IImport
     {
         [ProtoMember(1)]
         public string FileName { get; set; }

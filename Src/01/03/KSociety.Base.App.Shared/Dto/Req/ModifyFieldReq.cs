@@ -5,7 +5,7 @@ using ProtoBuf;
 namespace KSociety.Base.App.Shared.Dto.Req
 {
     [ProtoContract]
-    public class ModifyFieldReq : IRequest, IKbModifyField
+    public class ModifyFieldReq : IRequest, IModifyField
     {
         [ProtoMember(1), CompatibilityLevel(CompatibilityLevel.Level200)]
         public Guid Id { get; set; }

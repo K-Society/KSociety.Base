@@ -8,7 +8,7 @@ namespace KSociety.Base.Infra.Shared.Class
 {
     public static class MediatorExtension
     {
-        public static void DispatchDomainEvents(this IMediator mediator, KbDbContext ctx)
+        public static void DispatchDomainEvents(this IMediator mediator, DatabaseContext ctx)
         {
             var domainEntities = ctx.ChangeTracker
                 .Entries<BaseEntity>()
@@ -28,7 +28,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
         }
 
-        public static async Task DispatchDomainEventsAsync(this IMediator mediator, KbDbContext ctx, CancellationToken cancellationToken = default)
+        public static async Task DispatchDomainEventsAsync(this IMediator mediator, DatabaseContext ctx, CancellationToken cancellationToken = default)
         {
             var domainEntities = ctx.ChangeTracker
                 .Entries<BaseEntity>()

@@ -9,9 +9,9 @@ namespace KSociety.Base.App.Shared.ReqHdlr
     public class GetConnectionStringReqHdlr : IRequestHandlerWithResponse<ConnectionString>
     {
         private readonly ILogger<MigrationReqHdlr> _logger;
-        private readonly IDbUnitOfWork _unitOfWork;
+        private readonly IDatabaseUnitOfWork _unitOfWork;
 
-        public GetConnectionStringReqHdlr(ILogger<MigrationReqHdlr> logger, IDbUnitOfWork unitOfWork)
+        public GetConnectionStringReqHdlr(ILogger<MigrationReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
