@@ -126,8 +126,6 @@ namespace KSociety.Base.Infra.Shared.Class
                         }
                         break;
                 }
-
-                
             }
         }
 
