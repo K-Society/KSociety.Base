@@ -14,7 +14,6 @@ namespace KSociety.Base.Infra.Shared.Class.Migration
         //It must be public
         public SqliteGenerator(
             MigrationsSqlGeneratorDependencies dependencies,
-            //IMigrationsAnnotationProvider migrationsAnnotations)
             IRelationalAnnotationProvider migrationsAnnotations)
             : base(dependencies, migrationsAnnotations)
         {
