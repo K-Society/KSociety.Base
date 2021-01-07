@@ -16,8 +16,6 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
         //It must be public
         public NpgsqlGenerator(
             MigrationsSqlGeneratorDependencies dependencies,
-            //IMigrationsAnnotationProvider migrationsAnnotations)
-            //IRelationalAnnotationProvider migrationsAnnotations)
             INpgsqlOptions migrationsAnnotations)
             : base(dependencies, migrationsAnnotations)
         {
