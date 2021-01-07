@@ -13,7 +13,6 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
     public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
     {
         private readonly ILogger<SqlServerGenerator> _logger;
-        //private static ILoggerFactory _loggerFactory;
 
         //It must be public
         public SqlServerGenerator(
@@ -22,17 +21,10 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             IRelationalAnnotationProvider migrationsAnnotations)
             : base(dependencies, migrationsAnnotations)
         {
-            //_loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
-            //{
-            //    builder.AddConsole();
-            //    builder.SetMinimumLevel(LogLevel.Trace);
-            //});
-
             _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
             _logger.LogTrace("SqlServerGenerator");
         }
 
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "Just because")]
         protected override void Generate(
             MigrationOperation operation,
             IModel model,
@@ -62,20 +54,15 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             try
             {
                 var sqlHelper = Dependencies.SqlGenerationHelper;
-                //var stringMapping = Dependencies.TypeMappingSource.FindMapping(typeof(string));
 
                 var assembly = AssemblyTool.GetAssemblyByName(operation.AssemblyName);
-                //var assembly = Assembly.GetExecutingAssembly();
-                //Console.WriteLine("Generate: " + assembly.FullName);
+
                 string resourceName = assembly.GetManifestResourceNames()
                     .Single(str => str.EndsWith(operation.ResourceSqlFileName));
-
-                //Assembly.GetManifestResouceNames
 
                 using Stream stream = assembly.GetManifestResourceStream(resourceName);
                 using StreamReader reader = new StreamReader(stream ?? throw new InvalidOperationException());
                 string result = reader.ReadToEnd();
-                //.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
 
                 _logger.LogDebug(result);
 
