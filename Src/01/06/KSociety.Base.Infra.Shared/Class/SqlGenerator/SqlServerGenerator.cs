@@ -2,23 +2,19 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace KSociety.Base.Infra.Shared.Class.Migration
+namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
     //No Abstract
-    public class NpgsqlGenerator : NpgsqlMigrationsSqlGenerator
+    public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
     {
         //It must be public
-        public NpgsqlGenerator(
+        public SqlServerGenerator(
             MigrationsSqlGeneratorDependencies dependencies,
-            //IMigrationsAnnotationProvider migrationsAnnotations)
-            //IRelationalAnnotationProvider migrationsAnnotations)
-            INpgsqlOptions migrationsAnnotations)
+            IRelationalAnnotationProvider migrationsAnnotations)
             : base(dependencies, migrationsAnnotations)
         {
 
