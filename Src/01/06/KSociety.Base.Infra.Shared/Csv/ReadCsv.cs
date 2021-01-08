@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CsvHelper;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CsvHelper;
-using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.Infra.Shared.Csv
 {
@@ -59,7 +59,7 @@ namespace KSociety.Base.Infra.Shared.Csv
 
         public static IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
-            _logger = loggerFactory?.CreateLogger("ImportCsv");
+            _logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
             IAsyncEnumerable<TClass> output = null;
 
             try
