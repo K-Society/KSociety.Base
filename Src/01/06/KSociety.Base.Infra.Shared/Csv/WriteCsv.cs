@@ -17,7 +17,7 @@ namespace KSociety.Base.Infra.Shared.Csv
         public static TClass[] Write(ILoggerFactory loggerFactory, string fileName)
         {
             _logger = loggerFactory.CreateLogger("WriteCsv");
-            //TClass[] output = null;
+
             var csvFileName = @"." + fileName + @".csv";
             _logger.LogTrace("WriteCsv csvFileName: " + csvFileName);
             var assembly = Assembly.GetCallingAssembly();
@@ -29,12 +29,6 @@ namespace KSociety.Base.Infra.Shared.Csv
                 using var stream = assembly.GetManifestResourceStream(resourceName);
                 using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-                //reader.Configuration.Delimiter = ";";
-                //reader.Configuration.PrepareHeaderForMatch = (s, i) => s.ToLower();
-                //reader.Configuration.GetConstructor = type => type.GetConstructors().First();
-
-                //var result = reader.GetRecords<TClass>();
-                //output = result.ToArray();
 
                 return reader.GetRecords<TClass>().ToArray();
             }
