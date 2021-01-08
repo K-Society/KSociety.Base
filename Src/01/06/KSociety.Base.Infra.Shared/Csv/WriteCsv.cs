@@ -45,28 +45,45 @@ namespace KSociety.Base.Infra.Shared.Csv
             return null;
         }
 
-        public static void Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TClass> records)
+        public static bool Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TClass> records)
         {
             _logger = loggerFactory.CreateLogger("ExportCsv");
 
-            using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-            var writer = new CsvWriter(streamWriter, Configuration.CsvConfiguration);
+            try
+            {
+                using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
+                var writer = new CsvWriter(streamWriter, Configuration.CsvConfiguration);
 
-            //writer.Configuration.Delimiter = ";";
-            //writer.WriteHeader<TClass>();
-            writer.WriteRecords(records);
+                writer.WriteRecords(records);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "WriteCsv: ");
+            }
+
+            return false;
         }
 
-        public static async ValueTask ExportAsync(ILoggerFactory loggerFactory, string fileName, IEnumerable<TClass> records)
+        public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName, IEnumerable<TClass> records)
         {
             _logger = loggerFactory.CreateLogger("ExportAsyncCsv");
 
-            await using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-            var writer = new CsvWriter(streamWriter, Configuration.CsvConfiguration);
+            try
+            {
+                await using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
+                var writer = new CsvWriter(streamWriter, Configuration.CsvConfiguration);
 
-            //writer.Configuration.Delimiter = ";";
-            //writer.WriteHeader<TClass>();
-            await writer.WriteRecordsAsync(records).ConfigureAwait(false);
+                await writer.WriteRecordsAsync(records).ConfigureAwait(false);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "WriteCsv: ");
+            }
+
+            return false;
         }
     }
 }

@@ -6,18 +6,12 @@ namespace KSociety.Base.Infra.Shared.Csv
 {
     public static class Configuration
     {
-        //Entity class no public parameterless constructor
-        public static CsvConfiguration CsvConfiguration => new CsvConfiguration(CultureInfo.InvariantCulture)
+        public static CsvConfiguration CsvConfiguration => new(CultureInfo.InvariantCulture)
         {
             Delimiter = ";",
             PrepareHeaderForMatch = (header, index) => header.ToLower(),
-            MemberTypes = MemberTypes.None,
-            //PrepareHeaderForMatch = header => header.ToLower(),
-            //HasHeaderRecord = true,
-            //GetConstructor = type => type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First(),
+            MemberTypes = MemberTypes.Properties,
             GetConstructor = type => type.GetConstructors().First()
-            //ShouldUseConstructorParameters = type => true
-            //IncludePrivateMembers = true,
         };
     }
 }
