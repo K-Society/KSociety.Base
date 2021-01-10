@@ -1,6 +1,7 @@
 ﻿using KSociety.Base.Infra.Shared.Csv;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -43,8 +44,13 @@ namespace KSociety.Base.Infra.Shared.Test.Csv
             //var result = WriteCsv<DtoTestClass4>.Write(_loggerFactory, "DtoTestClass");
 
             //Assert.NotNull(result);
-
-            var test = WriteCsv<DtoTestClass4>.Export(_loggerFactory, @"C:\temp\Test.csv", new []{new DtoTestClass4(Guid.NewGuid(), 0, "Test", "0.0.0.0", true, "ahhuhh")});
+            //var item1 = new DtoTestClass4(1, /*Guid.NewGuid(),*/ 2, "Test", "0.0.0.0", true, "ahh");
+            //var item2 = new DtoTestClass4(2, /*Guid.NewGuid(),*/ 2, "Test", "0.0.0.0", true, "ahh");
+            var array = "yyy";//new char[] {'i', 'i'};
+            var item1 = new DtoTestClass5( array);
+            //var item2 = new DtoTestClass5( array);
+            var list = new List<DtoTestClass5> {item1/*, item2*/};
+            var test = WriteCsv<DtoTestClass5>.Export(_loggerFactory, @"C:\temp\Test.csv", list);
 
             Assert.True(test);
         }
