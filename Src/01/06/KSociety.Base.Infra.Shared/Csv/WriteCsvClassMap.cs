@@ -12,10 +12,9 @@ namespace KSociety.Base.Infra.Shared.Csv
         where TEntity :class
         where TClassMap : ClassMap<TEntity>
     {
-        private static ILogger _logger;
         public static bool Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
         {
-            _logger = loggerFactory.CreateLogger("ExportCsv");
+            var logger = loggerFactory.CreateLogger("ExportCsv");
 
             try
             {
@@ -27,7 +26,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "WriteCsv: ");
+                logger?.LogError(ex, "WriteCsv: ");
             }
 
             return false;
@@ -35,7 +34,7 @@ namespace KSociety.Base.Infra.Shared.Csv
 
         public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
         {
-            _logger = loggerFactory.CreateLogger("ExportAsyncCsv");
+            var logger = loggerFactory.CreateLogger("ExportAsyncCsv");
 
             try
             {
@@ -48,7 +47,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "WriteCsv: ");
+                logger?.LogError(ex, "WriteCsv: ");
             }
 
             return false;

@@ -36,9 +36,5 @@ namespace KSociety.Base.Infra.Shared.Interface
         IQueryable<TEntity> QueryObjectGraph(Expression<Func<TEntity, bool>> filter, string children);
 
         IQueryable<TEntity> FindAll();
-
-        void ImportCsv(string fileName);
-
-        ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken = default);
     }
 }

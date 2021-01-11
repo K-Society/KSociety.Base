@@ -1,14 +1,13 @@
-﻿using System;
+﻿using KSociety.Base.Infra.Shared.Interface;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using KSociety.Base.Infra.Shared.Csv;
-using KSociety.Base.Infra.Shared.Interface;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
@@ -258,30 +257,6 @@ namespace KSociety.Base.Infra.Shared.Class
         //{
         //    DataBaseSet.Include(navigationPropertyPath);
         //}
-
-        public void ImportCsv(string fileName)
-        {
-            //Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            var result = ReadCsv<TEntity>.Import(LoggerFactory, fileName);
-            if (!result.Any()) return;
-            DeleteRange(FindAll());
-
-            AddRange(result);
-        }
-
-        public async ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
-        {
-            //Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName);
-
-            DeleteRange(FindAll());
-
-            await foreach (var entity in result.WithCancellation(cancellationToken).ConfigureAwait(false))
-            {
-                await AddAsync(entity, cancellationToken).ConfigureAwait(false);
-            }
-
-        }
 
         public void Dispose()
         {
