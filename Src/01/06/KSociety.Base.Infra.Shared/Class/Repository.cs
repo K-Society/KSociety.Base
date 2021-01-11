@@ -41,12 +41,57 @@ namespace KSociety.Base.Infra.Shared.Class
             return false;
         }
 
+        public bool ImportCsv(byte[] byteArray)
+        {
+            //Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            try
+            {
+                var result = ReadCsv<TEntity>.Import(LoggerFactory, byteArray);
+                if (!result.Any()) return false;
+                DeleteRange(FindAll());
+
+                AddRange(result);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message + " - " + ex.StackTrace);
+            }
+
+            return false;
+        }
+
         public async ValueTask<bool> ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
         {
             //Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName).ConfigureAwait(false);
+
+                DeleteRange(FindAll());
+
+                await foreach (var entity in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+                {
+                    await AddAsync(entity, cancellationToken).ConfigureAwait(false);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message + " - " + ex.StackTrace);
+            }
+
+            return false;
+        }
+
+        public async ValueTask<bool> ImportCsvAsync(byte[] byteArray, CancellationToken cancellationToken = default)
+        {
+            //Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            try
+            {
+                var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray).ConfigureAwait(false);
 
                 DeleteRange(FindAll());
 
