@@ -35,7 +35,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
             }
 
             return false;
@@ -56,7 +56,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
             }
 
             return false;
@@ -80,7 +80,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
             }
 
             return false;
@@ -104,7 +104,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogError(ex, GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
             }
 
             return false;
@@ -121,7 +121,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
             }
 
             return false;
@@ -139,7 +139,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogError(ex, GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
             }
 
             return false;
