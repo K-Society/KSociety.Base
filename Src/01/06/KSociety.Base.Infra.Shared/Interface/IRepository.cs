@@ -7,7 +7,11 @@ namespace KSociety.Base.Infra.Shared.Interface
     {
         bool ImportCsv(string fileName);
 
+        bool ImportCsv(byte[] byteArray);
+
         ValueTask<bool> ImportCsvAsync(string fileName, CancellationToken cancellationToken = default);
+
+        ValueTask<bool> ImportCsvAsync(byte[] byteArray, CancellationToken cancellationToken = default);
 
         bool ExportCsv(string fileName);
 

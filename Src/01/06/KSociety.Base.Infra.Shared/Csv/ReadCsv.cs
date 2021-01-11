@@ -56,6 +56,24 @@ namespace KSociety.Base.Infra.Shared.Csv
             return null;
         }
 
+        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        {
+            var logger = loggerFactory?.CreateLogger("ImportCsv");
+
+            try
+            {
+                using var streamReader = new StreamReader(new MemoryStream(byteArray), Encoding.UTF8);
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+
+                return reader.GetRecords<TClass>().ToList();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "ReadCsv: ");
+            }
+            return null;
+        }
+
         public static IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
@@ -63,7 +81,30 @@ namespace KSociety.Base.Infra.Shared.Csv
 
             try
             {
+                byte[] array = new byte[10];
+                var test = new MemoryStream(array);
+                new StreamReader(test, Encoding.UTF8);
+
                 using var streamReader = new StreamReader(fileName, Encoding.UTF8);
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+
+                output = reader.GetRecordsAsync<TClass>();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError("ReadCsv.ImportAsync: " + ex.Message + " - " + ex.StackTrace);
+            }
+            return output;
+        }
+
+        public static IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray)
+        {
+            var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+            IAsyncEnumerable<TClass> output = null;
+
+            try
+            {
+                using var streamReader = new StreamReader(new MemoryStream(byteArray), Encoding.UTF8);
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
                 output = reader.GetRecordsAsync<TClass>();
