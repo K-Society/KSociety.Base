@@ -92,7 +92,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                logger?.LogError("ReadCsv.ImportAsync: " + ex.Message + " - " + ex.StackTrace);
+                logger?.LogError(ex,"ReadCsv.ImportAsync: " + ex.Message);
             }
             return output;
         }
@@ -111,7 +111,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                logger?.LogError("ReadCsv.ImportAsync: " + ex.Message + " - " + ex.StackTrace);
+                logger?.LogError(ex,"ReadCsv.ImportAsync: " + ex.Message);
             }
             return output;
         }
