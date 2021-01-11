@@ -12,17 +12,16 @@ namespace KSociety.Base.Infra.Shared.Csv
     public static class ReadCsv<TClass>
         where TClass : class
     {
-        private static ILogger _logger;
-        
+
         public static TClass[] Read(ILoggerFactory loggerFactory, string fileName)
         {
-            _logger = loggerFactory?.CreateLogger("ReadCsv");
+            var logger = loggerFactory?.CreateLogger("ReadCsv");
             var csvFileName = @"." + fileName + @".csv";
-            _logger?.LogTrace("ReadCsv csvFileName: " + csvFileName);
+            logger?.LogTrace("ReadCsv csvFileName: " + csvFileName);
 
             var assembly = Assembly.GetCallingAssembly();
             var resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(csvFileName));
-            _logger?.LogTrace("ReadCsv resourceName: " + resourceName);
+            logger?.LogTrace("ReadCsv resourceName: " + resourceName);
 
             try
             {
@@ -34,14 +33,14 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                _logger?.LogError( "Error ReadCsv: " + ex.Message + " - " + ex.StackTrace);
+                logger?.LogError( "Error ReadCsv: " + ex.Message + " - " + ex.StackTrace);
             }
             return null;
         }
 
         public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, string fileName)
         {
-            _logger = loggerFactory?.CreateLogger("ImportCsv");
+            var logger = loggerFactory?.CreateLogger("ImportCsv");
             
             try
             {
@@ -52,14 +51,14 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "ReadCsv: ");
+                logger?.LogError(ex, "ReadCsv: ");
             }
             return null;
         }
 
         public static IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
-            _logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+            var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
             IAsyncEnumerable<TClass> output = null;
 
             try
@@ -71,7 +70,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "ReadCsv: ");
+                logger?.LogError("ReadCsv.ImportAsync: " + ex.Message + " - " + ex.StackTrace);
             }
             return output;
         }

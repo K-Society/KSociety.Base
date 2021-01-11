@@ -12,17 +12,16 @@ namespace KSociety.Base.Infra.Shared.Csv
     public class WriteCsv<TEntity>
         where TEntity : class
     {
-        private static ILogger _logger;
 
         public static TEntity[] Write(ILoggerFactory loggerFactory, string fileName)
         {
-            _logger = loggerFactory.CreateLogger("WriteCsv");
+            var logger = loggerFactory.CreateLogger("WriteCsv");
 
             var csvFileName = @"." + fileName + @".csv";
-            _logger.LogTrace("WriteCsv csvFileName: " + csvFileName);
+            logger.LogTrace("WriteCsv csvFileName: " + csvFileName);
             var assembly = Assembly.GetCallingAssembly();
             var resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(csvFileName));
-            _logger.LogTrace("WriteCsv resourceName: " + resourceName);
+            logger.LogTrace("WriteCsv resourceName: " + resourceName);
 
             try
             {
@@ -34,14 +33,14 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "WriteCsv: ");
+                logger.LogError(ex, "WriteCsv: ");
             }
             return null;
         }
 
         public static bool Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
         {
-            _logger = loggerFactory.CreateLogger("ExportCsv");
+            var logger = loggerFactory.CreateLogger("ExportCsv");
 
             try
             {
@@ -53,7 +52,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "WriteCsv: ");
+                logger?.LogError(ex, "WriteCsv: ");
             }
 
             return false;
@@ -61,7 +60,7 @@ namespace KSociety.Base.Infra.Shared.Csv
 
         public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
         {
-            _logger = loggerFactory.CreateLogger("ExportAsyncCsv");
+            var logger = loggerFactory.CreateLogger("ExportAsyncCsv");
 
             try
             {
@@ -74,7 +73,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "WriteCsv: ");
+                logger?.LogError(ex, "WriteCsv: ");
             }
 
             return false;
