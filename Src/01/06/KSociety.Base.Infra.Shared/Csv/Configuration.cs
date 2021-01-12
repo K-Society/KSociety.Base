@@ -11,28 +11,22 @@ namespace KSociety.Base.Infra.Shared.Csv
         public static CsvConfiguration CsvConfiguration => new(CultureInfo.InvariantCulture)
         {
             Delimiter = ";",
+
             PrepareHeaderForMatch = (header, index) => header.ToLower(),
-            MemberTypes = CsvHelper.Configuration.MemberTypes.None,
-            GetConstructor = GetConstructor //= type => type.GetConstructors(BindingFlags.Public).First()
+
+            GetConstructor = GetConstructor
+
         };
 
         public static CsvConfiguration CsvConfigurationWrite => new(CultureInfo.InvariantCulture)
         {
             Delimiter = ";",
             
-            //MemberTypes = CsvHelper.Configuration.MemberTypes.,
-            
-            
-            //PrepareHeaderForMatch = (header, index) => header.ToLower(),
-            //GetConstructor = GetConstructor,
-            //IncludePrivateMembers = true,
-            //ShouldUseConstructorParameters = ShouldUseConstructorParameters
-
         };
 
         private static bool ShouldUseConstructorParameters(Type type)
         {
-            //return true;
+            return true;
             //if (!type.IsValueType)
             //{
             //    return type.HasConstructor();
@@ -40,14 +34,14 @@ namespace KSociety.Base.Infra.Shared.Csv
 
             //return false;
 
-            if (type.Name.Equals("DtoTestClass5"))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            //if (type.Name.Equals("DtoTestClass5"))
+            //{
+            //    return true;
+            //}
+            //else
+            //{
+            //    return false;
+            //}
         }
 
         private static ConstructorInfo GetConstructor(Type type)
