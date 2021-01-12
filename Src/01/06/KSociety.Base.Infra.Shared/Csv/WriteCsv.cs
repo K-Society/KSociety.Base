@@ -46,7 +46,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             {
                 using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
                 var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
-                //writer.Configuration.AutoMap<>();
+
                 writer.WriteRecords(records);
                 return true;
             }
