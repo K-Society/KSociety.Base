@@ -64,16 +64,17 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public async ValueTask<bool> ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
         {
-            //Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("RepositoryBase ImportCsvAsync: " + fileName + " " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName).ConfigureAwait(false);
+                //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken).ConfigureAwait(false);
 
                 DeleteRange(FindAll());
-
-                await foreach (var entity in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+                Logger.LogTrace("DeleteRange OK.");
+                await foreach (var entity in ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken).ConfigureAwait(false).WithCancellation(cancellationToken).ConfigureAwait(false))
                 {
-                    await AddAsync(entity, cancellationToken).ConfigureAwait(false);
+                    var result = await AddAsync(entity, cancellationToken).ConfigureAwait(false);
+                    Logger.LogTrace("AddAsync OK. " + result.Entity.GetType().Name);
                 }
 
                 return true;
@@ -88,14 +89,14 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public async ValueTask<bool> ImportCsvAsync(byte[] byteArray, CancellationToken cancellationToken = default)
         {
-            //Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray).ConfigureAwait(false);
+                //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray, cancellationToken).ConfigureAwait(false);
 
                 DeleteRange(FindAll());
 
-                await foreach (var entity in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+                await foreach (var entity in ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray, cancellationToken).ConfigureAwait(false).WithCancellation(cancellationToken).ConfigureAwait(false))
                 {
                     await AddAsync(entity, cancellationToken).ConfigureAwait(false);
                 }
