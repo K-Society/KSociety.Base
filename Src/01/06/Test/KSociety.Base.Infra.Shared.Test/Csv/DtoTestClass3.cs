@@ -6,7 +6,7 @@ namespace KSociety.Base.Infra.Shared.Test.Csv
     public class DtoTestClass3 : BaseEntity
     {
         #region [Propery]
-        public Guid Id { get; private set; }
+        //public Guid Id { get; private set; }
 
         public int ClassTypeId { get; private set; }
         public virtual ClassType ClassType { get; protected set; }
@@ -21,23 +21,23 @@ namespace KSociety.Base.Infra.Shared.Test.Csv
 
         #endregion
 
-        public DtoTestClass3(Guid id, int classTypeId, string name, string ip, bool enable)
+        public DtoTestClass3(/*Guid id,*/ int classTypeId, string name, string ip, bool enable)
         {
-            Id = id;
+            //Id = id;
             ClassTypeId = classTypeId;
             Name = name;
             Ip = ip;
             Enable = enable;
-            Name = "SuperPippo";
+            Name = "Urka";
         }
 
-        public DtoTestClass3(int classTypeId, string name, string ip, bool enable)
+        public DtoTestClass3(string name, string ip, bool enable)
         {
-            ClassTypeId = classTypeId;
+            ClassTypeId = 0;
             Name = name;
             Ip = ip;
             Enable = enable;
-            Name = "SuperPippo2";
+            Name = "Urka2";
         }
 
         protected DtoTestClass3()

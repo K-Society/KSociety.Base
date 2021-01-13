@@ -1,23 +1,22 @@
-﻿using System;
+﻿using KSociety.Base.Infra.Shared.Interface;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using KSociety.Base.Infra.Shared.Csv;
-using KSociety.Base.Infra.Shared.Interface;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
-    public abstract class RepositoryBase<TContext, TEntity> : IRepository<TEntity>
+    public abstract class RepositoryBase<TContext, TEntity> : IRepositoryBase<TEntity>
         where TContext : DatabaseContext
         where TEntity : class
     {
         private TContext _dataContext;
-        private readonly ILoggerFactory _loggerFactory;
+        protected readonly ILoggerFactory LoggerFactory;
 
         protected TContext DataContext => _dataContext ??= DatabaseFactory.Get();
 
@@ -31,11 +30,11 @@ namespace KSociety.Base.Infra.Shared.Class
 
         protected RepositoryBase(ILoggerFactory loggerFactory, IDatabaseFactory<TContext> databaseFactory)
         {
-            _loggerFactory = loggerFactory;
+            LoggerFactory = loggerFactory;
             DatabaseFactory = databaseFactory;
             DataBaseSet = DataContext.Set<TEntity>();
             
-            Logger = _loggerFactory.CreateLogger<RepositoryBase<TContext, TEntity>>();
+            Logger = LoggerFactory.CreateLogger<RepositoryBase<TContext, TEntity>>();
         }
 
         public virtual EntityEntry<TEntity> Add(TEntity entity)
@@ -258,42 +257,6 @@ namespace KSociety.Base.Infra.Shared.Class
         //{
         //    DataBaseSet.Include(navigationPropertyPath);
         //}
-
-        public void ImportCsv(string fileName)
-        {
-            //Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            var result = ReadCsv<TEntity>.Import(_loggerFactory, fileName);
-            if (!result.Any()) return;
-            DeleteRange(FindAll());
-
-            AddRange(result);
-        }
-
-        public async ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
-        {
-            //Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            var result = ReadCsv<TEntity>.ImportAsync(_loggerFactory, fileName);
-
-            DeleteRange(FindAll());
-
-            await foreach (var entity in result.WithCancellation(cancellationToken).ConfigureAwait(false))
-            {
-                await AddAsync(entity, cancellationToken).ConfigureAwait(false);
-            }
-
-        }
-
-        public void ExportCsv(string fileName)
-        {
-            //Logger.LogTrace("RepositoryBase ExportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            WriteCsv<TEntity>.Export(_loggerFactory, fileName, FindAll());
-        }
-
-        public async ValueTask ExportCsvAsync(string fileName, CancellationToken cancellationToken = default)
-        {
-            //Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            await  WriteCsv<TEntity>.ExportAsync(_loggerFactory, fileName, FindAll()).ConfigureAwait(false);
-        }
 
         public void Dispose()
         {
