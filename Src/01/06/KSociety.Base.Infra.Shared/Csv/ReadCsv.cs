@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Csv
 {
@@ -73,46 +76,35 @@ namespace KSociety.Base.Infra.Shared.Csv
             return null;
         }
 
-        public static IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName)
+        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-            IAsyncEnumerable<TClass> output = null;
 
-            try
+            using var streamReader = new StreamReader(fileName);
+            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+
+            var result = reader.GetRecordsAsync<TClass>();
+
+            await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
-                byte[] array = new byte[10];
-                var test = new MemoryStream(array);
-                new StreamReader(test);
-
-                using var streamReader = new StreamReader(fileName);
-                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-
-                output = reader.GetRecordsAsync<TClass>();
+                yield return item;
             }
-            catch (Exception ex)
-            {
-                logger?.LogError(ex,"ReadCsv.ImportAsync: " + ex.Message);
-            }
-            return output;
         }
 
-        public static IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray)
+        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-            IAsyncEnumerable<TClass> output = null;
 
-            try
-            {
-                using var streamReader = new StreamReader(new MemoryStream(byteArray));
-                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+            using var streamReader = new StreamReader(new MemoryStream(byteArray));
+            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
-                output = reader.GetRecordsAsync<TClass>();
-            }
-            catch (Exception ex)
+            var result = reader.GetRecordsAsync<TClass>();
+
+            await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
-                logger?.LogError(ex,"ReadCsv.ImportAsync: " + ex.Message);
+                yield return item;
             }
-            return output;
+
         }
     }
 }

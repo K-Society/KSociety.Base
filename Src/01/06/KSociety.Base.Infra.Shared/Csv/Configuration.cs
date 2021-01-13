@@ -21,7 +21,11 @@ namespace KSociety.Base.Infra.Shared.Csv
         public static CsvConfiguration CsvConfigurationWrite => new(CultureInfo.InvariantCulture)
         {
             Delimiter = ";",
-            
+
+            PrepareHeaderForMatch = (header, index) => header.ToLower(),
+
+            GetConstructor = GetConstructor
+
         };
 
         private static bool ShouldUseConstructorParameters(Type type)

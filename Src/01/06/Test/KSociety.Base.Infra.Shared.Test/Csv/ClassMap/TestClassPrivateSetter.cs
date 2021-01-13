@@ -7,6 +7,7 @@
             Map(map => map.Id);
             Map(map => map.ClassTypeId);
             Map(map => map.Name);
+            Map(map => map.Ip);
             Map(map => map.Enable);
             Map(map => map.Ahh);
         }

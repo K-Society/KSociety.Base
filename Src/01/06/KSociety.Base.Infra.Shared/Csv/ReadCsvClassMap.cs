@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Csv
 {
@@ -84,10 +86,6 @@ namespace KSociety.Base.Infra.Shared.Csv
 
             try
             {
-                byte[] array = new byte[10];
-                var test = new MemoryStream(array);
-                new StreamReader(test);
-
                 using var streamReader = new StreamReader(fileName);
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
                 reader.Configuration.RegisterClassMap<TClassMap>();
@@ -100,23 +98,19 @@ namespace KSociety.Base.Infra.Shared.Csv
             return output;
         }
 
-        public static IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray)
+        public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-            IAsyncEnumerable<TEntity> output = null;
 
-            try
+            using var streamReader = new StreamReader(new MemoryStream(byteArray));
+            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+            reader.Configuration.RegisterClassMap<TClassMap>();
+            var result = reader.GetRecordsAsync<TEntity>();
+
+            await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
-                using var streamReader = new StreamReader(new MemoryStream(byteArray));
-                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-                reader.Configuration.RegisterClassMap<TClassMap>();
-                output = reader.GetRecordsAsync<TEntity>();
+                yield return item;
             }
-            catch (Exception ex)
-            {
-                logger?.LogError(ex, "ReadCsv.ImportAsync: " + ex.Message);
-            }
-            return output;
         }
     }
 }
