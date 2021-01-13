@@ -28,7 +28,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 var result = ReadCsv<TEntity>.Import(LoggerFactory, fileName);
                 if (!result.Any()) return false;
                 DeleteRange(FindAll());
-
+                
                 AddRange(result);
 
                 return true;
@@ -70,11 +70,11 @@ namespace KSociety.Base.Infra.Shared.Class
                 //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken).ConfigureAwait(false);
 
                 DeleteRange(FindAll());
-                Logger.LogTrace("DeleteRange OK.");
+                //Logger.LogTrace("DeleteRange OK.");
                 await foreach (var entity in ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken).ConfigureAwait(false).WithCancellation(cancellationToken).ConfigureAwait(false))
                 {
                     var result = await AddAsync(entity, cancellationToken).ConfigureAwait(false);
-                    Logger.LogTrace("AddAsync OK. " + result.Entity.GetType().Name);
+                    //Logger.LogTrace("AddAsync OK. " + result.Entity.GetType().Name);
                 }
 
                 return true;
