@@ -1,8 +1,8 @@
 ﻿namespace KSociety.Base.Infra.Shared.Test.Csv.ClassMap
 {
-    public sealed class DtoClassMap : CsvHelper.Configuration.ClassMap<Csv.DtoTestClass>
+    public sealed class TestClassParameterlessConstructor : CsvHelper.Configuration.ClassMap<Csv.Dto.TestClassParameterlessConstructor>
     {
-        public DtoClassMap()
+        public TestClassParameterlessConstructor()
         {
             Map(map => map.Id);
             Map(map => map.ClassTypeId);
