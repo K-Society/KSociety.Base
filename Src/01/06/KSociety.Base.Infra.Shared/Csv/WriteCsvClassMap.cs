@@ -20,7 +20,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             {
                 using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
                 var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
-                writer.Configuration.RegisterClassMap<TClassMap>();
+                writer.Context.RegisterClassMap<TClassMap>();
                 writer.WriteRecords(records);
                 return true;
             }
@@ -40,7 +40,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             {
                 await using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
                 var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
-                writer.Configuration.RegisterClassMap<TClassMap>();
+                writer.Context.RegisterClassMap<TClassMap>();
                 await writer.WriteRecordsAsync(records).ConfigureAwait(false);
 
                 return true;

@@ -1,10 +1,9 @@
-﻿using System;
-using Autofac;
-using KSociety.Base.Infra.Shared.Class;
+﻿using Autofac;
 using KSociety.Base.Infra.Shared.Class.Identity;
 using KSociety.Base.Infra.Shared.Interface.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity
 {
