@@ -1,13 +1,12 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using KSociety.Base.App.Shared;
 using KSociety.Base.App.Shared.Dto.Res.Control;
 using KSociety.Base.App.Shared.ReqHdlr;
-using KSociety.Base.Infra.Shared.Class;
 using KSociety.Base.Infra.Shared.Class.Identity;
 using KSociety.Base.Infra.Shared.Interface.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity
 {
