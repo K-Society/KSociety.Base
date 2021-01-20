@@ -43,17 +43,6 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        //public IIntegrationRpcClientHandler<TR> GetIntegrationRpcClientHandler<TR>()
-        //    //where TR : IIntegrationEventReply
-        //{
-        //    if (!(EventHandler is null) && EventHandler is IIntegrationRpcClientHandler<TR> queue)
-        //    {
-        //        return queue;
-        //    }
-
-        //    return null;
-        //}
-
         public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
             where TIntegrationEventReply : IIntegrationEventReply
         {
@@ -122,130 +111,11 @@ namespace KSociety.Base.EventBusRabbitMQ
                     var properties = channel.CreateBasicProperties();
                     properties.DeliveryMode = 1; //2 = persistent, write on disk
                     properties.CorrelationId = correlationId;
-                    //properties.ReplyTo = QueueName;
                     properties.ReplyTo = _queueNameReply; //ToDo
                     channel.BasicPublish(ExchangeDeclareParameters.ExchangeName, routingKey, true, properties, body);
                 });
             }
-
-            //cancellationToken.Register(() => _callbackMapper.TryRemove(correlationId, out var tmp));
-            //return tcs.Task;
         }
-
-        //public async Task CallAsync(IIntegrationEvent @event, CancellationToken cancellationToken = default)
-        //{
-        //    try
-        //    {
-        //        if (!PersistentConnection.IsConnected)
-        //        {
-        //            PersistentConnection.TryConnect();
-        //        }
-
-        //        var policy = Policy.Handle<BrokerUnreachableException>()
-        //            .Or<SocketException>()
-        //            .Or<Exception>()
-        //            .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
-        //            {
-        //                Logger.LogWarning(ex.ToString());
-        //            });
-
-        //        var correlationId = Guid.NewGuid().ToString();
-        //        var tcs = new TaskCompletionSource<dynamic>(TaskCreationOptions.RunContinuationsAsynchronously);
-        //        _callbackMapper.TryAdd(correlationId, tcs);
-
-        //        using (var channel = PersistentConnection.CreateModel())
-        //        {
-        //            var routingKey = @event.RoutingKey;
-
-        //            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
-        //                ExchangeDeclareParameters.ExchangeType,
-        //                ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-        //            await using var ms = new MemoryStream();
-        //            Serializer.Serialize(ms, @event);
-        //            var body = ms.ToArray();
-
-
-        //            policy.Execute(() =>
-        //            {
-        //                var properties = channel.CreateBasicProperties();
-        //                //properties.ContentType = "application/protobuf";
-        //                properties.DeliveryMode = 1; //2 = persistent, write on disk
-        //                properties.CorrelationId = correlationId;
-        //                //properties.ReplyTo = QueueName;
-        //                properties.ReplyTo = _queueNameReply; //ToDo
-
-        //                channel.BasicPublish(ExchangeDeclareParameters.ExchangeName, routingKey, true, properties,
-        //                    body);
-        //            });
-        //        }
-
-        //        cancellationToken.Register(() => _callbackMapper.TryRemove(correlationId, out var tmp));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError("CallAsync: " + ex.Message + " " + ex.StackTrace);
-        //    }
-        //}
-
-        //public async Task<TR> CallAsync<TR>(IIntegrationEvent @event, CancellationToken cancellationToken = default)
-        //    where TR : IIntegrationEventReply
-        //{
-        //    try
-        //    {
-        //        if (!PersistentConnection.IsConnected)
-        //        {
-        //            PersistentConnection.TryConnect();
-        //        }
-
-        //        var policy = Policy.Handle<BrokerUnreachableException>()
-        //            .Or<SocketException>()
-        //            .Or<Exception>()
-        //            .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
-        //            {
-        //                Logger.LogWarning(ex.ToString());
-        //            });
-
-        //        var correlationId = Guid.NewGuid().ToString();
-        //        var tcs = new TaskCompletionSource<dynamic>(TaskCreationOptions.RunContinuationsAsynchronously);
-        //        _callbackMapper.TryAdd(correlationId, tcs);
-
-        //        using (var channel = PersistentConnection.CreateModel())
-        //        {
-        //            var routingKey = @event.RoutingKey;
-
-        //            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
-        //                ExchangeDeclareParameters.ExchangeType,
-        //                ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-        //            await using var ms = new MemoryStream();
-        //            Serializer.Serialize(ms, @event);
-        //            var body = ms.ToArray();
-
-        //            policy.Execute(() =>
-        //            {
-        //                var properties = channel.CreateBasicProperties();
-        //                //properties.ContentType = "application/protobuf";
-        //                properties.DeliveryMode = 1; //2 = persistent, write on disk
-        //                properties.CorrelationId = correlationId;
-        //                //properties.ReplyTo = QueueName;
-        //                properties.ReplyTo = _queueNameReply; //ToDo
-
-        //                channel.BasicPublish(ExchangeDeclareParameters.ExchangeName, routingKey, true, properties,
-        //                    body);
-        //            });
-        //        }
-
-        //        cancellationToken.Register(() => _callbackMapper.TryRemove(correlationId, out var tmp));
-        //        return await tcs.Task.ConfigureAwait(false);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogError("CallAsync: " + ex.Message + " " + ex.StackTrace);
-        //    }
-
-        //    return default;
-        //}
 
         public async Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event, CancellationToken cancellationToken = default)
             where TIntegrationEventReply : IIntegrationEventReply
@@ -299,51 +169,28 @@ namespace KSociety.Base.EventBusRabbitMQ
                 }
 
                 cancellationToken.Register(() => _callbackMapper.TryRemove(correlationId, out var tmp));
-                //Logger.LogInformation("7");
 
                 var result = await tcs.Task.ConfigureAwait(false);
-                //var result = tcs.Task as Task<TIntegrationEventReply>;
-                //Logger.LogInformation("8");
-                return (TIntegrationEventReply)result; //(TIntegrationEventReply) await tcs.Task.ConfigureAwait(false);
-                //Logger.LogInformation("8");
+
+                return (TIntegrationEventReply)result; 
             }
             catch (Exception ex)
             {
-                //Logger.LogInformation("9");
                 Logger.LogError("CallAsync: " + ex.Message + " " + ex.StackTrace);
             }
-            //Logger.LogInformation("10");
             return default;
         }
 
         #region [Subscribe]
 
-        //public void SubscribeRpcClient<TR, TH>(/*string routingKey,*/ string replyRoutingKey)
-        //    //where T : IIntegrationEventRpc
-        //    where TR : IIntegrationEventReply
-        //    where TH : IIntegrationRpcClientHandler<TR>
-        //{
-        //    //var eventName = SubsManager.GetEventKey<T>();
-        //    var eventNameResult = SubsManager.GetEventReplyKey<TR>();
-        //    //Logger.LogDebug("SubscribeRpcClient: eventNameResult: " + eventNameResult + "." + routingKey);
-        //    DoInternalSubscriptionRpc(/*eventName + "." + routingKey,*/ eventNameResult + "." + replyRoutingKey);
-        //    SubsManager.AddSubscriptionRpcClient<TR, TH>(/*eventName + "." + routingKey,*/ eventNameResult + "." + replyRoutingKey);
-        //    StartBasicConsume();
-        //    //StartBasicConsumeReply();
-        //}
-
-        public void SubscribeRpcClient<TIntegrationEventReply, TH>(/*string routingKey,*/ string replyRoutingKey)
-            //where T : IIntegrationEventRpc
+        public void SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
             where TIntegrationEventReply : IIntegrationEventReply
             where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>
         {
-            //var eventName = SubsManager.GetEventKey<T>();
             var eventNameResult = SubsManager.GetEventReplyKey<TIntegrationEventReply>();
-            //Logger.LogDebug("SubscribeRpcClient: eventNameResult: " + eventNameResult + "." + routingKey);
-            DoInternalSubscriptionRpc(/*eventName + "." + routingKey,*/ eventNameResult + "." + replyRoutingKey);
-            SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(/*eventName + "." + routingKey,*/ eventNameResult + "." + replyRoutingKey);
+            DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey);
+            SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(eventNameResult + "." + replyRoutingKey);
             StartBasicConsume();
-            //StartBasicConsumeReply();
         }
 
         private void DoInternalSubscriptionRpc(string eventNameResult)
@@ -356,22 +203,13 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
 
             using var channel = PersistentConnection.CreateModel();
-            //channel.QueueBind(QueueName, ExchangeDeclareParameters.ExchangeName, eventName);
 
-            //channel.QueueBind(QueueName, ExchangeDeclareParameters.ExchangeName, eventName);
             channel.QueueBind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventNameResult); //ToDo
         }
 
         #endregion
 
         #region [Unsubscribe]
-
-        //public void UnsubscribeRpcClient<TR, TH>(string routingKey)
-        //    where TR : IIntegrationEventReply
-        //    where TH : IIntegrationRpcClientHandler<TR>
-        //{
-        //    SubsManager.RemoveSubscriptionRpcClient<TR, TH>(routingKey);
-        //}
 
         public void UnsubscribeRpcClient<TIntegrationEventReply, TH>(string routingKey)
             where TIntegrationEventReply : IIntegrationEventReply
@@ -420,10 +258,6 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
-                //if (!eventArgs.BasicProperties.CorrelationId.Equals(_correlationId)) return;
-                //if (!_callbackMapper.TryRemove(eventArgs.BasicProperties.CorrelationId, out TaskCompletionSource<dynamic> tcs))
-                //    return;
-
                 if (!_callbackMapper.TryRemove(eventArgs.BasicProperties.CorrelationId, out TaskCompletionSource<dynamic> tcs))
                     return;
 
@@ -447,10 +281,6 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
-                //if (!eventArgs.BasicProperties.CorrelationId.Equals(_correlationId)) return;
-                //if (!_callbackMapper.TryRemove(eventArgs.BasicProperties.CorrelationId, out TaskCompletionSource<dynamic> tcs))
-                //    return;
-
                 if (!_callbackMapper.TryRemove(eventArgs.BasicProperties.CorrelationId,
                     out TaskCompletionSource<dynamic> tcs))
                 {
@@ -460,8 +290,6 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (tcs != null)
                 {
-
-                    //Logger.LogInformation("ConsumerReceivedAsync: " + eventArgs.BasicProperties.CorrelationId);
                     await ProcessEventReplyAsync(eventArgs.RoutingKey, eventName, eventArgs.Body, tcs)
                         .ConfigureAwait(false);
                 }

@@ -36,8 +36,7 @@ namespace KSociety.Base.EventBus
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcHandler<T, TR>;
 
-        void AddSubscriptionRpcClient<TR, TH>(/*string routingKey,*/ string routingReplyKey)
-            //where T : IIntegrationEventRpc
+        void AddSubscriptionRpcClient<TR, TH>(string routingReplyKey)
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcClientHandler<TR>;
 

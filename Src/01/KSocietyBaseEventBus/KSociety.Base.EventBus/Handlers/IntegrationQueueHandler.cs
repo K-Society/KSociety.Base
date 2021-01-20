@@ -34,8 +34,7 @@ namespace KSociety.Base.EventBus.Handlers
         }
 
 
-        public virtual async IAsyncEnumerable<TIntegrationEvent> Dequeue([EnumeratorCancellation] CancellationToken cancel
- = default)
+        public virtual async IAsyncEnumerable<TIntegrationEvent> Dequeue([EnumeratorCancellation] CancellationToken cancel = default)
         {
             while (!cancel.IsCancellationRequested)
             {
