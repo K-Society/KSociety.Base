@@ -32,7 +32,7 @@ namespace KSociety.Base.EventBus.Events
             Id = Guid.NewGuid();
             CreationDate = DateTime.UtcNow;
             RoutingKey = GetType().Name + "." + routingKey;
-            ReplyRoutingKey = /*GetType().Name + "." +*/ replyRoutingKey;
+            ReplyRoutingKey = replyRoutingKey;
         }
 
         public string GetTypeName()

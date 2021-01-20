@@ -7,14 +7,7 @@ namespace KSociety.Base.EventBus.Abstractions.Handler
         : IIntegrationGeneralHandler
         where TIntegrationEventReply : IIntegrationEventReply
     {
-        //BufferBlock<TIntegrationEventReply> Queue { get; }
-
-        //bool IsEmpty { get; }
         void HandleReply(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default);
         ValueTask HandleReplyAsync(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default);
-
-        //ValueTask<bool> Enqueue(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default);
-
-        //ValueTask<TIntegrationEventReply> Take(CancellationToken cancel = default);
     }
 }

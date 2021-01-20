@@ -22,7 +22,6 @@
         {
             BrokerName = brokerName;
             ExchangeType = exchangeType.ToString().ToLower();
-            //ExchangeName = brokerName + "_" + exchangeType;
             ExchangeDurable = exchangeDurable;
             ExchangeAutoDelete = exchangeAutoDelete;
         }

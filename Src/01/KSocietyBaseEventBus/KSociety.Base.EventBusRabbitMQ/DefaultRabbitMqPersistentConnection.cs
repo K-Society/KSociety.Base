@@ -15,23 +15,14 @@ namespace KSociety.Base.EventBusRabbitMQ
     {
         private readonly IConnectionFactory _connectionFactory;
         private readonly ILogger<DefaultRabbitMqPersistentConnection> _logger;
-        //private readonly int _retryCount;
         private IConnection _connection;
 
         private readonly object _syncRoot = new object();
 
-        //public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMqPersistentConnection> logger/*, int retryCount = 5*/)
-        //{
-        //    _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
-        //    _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        //    //_retryCount = retryCount;
-        //}
-
-        public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILoggerFactory loggerFactory/*, int retryCount = 5*/)
+        public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILoggerFactory loggerFactory)
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
             _logger = loggerFactory.CreateLogger<DefaultRabbitMqPersistentConnection>() ?? throw new ArgumentNullException(nameof(loggerFactory));
-            //_retryCount = retryCount;
         }
 
         public bool IsConnected => _connection != null && _connection.IsOpen && !Disposed;
@@ -65,15 +56,6 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 lock (_syncRoot)
                 {
-                    //var policy = Policy.Handle<SocketException>()
-                    //    .Or<BrokerUnreachableException>()
-                    //    .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
-                    //    {
-                    //        //_logger.LogWarning(ex.ToString());
-                    //        _logger.Warn(ex.ToString());
-                    //    }
-                    //);
-
                     var policy = Policy.Handle<SocketException>()
                         .Or<BrokerUnreachableException>()
                         .Or<Exception>()
@@ -97,7 +79,6 @@ namespace KSociety.Base.EventBusRabbitMQ
                         _connection.CallbackException += OnCallbackException;
                         _connection.ConnectionBlocked += OnConnectionBlocked;
 
-                        //_logger.LogInformation($"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
                         _logger.LogInformation(
                             $"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
                         return true;
