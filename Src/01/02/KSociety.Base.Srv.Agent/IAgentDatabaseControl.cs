@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Pre.Model.Control
+namespace KSociety.Base.Srv.Agent
 {
-    public interface IDatabaseControl
+    public interface IAgentDatabaseControl
     {
         string GetConnectionString(CancellationToken cancellationToken = default);
 

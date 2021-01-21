@@ -9,7 +9,7 @@ using ProtoBuf.Grpc.Client;
 
 namespace KSociety.Base.Srv.Agent.Control
 {
-    public class DatabaseControl : Connection
+    public class DatabaseControl : Connection, IAgentDatabaseControl
     {
         public DatabaseControl(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
             : base (agentConfiguration, loggerFactory)
@@ -69,7 +69,7 @@ namespace KSociety.Base.Srv.Agent.Control
             return string.Empty;
         }
 
-        public bool EnsureCreate(CancellationToken cancellationToken = default)
+        public bool EnsureCreated(CancellationToken cancellationToken = default)
         {
             Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             CallOptions = CallOptions.WithCancellationToken(cancellationToken);
@@ -95,7 +95,7 @@ namespace KSociety.Base.Srv.Agent.Control
             return false;
         }
 
-        public async ValueTask<bool> EnsureCreateAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
         {
             Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             CallOptions = CallOptions.WithCancellationToken(cancellationToken);
