@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Srv.Agent
 {
-    public interface IExportModel<in TExportReq, TExportRes>
+    public interface IAgentExportModel<in TExportReq, TExportRes>
         where TExportReq : class
         where TExportRes : class
     {
