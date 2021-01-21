@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KSociety.Base.Srv.Contract\KSociety.Base.Srv.Contract.csproj" />
+    <ProjectReference Include="..\KSociety.Base.Srv.Dto\KSociety.Base.Srv.Dto.csproj" />
   </ItemGroup>
 
 </Project>
