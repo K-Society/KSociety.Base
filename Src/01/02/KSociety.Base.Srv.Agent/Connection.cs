@@ -6,7 +6,7 @@ using ProtoBuf.Grpc.Client;
 
 namespace KSociety.Base.Srv.Agent
 {
-    public class Connection : IConnection
+    public class Connection
     {
         protected readonly ILogger<Connection> Logger;
 
