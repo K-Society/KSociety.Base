@@ -66,6 +66,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{C5602DDC-0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.EventBus.Test", "Src\01\KSocietyBaseEventBus\Test\KSociety.Base.EventBus.Test\KSociety.Base.EventBus.Test.csproj", "{DE64BA52-68C2-4800-8939-D902ADFC79C4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{17B4AEF9-892B-4C69-A476-1FFD5F5B447B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Web.Shared", "Src\01\01\Web\KSociety.Base.Pre.Web.Shared\KSociety.Base.Pre.Web.Shared.csproj", "{17C81827-C733-4F42-8BE0-70B76136C3C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +135,10 @@ Global
 		{DE64BA52-68C2-4800-8939-D902ADFC79C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE64BA52-68C2-4800-8939-D902ADFC79C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE64BA52-68C2-4800-8939-D902ADFC79C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17C81827-C733-4F42-8BE0-70B76136C3C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17C81827-C733-4F42-8BE0-70B76136C3C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17C81827-C733-4F42-8BE0-70B76136C3C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17C81827-C733-4F42-8BE0-70B76136C3C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,6 +169,8 @@ Global
 		{B123EEA1-2CEB-431E-B664-F0C398E5CD32} = {D2EEE443-B6C6-42C2-8F2B-E86E27DB20FC}
 		{C5602DDC-0CF9-47DF-A6CE-2DDF9338D31B} = {CF73F26D-A353-4070-B365-902C95836192}
 		{DE64BA52-68C2-4800-8939-D902ADFC79C4} = {C5602DDC-0CF9-47DF-A6CE-2DDF9338D31B}
+		{17B4AEF9-892B-4C69-A476-1FFD5F5B447B} = {577755C6-6D08-4D83-8580-3FDCA28DCDB6}
+		{17C81827-C733-4F42-8BE0-70B76136C3C0} = {17B4AEF9-892B-4C69-A476-1FFD5F5B447B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {99171B9C-B7B3-4746-8EE3-E488C03B00D9}
