@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Pre.Model
+namespace KSociety.Base.Srv.Agent
 {
-    public interface IImportModel<in TImportReq, TImportRes>
+    public interface IAgentImportModel<in TImportReq, TImportRes>
         where TImportReq : class
         where TImportRes : class
     {

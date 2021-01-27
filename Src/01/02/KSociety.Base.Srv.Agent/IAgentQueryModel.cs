@@ -1,10 +1,10 @@
-﻿using System.Threading;
+﻿using KSociety.Base.InfraSub.Shared.Interface;
+using System.Threading;
 using System.Threading.Tasks;
-using KSociety.Base.InfraSub.Shared.Interface;
 
-namespace KSociety.Base.Pre.Model
+namespace KSociety.Base.Srv.Agent
 {
-    public interface IQueryModel<T, in TObject>
+    public interface IAgentQueryModel<T, in TObject>
         where T : IObject
         where TObject : IIdObject
     {

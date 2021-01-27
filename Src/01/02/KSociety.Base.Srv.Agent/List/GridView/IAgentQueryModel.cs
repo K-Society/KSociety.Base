@@ -1,12 +1,12 @@
-﻿using System.Threading;
+﻿using KSociety.Base.InfraSub.Shared.Interface;
+using System.Threading;
 using System.Threading.Tasks;
-using KSociety.Base.InfraSub.Shared.Interface;
 
-namespace KSociety.Base.Pre.Model.List.GridView
+namespace KSociety.Base.Srv.Agent.List.GridView
 {
-    public interface IQueryModel<T, TList>
+    public interface IAgentQueryModel<T, TList>
         where T : IObject
-        where TList : IList<T>
+        where TList : InfraSub.Shared.Interface.IList<T>
     {
         TList LoadAllRecords(CancellationToken cancellationToken = default);
 

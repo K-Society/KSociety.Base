@@ -81,7 +81,6 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public virtual async ValueTask Publish(IIntegrationEvent @event)
         {
-            //Logger.LogTrace("Publish: " + @event.GetType());
             try
             {
                 if (!PersistentConnection.IsConnected)
@@ -200,19 +199,10 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
-                //if (message.ToLowerInvariant().Contains("throw-fake-exception"))
-                //{
-                //    throw new InvalidOperationException($"Fake exception requested: \"{message}\"");
-                //}
-
-                //await ProcessEvent(eventName, message);
-
                 ProcessEvent(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
-
             }
             catch (Exception ex)
             {
-                //Logger.LogWarning(ex, "----- ERROR Processing message \"{Message}\"", message);
                 Logger.LogWarning("ConsumerReceived: " + eventName + " - " + ex.Message + " - " + ex.StackTrace);
             }
 
@@ -237,19 +227,10 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
-                //if (message.ToLowerInvariant().Contains("throw-fake-exception"))
-                //{
-                //    throw new InvalidOperationException($"Fake exception requested: \"{message}\"");
-                //}
-
-                //await ProcessEvent(eventName, message);
-
                 await ProcessEvent(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
-
             }
             catch (Exception ex)
             {
-                //Logger.LogWarning(ex, "----- ERROR Processing message \"{Message}\"", message);
                 Logger.LogWarning("ConsumerReceived: " + eventName + " - " + ex.Message + " - " + ex.StackTrace);
             }
 

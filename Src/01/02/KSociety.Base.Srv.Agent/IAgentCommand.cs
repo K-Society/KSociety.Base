@@ -1,15 +1,15 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Pre.Model
+namespace KSociety.Base.Srv.Agent
 {
-    public interface ICommandModel<
-        in TRemove, 
-        in TAddReq, 
-        TAddRes, 
-        in TUpdateReq, 
-        TUpdateRes, 
-        in TCopyReq, 
+    public interface IAgentCommand<
+        in TRemove,
+        in TAddReq,
+        TAddRes,
+        in TUpdateReq,
+        TUpdateRes,
+        in TCopyReq,
         TCopyRes,
         in TModifyField>
         where TRemove : class

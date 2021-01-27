@@ -6,7 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.App.Shared.ReqHdlr
 {
-    public class GetConnectionStringReqHdlr : IRequestHandlerWithResponse<ConnectionString>
+    public class GetConnectionStringReqHdlr : 
+        IRequestHandlerWithResponse<ConnectionString>,
+        IRequestHandlerWithResponseAsync<ConnectionString>
     {
         private readonly ILogger<MigrationReqHdlr> _logger;
         private readonly IDatabaseUnitOfWork _unitOfWork;

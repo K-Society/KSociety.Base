@@ -84,7 +84,6 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             var eventName = SubsManager.GetEventKey<T>();
             var eventNameResult = SubsManager.GetEventReplyKey<TR>();
-            //Logger.LogDebug("SubscribeRpc: eventName: " + eventName + "." + routingKey + " eventNameResult: " + eventNameResult + "." + routingKey);
             DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey);
             SubsManager.AddSubscriptionRpcServer<T, TR, TH>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
             StartBasicConsume();
@@ -152,7 +151,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             string[] result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
-            //var test = eventArgs.BasicProperties.ReplyTo;
+
             try
             {
                 var props = eventArgs.BasicProperties;
@@ -163,7 +162,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 var ms = new MemoryStream();
                 Serializer.Serialize<IIntegrationEventReply>(ms, response);
                 var body = ms.ToArray();
-                //ConsumerChannel.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
+
                 _consumerChannelReply.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
             }
             catch (Exception ex)
@@ -190,8 +189,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             string[] result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
-            //var test = eventArgs.BasicProperties.ReplyTo;
-            //ConsumerChannel.
+
             try
             {
                 var props = eventArgs.BasicProperties;
@@ -201,9 +199,9 @@ namespace KSociety.Base.EventBusRabbitMQ
                 var response = await ProcessEventRpcAsync(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
                 var ms = new MemoryStream();
                 Serializer.Serialize<IIntegrationEventReply>(ms, response);
-                //Serializer.Serialize(ms, response);
+
                 var body = ms.ToArray();
-                //ConsumerChannel.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
+
                 _consumerChannelReply.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
             }
             catch (Exception ex)
@@ -311,16 +309,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         return null;
                                     }
 
-                                    //Logger.LogInformation("ProcessEventRpcServer: eventType is: " + eventType.FullName);
-
                                     var eventReplyType = SubsManager.GetEventReplyTypeByName(routingKey);
                                     if (eventReplyType is null)
                                     {
                                         Logger.LogError("ProcessEventRpcServer: eventReplyType is null! " + routingKey);
                                         return null;
                                     }
-
-                                    //Logger.LogInformation("ProcessEventRpcServer: eventReplyType is: " + eventReplyType.FullName);
 
                                     using var ms = new MemoryStream(message.ToArray());
                                     var integrationEvent = Serializer.Deserialize(eventType, ms);
@@ -400,7 +394,6 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         Logger.LogError("ProcessEventRpcServer: eventType is null! " + routingKey);
                                         return null;
                                     }
-                                    //Logger.LogInformation("ProcessEventRpcServer: eventType is: " + eventType.FullName);
 
                                     var eventReplyType = SubsManager.GetEventReplyTypeByName(routingKey);
                                     if (eventReplyType is null)
@@ -408,13 +401,9 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         Logger.LogError("ProcessEventRpcServer: eventReplyType is null! " + routingKey);
                                         return null;
                                     }
-                                    //Logger.LogInformation("ProcessEventRpcServer: eventReplyType is: " + eventReplyType.FullName);
 
                                     await using var ms = new MemoryStream(message.ToArray());
                                     var integrationEvent = Serializer.Deserialize(eventType, ms);
-                                    //Logger.LogInformation("integrationEvent: " 
-                                    //                      + ((IIntegrationEventRpc)integrationEvent).RoutingKey + " "
-                                    //                      + ((IIntegrationEventRpc)integrationEvent).ReplyRoutingKey);
 
                                     var concreteType =
                                         typeof(IIntegrationRpcServerHandler<,>).MakeGenericType(eventType,

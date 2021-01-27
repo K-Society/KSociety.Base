@@ -103,37 +103,16 @@ namespace KSociety.Base.EventBus
         }
 
         //RpcClient
-        public void AddSubscriptionRpcClient<TR, TH>(/*string routingKey,*/ string routingReplyKey)
-            //where T : IIntegrationEventRpc
+        public void AddSubscriptionRpcClient<TR, TH>(string routingReplyKey)
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcClientHandler<TR>
         {
             DoAddSubscription(typeof(TH), routingReplyKey, SubscriptionManagerType.RpcClient);
 
-            //if (!_eventReplyTypes.ContainsKey(routingReplyKey))
-            //{
-            //    _eventReplyTypes.Add(routingReplyKey, typeof(TR));
-            //}
-
-            //if (!_eventTypes.ContainsKey(routingKey))
-            //{
-            //    _eventTypes.Add(routingKey, typeof(T));
-            //}
-
-            //if (!_eventTypes.ContainsKey(routingReplyKey))
-            //{
-            //    _eventTypes.Add(routingReplyKey, typeof(T));
-            //}
-
             if (!_eventReplyTypes.ContainsKey(routingReplyKey))
             {
                 _eventReplyTypes.Add(routingReplyKey, typeof(TR));
             }
-
-            //if (!_eventReplyTypes.ContainsKey(routingKey))
-            //{
-            //    _eventReplyTypes.Add(routingKey, typeof(TR));
-            //}
         }
 
         //RpcServer
@@ -148,16 +127,6 @@ namespace KSociety.Base.EventBus
             {
                 _eventTypes.Add(routingKey, typeof(T));
             }
-
-            //if (!_eventTypes.ContainsKey(routingReplyKey))
-            //{
-            //    _eventTypes.Add(routingReplyKey, typeof(T));
-            //}
-
-            //if (!_eventReplyTypes.ContainsKey(routingReplyKey))
-            //{
-            //    _eventReplyTypes.Add(routingReplyKey, typeof(TR));
-            //}
 
             if (!_eventReplyTypes.ContainsKey(routingKey))
             {
