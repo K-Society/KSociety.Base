@@ -1,5 +1,4 @@
 ﻿using KSociety.Base.InfraSub.Shared.Interface;
-using KSociety.Base.Srv.Agent.List.GridView;
 
 namespace KSociety.Base.Pre.Web.Shared.Control
 {
