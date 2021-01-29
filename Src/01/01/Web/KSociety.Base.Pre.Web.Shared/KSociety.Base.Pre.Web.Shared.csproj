@@ -20,4 +20,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\02\KSociety.Base.Srv.Agent\KSociety.Base.Srv.Agent.csproj" />
+  </ItemGroup>
+
 </Project>
