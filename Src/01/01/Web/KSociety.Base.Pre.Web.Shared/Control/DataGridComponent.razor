@@ -163,53 +163,61 @@
 
     protected void CreateColumns()
     {
-        foreach (var propertyInfo in typeof(T).GetProperties())
+        try
         {
-            if (!IsBrowsable(propertyInfo)) continue;
-
-            //DataGridViewColumn dataGridViewColumn;
-            ColumnDefinition dataGridViewColumn = new ColumnDefinition();
-
-            //if (BindingSourcesComboBox.ContainsKey(propertyInfo.Name))
-            //{
-            //    dataGridViewColumn = new StdDataGridViewComboBoxColumn
-            //    {
-            //        ValueMember = "Key",
-            //        DisplayMember = "Value"
-
-            //        //DisplayIndex = 0
-            //    };
-            //}
-            //else
-            //{
-            if (propertyInfo.PropertyType == typeof(bool))
+            foreach (var propertyInfo in typeof(T).GetProperties())
             {
-                //dataGridViewColumn = new DataGridViewCheckBoxColumn();
-                ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                System.Console.WriteLine("" + propertyInfo.Name);
+                if (!IsBrowsable(propertyInfo)) continue;
+
+    //DataGridViewColumn dataGridViewColumn;
+                ColumnDefinition dataGridViewColumn = new ColumnDefinition();
+
+    //if (BindingSourcesComboBox.ContainsKey(propertyInfo.Name))
+    //{
+    //    dataGridViewColumn = new StdDataGridViewComboBoxColumn
+    //    {
+    //        ValueMember = "Key",
+    //        DisplayMember = "Value"
+
+    //        //DisplayIndex = 0
+    //    };
+    //}
+    //else
+    //{
+                if (propertyInfo.PropertyType == typeof(bool))
+                {
+    //dataGridViewColumn = new DataGridViewCheckBoxColumn();
+    ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                }
+                else if (propertyInfo.PropertyType == typeof(byte[]))
+                {
+    //dataGridViewColumn = new StdDataGridViewByteArrayColumn();
+    ////dataGridViewColumn.ValueType = typeof(string); //propertyInfo.PropertyType;
+                }
+                else
+                {
+    //dataGridViewColumn = new DataGridViewTextBoxColumn();
+    ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                }
+
+
+    //dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                dataGridViewColumn.DataType = DataType.String; //propertyInfo.PropertyType;
+    //}
+
+    //dataGridViewColumn.Name = propertyInfo.Name;
+    //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
+
+                dataGridViewColumn.Caption = propertyInfo.Name;
+    //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
+
+                Columns.Add(dataGridViewColumn);
             }
-            else if (propertyInfo.PropertyType == typeof(byte[]))
-            {
-                //dataGridViewColumn = new StdDataGridViewByteArrayColumn();
-                ////dataGridViewColumn.ValueType = typeof(string); //propertyInfo.PropertyType;
-            }
-            else
-            {
-                //dataGridViewColumn = new DataGridViewTextBoxColumn();
-                ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
-            }
-
-
-            //dataGridViewColumn.ValueType = propertyInfo.PropertyType;
-            dataGridViewColumn.DataType = DataType.String;//propertyInfo.PropertyType;
-            //}
-
-            //dataGridViewColumn.Name = propertyInfo.Name;
-            //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
-
-            dataGridViewColumn.Caption = propertyInfo.Name;
-            //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
-
-            Columns.Add(dataGridViewColumn);
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine(ex.Message + " - " + ex.StackTrace);
         }
     }
 
