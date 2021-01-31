@@ -11,7 +11,7 @@
         <tr>
             @if (Columns == null || Columns.Count <= 0)
             {
-                CreateColumns();
+                
             }
             else
             {
@@ -147,7 +147,7 @@
     {
         //_queryListGridView = await QueryListGridView.LoadAllRecordsAsync();
 
-        Columns = new List<ColumnDefinition>();
+        CreateColumns();
 
     }
 
@@ -163,11 +163,12 @@
 
     protected void CreateColumns()
     {
+        Columns ??= new List<ColumnDefinition>();
         try
         {
             foreach (var propertyInfo in typeof(T).GetProperties())
             {
-                System.Console.WriteLine("" + propertyInfo.Name);
+                //System.Console.WriteLine("" + propertyInfo.Name);
                 if (!IsBrowsable(propertyInfo)) continue;
 
                 //DataGridViewColumn dataGridViewColumn;
@@ -213,7 +214,7 @@
                 dataGridViewColumn.DataField = propertyInfo.Name;
                 //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
 
-                
+
 
                 Columns.Add(dataGridViewColumn);
             }
