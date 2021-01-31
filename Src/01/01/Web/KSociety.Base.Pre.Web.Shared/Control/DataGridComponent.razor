@@ -143,10 +143,13 @@
     [Parameter]
     public TList QueryListGridView { get; set; }
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    _queryListGridView = await QueryListGridView.LoadAllRecordsAsync();
-    //}
+    protected override void OnInitialized()
+    {
+        //_queryListGridView = await QueryListGridView.LoadAllRecordsAsync();
+
+        Columns = new List<ColumnDefinition>();
+
+    }
 
     public void GoToPreviousPage()
     {
