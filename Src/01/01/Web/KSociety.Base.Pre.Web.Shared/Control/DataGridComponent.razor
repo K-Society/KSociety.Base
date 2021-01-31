@@ -170,47 +170,50 @@
                 System.Console.WriteLine("" + propertyInfo.Name);
                 if (!IsBrowsable(propertyInfo)) continue;
 
-    //DataGridViewColumn dataGridViewColumn;
+                //DataGridViewColumn dataGridViewColumn;
                 ColumnDefinition dataGridViewColumn = new ColumnDefinition();
 
-    //if (BindingSourcesComboBox.ContainsKey(propertyInfo.Name))
-    //{
-    //    dataGridViewColumn = new StdDataGridViewComboBoxColumn
-    //    {
-    //        ValueMember = "Key",
-    //        DisplayMember = "Value"
+                //if (BindingSourcesComboBox.ContainsKey(propertyInfo.Name))
+                //{
+                //    dataGridViewColumn = new StdDataGridViewComboBoxColumn
+                //    {
+                //        ValueMember = "Key",
+                //        DisplayMember = "Value"
 
-    //        //DisplayIndex = 0
-    //    };
-    //}
-    //else
-    //{
+                //        //DisplayIndex = 0
+                //    };
+                //}
+                //else
+                //{
                 if (propertyInfo.PropertyType == typeof(bool))
                 {
-    //dataGridViewColumn = new DataGridViewCheckBoxColumn();
-    ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                    //dataGridViewColumn = new DataGridViewCheckBoxColumn();
+                    ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
                 }
                 else if (propertyInfo.PropertyType == typeof(byte[]))
                 {
-    //dataGridViewColumn = new StdDataGridViewByteArrayColumn();
-    ////dataGridViewColumn.ValueType = typeof(string); //propertyInfo.PropertyType;
+                    //dataGridViewColumn = new StdDataGridViewByteArrayColumn();
+                    ////dataGridViewColumn.ValueType = typeof(string); //propertyInfo.PropertyType;
                 }
                 else
                 {
-    //dataGridViewColumn = new DataGridViewTextBoxColumn();
-    ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                    //dataGridViewColumn = new DataGridViewTextBoxColumn();
+                    ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
                 }
 
 
-    //dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                //dataGridViewColumn.ValueType = propertyInfo.PropertyType;
                 dataGridViewColumn.DataType = DataType.String; //propertyInfo.PropertyType;
-    //}
+                                                               //}
 
-    //dataGridViewColumn.Name = propertyInfo.Name;
-    //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
+                //dataGridViewColumn.Name = propertyInfo.Name;
+                //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
 
                 dataGridViewColumn.Caption = propertyInfo.Name;
-    //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
+                dataGridViewColumn.DataField = propertyInfo.Name;
+                //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
+
+                
 
                 Columns.Add(dataGridViewColumn);
             }
