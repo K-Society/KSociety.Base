@@ -50,49 +50,64 @@
         @foreach (var item in QueryListGridView.List.Skip(Paging.NumberToItemsToSkip(CurrentPageNumber))
         .Take(Paging.NumberOfItemsToTake(QueryListGridView.List.Count)))
         {
-            <tr>
-                @foreach (var column in Columns)
+        <tr>
+            @foreach (var column in Columns)
+            {
+                @if (!string.IsNullOrWhiteSpace(column.Format) && column.DataType != DataType.NotSet)
                 {
-                    @if (!string.IsNullOrWhiteSpace(column.Format) && column.DataType != DataType.NotSet)
+                    var value = string.Empty;
+                    switch (column.DataType)
                     {
-                        var value = string.Empty;
-                        switch (column.DataType)
-                        {
-                            case DataType.Date:
-                            case DataType.DateTime:
-                                value = DateTime.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()).ToString(column.Format);
-                                break;
-                            case DataType.Boolean:
-                                value = bool.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()).ToString();
-                                break;
-                            case DataType.Currency:
-                                value = Math.Round(double.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()), 2).ToString("c");
-                                break;
-                            default:
-                                break;
+                        case DataType.Date:
+                        case DataType.DateTime:
+                            value = DateTime.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()).ToString(column.Format);
+                            break;
+                        case DataType.Boolean:
+                            value = bool.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()).ToString();
+                            break;
+                        case DataType.Currency:
+                            value = Math.Round(double.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()), 2).ToString("c");
+                            break;
+                        default:
+                            break;
 
 
-                        }
+                    }
 
-                        @if (column.Alignment != Alignment.NotSet)
-                        {
-                            <td align="@column.Alignment.ToString().ToLower()">@value</td>
-                        }
-                        else
-                        {
-                            <td>@value</td>
-                        }
+                    @if (column.Alignment != Alignment.NotSet)
+                    {
+                        <td align="@column.Alignment.ToString().ToLower()">@value</td>
                     }
                     else
                     {
-                        @if (column.Alignment != Alignment.NotSet)
+
+                        switch (column.DataType)
                         {
-                            <td align="@column.Alignment.ToString().ToLower()">@typeof(T).GetProperty(column.DataField).GetValue(item)</td>
+                            case DataType.Boolean:
+                                //value = bool.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()).ToString();
+                                <td>
+                                    <input type="checkbox" @bind-value="bool.Parse(typeof(T).GetProperty(column.DataField)?.GetValue(item)?.ToString() ?? string.Empty)" />
+                                </td>
+                                break;
+
+                            default:
+                                <td>@value</td>
+                                break;
                         }
-                        else
-                        {
-                            <td>@typeof(T).GetProperty(column.DataField).GetValue(item)</td>
-                        }
+
+                    }
+                }
+                else
+                {
+                    @if (column.Alignment != Alignment.NotSet)
+                    {
+                        <td align="@column.Alignment.ToString().ToLower()">@typeof(T).GetProperty(column.DataField).GetValue(item)</td>
+                    }
+                    else
+                    {
+
+                        <td>@typeof(T).GetProperty(column.DataField).GetValue(item)</td>
+                    }
                     }
                 }
             </tr>
@@ -190,22 +205,25 @@
                 {
                     //dataGridViewColumn = new DataGridViewCheckBoxColumn();
                     ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                    dataGridViewColumn.DataType = DataType.Boolean;
                 }
                 else if (propertyInfo.PropertyType == typeof(byte[]))
                 {
                     //dataGridViewColumn = new StdDataGridViewByteArrayColumn();
                     ////dataGridViewColumn.ValueType = typeof(string); //propertyInfo.PropertyType;
+                    dataGridViewColumn.DataType = DataType.String;
                 }
                 else
                 {
                     //dataGridViewColumn = new DataGridViewTextBoxColumn();
                     ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                    dataGridViewColumn.DataType = DataType.String; //propertyInfo.PropertyType.ToString();
                 }
 
 
                 //dataGridViewColumn.ValueType = propertyInfo.PropertyType;
-                dataGridViewColumn.DataType = DataType.String; //propertyInfo.PropertyType;
-                                                               //}
+                //propertyInfo.PropertyType;
+                //}
 
                 //dataGridViewColumn.Name = propertyInfo.Name;
                 //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
