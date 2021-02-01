@@ -86,7 +86,7 @@
                             case DataType.Boolean:
                                 //value = bool.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()).ToString();
                                 <td>
-                                    <input type="checkbox" @bind-value="bool.Parse(typeof(T).GetProperty(column.DataField)?.GetValue(item)?.ToString() ?? string.Empty)" />
+                                    <input type="checkbox" @bind-value="value" />
                                 </td>
                                 break;
 
