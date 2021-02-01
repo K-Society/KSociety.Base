@@ -56,6 +56,7 @@
                 @if (!string.IsNullOrWhiteSpace(column.Format) && column.DataType != DataType.NotSet)
                 {
                     var value = string.Empty;
+                    var boolValue = false;
                     switch (column.DataType)
                     {
                         case DataType.Date:
@@ -63,7 +64,7 @@
                             value = DateTime.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()).ToString(column.Format);
                             break;
                         case DataType.Boolean:
-                            value = bool.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()).ToString();
+                            boolValue = bool.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString());
                             break;
                         case DataType.Currency:
                             value = Math.Round(double.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()), 2).ToString("c");
@@ -86,7 +87,7 @@
                             case DataType.Boolean:
                                 //value = bool.Parse(typeof(T).GetProperty(column.DataField).GetValue(item).ToString()).ToString();
                                 <td>
-                                    <input type="checkbox" @bind-value="value" />
+                                    <input type="checkbox" @bind-value="boolValue" />
                                 </td>
                                 break;
 
