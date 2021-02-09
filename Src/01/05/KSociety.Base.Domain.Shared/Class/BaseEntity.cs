@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using KSociety.Base.InfraSub.Shared.Class;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.Domain.Shared.Class
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity : DisposableObject
     {
         private List<INotification> _domainEvents;
         public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
