@@ -1,4 +1,4 @@
-﻿namespace KSociety.Base.Pre.Web.Shared.Configuration
+﻿namespace KSociety.Base.Pre.Web.Shared
 {
     public enum Alignment
     {
