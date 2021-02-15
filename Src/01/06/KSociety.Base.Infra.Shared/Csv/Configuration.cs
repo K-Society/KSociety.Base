@@ -25,8 +25,7 @@ namespace KSociety.Base.Infra.Shared.Csv
 
             PrepareHeaderForMatch = (header) => header.Header.ToLower(),
             
-            //GetConstructor = GetConstructor
-            //GetConstructor = (constructor) => constructor.ClassType //ToDo
+            GetConstructor = GetConstructor
 
         };
 
@@ -50,12 +49,12 @@ namespace KSociety.Base.Infra.Shared.Csv
             //}
         }
 
-        private static ConstructorInfo GetConstructor(Type type)
+        private static ConstructorInfo GetConstructor(GetConstructorArgs args)
         {
             try
             {
-                var result = type.GetConstructors().FirstOrDefault();
-                
+                var result = args.ClassType.GetConstructors().FirstOrDefault();
+
                 return result;
             }
             catch (Exception ex)
