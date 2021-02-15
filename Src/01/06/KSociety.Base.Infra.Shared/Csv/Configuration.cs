@@ -1,4 +1,5 @@
-﻿using CsvHelper.Configuration;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -11,10 +12,10 @@ namespace KSociety.Base.Infra.Shared.Csv
         public static CsvConfiguration CsvConfiguration => new(CultureInfo.InvariantCulture)
         {
             Delimiter = ";",
+            PrepareHeaderForMatch = (header) => header.Header.ToLower()
+            //PrepareHeaderForMatch = (header, index) => header.Header.ToLower(),
 
-            PrepareHeaderForMatch = (header, index) => header.ToLower(),
-
-            GetConstructor = GetConstructor
+            //GetConstructor = GetConstructor
 
         };
 
@@ -22,9 +23,10 @@ namespace KSociety.Base.Infra.Shared.Csv
         {
             Delimiter = ";",
 
-            PrepareHeaderForMatch = (header, index) => header.ToLower(),
-
-            GetConstructor = GetConstructor
+            PrepareHeaderForMatch = (header) => header.Header.ToLower(),
+            
+            //GetConstructor = GetConstructor
+            //GetConstructor = (constructor) => constructor.ClassType //ToDo
 
         };
 
