@@ -1,18 +1,30 @@
 ﻿using Autofac;
 using MediatR;
-using System.Reflection;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
-    public class Mediatr : Autofac.Module
+    public class Mediatr : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
+            //builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
 
-            builder.Register<ServiceFactory>(ctx =>
+            //builder.Register<ServiceFactory>(ctx =>
+            //{
+            //    var c = ctx.Resolve<IComponentContext>();
+            //    return t => c.Resolve(t);
+            //});
+
+            // Mediator itself
+            builder
+                .RegisterType<Mediator>()
+                .As<IMediator>()
+                .InstancePerLifetimeScope();
+
+            // request & notification handlers
+            builder.Register<ServiceFactory>(context =>
             {
-                var c = ctx.Resolve<IComponentContext>();
+                var c = context.Resolve<IComponentContext>();
                 return t => c.Resolve(t);
             });
         }
