@@ -12,10 +12,10 @@ namespace KSociety.Base.Infra.Shared.Csv
         public static CsvConfiguration CsvConfiguration => new(CultureInfo.InvariantCulture)
         {
             Delimiter = ";",
-            PrepareHeaderForMatch = (header) => header.Header.ToLower()
+            PrepareHeaderForMatch = (header) => header.Header.ToLower(),
             //PrepareHeaderForMatch = (header, index) => header.Header.ToLower(),
 
-            //GetConstructor = GetConstructor
+            GetConstructor = GetConstructor
 
         };
 
