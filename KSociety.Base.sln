@@ -74,7 +74,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Web.AppTe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Install", "00. Install", "{DDD58D75-68A1-4450-BFF6-0A0A107259DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallAction", "Src\00\InstallAction\InstallAction.csproj", "{BE0E649A-8B5F-421F-8F07-400C9DD91BB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSociety.Base.InstallAction", "Src\00\KSociety.Base.InstallAction\KSociety.Base.InstallAction.csproj", "{BE0E649A-8B5F-421F-8F07-400C9DD91BB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
