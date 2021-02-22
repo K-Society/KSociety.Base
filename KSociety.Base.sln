@@ -72,6 +72,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Web.Share
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Web.AppTest", "Src\01\01\Web\KSociety.Base.Pre.Web.AppTest\KSociety.Base.Pre.Web.AppTest.csproj", "{74C29A9D-E488-4C66-8E15-38234234CF5F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Install", "00. Install", "{DDD58D75-68A1-4450-BFF6-0A0A107259DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallAction", "Src\00\InstallAction\InstallAction.csproj", "{BE0E649A-8B5F-421F-8F07-400C9DD91BB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +149,10 @@ Global
 		{74C29A9D-E488-4C66-8E15-38234234CF5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74C29A9D-E488-4C66-8E15-38234234CF5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74C29A9D-E488-4C66-8E15-38234234CF5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE0E649A-8B5F-421F-8F07-400C9DD91BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE0E649A-8B5F-421F-8F07-400C9DD91BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE0E649A-8B5F-421F-8F07-400C9DD91BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE0E649A-8B5F-421F-8F07-400C9DD91BB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -178,6 +186,7 @@ Global
 		{3CBDC3D8-D309-4EF0-8B21-7BF08A1C09FA} = {577755C6-6D08-4D83-8580-3FDCA28DCDB6}
 		{3235B228-9294-4E9E-8F24-2146C0AA8DE1} = {3CBDC3D8-D309-4EF0-8B21-7BF08A1C09FA}
 		{74C29A9D-E488-4C66-8E15-38234234CF5F} = {3CBDC3D8-D309-4EF0-8B21-7BF08A1C09FA}
+		{BE0E649A-8B5F-421F-8F07-400C9DD91BB6} = {DDD58D75-68A1-4450-BFF6-0A0A107259DB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {99171B9C-B7B3-4746-8EE3-E488C03B00D9}
