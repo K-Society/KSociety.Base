@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using WixSharp;
 
-namespace InstallAction
+namespace KSociety.Base.InstallAction
 {
     public static class InstallManager
     {

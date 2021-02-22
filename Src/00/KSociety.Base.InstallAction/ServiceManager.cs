@@ -1,7 +1,7 @@
 ﻿using Microsoft.Deployment.WindowsInstaller;
 using WixSharp;
 
-namespace InstallAction
+namespace KSociety.Base.InstallAction
 {
     public static class ServiceManager
     {
