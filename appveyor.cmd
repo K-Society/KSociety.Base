@@ -8,7 +8,7 @@ msbuild -t:restore -p:Configuration=%_C% || exit /b
 
 msbuild -p:Configuration=%_C% || exit /b
 
-msbuild -t:Pack -p:Configuration=%_C% src\00\KSociety.Base.InstallAction || exit /b
+REM msbuild -t:Pack -p:Configuration=%_C% src\00\KSociety.Base.InstallAction || exit /b
 
 @popd
 @endlocal

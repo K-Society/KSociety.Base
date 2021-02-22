@@ -3,7 +3,6 @@
 
 <Project>
   <PropertyGroup>
-	<TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
 	
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <!--MSBuildErrorsAsMessages>NU1202</MSBuildErrorsAsMessages-->
@@ -14,19 +13,18 @@
     <OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
 
     <Authors>maniglia</Authors>
-	<Owners>K-Society</Owners>
     <Company>K-Society</Company>
     <Copyright>Copyright (c) K-Society and contributors. All rights reserved.</Copyright>
 	<PackageLicenseExpression>MS-RL</PackageLicenseExpression>
-    <Product>K-Society Install</Product>
+    <Product>K-Society Base</Product>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/K-Society/Std.Master.Install</PackageProjectUrl>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageProjectUrl>https://github.com/K-Society/KSociety.Base</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/K-Society/KSociety.Base</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
-<!--
-  <Import Project="Cpp.Build.props" Condition=" Exists('Cpp.Build.props') And '$(MSBuildProjectExtension)'=='.vcxproj' " />
-  <Import Project="Wix.Build.props" Condition=" Exists('Wix.Build.props') And '$(MSBuildProjectExtension)'=='.wixproj' " />
-  <Import Project="Custom.Build.props" Condition=" Exists('Custom.Build.props') " />
--->
+  <Import Project="Icon.Build.props" Condition=" '$(MSBuildProjectExtension)'=='.csproj' and Exists('Icon.Build.props') " />
+  <Import Project="CSharp.Build.props" Condition=" '$(MSBuildProjectExtension)'=='.csproj' and Exists('CSharp.Build.props') " />
   <Import Project="Custom.Build.props" Condition=" Exists('Custom.Build.props') " />
 </Project>
