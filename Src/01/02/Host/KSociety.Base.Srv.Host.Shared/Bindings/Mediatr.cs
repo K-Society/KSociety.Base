@@ -7,9 +7,17 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
     {
         protected override void Load(ContainerBuilder builder)
         {
+            //builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
+
+            //builder.Register<ServiceFactory>(ctx =>
+            //{
+            //    var c = ctx.Resolve<IComponentContext>();
+            //    return t => c.Resolve(t);
+            //});
+
             // Mediator itself
             builder
-                .RegisterType<MediatR.Mediator>()
+                .RegisterType<Mediator>()
                 .As<IMediator>()
                 .InstancePerLifetimeScope();
 
