@@ -9,11 +9,16 @@ This is the README file for KSociety.Base. It support .Net 5.0
 
 ![Image of Architecture](https://github.com/K-Society/KSociety.Base/blob/experimental/docs/Architecture_view_for_KSociety.Base.png)
 
+### 0. Install
+| GitHub Repository | NuGet | Download |
+| ------------- | ------------- | ------------- |
+| [KSociety.Base.Pre.Model](https://github.com/K-Society/KSociety.Base/tree/master/Src/00/KSociety.Base.InstallAction) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InstallAction)](https://www.nuget.org/packages/KSociety.Base.InstallAction) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InstallAction) |
+
+
 ### 1. Presentation
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.Pre.Model](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/01/KSociety.Base.Pre.Model) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Pre.Model)](https://www.nuget.org/packages/KSociety.Base.Pre.Model) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Pre.Model) |
-| [KSociety.Base.Pre.Shared](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/01/KSociety.Base.Pre.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Pre.Shared)](https://www.nuget.org/packages/KSociety.Base.Pre.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Pre.Shared) |
 
 ### 2. Service
 | GitHub Repository | NuGet | Download |
