@@ -12,7 +12,7 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
         where TQuery : Srv.Agent.List.GridView.IAgentQueryModel<T, TList>
         where TView : IViewBase<T, TList>
     {
-        protected ILogger<PresenterBase<TView, T, TList, TQuery>> Logger;
+        protected readonly ILogger<PresenterBase<TView, T, TList, TQuery>> Logger;
         private TQuery _queryModel;
         protected TView View;
 
