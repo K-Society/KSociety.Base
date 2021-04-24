@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -10,7 +9,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="WixSharp.bin" Version="1.16.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KSociety.Base.Pre.Form.View\KSociety.Base.Pre.Form.View.csproj" />
   </ItemGroup>
 
 </Project>
