@@ -23,7 +23,6 @@ namespace KSociety.Base.Srv.Agent
                     //    ServerCertificateCustomValidationCallback =
                     //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                     //};
-
                     //var httpClient = new HttpClient(httpClientHandler);
                     return GrpcChannel.ForAddress(_agentConfiguration.ConnectionUrl /*, new GrpcChannelOptions { HttpClient = httpClient }*/);
                 }
