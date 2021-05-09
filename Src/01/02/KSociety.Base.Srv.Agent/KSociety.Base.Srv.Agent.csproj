@@ -8,11 +8,11 @@
   </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37" PrivateAssets="All" />
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.194" PrivateAssets="All" />
     </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.Net.Client" Version="2.36.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.37.0" />
   </ItemGroup>
 
   <ItemGroup>
