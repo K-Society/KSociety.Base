@@ -12,7 +12,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
         private readonly string _version;
 
         public DatabaseConfiguration(DatabaseEngine databaseEngine, 
-            string masterString, bool debugFlag, string migrationsAssembly, string version)
+            string masterString, bool debugFlag, string migrationsAssembly = "", string version = "")
         {
             _databaseEngine = databaseEngine;
             _masterString = masterString;
