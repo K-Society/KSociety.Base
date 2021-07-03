@@ -105,7 +105,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             using var streamReader = new StreamReader(new MemoryStream(byteArray));
             var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
             reader.Context.RegisterClassMap<TClassMap>();
-            var result = reader.GetRecordsAsync<TEntity>();
+            var result = reader.GetRecordsAsync<TEntity>(cancellationToken);
 
             await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
