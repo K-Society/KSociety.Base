@@ -8,13 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.216" PrivateAssets="All" />
+      <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.220" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="RabbitMQ.Client" Version="6.2.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
   </ItemGroup>

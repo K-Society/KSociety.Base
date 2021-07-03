@@ -1,4 +1,5 @@
 ﻿using KSociety.Base.Infra.Shared.Interface;
+using System.Text;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
@@ -12,13 +13,16 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public string MigrationsAssembly { get; }
 
-        public DatabaseConfiguration(DatabaseEngine databaseEngine, string connectionString, bool logging, string migrationsAssembly = "")
+        public string Version { get; }
+
+        public DatabaseConfiguration(DatabaseEngine databaseEngine, 
+            string connectionString, bool logging, string migrationsAssembly = "", string version = "")
         {
             DatabaseEngine = databaseEngine;
             ConnectionString = connectionString;
             Logging = logging;
             MigrationsAssembly = migrationsAssembly;
+            Version = version;
         }
-
     }
 }

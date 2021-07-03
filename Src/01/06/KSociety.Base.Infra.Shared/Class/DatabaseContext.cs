@@ -125,6 +125,23 @@ namespace KSociety.Base.Infra.Shared.Class
                             optionsBuilder.ReplaceService<IMigrationsSqlGenerator, NpgsqlGenerator>();
                         }
                         break;
+
+                    case DatabaseEngine.Mysql:
+                        if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
+                        {
+                            optionsBuilder.UseMySql(_configuration.ConnectionString, new MySqlServerVersion(new Version(_configuration.Version)));
+                        }
+                        else
+                        {
+                            optionsBuilder.UseMySql(_configuration.ConnectionString, new MySqlServerVersion(new Version(_configuration.Version)),
+                                sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+
+                            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
+                        }
+                        break;
+
+                    default:
+                        break;
                 }
             }
         }
