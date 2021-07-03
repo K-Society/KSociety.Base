@@ -3,26 +3,28 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.Extensions.Logging;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
+using Pomelo.EntityFrameworkCore.MySql.Migrations;
 using System;
 using System.IO;
 using System.Linq;
 
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
-    //No Abstract
-    public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
+    public class MySqlGenerator : MySqlMigrationsSqlGenerator
     {
-        private readonly ILogger<SqlServerGenerator> _logger;
+        private readonly ILogger<MySqlGenerator> _logger;
 
         //It must be public
-        public SqlServerGenerator(
+        public MySqlGenerator(
             ILoggerFactory loggerFactory,
             MigrationsSqlGeneratorDependencies dependencies,
-            IRelationalAnnotationProvider migrationsAnnotations)
-            : base(dependencies, migrationsAnnotations)
+            IRelationalAnnotationProvider migrationsAnnotations,
+            IMySqlOptions options)
+            : base(dependencies, migrationsAnnotations, options)
         {
-            _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
-            _logger.LogTrace("SqlServerGenerator");
+            _logger = loggerFactory.CreateLogger<MySqlGenerator>();
+            _logger.LogTrace("MySqlGenerator");
         }
 
         protected override void Generate(

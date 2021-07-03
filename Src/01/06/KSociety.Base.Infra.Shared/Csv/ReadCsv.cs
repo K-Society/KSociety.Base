@@ -83,7 +83,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             using var streamReader = new StreamReader(fileName);
             var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
-            var result = reader.GetRecordsAsync<TClass>();
+            var result = reader.GetRecordsAsync<TClass>(cancellationToken);
 
             await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
@@ -98,7 +98,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             using var streamReader = new StreamReader(new MemoryStream(byteArray));
             var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
-            var result = reader.GetRecordsAsync<TClass>();
+            var result = reader.GetRecordsAsync<TClass>(cancellationToken);
 
             await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
