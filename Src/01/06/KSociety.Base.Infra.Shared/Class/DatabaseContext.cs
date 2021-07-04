@@ -129,11 +129,11 @@ namespace KSociety.Base.Infra.Shared.Class
                     case DatabaseEngine.Mysql:
                         if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
                         {
-                            optionsBuilder.UseMySql(_configuration.ConnectionString, new MySqlServerVersion(new Version(_configuration.Version)));
+                            optionsBuilder.UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString));
                         }
                         else
                         {
-                            optionsBuilder.UseMySql(_configuration.ConnectionString, new MySqlServerVersion(new Version(_configuration.Version)),
+                            optionsBuilder.UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString),
                                 sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
                             optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
