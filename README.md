@@ -3,7 +3,10 @@
 
 ## Introduction
 
-This is the README file for KSociety.Base. It support .Net 5.0
+This is the README file for KSociety.Base.
+
+KSociety.Base is a .NET 5.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
+Its advanced features are ideal for Domain Driven Design (DDD), Command Query Responsibilty Segragation (CQRS) and Event Sourcing.
 
 ## Architecture
 
