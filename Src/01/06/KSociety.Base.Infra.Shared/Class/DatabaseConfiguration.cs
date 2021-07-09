@@ -13,16 +13,13 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public string MigrationsAssembly { get; }
 
-        public string Version { get; }
-
         public DatabaseConfiguration(DatabaseEngine databaseEngine, 
-            string connectionString, bool logging, string migrationsAssembly = "", string version = "")
+            string connectionString, bool logging, string migrationsAssembly = "")
         {
             DatabaseEngine = databaseEngine;
             ConnectionString = connectionString;
             Logging = logging;
             MigrationsAssembly = migrationsAssembly;
-            Version = version;
         }
     }
 }

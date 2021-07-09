@@ -8,6 +8,5 @@ namespace KSociety.Base.Infra.Shared.Interface
         string ConnectionString { get; }
         bool Logging { get; }
         string MigrationsAssembly { get; }
-        string Version { get; }
     }
 }
