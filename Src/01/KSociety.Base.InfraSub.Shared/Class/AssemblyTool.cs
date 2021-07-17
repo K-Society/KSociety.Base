@@ -6,8 +6,15 @@ using System.Reflection;
 
 namespace KSociety.Base.InfraSub.Shared.Class
 {
+    /// <summary>
+    /// The AssemblyTool static class.
+    /// </summary>
     public static class AssemblyTool
     {
+        /// <summary>
+        /// GetAssembly
+        /// </summary>
+        /// <returns></returns>
         public static string[] GetAssembly()
         {
             var assemblyLibPath = AppDomain.CurrentDomain.BaseDirectory;
@@ -20,6 +27,11 @@ namespace KSociety.Base.InfraSub.Shared.Class
             return assemblyLibList.ToArray();
         }
 
+        /// <summary>
+        /// GetAssembly
+        /// </summary>
+        /// <param name="startWith"></param>
+        /// <returns></returns>
         public static string[] GetAssembly(string startWith)
         {
             var assemblyLibPath = AppDomain.CurrentDomain.BaseDirectory;
@@ -32,6 +44,11 @@ namespace KSociety.Base.InfraSub.Shared.Class
             return assemblyLibList.ToArray();
         }
 
+        /// <summary>
+        /// GetAssemblyByName
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static Assembly GetAssemblyByName(string name)
         {
             return AppDomain.CurrentDomain.GetAssemblies()

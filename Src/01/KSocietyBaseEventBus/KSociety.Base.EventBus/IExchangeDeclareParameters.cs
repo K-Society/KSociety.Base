@@ -1,5 +1,8 @@
 ﻿namespace KSociety.Base.EventBus
 {
+    /// <summary>
+    /// The IExchangeDeclareParameters interface.
+    /// </summary>
     public interface IExchangeDeclareParameters
     {
         string BrokerName { get; set; }
