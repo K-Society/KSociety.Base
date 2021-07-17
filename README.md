@@ -1,12 +1,11 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/svxutqmffkucfp0r?svg=true)](https://ci.appveyor.com/project/maniglia/ksociety-base)
-# KSociety.Base - Base library
+# KSociety.Base - Framework for microservices
 
 ## Introduction
 
-This is the README file for KSociety.Base.
-
 KSociety.Base is a .NET 5.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
-Its advanced features are ideal for Domain Driven Design (DDD), Command Query Responsibilty Segragation (CQRS) and Event Sourcing.
+Its advanced features are ideal for Domain Driven Design (DDD), Command Query Responsibilty Segragation (CQRS) and Event Sourcing, is an open sourse 
+.NET framework and represents the basic infrastructure. The whole framework is divided into layers listed below.
 
 ## Architecture
 

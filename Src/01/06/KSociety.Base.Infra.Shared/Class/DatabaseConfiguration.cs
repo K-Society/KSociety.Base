@@ -1,5 +1,4 @@
 ﻿using KSociety.Base.Infra.Shared.Interface;
-using System.Text;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
