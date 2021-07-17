@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.Domain.Shared.Class
 {
+    /// <inheritdoc/>
     public class Entity : BaseEntity
     {
         #region [Constructor]
@@ -13,6 +14,12 @@ namespace KSociety.Base.Domain.Shared.Class
 
         #endregion
 
+
+        /// <summary>
+        /// Modify the value of the domain entity field.
+        /// </summary>
+        /// <param name="fieldName">Domain entiy field name.</param>
+        /// <param name="value">New value of the domaint entiy field.</param>
         public void ModifyField(string fieldName, string value)
         {
             Logger?.LogTrace("ModifyField Entity: " +
