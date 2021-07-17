@@ -23,35 +23,43 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
             var assemblies = _assemblies.Select(System.Reflection.Assembly.LoadFrom).ToArray();
 
             builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.Name.EndsWith("ReqHdlr")).AsClosedTypesOf(typeof(IRequestListHandlerWithResponse<,,>))
+                .Where(t => t.Name.EndsWith("ReqHdlr"))
+                .AsClosedTypesOf(typeof(IRequestListHandlerWithResponse<,,>))
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.Name.EndsWith("ReqHdlr")).AsClosedTypesOf(typeof(IRequestListHandlerWithResponseAsync<,,>))
+                .Where(t => t.Name.EndsWith("ReqHdlr"))
+                .AsClosedTypesOf(typeof(IRequestListHandlerWithResponseAsync<,,>))
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.Name.EndsWith("ReqHdlr")).AsClosedTypesOf(typeof(IRequestHandlerWithResponse<,>))
+                .Where(t => t.Name.EndsWith("ReqHdlr"))
+                .AsClosedTypesOf(typeof(IRequestHandlerWithResponse<,>))
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.Name.EndsWith("ReqHdlr")).AsClosedTypesOf(typeof(IRequestHandlerWithResponseAsync<,>))
+                .Where(t => t.Name.EndsWith("ReqHdlr"))
+                .AsClosedTypesOf(typeof(IRequestHandlerWithResponseAsync<,>))
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.Name.EndsWith("ReqHdlr")).AsClosedTypesOf(typeof(IRequestHandler<>))
+                .Where(t => t.Name.EndsWith("ReqHdlr"))
+                .AsClosedTypesOf(typeof(IRequestHandler<>))
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.Name.EndsWith("ReqHdlr")).AsClosedTypesOf(typeof(IRequestHandlerAsync<>))
+                .Where(t => t.Name.EndsWith("ReqHdlr"))
+                .AsClosedTypesOf(typeof(IRequestHandlerAsync<>))
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.Name.EndsWith("ReqHdlr")).AsClosedTypesOf(typeof(IRequestHandlerWithResponse<>))
+                .Where(t => t.Name.EndsWith("ReqHdlr"))
+                .AsClosedTypesOf(typeof(IRequestHandlerWithResponse<>))
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.Name.EndsWith("ReqHdlr")).AsClosedTypesOf(typeof(IRequestHandlerWithResponseAsync<>))
+                .Where(t => t.Name.EndsWith("ReqHdlr"))
+                .AsClosedTypesOf(typeof(IRequestHandlerWithResponseAsync<>))
                 .AsImplementedInterfaces();
         }
     }
