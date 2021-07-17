@@ -50,7 +50,7 @@ deploy:
   - provider: NuGet
     server: https://ci.appveyor.com/nuget/k-society/api/v2/package
     api_key:
-      secure: bOgKbntjK/dMmw71pGK590FEZxLbgGSMMRdcesvYD0YBd0D8YoTNhCFHUxTUIKyw
+      secure: jIQOXURv/wJ2bys5OTJpp+zTyN8tyVAnczeodJUK3Nw=
     skip_symbols: true
     symbol_server: 
     artifact: /.*\.nupkg/
@@ -60,7 +60,7 @@ deploy:
   - provider: NuGet
     server: 
     api_key:
-      secure: LkTQAh9Tv+IgjhWD5LBCRs7Jc9y5eDKDo+TdnwjuBXVdfuin8jpb1ewtMb30pMxz
+      secure: bOgKbntjK/dMmw71pGK590FEZxLbgGSMMRdcesvYD0YBd0D8YoTNhCFHUxTUIKyw
     skip_symbols: true
     symbol_server: 
     artifact: /.*\.nupkg/
