@@ -82,7 +82,7 @@ namespace KSociety.Base.Pre.Model.Utility
             _sortProperty = prop;
             _sortDirection = direction;
 
-            if (!(Items is List<T> list)) return;
+            if (!(Items is List<T> list)) { return; }
 
             list.Sort(Compare);
 

@@ -271,7 +271,7 @@ namespace KSociety.Base.Infra.Shared.Class
             await Database.MigrateAsync().ConfigureAwait(false);
         }
 
-        public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
+        public async ValueTask MigrateAsync(CancellationToken cancellationToken)
         {
             await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -286,7 +286,7 @@ namespace KSociety.Base.Infra.Shared.Class
             _transaction = await Database.BeginTransactionAsync().ConfigureAwait(false);
         }
 
-        public virtual async ValueTask BeginTransactionAsync(CancellationToken cancellationToken = default)
+        public virtual async ValueTask BeginTransactionAsync(CancellationToken cancellationToken)
         {
             _transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
         }

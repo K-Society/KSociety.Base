@@ -80,7 +80,7 @@ namespace KSociety.Base.Infra.Shared.Class
         protected override void DisposeManagedResources()
         {
 
-            if (_dataContext == null) return;
+            if (_dataContext == null) { return; }
             _dataContext.Dispose();
             _dataContext = null;
         }

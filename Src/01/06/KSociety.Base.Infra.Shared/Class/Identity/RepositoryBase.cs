@@ -259,7 +259,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         {
             Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             var result = ReadCsv<TEntity>.Import(_loggerFactory, fileName);
-            if (!result.Any()) return;
+            if (!result.Any()) { return; }
             DeleteRange(FindAll());
 
             AddRange(result);

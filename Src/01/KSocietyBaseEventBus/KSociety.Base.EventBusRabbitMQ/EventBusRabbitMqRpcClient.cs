@@ -80,7 +80,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 channel.QueueUnbind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventName); //ToDo
             }
 
-            if (!SubsManager.IsReplyEmpty) return;
+            if (!SubsManager.IsReplyEmpty) { return; }
 
             _queueNameReply = string.Empty;
             QueueName = string.Empty;
@@ -273,7 +273,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         private void DoInternalSubscriptionRpc(string eventNameResult)
         {
             var containsKey = SubsManager.HasSubscriptionsForEvent(eventNameResult);
-            if (containsKey) return;
+            if (containsKey) { return; }
             if (!PersistentConnection.IsConnected)
             {
                 PersistentConnection.TryConnect();
@@ -336,7 +336,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             try
             {
                 if (!_callbackMapper.TryRemove(eventArgs.BasicProperties.CorrelationId, out TaskCompletionSource<dynamic> tcs))
-                    return;
+                { return; }
 
                 ProcessEventReply(eventArgs.RoutingKey, eventName, eventArgs.Body, tcs);
             }

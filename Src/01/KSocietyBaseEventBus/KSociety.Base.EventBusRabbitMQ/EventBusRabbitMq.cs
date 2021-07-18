@@ -102,7 +102,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             using var channel = PersistentConnection.CreateModel();
             channel.QueueUnbind(QueueName, ExchangeDeclareParameters.ExchangeName, eventName);
 
-            if (!SubsManager.IsEmpty) return;
+            if (!SubsManager.IsEmpty) { return; }
             QueueName = string.Empty;
             ConsumerChannel?.Close();
         }
@@ -170,7 +170,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected void DoInternalSubscription(string eventName)
         {
             var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
-            if (containsKey) return;
+            if (containsKey) { return; }
             if (!PersistentConnection.IsConnected)
             {
                 PersistentConnection.TryConnect();

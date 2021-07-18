@@ -76,7 +76,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 channel.QueueUnbind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventName);
             }
 
-            if (!SubsManager.IsReplyEmpty) return;
+            if (!SubsManager.IsReplyEmpty) { return; }
 
             QueueName = string.Empty;
             ConsumerChannel?.Close();
@@ -106,7 +106,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         private void DoInternalSubscriptionRpc(string eventName, string eventNameResult)
         {
             var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
-            if (containsKey) return;
+            if (containsKey) { return; }
             if (!PersistentConnection.IsConnected)
             {
                 PersistentConnection.TryConnect();

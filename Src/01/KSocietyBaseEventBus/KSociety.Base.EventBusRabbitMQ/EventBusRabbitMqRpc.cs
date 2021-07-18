@@ -81,7 +81,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 channel.QueueUnbind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventName);
             }
 
-            if (!SubsManager.IsReplyEmpty) return;
+            if (!SubsManager.IsReplyEmpty) { return; }
 
             _queueNameReply = string.Empty;
             _consumerChannelReply?.Close();
@@ -141,7 +141,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         private void DoInternalSubscriptionRpc(string eventName, string eventNameResult)
         {
             var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
-            if (containsKey) return;
+            if (containsKey) { return; }
             if (!PersistentConnection.IsConnected)
             {
                 PersistentConnection.TryConnect();
@@ -267,7 +267,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
-                if (!eventArgs.BasicProperties.CorrelationId.Equals(_correlationId)) return;
+                if (!eventArgs.BasicProperties.CorrelationId.Equals(_correlationId)) { return; }
                 await ProcessEventReply(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
             }
             catch (Exception ex)

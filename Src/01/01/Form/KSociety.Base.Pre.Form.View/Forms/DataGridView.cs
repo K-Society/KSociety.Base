@@ -55,7 +55,7 @@ namespace KSociety.Base.Pre.Form.View.Forms
             {
                 DataGridView senderGrid = (DataGridView)sender;
                 if (senderGrid.Columns[e.ColumnIndex] is DataGridViewFunctionColumn || e.RowIndex < 0 ||
-                    !senderGrid.Rows[e.RowIndex].Cells["Function"].Value.Equals("Remove")) return;
+                    !senderGrid.Rows[e.RowIndex].Cells["Function"].Value.Equals("Remove")) { return; }
 
                 ModifyField?.Invoke(sender, e);
             }).ConfigureAwait(false);
@@ -66,7 +66,7 @@ namespace KSociety.Base.Pre.Form.View.Forms
             await Task.Factory.StartNew(() =>
             {
                 DataGridView senderGrid = (DataGridView)sender;
-                if (!(senderGrid.Columns[e.ColumnIndex] is DataGridViewFunctionColumn) || e.RowIndex < 0) return;
+                if (!(senderGrid.Columns[e.ColumnIndex] is DataGridViewFunctionColumn) || e.RowIndex < 0) { return; }
                 switch (senderGrid.Rows[e.RowIndex].Cells["Function"].Value)
                 {
                     case "Add":
@@ -123,7 +123,7 @@ namespace KSociety.Base.Pre.Form.View.Forms
             //{ 
             DataGridView senderGrid = (DataGridView)sender;
 
-            if (e.Row.Index < 0) return;
+            if (e.Row.Index < 0) { return; }
             senderGrid.CellValueChanged -= StdDataGridView_CellValueChanged;
             foreach (DataGridViewCell cell in e.Row.Cells)
             {
@@ -152,8 +152,8 @@ namespace KSociety.Base.Pre.Form.View.Forms
         {
             await Task.Factory.StartNew(() =>
             {
-                if (CurrentRow == null) return;
-                if (CurrentRow.Index >= RowCount - 1) return;
+                if (CurrentRow == null) { return; }
+                if (CurrentRow.Index >= RowCount - 1) { return; }
                 var myRow = (T)CurrentRow.DataBoundItem;
                 Copy?.Invoke(sender, myRow);
             }).ConfigureAwait(false);
@@ -163,8 +163,8 @@ namespace KSociety.Base.Pre.Form.View.Forms
         {
             await Task.Factory.StartNew(() =>
             {
-                if (CurrentRow == null) return;
-                if (CurrentRow.Index >= RowCount - 1) return;
+                if (CurrentRow == null) { return; }
+                if (CurrentRow.Index >= RowCount - 1) { return; }
                 var myRow = (T)CurrentRow.DataBoundItem;
                 //Console.WriteLine("StdDataGridView_UserDeletingRow: " + myRow.);
                 Remove?.Invoke(sender, myRow);

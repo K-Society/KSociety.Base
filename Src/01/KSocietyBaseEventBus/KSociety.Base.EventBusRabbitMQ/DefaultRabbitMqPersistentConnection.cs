@@ -98,7 +98,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private void OnConnectionBlocked(object sender, ConnectionBlockedEventArgs e)
         {
-            if (Disposed) return;
+            if (Disposed) { return; }
 
             _logger.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
             TryConnect();
@@ -106,7 +106,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private void OnCallbackException(object sender, CallbackExceptionEventArgs e)
         {
-            if (Disposed) return;
+            if (Disposed) { return; }
 
             _logger.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
             TryConnect();
@@ -114,7 +114,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private void OnConnectionShutdown(object sender, ShutdownEventArgs reason)
         {
-            if (Disposed) return;
+            if (Disposed) { return; }
 
             _logger.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
             TryConnect();

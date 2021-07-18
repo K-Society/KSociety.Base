@@ -18,7 +18,6 @@ Its advanced features are ideal for Domain Driven Design (DDD), Command Query Re
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.InstallAction](https://github.com/K-Society/KSociety.Base/tree/master/Src/00/KSociety.Base.InstallAction) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InstallAction)](https://www.nuget.org/packages/KSociety.Base.InstallAction) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InstallAction) |
 
-
 ### 1. Presentation
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |

@@ -153,7 +153,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 _dbFactory = null;
             }
 
-            if (_context == null) return;
+            if (_context == null) { return; }
             _context.Dispose();
             _context = null;
         }
