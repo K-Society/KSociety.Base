@@ -61,7 +61,19 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return result;
         }
 
-        public virtual async ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity)
+        {
+            if (!Exists)
+            {
+                Logger.LogWarning("Database not exists!");
+                return null;
+            }
+            var result = await DataBaseSet.AddAsync(entity).ConfigureAwait(false);
+            Logger.LogTrace("RepositoryBase AddAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName + ")" + " State: " + result.State);
+            return result;
+        }
+
+        public virtual async ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken)
         {
             if (!Exists)
             {
@@ -88,7 +100,21 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             }
         }
 
-        public virtual async ValueTask AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        public virtual async ValueTask AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            if (!Exists)
+            {
+                Logger.LogWarning("Database not exists!");
+            }
+            else
+            {
+                await DataBaseSet.AddRangeAsync(entities).ConfigureAwait(false);
+                Logger.LogTrace("RepositoryBase AddRangeAsync: " + GetType().FullName + "." +
+                                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            }
+        }
+
+        public virtual async ValueTask AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
         {
             if (!Exists)
             {
@@ -185,7 +211,16 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         }
 
-        public async ValueTask<TEntity> FindAsync(CancellationToken cancellationToken = default, params object[] keyObject)
+        public async ValueTask<TEntity> FindAsync(params object[] keyObject)
+        {
+            Logger.LogTrace("RepositoryBase FindAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");
+            if (Exists) return await DataBaseSet.FindAsync(keyObject).ConfigureAwait(false);
+            Logger.LogWarning("Database not exists!");
+            return null;
+
+        }
+
+        public async ValueTask<TEntity> FindAsync(CancellationToken cancellationToken, params object[] keyObject)
         {
             Logger.LogTrace("RepositoryBase FindAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");
             if (Exists) return await DataBaseSet.FindAsync(keyObject).ConfigureAwait(false);
@@ -230,7 +265,21 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             AddRange(result);
         }
 
-        public async ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+        public async ValueTask ImportCsvAsync(string fileName)
+        {
+            Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var result = ReadCsv<TEntity>.ImportAsync(_loggerFactory, fileName);
+
+            DeleteRange(FindAll());
+
+            await foreach (var entity in result.ConfigureAwait(false))
+            {
+                await AddAsync(entity).ConfigureAwait(false);
+            }
+
+        }
+
+        public async ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken)
         {
             Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             var result = ReadCsv<TEntity>.ImportAsync(_loggerFactory, fileName);
@@ -250,7 +299,13 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             WriteCsv<TEntity>.Export(_loggerFactory, fileName, FindAll());
         }
 
-        public async ValueTask ExportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+        public async ValueTask ExportCsvAsync(string fileName)
+        {
+            Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            await WriteCsv<TEntity>.ExportAsync(_loggerFactory, fileName, FindAll()).ConfigureAwait(false);
+        }
+
+        public async ValueTask ExportCsvAsync(string fileName, CancellationToken cancellationToken)
         {
             Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             await WriteCsv<TEntity>.ExportAsync(_loggerFactory, fileName, FindAll()).ConfigureAwait(false);

@@ -34,7 +34,12 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return Context.GetConnectionString();
         }
 
-        public ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
+        public ValueTask<string> GetConnectionStringAsync()
+        {
+            return Context.GetConnectionStringAsync();
+        }
+
+        public ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken)
         {
             return Context.GetConnectionStringAsync(cancellationToken);
         }
@@ -49,7 +54,12 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return Context.EnsureCreated();
         }
 
-        public async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<bool> EnsureCreatedAsync()
+        {
+            return await Context.EnsureCreatedAsync().ConfigureAwait(false);
+        }
+
+        public async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken)
         {
             return await Context.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -59,7 +69,12 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return Context.EnsureDeleted();
         }
 
-        public async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<bool> EnsureDeletedAsync()
+        {
+            return await Context.EnsureDeletedAsync().ConfigureAwait(false);
+        }
+
+        public async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken)
         {
             return await Context.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -69,7 +84,12 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             Context.Migrate();
         }
 
-        public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
+        public async ValueTask MigrateAsync()
+        {
+            await Context.MigrateAsync().ConfigureAwait(false);
+        }
+
+        public async ValueTask MigrateAsync(CancellationToken cancellationToken)
         {
             await Context.MigrateAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -79,7 +99,12 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             Context.BeginTransaction();
         }
 
-        public async ValueTask BeginTransactionAsync(CancellationToken cancellationToken = default)
+        public async ValueTask BeginTransactionAsync()
+        {
+            await Context.BeginTransactionAsync().ConfigureAwait(false);
+        }
+
+        public async ValueTask BeginTransactionAsync(CancellationToken cancellationToken)
         {
             await Context.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -89,7 +114,12 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return Context.Commit();
         }
 
-        public async ValueTask<int> CommitAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<int> CommitAsync()
+        {
+            return await Context.CommitAsync().ConfigureAwait(false);
+        }
+
+        public async ValueTask<int> CommitAsync(CancellationToken cancellationToken)
         {
             return await Context.CommitAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -99,7 +129,12 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             Context.CommitTransaction();
         }
 
-        public async ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default)
+        public async ValueTask CommitTransactionAsync()
+        {
+            await Context.CommitTransactionAsync().ConfigureAwait(false);
+        }
+
+        public async ValueTask CommitTransactionAsync(CancellationToken cancellationToken)
         {
             await Context.CommitTransactionAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -109,7 +144,12 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             Context.Rollback();
         }
 
-        public async ValueTask RollbackAsync(CancellationToken cancellationToken = default)
+        public async ValueTask RollbackAsync()
+        {
+            await Context.RollbackAsync().ConfigureAwait(false);
+        }
+
+        public async ValueTask RollbackAsync(CancellationToken cancellationToken)
         {
             await Context.RollbackAsync(cancellationToken).ConfigureAwait(false);
         }
