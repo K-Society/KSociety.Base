@@ -125,9 +125,14 @@ namespace KSociety.Base.Pre.Form.View.Forms
             // Check if the data source has been updated, and that no error has occured.
             if (e.BindingCompleteContext ==
                 BindingCompleteContext.DataSourceUpdate && e.Exception == null)
+            {
 
+            }
+            else
+            {
                 // If not, end the current edit.
                 e.Binding.BindingManagerBase.EndCurrentEdit();
+            }      
         }
 
         private static bool IsBrowsable(PropertyInfo propertyInfo)
@@ -249,7 +254,9 @@ namespace KSociety.Base.Pre.Form.View.Forms
                     e.ParsingApplied = true;
                 }
                 else
+                {
                     e.ParsingApplied = false;
+                }    
             }
         }
     }

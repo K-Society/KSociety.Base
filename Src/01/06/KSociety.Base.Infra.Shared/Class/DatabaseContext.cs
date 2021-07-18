@@ -14,7 +14,7 @@ namespace KSociety.Base.Infra.Shared.Class
 {
     public class DatabaseContext : DbContext, IDatabaseUnitOfWork
     {
-        public const string DefaultSchema = "ksociety";
+        public static readonly string DefaultSchema = "ksociety";
 
         protected readonly ILogger<DatabaseContext> Logger;
 

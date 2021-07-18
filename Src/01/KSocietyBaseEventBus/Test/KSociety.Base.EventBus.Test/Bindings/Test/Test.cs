@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using System;
 
 namespace KSociety.Base.EventBus.Test.Bindings.Test
 {
@@ -6,7 +7,7 @@ namespace KSociety.Base.EventBus.Test.Bindings.Test
     {
         protected override void Load(ContainerBuilder builder)
         {
-
+            new NotSupportedException();
         }
     }
 }

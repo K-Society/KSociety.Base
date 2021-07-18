@@ -128,7 +128,7 @@ namespace KSociety.Base.Pre.Form.View.Forms
             foreach (DataGridViewCell cell in e.Row.Cells)
             {
                 if (!BindingSourcesComboBox.ContainsKey(senderGrid.Columns[cell.ColumnIndex].DataPropertyName))
-                    continue;
+                { continue; }
                 dynamic data = BindingSourcesComboBox[senderGrid.Columns[cell.ColumnIndex].DataPropertyName]
                     .Current;
 

@@ -196,7 +196,10 @@ namespace KSociety.Base.Srv.Shared.Class
                     var requestHandler = componentContext.Resolve(type);
                     var methodInfo = type.GetMethod("ExecuteAsync");
                     //logger.LogTrace("ExecuteAsync: " + openType.Name + " - " + " Request: " + typeof(TRequest).FullName + " Response: void");
-                    if (methodInfo != null) await ((ValueTask)methodInfo.Invoke(requestHandler, new[] { (object)request, cancellationToken })).ConfigureAwait(false);
+                    if (methodInfo != null)
+                    {
+                        await ((ValueTask)methodInfo.Invoke(requestHandler, new[] { (object)request, cancellationToken })).ConfigureAwait(false);
+                    }
                 }
                 catch (Exception ex)
                 {
