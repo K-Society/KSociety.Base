@@ -322,7 +322,45 @@ namespace KSociety.Base.EventBusRabbitMQ
             //ConsumerChannel?.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
         }
 
-        protected override IModel CreateConsumerChannel(CancellationToken cancel = default)
+        protected override IModel CreateConsumerChannel()
+        {
+            try
+            {
+                if (!PersistentConnection.IsConnected)
+                {
+                    PersistentConnection.TryConnect();
+                }
+
+                var channel = PersistentConnection.CreateModel();
+
+                channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType,
+                    ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+
+                channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+                //ToDo
+                channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
+                    QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+                //channel.BasicQos(0, 1, false);
+
+                channel.CallbackException += (sender, ea) =>
+                {
+                    Logger.LogError("CallbackException: " + ea.Exception.Message);
+                    ConsumerChannel?.Dispose();
+                    ConsumerChannel = CreateConsumerChannel();
+                    StartBasicConsume();
+                };
+
+                return channel;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("CreateConsumerChannel: " + ex.Message + " - " + ex.StackTrace);
+            }
+
+            return null;
+        }
+
+        protected override IModel CreateConsumerChannel(CancellationToken cancel)
         {
             try
             {

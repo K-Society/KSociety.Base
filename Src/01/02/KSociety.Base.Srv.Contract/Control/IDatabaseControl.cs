@@ -8,15 +8,27 @@ namespace KSociety.Base.Srv.Contract.Control
     public interface IDatabaseControl
     {
         [Operation]
-        EnsureCreated EnsureCreated(CallContext context = default);
+        EnsureCreated EnsureCreated();
 
         [Operation]
-        EnsureDeleted EnsureDeleted(CallContext context = default);
+        EnsureCreated EnsureCreated(CallContext context);
 
         [Operation]
-        void Migration(CallContext context = default);
+        EnsureDeleted EnsureDeleted();
 
         [Operation]
-        ConnectionString GetConnectionString(CallContext context = default);
+        EnsureDeleted EnsureDeleted(CallContext context);
+
+        [Operation]
+        void Migration();
+
+        [Operation]
+        void Migration(CallContext context);
+
+        [Operation]
+        ConnectionString GetConnectionString();
+
+        [Operation]
+        ConnectionString GetConnectionString(CallContext context);
     }
 }

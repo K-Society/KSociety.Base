@@ -276,7 +276,37 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual IModel CreateConsumerChannel(CancellationToken cancel = default)
+        protected virtual IModel CreateConsumerChannel()
+        {
+            if (!PersistentConnection.IsConnected)
+            {
+                PersistentConnection.TryConnect();
+            }
+
+            var channel = PersistentConnection.CreateModel();
+
+            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
+                ExchangeDeclareParameters.ExchangeType,
+                ExchangeDeclareParameters.ExchangeDurable,
+                ExchangeDeclareParameters.ExchangeAutoDelete);
+
+            channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable,
+                QueueDeclareParameters.QueueExclusive,
+                QueueDeclareParameters.QueueAutoDelete, null);
+            channel.BasicQos(0, 1, false);
+
+            channel.CallbackException += (sender, ea) =>
+            {
+                Logger.LogError("CallbackException: " + ExchangeDeclareParameters.ExchangeName + " " + QueueName + " " + ea.Exception.Message + " - " + ea.Exception.StackTrace);
+                ConsumerChannel.Dispose();
+                ConsumerChannel = CreateConsumerChannel();
+                StartBasicConsume();
+            };
+
+            return channel;
+        }
+
+        protected virtual IModel CreateConsumerChannel(CancellationToken cancel)
         {
             if (!PersistentConnection.IsConnected)
             {
@@ -306,7 +336,126 @@ namespace KSociety.Base.EventBusRabbitMQ
             return channel;
         }
 
-        protected virtual async ValueTask ProcessEvent(string routingKey, string eventName, ReadOnlyMemory<byte> message, CancellationToken cancel = default)
+        protected virtual async ValueTask ProcessEvent(string routingKey, string eventName, ReadOnlyMemory<byte> message)
+        {
+            if (SubsManager.HasSubscriptionsForEvent(routingKey))
+            {
+
+                var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
+                foreach (var subscription in subscriptions)
+                {
+
+                    switch (subscription.SubscriptionManagerType)
+                    {
+                        case SubscriptionManagerType.Dynamic:
+                            break;
+
+                        case SubscriptionManagerType.Typed:
+                            try
+                            {
+                                if (EventHandler is null)
+                                {
+
+                                }
+                                else
+                                {
+                                    var eventType = SubsManager.GetEventTypeByName(routingKey);
+                                    if (eventType is null)
+                                    {
+                                        Logger.LogError("ProcessEvent Typed: eventType is null! " + routingKey);
+                                        return;
+                                    }
+
+                                    await using var ms = new MemoryStream(message.ToArray());
+                                    var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                    var concreteType =
+                                        typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+                                    await ((ValueTask)concreteType.GetMethod("Handle")
+                                        .Invoke(EventHandler, new[] { integrationEvent })).ConfigureAwait(false);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError("ProcessEvent Typed: " + ex.Message + " - " + ex.StackTrace);
+                            }
+                            break;
+
+                        case SubscriptionManagerType.Queue:
+                            try
+                            {
+                                if (EventHandler is null)
+                                {
+
+                                }
+                                else
+                                {
+                                    var eventType = SubsManager.GetEventTypeByName(routingKey);
+                                    if (eventType is null)
+                                    {
+                                        Logger.LogError("ProcessQueue: eventType is null! " + routingKey);
+                                        return;
+                                    }
+
+                                    await using var ms = new MemoryStream(message.ToArray());
+                                    var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                    var concreteType =
+                                        typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
+                                    await ((ValueTask<bool>)concreteType.GetMethod("Enqueue")
+                                        .Invoke(EventHandler, new[] { integrationEvent })).ConfigureAwait(false);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError("ProcessQueue: " + ex.Message + " - " + ex.StackTrace);
+                            }
+                            break;
+
+                        case SubscriptionManagerType.Rpc:
+                            try
+                            {
+                                if (EventHandler is null)
+                                {
+
+                                }
+                                else
+                                {
+                                    var eventType = SubsManager.GetEventTypeByName(routingKey);
+                                    if (eventType is null)
+                                    {
+                                        Logger.LogError("ProcessEvent: eventType is null! " + routingKey);
+                                        return;
+                                    }
+
+                                    var eventResultType = SubsManager.GetEventReplyTypeByName(routingKey);
+                                    if (eventResultType is null)
+                                    {
+                                        Logger.LogError("ProcessEvent: eventResultType is null! " + routingKey);
+                                        return;
+                                    }
+
+                                    await using var ms = new MemoryStream(message.ToArray());
+                                    var integrationEvent = Serializer.Deserialize(eventResultType, ms);
+                                    var concreteType =
+                                        typeof(IIntegrationRpcHandler<,>).MakeGenericType(eventType,
+                                            eventResultType);
+                                    await ((ValueTask)concreteType.GetMethod("HandleReply")
+                                        .Invoke(EventHandler, new[] { integrationEvent })).ConfigureAwait(false);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError("ProcessEvent Rpc: " + ex.Message + " - " + ex.StackTrace);
+                            }
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
+        }//ProcessEvent.
+
+        protected virtual async ValueTask ProcessEvent(string routingKey, string eventName, ReadOnlyMemory<byte> message, CancellationToken cancel)
         {
             if (SubsManager.HasSubscriptionsForEvent(routingKey))
             {
