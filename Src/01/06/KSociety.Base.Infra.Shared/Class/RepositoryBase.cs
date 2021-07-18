@@ -274,7 +274,7 @@ namespace KSociety.Base.Infra.Shared.Class
         public IQueryable<TEntity> QueryObjectGraph(Expression<Func<TEntity, bool>> filter, string children)
         {
             //Logger.LogTrace("RepositoryBase QueryObjectGraph: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName + "," + children + ")");
-            if (Exists) return DataBaseSet.Include(children).Where(filter);
+            if (Exists) { return DataBaseSet.Include(children).Where(filter); }
             Logger.LogWarning("Database not exists!");
             return null;
 

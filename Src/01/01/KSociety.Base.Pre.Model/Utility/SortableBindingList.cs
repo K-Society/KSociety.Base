@@ -97,7 +97,10 @@ namespace KSociety.Base.Pre.Model.Utility
             var result = OnComparison(lhs, rhs);
             //invert if descending
             if (_sortDirection == ListSortDirection.Descending)
+            {
                 result = -result;
+            }
+                
             return result;
         }
 

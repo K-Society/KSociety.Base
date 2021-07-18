@@ -40,7 +40,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public TContext Get()
         {
-            if (_dataContext is not null) return _dataContext;
+            if (_dataContext is not null) { return _dataContext; }
             _dataContext = CreateContext();
             //if (!Exists())
             //{
