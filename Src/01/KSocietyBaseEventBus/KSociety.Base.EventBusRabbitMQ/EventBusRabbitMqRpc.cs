@@ -30,8 +30,22 @@ namespace KSociety.Base.EventBusRabbitMQ
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IExchangeDeclareParameters exchangeDeclareParameters,
             IQueueDeclareParameters queueDeclareParameters,
-            string queueName = null,
-            CancellationToken cancel = default)
+            string queueName)
+            : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName)
+        {
+            SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
+            ConsumerChannel = CreateConsumerChannel();
+            _queueNameReply = QueueName + "_Reply";
+            _consumerChannelReply = CreateConsumerChannelReply();
+            _correlationId = Guid.NewGuid().ToString();
+        }
+
+        public EventBusRabbitMqRpc(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IExchangeDeclareParameters exchangeDeclareParameters,
+            IQueueDeclareParameters queueDeclareParameters,
+            string queueName,
+            CancellationToken cancel)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
             SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
@@ -67,7 +81,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 channel.QueueUnbind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventName);
             }
 
-            if (!SubsManager.IsReplyEmpty) return;
+            if (!SubsManager.IsReplyEmpty) { return; }
 
             _queueNameReply = string.Empty;
             _consumerChannelReply?.Close();
@@ -127,7 +141,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         private void DoInternalSubscriptionRpc(string eventName, string eventNameResult)
         {
             var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
-            if (containsKey) return;
+            if (containsKey) { return; }
             if (!PersistentConnection.IsConnected)
             {
                 PersistentConnection.TryConnect();
@@ -253,7 +267,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
-                if (!eventArgs.BasicProperties.CorrelationId.Equals(_correlationId)) return;
+                if (!eventArgs.BasicProperties.CorrelationId.Equals(_correlationId)) { return; }
                 await ProcessEventReply(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -275,7 +289,32 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected override IModel CreateConsumerChannel(CancellationToken cancel = default)
+        protected override IModel CreateConsumerChannel()
+        {
+            if (!PersistentConnection.IsConnected)
+            {
+                PersistentConnection.TryConnect();
+            }
+
+            var channel = PersistentConnection.CreateModel();
+
+            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+
+            channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+            channel.BasicQos(0, 1, false);
+
+            channel.CallbackException += (sender, ea) =>
+            {
+                Logger.LogError("CallbackException: " + ea.Exception.Message);
+                ConsumerChannel.Dispose();
+                ConsumerChannel = CreateConsumerChannel();
+                StartBasicConsume();
+            };
+
+            return channel;
+        }
+
+        protected override IModel CreateConsumerChannel(CancellationToken cancel)
         {
             if (!PersistentConnection.IsConnected)
             {
@@ -325,6 +364,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             return channel;
         }
 
+        
+
         private async ValueTask ProcessEventReply(string routingKey, string eventName, ReadOnlyMemory<byte> message,
             CancellationToken cancel = default)
         {
@@ -368,8 +409,8 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     var concreteType =
                                         typeof(IIntegrationRpcHandler<,>).MakeGenericType(eventType,
                                             eventResultType);
-                                    await ((ValueTask) concreteType.GetMethod("HandleReply")
-                                        .Invoke(EventHandler, new[] {integrationEvent, cancel})).ConfigureAwait(false);
+                                    await ((ValueTask)concreteType.GetMethod("HandleReply")
+                                        .Invoke(EventHandler, new[] { integrationEvent, cancel })).ConfigureAwait(false);
                                 }
                             }
                             catch (Exception ex)

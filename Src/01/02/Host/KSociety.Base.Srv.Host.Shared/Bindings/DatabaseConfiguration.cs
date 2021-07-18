@@ -11,7 +11,16 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
         private readonly string _migrationsAssembly;
 
         public DatabaseConfiguration(DatabaseEngine databaseEngine, 
-            string masterString, bool debugFlag, string migrationsAssembly = "")
+            string masterString, bool debugFlag)
+        {
+            _databaseEngine = databaseEngine;
+            _masterString = masterString;
+            _debugFlag = debugFlag;
+            _migrationsAssembly = string.Empty;
+        }
+
+        public DatabaseConfiguration(DatabaseEngine databaseEngine,
+            string masterString, bool debugFlag, string migrationsAssembly)
         {
             _databaseEngine = databaseEngine;
             _masterString = masterString;

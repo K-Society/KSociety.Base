@@ -167,7 +167,7 @@ namespace KSociety.Base.Pre.Web.Shared
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine(ex.Message + " - " + ex.StackTrace);
+                //System.Console.WriteLine(ex.Message + " - " + ex.StackTrace);
             }
         }
 

@@ -19,8 +19,15 @@ namespace KSociety.Base.InfraSub.Shared.Interface
         /// Notify the message asynchronously.
         /// </summary>
         /// <param name="notifyMessage"><see cref="INotification"/></param>
+        /// <returns></returns>
+        ValueTask NotifyAsync(INotification notifyMessage);
+
+        /// <summary>
+        /// Notify the message asynchronously.
+        /// </summary>
+        /// <param name="notifyMessage"><see cref="INotification"/></param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
         /// <returns></returns>
-        ValueTask NotifyAsync(INotification notifyMessage, CancellationToken cancellationToken = default);
+        ValueTask NotifyAsync(INotification notifyMessage, CancellationToken cancellationToken);
     }
 }

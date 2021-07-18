@@ -21,13 +21,25 @@ namespace KSociety.Base.EventBus.Handlers
             Logger = LoggerFactory.CreateLogger<IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>>();
         }
 
-        public virtual TIntegrationEventReply HandleRpc(TIntegrationEvent @event, CancellationToken cancel = default)
+        public virtual TIntegrationEventReply HandleRpc(TIntegrationEvent @event)
         {
             Logger.LogWarning("IntegrationRpcHandler HandleRpc: NotImplemented!");
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event, CancellationToken cancel = default)
+        public virtual TIntegrationEventReply HandleRpc(TIntegrationEvent @event, CancellationToken cancel)
+        {
+            Logger.LogWarning("IntegrationRpcHandler HandleRpc: NotImplemented!");
+            throw new NotImplementedException();
+        }
+
+        public virtual ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event)
+        {
+            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: NotImplemented!");
+            throw new NotImplementedException();
+        }
+
+        public virtual ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event, CancellationToken cancel)
         {
             Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: NotImplemented!");
             throw new NotImplementedException();

@@ -27,29 +27,56 @@ namespace KSociety.Base.EventBus.Handlers
             Queue = new BufferBlock<TIntegrationEventReply>();
         }
 
-        public virtual TIntegrationEventReply HandleRpc(TIntegrationEvent @event, CancellationToken cancel = default)
+        public virtual TIntegrationEventReply HandleRpc(TIntegrationEvent @event)
         {
             Logger.LogWarning("IntegrationRpcHandler HandleRpc: NotImplemented!");
             throw new NotImplementedException();
         }
 
-        public virtual ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event, CancellationToken cancel = default)
+        public virtual TIntegrationEventReply HandleRpc(TIntegrationEvent @event, CancellationToken cancel)
+        {
+            Logger.LogWarning("IntegrationRpcHandler HandleRpc: NotImplemented!");
+            throw new NotImplementedException();
+        }
+
+        public virtual ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event)
         {
             Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: NotImplemented!");
             throw new NotImplementedException();
         }
 
-        public virtual async ValueTask HandleReply(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default)
+        public virtual ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event, CancellationToken cancel)
+        {
+            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: NotImplemented!");
+            throw new NotImplementedException();
+        }
+
+        public virtual async ValueTask HandleReply(TIntegrationEventReply @integrationEventReply)
+        {
+            await Queue.SendAsync(@integrationEventReply).ConfigureAwait(false);
+        }
+
+        public virtual async ValueTask HandleReply(TIntegrationEventReply @integrationEventReply, CancellationToken cancel)
         {
             await Queue.SendAsync(@integrationEventReply, cancel).ConfigureAwait(false);
         }
 
-        public virtual async ValueTask<bool> Enqueue(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default)
+        public virtual async ValueTask<bool> Enqueue(TIntegrationEventReply @integrationEventReply)
+        {
+            return await Queue.SendAsync(@integrationEventReply).ConfigureAwait(false);
+        }
+
+        public virtual async ValueTask<bool> Enqueue(TIntegrationEventReply @integrationEventReply, CancellationToken cancel)
         {
             return await Queue.SendAsync(@integrationEventReply, cancel).ConfigureAwait(false);
         }
 
-        public virtual async ValueTask<TIntegrationEventReply> Take(CancellationToken cancel = default)
+        public virtual async ValueTask<TIntegrationEventReply> Take()
+        {
+            return await Queue.ReceiveAsync().ConfigureAwait(false);
+        }
+
+        public virtual async ValueTask<TIntegrationEventReply> Take(CancellationToken cancel)
         {
             return await Queue.ReceiveAsync(cancel).ConfigureAwait(false);
         }

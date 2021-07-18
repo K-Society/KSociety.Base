@@ -24,8 +24,18 @@ namespace KSociety.Base.EventBusRabbitMQ
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IExchangeDeclareParameters exchangeDeclareParameters,
             IQueueDeclareParameters queueDeclareParameters,
-            string queueName = null,
-            CancellationToken cancel = default)
+            string queueName)
+        : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName)
+        {
+            ConsumerChannel = CreateConsumerChannel();
+        }
+
+        public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IExchangeDeclareParameters exchangeDeclareParameters,
+            IQueueDeclareParameters queueDeclareParameters,
+            string queueName,
+            CancellationToken cancel)
         :base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
             ConsumerChannel = CreateConsumerChannel(cancel);
@@ -103,7 +113,57 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        protected override async ValueTask ProcessEvent(string routingKey, string eventName, ReadOnlyMemory<byte> message, CancellationToken cancel = default)
+        protected override async ValueTask ProcessEvent(string routingKey, string eventName, ReadOnlyMemory<byte> message)
+        {
+            if (SubsManager.HasSubscriptionsForEvent(routingKey))
+            {
+
+                var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
+                foreach (var subscription in subscriptions)
+                {
+
+                    switch (subscription.SubscriptionManagerType)
+                    {
+
+
+                        case SubscriptionManagerType.Queue:
+                            try
+                            {
+                                if (EventHandler is null)
+                                {
+
+                                }
+                                else
+                                {
+                                    var eventType = SubsManager.GetEventTypeByName(routingKey);
+                                    await using var ms = new MemoryStream(message.ToArray());
+                                    var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                    var concreteType = typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
+                                    await ((ValueTask<bool>)concreteType.GetMethod("Enqueue")
+                                        .Invoke(EventHandler, new[] { integrationEvent })).ConfigureAwait(false);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError("ProcessQueue: " + ex.Message + " - " + ex.StackTrace);
+                            }
+                            break;
+
+
+                        case SubscriptionManagerType.Dynamic:
+                            break;
+                        case SubscriptionManagerType.Typed:
+                            break;
+                        case SubscriptionManagerType.Rpc:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
+        }//ProcessEvent.
+
+        protected override async ValueTask ProcessEvent(string routingKey, string eventName, ReadOnlyMemory<byte> message, CancellationToken cancel)
         {
             if (SubsManager.HasSubscriptionsForEvent(routingKey))
             {

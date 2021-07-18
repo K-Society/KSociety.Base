@@ -47,6 +47,9 @@ namespace KSociety.Base.InfraSub.Shared.Class
                 case TimeType.h:
                     _timeInterval = TimeSpan.FromHours(interval);
                     break;
+                default:
+                    _timeInterval = TimeSpan.FromMilliseconds(interval);
+                    break;
             }
             //timeIntervalMS = _interval;
             //Task<IScheduler> t = schedFact_Job.GetScheduler();
@@ -55,7 +58,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
             GetSchedulerJobAsync(_schedulerFactJob);
         }
 
-        private async void GetSchedulerJobAsync(ISchedulerFactory isf)
+        private async ValueTask GetSchedulerJobAsync(ISchedulerFactory isf)
         {
             Task<IScheduler> t = isf.GetScheduler();
             _schedulerJob = await t.ConfigureAwait(false);
@@ -66,7 +69,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
         public void Start<T>() where T : IJob
         {
-            StartJob<T>();
+            _ = StartJob<T>();
         }
 
         public void Start<T>(string name, object jobData) where T : IJob
@@ -89,7 +92,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
             _schedulerJob.ResumeJob(_job.Key);
         }
 
-        private async void StartJob<T>() where T : IJob
+        private async ValueTask StartJob<T>() where T : IJob
         {
             _startTimeJob = new DateTimeOffset(2008, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
             // construct a scheduler factory
@@ -119,7 +122,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
             await _schedulerJob.ScheduleJob(job, trigger).ConfigureAwait(false);
         }
 
-        private async void StartJob<T>(string name, object jobData) where T : IJob
+        private async ValueTask StartJob<T>(string name, object jobData) where T : IJob
         {
             _startTimeJob = new DateTimeOffset(2008, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
             // construct a scheduler factory
@@ -151,7 +154,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
             await _schedulerJob.ScheduleJob(_job, trigger).ConfigureAwait(false);
         }
 
-        private async void StopJob()
+        private async ValueTask StopJob()
         {
             await _schedulerJob.Standby().ConfigureAwait(false);
             await _schedulerJob.Shutdown(waitForJobsToComplete: true).ConfigureAwait(false);

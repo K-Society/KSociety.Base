@@ -98,7 +98,22 @@ namespace KSociety.Base.Infra.Shared.Csv
             return output;
         }
 
-        public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray)
+        {
+            var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+
+            using var streamReader = new StreamReader(new MemoryStream(byteArray));
+            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+            reader.Context.RegisterClassMap<TClassMap>();
+            var result = reader.GetRecordsAsync<TEntity>();
+
+            await foreach (var item in result.ConfigureAwait(false))
+            {
+                yield return item;
+            }
+        }
+
+        public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 

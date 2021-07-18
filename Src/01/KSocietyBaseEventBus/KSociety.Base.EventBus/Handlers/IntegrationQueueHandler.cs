@@ -27,14 +27,18 @@ namespace KSociety.Base.EventBus.Handlers
             Queue = new BufferBlock<TIntegrationEvent>();
         }
 
-        public virtual async ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent, 
-            CancellationToken cancel = default)
+        public virtual async ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent)
+        {
+            return await Queue.SendAsync(@integrationEvent).ConfigureAwait(false);
+        }
+
+        public virtual async ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent,
+            CancellationToken cancel)
         {
             return await Queue.SendAsync(@integrationEvent, cancel).ConfigureAwait(false);
         }
 
-
-        public virtual async IAsyncEnumerable<TIntegrationEvent> Dequeue([EnumeratorCancellation] CancellationToken cancel = default)
+        public virtual async IAsyncEnumerable<TIntegrationEvent> Dequeue([EnumeratorCancellation] CancellationToken cancel)
         {
             while (!cancel.IsCancellationRequested)
             {

@@ -5,20 +5,24 @@ namespace KSociety.Base.Srv.Agent
 {
     public interface IAgentDatabaseControl
     {
-        string GetConnectionString(CancellationToken cancellationToken = default);
+        string GetConnectionString();
+        string GetConnectionString(CancellationToken cancellationToken);
+        ValueTask<string> GetConnectionStringAsync();
+        ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken);
 
-        ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default);
+        bool EnsureCreated();
+        bool EnsureCreated(CancellationToken cancellationToken);
+        ValueTask<bool> EnsureCreatedAsync();
+        ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken);
 
-        bool EnsureCreated(CancellationToken cancellationToken = default);
+        bool EnsureDeleted();
+        bool EnsureDeleted(CancellationToken cancellationToken);
+        ValueTask<bool> EnsureDeletedAsync();
+        ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken);
 
-        ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default);
-
-        bool EnsureDeleted(CancellationToken cancellationToken = default);
-
-        ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default);
-
-        void Migration(CancellationToken cancellationToken = default);
-
-        ValueTask MigrationAsync(CancellationToken cancellationToken = default);
+        void Migration();
+        void Migration(CancellationToken cancellationToken);
+        ValueTask MigrationAsync();
+        ValueTask MigrationAsync(CancellationToken cancellationToken);
     }
 }

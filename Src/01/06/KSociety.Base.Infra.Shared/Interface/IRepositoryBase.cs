@@ -11,11 +11,13 @@ namespace KSociety.Base.Infra.Shared.Interface
     {
         Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<TEntity> Add(TEntity entity);
 
-        ValueTask<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
+        ValueTask<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<TEntity>> AddAsync(TEntity entity);
+        ValueTask<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken);
 
         void AddRange(IEnumerable<TEntity> entities);
 
-        ValueTask AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+        ValueTask AddRangeAsync(IEnumerable<TEntity> entities);
+        ValueTask AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
 
         Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<TEntity> Update(TEntity entity);
 
@@ -29,7 +31,8 @@ namespace KSociety.Base.Infra.Shared.Interface
 
         TEntity Find(params object[] keyObjects);
 
-        ValueTask<TEntity> FindAsync(CancellationToken cancellationToken = default, params object[] keyObjects);
+        ValueTask<TEntity> FindAsync(params object[] keyObjects);
+        ValueTask<TEntity> FindAsync(CancellationToken cancellationToken, params object[] keyObjects);
 
         IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter);
 

@@ -15,7 +15,12 @@ namespace KSociety.Base.EventBus.Handlers
 
         }
 
-        public virtual ValueTask Handle(TIntegrationEvent @event, CancellationToken cancel = default)
+        public virtual ValueTask Handle(TIntegrationEvent @event)
+        {
+            return new ValueTask();
+        }
+
+        public virtual ValueTask Handle(TIntegrationEvent @event, CancellationToken cancel)
         {
             return new ValueTask();
         }

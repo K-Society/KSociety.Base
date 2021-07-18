@@ -13,14 +13,19 @@ namespace KSociety.Base.EventBus.Abstractions.Handler
 
         bool IsEmpty { get; }
 
-        TIntegrationEventReply HandleRpc(TIntegrationEvent @event, CancellationToken cancel = default);
+        TIntegrationEventReply HandleRpc(TIntegrationEvent @event);
+        TIntegrationEventReply HandleRpc(TIntegrationEvent @event, CancellationToken cancel);
 
-        ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event, CancellationToken cancel = default);
+        ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event);
+        ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event, CancellationToken cancel);
 
-        ValueTask HandleReply(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default);
+        ValueTask HandleReply(TIntegrationEventReply @integrationEventReply);
+        ValueTask HandleReply(TIntegrationEventReply @integrationEventReply, CancellationToken cancel);
 
-        ValueTask<bool> Enqueue(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default);
+        ValueTask<bool> Enqueue(TIntegrationEventReply @integrationEventReply);
+        ValueTask<bool> Enqueue(TIntegrationEventReply @integrationEventReply, CancellationToken cancel);
 
-        ValueTask<TIntegrationEventReply> Take(CancellationToken cancel = default);
+        ValueTask<TIntegrationEventReply> Take();
+        ValueTask<TIntegrationEventReply> Take(CancellationToken cancel);
     }
 }

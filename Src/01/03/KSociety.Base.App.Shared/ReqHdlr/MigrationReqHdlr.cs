@@ -21,7 +21,12 @@ namespace KSociety.Base.App.Shared.ReqHdlr
             _unitOfWork.Migrate();
         }
 
-        public async ValueTask ExecuteAsync(CancellationToken cancellationToken = default)
+        public async ValueTask ExecuteAsync()
+        {
+            await _unitOfWork.MigrateAsync().ConfigureAwait(false);
+        }
+
+        public async ValueTask ExecuteAsync(CancellationToken cancellationToken)
         {
             await _unitOfWork.MigrateAsync(cancellationToken).ConfigureAwait(false);
         }

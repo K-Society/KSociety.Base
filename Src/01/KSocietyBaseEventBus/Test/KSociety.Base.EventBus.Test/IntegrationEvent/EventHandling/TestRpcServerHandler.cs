@@ -26,7 +26,7 @@ namespace KSociety.Base.EventBus.Test.IntegrationEvent.EventHandling
             //}
         }
 
-        public override TestIntegrationEventReply HandleRpc(TestIntegrationEventRpc @event, CancellationToken cancellationToken = default)
+        public override TestIntegrationEventReply HandleRpc(TestIntegrationEventRpc @event)
         {
             //Logger.LogTrace("HandleRpcAsync... " + @event.RoutingKey);
             //var tagValue = await _biz.GetTagValueAsync(@event.GroupName, @event.Name).ConfigureAwait(false);
@@ -35,7 +35,25 @@ namespace KSociety.Base.EventBus.Test.IntegrationEvent.EventHandling
             return new TestIntegrationEventReply(@event.ReplyRoutingKey, @event.TestName, @event.ByteArray);
         }
 
-        public override async ValueTask<TestIntegrationEventReply> HandleRpcAsync(TestIntegrationEventRpc @event, CancellationToken cancellationToken = default)
+        public override TestIntegrationEventReply HandleRpc(TestIntegrationEventRpc @event, CancellationToken cancellationToken)
+        {
+            //Logger.LogTrace("HandleRpcAsync... " + @event.RoutingKey);
+            //var tagValue = await _biz.GetTagValueAsync(@event.GroupName, @event.Name).ConfigureAwait(false);
+            //Logger.LogTrace("HandleRpcAsync: " + tagValue);
+            ;
+            return new TestIntegrationEventReply(@event.ReplyRoutingKey, @event.TestName, @event.ByteArray);
+        }
+
+        public override async ValueTask<TestIntegrationEventReply> HandleRpcAsync(TestIntegrationEventRpc @event)
+        {
+            //Logger.LogTrace("HandleRpcAsync... " + @event.RoutingKey);
+            //var tagValue = await _biz.GetTagValueAsync(@event.GroupName, @event.Name).ConfigureAwait(false);
+            //Logger.LogTrace("HandleRpcAsync: " + tagValue);
+            ;
+            return new TestIntegrationEventReply(@event.ReplyRoutingKey, @event.TestName, @event.ByteArray);
+        }
+
+        public override async ValueTask<TestIntegrationEventReply> HandleRpcAsync(TestIntegrationEventRpc @event, CancellationToken cancellationToken)
         {
             //Logger.LogTrace("HandleRpcAsync... " + @event.RoutingKey);
             //var tagValue = await _biz.GetTagValueAsync(@event.GroupName, @event.Name).ConfigureAwait(false);

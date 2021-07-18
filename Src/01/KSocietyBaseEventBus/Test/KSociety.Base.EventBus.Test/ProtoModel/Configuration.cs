@@ -29,7 +29,7 @@ namespace KSociety.Base.EventBus.Test.ProtoModel
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Configuration " + ex.Message + " " + ex.StackTrace);
+                //Console.WriteLine("Configuration " + ex.Message + " " + ex.StackTrace);
             }
         }
     }
