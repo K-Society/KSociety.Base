@@ -9,12 +9,15 @@ namespace KSociety.Base.Infra.Shared.Interface
 
         bool ImportCsv(byte[] byteArray);
 
-        ValueTask<bool> ImportCsvAsync(string fileName, CancellationToken cancellationToken = default);
+        ValueTask<bool> ImportCsvAsync(string fileName);
+        ValueTask<bool> ImportCsvAsync(string fileName, CancellationToken cancellationToken);
 
-        ValueTask<bool> ImportCsvAsync(byte[] byteArray, CancellationToken cancellationToken = default);
+        ValueTask<bool> ImportCsvAsync(byte[] byteArray);
+        ValueTask<bool> ImportCsvAsync(byte[] byteArray, CancellationToken cancellationToken);
 
         bool ExportCsv(string fileName);
 
-        ValueTask<bool> ExportCsvAsync(string fileName, CancellationToken cancellationToken = default);
+        ValueTask<bool> ExportCsvAsync(string fileName);
+        ValueTask<bool> ExportCsvAsync(string fileName, CancellationToken cancellationToken);
     }
 }

@@ -19,7 +19,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
         private void Dispose(bool disposing)
         {
-            if (Disposed) return;
+            if (Disposed) { return; }
             if (disposing)
             {
                 DisposeManagedResources();

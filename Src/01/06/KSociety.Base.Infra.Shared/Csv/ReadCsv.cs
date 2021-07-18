@@ -76,7 +76,22 @@ namespace KSociety.Base.Infra.Shared.Csv
             return null;
         }
 
-        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName)
+        {
+            var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+
+            using var streamReader = new StreamReader(fileName);
+            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+
+            var result = reader.GetRecordsAsync<TClass>();
+
+            await foreach (var item in result.ConfigureAwait(false))
+            {
+                yield return item;
+            }
+        }
+
+        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
@@ -91,7 +106,23 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
         }
 
-        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray)
+        {
+            var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+
+            using var streamReader = new StreamReader(new MemoryStream(byteArray));
+            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+
+            var result = reader.GetRecordsAsync<TClass>();
+
+            await foreach (var item in result.ConfigureAwait(false))
+            {
+                yield return item;
+            }
+
+        }
+
+        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 

@@ -130,7 +130,71 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        public async Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event, CancellationToken cancellationToken = default)
+        //public async Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event)
+        //    where TIntegrationEventReply : IIntegrationEventReply
+        //{
+
+        //    try
+        //    {
+        //        if (!PersistentConnection.IsConnected)
+        //        {
+        //            PersistentConnection.TryConnect();
+        //        }
+
+        //        var policy = Policy.Handle<BrokerUnreachableException>()
+        //            .Or<SocketException>()
+        //            .Or<Exception>()
+        //            .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
+        //            {
+        //                Logger.LogWarning(ex.ToString());
+        //            });
+
+        //        var correlationId = Guid.NewGuid().ToString();
+
+        //        var tcs = new TaskCompletionSource<dynamic>(TaskCreationOptions.RunContinuationsAsynchronously);
+        //        _callbackMapper.TryAdd(correlationId, tcs);
+
+        //        using (var channel = PersistentConnection.CreateModel())
+        //        {
+        //            var routingKey = @event.RoutingKey;
+
+        //            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
+        //                ExchangeDeclareParameters.ExchangeType,
+        //                ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+
+        //            await using var ms = new MemoryStream();
+
+        //            Serializer.Serialize(ms, @event);
+        //            var body = ms.ToArray();
+
+        //            policy.Execute(() =>
+        //            {
+        //                var properties = channel.CreateBasicProperties();
+        //                //properties.ContentType = "application/protobuf";
+        //                properties.DeliveryMode = 1; //2 = persistent, write on disk
+        //                properties.CorrelationId = correlationId;
+        //                //properties.ReplyTo = QueueName;
+        //                properties.ReplyTo = _queueNameReply; //ToDo
+
+        //                channel.BasicPublish(ExchangeDeclareParameters.ExchangeName, routingKey, true, properties,
+        //                    body);
+        //            });
+        //        }
+
+        //        cancellationToken.Register(() => _callbackMapper.TryRemove(correlationId, out var tmp));
+
+        //        var result = await tcs.Task.ConfigureAwait(false);
+
+        //        return (TIntegrationEventReply)result; 
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.LogError("CallAsync: " + ex.Message + " " + ex.StackTrace);
+        //    }
+        //    return default;
+        //}
+
+        public async Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event, CancellationToken cancellationToken)
             where TIntegrationEventReply : IIntegrationEventReply
         {
 
@@ -185,7 +249,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 var result = await tcs.Task.ConfigureAwait(false);
 
-                return (TIntegrationEventReply)result; 
+                return (TIntegrationEventReply)result;
             }
             catch (Exception ex)
             {

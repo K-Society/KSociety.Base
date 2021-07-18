@@ -177,7 +177,25 @@ namespace KSociety.Base.Infra.Shared.Class
             return false;
         }
 
-        public async ValueTask<bool> ExportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+        public async ValueTask<bool> ExportCsvAsync(string fileName)
+        {
+            //Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            try
+            {
+                await WriteCsvClassMap<TEntity, TClassMap>.ExportAsync(LoggerFactory, fileName, FindAll())
+                    .ConfigureAwait(false);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
+            }
+
+            return false;
+        }
+
+        public async ValueTask<bool> ExportCsvAsync(string fileName, CancellationToken cancellationToken)
         {
             //Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try

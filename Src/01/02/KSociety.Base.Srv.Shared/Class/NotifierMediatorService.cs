@@ -19,7 +19,12 @@ namespace KSociety.Base.Srv.Shared.Class
             Task.Run(() => _mediator.Publish(notifyMessage).ConfigureAwait(false));
         }
 
-        public async ValueTask NotifyAsync(INotification notifyMessage, CancellationToken cancellationToken = default)
+        public async ValueTask NotifyAsync(INotification notifyMessage)
+        {
+            await _mediator.Publish(notifyMessage).ConfigureAwait(false);
+        }
+
+        public async ValueTask NotifyAsync(INotification notifyMessage, CancellationToken cancellationToken)
         {
             await _mediator.Publish(notifyMessage, cancellationToken).ConfigureAwait(false);
         }

@@ -18,7 +18,12 @@ namespace KSociety.Base.EventBus.Test.IntegrationEvent.EventHandling
             _loggerFactory = loggerFactory;
         }
 
-        public async ValueTask Handle(TestIntegrationEvent @event, CancellationToken cancellationToken = default)
+        public async ValueTask Handle(TestIntegrationEvent @event)
+        {
+            ;
+        }
+
+        public async ValueTask Handle(TestIntegrationEvent @event, CancellationToken cancellationToken)
         {
             ;
         }
