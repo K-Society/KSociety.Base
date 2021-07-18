@@ -26,7 +26,7 @@ namespace KSociety.Base.Infra.Shared.Class
             try
             {
                 var result = ReadCsv<TEntity>.Import(LoggerFactory, fileName);
-                if (!result.Any()) return false;
+                if (!result.Any()) { return false; }
                 DeleteRange(FindAll());
                 
                 AddRange(result);
