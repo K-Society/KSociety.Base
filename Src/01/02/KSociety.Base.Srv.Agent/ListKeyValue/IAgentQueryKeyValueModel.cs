@@ -7,8 +7,10 @@ namespace KSociety.Base.Srv.Agent.ListKeyValue
     public interface IAgentQueryKeyValueModel<TList, TKey, TValue>
         where TList : ListKeyValuePair<TKey, TValue>
     {
-        TList LoadData(CancellationToken cancellationToken = default);
+        TList LoadData();
+        TList LoadData(CancellationToken cancellationToken);
 
-        ValueTask<TList> LoadDataAsync(CancellationToken cancellationToken = default);
+        ValueTask<TList> LoadDataAsync();
+        ValueTask<TList> LoadDataAsync(CancellationToken cancellationToken);
     }
 }

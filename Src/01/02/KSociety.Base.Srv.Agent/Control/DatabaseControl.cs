@@ -17,18 +17,32 @@ namespace KSociety.Base.Srv.Agent.Control
 
         }
 
-        public string GetConnectionString(CancellationToken cancellationToken = default)
+        #region [GetConnectionString]
+
+        public string GetConnectionString()
         {
             Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            CallOptions = CallOptions.WithCancellationToken(cancellationToken);
-            CallContext = new CallContext(CallOptions, CallContextFlags.IgnoreStreamTermination);
+            var callOptions = new CallOptions();
+            return ConnectionString(callOptions);
+        }
+
+        public string GetConnectionString(CancellationToken cancellationToken)
+        {
+            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var callOptions = new CallOptions().WithCancellationToken(cancellationToken);
+
+            return ConnectionString(callOptions);
+        }
+
+        private string ConnectionString(CallOptions callOptions)
+        {
+            var callContext = new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
             try
             {
                 using (Channel)
                 {
                     var client = Channel.CreateGrpcService<IDatabaseControl>();
-
-                    return client.GetConnectionString(CallContext).Result;
+                    return client.GetConnectionString(callContext).Result;
                 }
             }
             catch (RpcException rex)
@@ -43,17 +57,30 @@ namespace KSociety.Base.Srv.Agent.Control
             return string.Empty;
         }
 
-        public async ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<string> GetConnectionStringAsync()
         {
             Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            CallOptions = CallOptions.WithCancellationToken(cancellationToken);
-            CallContext = new CallContext(CallOptions, CallContextFlags.IgnoreStreamTermination);
+            var callOptions = new CallOptions();
+            return await ConnectionStringAsync(callOptions);
+        }
+
+        public async ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken)
+        {
+            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var callOptions = new CallOptions().WithCancellationToken(cancellationToken);
+
+            return await ConnectionStringAsync(callOptions);
+        }
+
+        private async ValueTask<string> ConnectionStringAsync(CallOptions callOptions)
+        {
+            var callContext = new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
             try
             {
                 using (Channel)
                 {
                     var client = Channel.CreateGrpcService<IDatabaseControlAsync>();
-                    var result = await client.GetConnectionStringAsync(CallContext).ConfigureAwait(false);
+                    var result = await client.GetConnectionStringAsync(callContext).ConfigureAwait(false);
                     return result.Result;
                 }
             }
@@ -69,18 +96,118 @@ namespace KSociety.Base.Srv.Agent.Control
             return string.Empty;
         }
 
-        public bool EnsureCreated(CancellationToken cancellationToken = default)
+        #endregion
+
+        #region [EnsureCreated]
+
+        public bool EnsureCreated()
         {
             Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            CallOptions = CallOptions.WithCancellationToken(cancellationToken);
-            CallContext = new CallContext(CallOptions, CallContextFlags.IgnoreStreamTermination);
+            var callOptions = new CallOptions();
+            return Create(callOptions);
+        }
+
+        public bool EnsureCreated(CancellationToken cancellationToken)
+        {
+            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var callOptions = new CallOptions().WithCancellationToken(cancellationToken);
+
+            return Create(callOptions);
+        }
+
+        private bool Create(CallOptions callOptions)
+        {
+            var callContext = new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
             try
             {
                 using (Channel)
                 {
                     var client = Channel.CreateGrpcService<IDatabaseControl>();
 
-                    return client.EnsureCreated(CallContext).Result;
+                    return client.EnsureCreated(callContext).Result;
+                }
+            }
+            catch (RpcException rex)
+            {
+                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+            }
+            return false;
+        }
+
+        public async ValueTask<bool> EnsureCreatedAsync()
+        {
+            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var callOptions = new CallOptions();
+            return await CreateAsync(callOptions);
+        }
+
+        public async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken)
+        {
+            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var callOptions = new CallOptions().WithCancellationToken(cancellationToken);
+
+            return await CreateAsync(callOptions);    
+        }
+
+        private async ValueTask<bool> CreateAsync(CallOptions callOptions)
+        {
+            var callContext = new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
+            try
+            {
+                using (Channel)
+                {
+                    var client = Channel.CreateGrpcService<IDatabaseControlAsync>();
+
+                    var result = await client.EnsureCreatedAsync(callContext).ConfigureAwait(false);
+
+                    return result.Result;
+                }
+            }
+            catch (RpcException rex)
+            {
+                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region [EnsureDeleted]
+
+        public bool EnsureDeleted()
+        {
+            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var callOptions  = new CallOptions();
+
+            return Deleted(callOptions);
+        }
+
+        public bool EnsureDeleted(CancellationToken cancellationToken)
+        {
+            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var callOptions  = new CallOptions().WithCancellationToken(cancellationToken);
+            
+            return Deleted(callOptions);
+        }
+
+        private bool Deleted(CallOptions callOptions)
+        {
+            var callContext = new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
+            try
+            {
+                using (Channel)
+                {
+                    var client = Channel.CreateGrpcService<IDatabaseControl>();
+
+                    return client.EnsureDeleted(callContext).Result;
                 }
             }
             catch (RpcException rex)
@@ -95,18 +222,32 @@ namespace KSociety.Base.Srv.Agent.Control
             return false;
         }
 
-        public async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<bool> EnsureDeletedAsync()
         {
             Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            CallOptions = CallOptions.WithCancellationToken(cancellationToken);
-            CallContext = new CallContext(CallOptions, CallContextFlags.IgnoreStreamTermination);
+            var callOptions = new CallOptions();
+
+            return await DeletedAsync(callOptions);
+        }
+
+        public async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken)
+        {
+            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var callOptions = new CallOptions().WithCancellationToken(cancellationToken);
+
+            return await DeletedAsync(callOptions);
+        }
+
+        private async ValueTask<bool> DeletedAsync(CallOptions callOptions)
+        {
+            var callContext = new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
             try
             {
                 using (Channel)
                 {
                     var client = Channel.CreateGrpcService<IDatabaseControlAsync>();
 
-                    var result = await client.EnsureCreatedAsync(CallContext).ConfigureAwait(false);
+                    var result = await client.EnsureDeletedAsync(callContext).ConfigureAwait(false);
 
                     return result.Result;
                 }
@@ -123,18 +264,36 @@ namespace KSociety.Base.Srv.Agent.Control
             return false;
         }
 
-        public bool EnsureDeleted(CancellationToken cancellationToken = default)
+        #endregion
+
+        #region [Migration]
+
+        public void Migration()
         {
             Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            CallOptions = CallOptions.WithCancellationToken(cancellationToken);
-            CallContext = new CallContext(CallOptions, CallContextFlags.IgnoreStreamTermination);
+            var callOptions = new CallOptions();
+
+            Migration(callOptions);
+        }
+
+        public void Migration(CancellationToken cancellationToken)
+        {
+            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var callOptions = new CallOptions().WithCancellationToken(cancellationToken);
+
+            Migration(callOptions);
+        }
+
+        private void Migration(CallOptions callOptions)
+        {
+            var callContext = new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
             try
             {
                 using (Channel)
                 {
                     var client = Channel.CreateGrpcService<IDatabaseControl>();
 
-                    return client.EnsureDeleted(CallContext).Result;
+                    client.Migration(callContext);
                 }
             }
             catch (RpcException rex)
@@ -145,50 +304,34 @@ namespace KSociety.Base.Srv.Agent.Control
             {
                 Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
             }
-
-            return false;
         }
 
-        public async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
+        public async ValueTask MigrationAsync()
         {
             Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            CallOptions = CallOptions.WithCancellationToken(cancellationToken);
-            CallContext = new CallContext(CallOptions, CallContextFlags.IgnoreStreamTermination);
+            var callOptions = new CallOptions();
+
+            await MigrationAsync(callOptions);
+        }
+
+        public async ValueTask MigrationAsync(CancellationToken cancellationToken)
+        {
+            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var callOptions = new CallOptions().WithCancellationToken(cancellationToken);
+
+            await MigrationAsync(callOptions);
+        }
+
+        private async ValueTask MigrationAsync(CallOptions callOptions)
+        {
+            var callContext = new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
             try
             {
                 using (Channel)
                 {
                     var client = Channel.CreateGrpcService<IDatabaseControlAsync>();
 
-                    var result = await client.EnsureDeletedAsync(CallContext).ConfigureAwait(false);
-
-                    return result.Result;
-                }
-            }
-            catch (RpcException rex)
-            {
-                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
-            }
-
-            return false;
-        }
-
-        public void Migration(CancellationToken cancellationToken = default)
-        {
-            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            CallOptions = CallOptions.WithCancellationToken(cancellationToken);
-            CallContext = new CallContext(CallOptions, CallContextFlags.IgnoreStreamTermination);
-            try
-            {
-                using (Channel)
-                {
-                    var client = Channel.CreateGrpcService<IDatabaseControl>();
-
-                    client.Migration(CallContext);
+                    await client.MigrationAsync(callContext).ConfigureAwait(false);
                 }
             }
             catch (RpcException rex)
@@ -201,28 +344,6 @@ namespace KSociety.Base.Srv.Agent.Control
             }
         }
 
-        public async ValueTask MigrationAsync(CancellationToken cancellationToken = default)
-        {
-            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            CallOptions = CallOptions.WithCancellationToken(cancellationToken);
-            CallContext = new CallContext(CallOptions, CallContextFlags.IgnoreStreamTermination);
-            try
-            {
-                using (Channel)
-                {
-                    var client = Channel.CreateGrpcService<IDatabaseControlAsync>();
-
-                    await client.MigrationAsync(CallContext).ConfigureAwait(false);
-                }
-            }
-            catch (RpcException rex)
-            {
-                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
-            }
-        }
+        #endregion
     }
 }

@@ -7,8 +7,10 @@ namespace KSociety.Base.Srv.Agent
         where TImportReq : class
         where TImportRes : class
     {
-        TImportRes Import(TImportReq importReq, CancellationToken cancellationToken = default);
+        TImportRes Import(TImportReq importReq);
+        TImportRes Import(TImportReq importReq, CancellationToken cancellationToken);
 
-        ValueTask<TImportRes> ImportAsync(TImportReq importReq, CancellationToken cancellationToken = default);
+        ValueTask<TImportRes> ImportAsync(TImportReq importReq);
+        ValueTask<TImportRes> ImportAsync(TImportReq importReq, CancellationToken cancellationToken);
     }
 }
