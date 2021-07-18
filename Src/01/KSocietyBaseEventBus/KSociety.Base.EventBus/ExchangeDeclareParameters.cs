@@ -18,7 +18,15 @@
 
         public ExchangeDeclareParameters(){}
 
-        public ExchangeDeclareParameters(string brokerName, ExchangeType exchangeType,  bool exchangeDurable = false, bool exchangeAutoDelete = false)
+        public ExchangeDeclareParameters(string brokerName, ExchangeType exchangeType)
+        {
+            BrokerName = brokerName;
+            ExchangeType = exchangeType.ToString().ToLower();
+            ExchangeDurable = false;
+            ExchangeAutoDelete = false;
+        }
+
+        public ExchangeDeclareParameters(string brokerName, ExchangeType exchangeType,  bool exchangeDurable, bool exchangeAutoDelete)
         {
             BrokerName = brokerName;
             ExchangeType = exchangeType.ToString().ToLower();

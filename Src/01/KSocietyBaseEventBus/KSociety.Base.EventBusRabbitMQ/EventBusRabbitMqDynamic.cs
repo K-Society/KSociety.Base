@@ -100,8 +100,8 @@ namespace KSociety.Base.EventBusRabbitMQ
                         //        .Invoke(handler, new[] {integrationEvent});
                         //}
 
-                        switch (subscription.SubscriptionManagerType)
-                        {
+                        //switch (subscription.SubscriptionManagerType)
+                        //{
                             //case InMemoryEventBusSubscriptionsManager.SubscriptionManagerType.Dynamic:
                             //    var handler =
                             //        scope.ResolveOptional(subscription.HandlerType) as IDynamicIntegrationEventHandler;
@@ -129,7 +129,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                             //            .Invoke(handler, new[] { integrationEvent, cancel });
                             //        break;
                             //    }
-                        }
+                        //}
                     }
                 }
             }

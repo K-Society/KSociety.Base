@@ -38,9 +38,9 @@ namespace KSociety.Base.Pre.Form.View.Forms
                     BindingSource.AllowNew = true;
                     foreach (var propertyInfo in typeof(TList).GetProperties())
                     {
-                        if (propertyInfo.Name.Equals("List")) continue;
+                        if (propertyInfo.Name.Equals("List")) { continue; }
                         dynamic objectValue = propertyInfo.GetValue(value, null);
-                        if (!BindingSourcesComboBox.ContainsKey(propertyInfo.Name)) continue;
+                        if (!BindingSourcesComboBox.ContainsKey(propertyInfo.Name)) { continue; }
                         BindingSourcesComboBox[propertyInfo.Name] = new BindingSource(objectValue.List, null);
 
                         (Columns[propertyInfo.Name] as DataGridViewComboBoxColumn).DataSource =
@@ -76,7 +76,7 @@ namespace KSociety.Base.Pre.Form.View.Forms
         {
             foreach (var propertyInfo in typeof(T).GetProperties())
             {
-                if (!IsBrowsable(propertyInfo)) continue;
+                if (!IsBrowsable(propertyInfo)) { continue; }
 
                 DataGridViewColumn dataGridViewColumn;
 
@@ -216,7 +216,9 @@ namespace KSociety.Base.Pre.Form.View.Forms
                     e.FormattingApplied = true;
                 }
                 else
+                {
                     e.FormattingApplied = false;
+                }         
             }
             //}
             //catch (Exception ex)

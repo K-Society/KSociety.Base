@@ -26,7 +26,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
     {
         protected readonly ILogger<DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>> Logger;
 
-        protected static ILoggerFactory LoggerFactory;
+        protected readonly ILoggerFactory LoggerFactory;
 
         private IDbContextTransaction _transaction;
         private bool _debug = false;

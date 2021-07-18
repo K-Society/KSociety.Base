@@ -205,7 +205,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         public TEntity Find(params object[] keyObject)
         {
             Logger.LogTrace("RepositoryBase Find: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");
-            if (Exists) return DataBaseSet.Find(keyObject);
+            if (Exists) { return DataBaseSet.Find(keyObject); }
             Logger.LogWarning("Database not exists!");
             return null;
 
@@ -214,7 +214,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         public async ValueTask<TEntity> FindAsync(params object[] keyObject)
         {
             Logger.LogTrace("RepositoryBase FindAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");
-            if (Exists) return await DataBaseSet.FindAsync(keyObject).ConfigureAwait(false);
+            if (Exists) { return await DataBaseSet.FindAsync(keyObject).ConfigureAwait(false); }
             Logger.LogWarning("Database not exists!");
             return null;
 
@@ -223,7 +223,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         public async ValueTask<TEntity> FindAsync(CancellationToken cancellationToken, params object[] keyObject)
         {
             Logger.LogTrace("RepositoryBase FindAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");
-            if (Exists) return await DataBaseSet.FindAsync(keyObject).ConfigureAwait(false);
+            if (Exists) { return await DataBaseSet.FindAsync(keyObject).ConfigureAwait(false); }
             Logger.LogWarning("Database not exists!");
             return null;
 
@@ -232,7 +232,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter)
         {
             Logger.LogTrace("RepositoryBase Query: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName + ")");
-            if (Exists) return DataBaseSet.Where(filter);
+            if (Exists) { return DataBaseSet.Where(filter); }
             Logger.LogWarning("Database not exists!");
             return null;
 
@@ -241,7 +241,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         public IQueryable<TEntity> QueryObjectGraph(Expression<Func<TEntity, bool>> filter, string children)
         {
             Logger.LogTrace("RepositoryBase QueryObjectGraph: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName + "," + children + ")");
-            if (Exists) return DataBaseSet.Include(children).Where(filter);
+            if (Exists) { return DataBaseSet.Include(children).Where(filter); }
             Logger.LogWarning("Database not exists!");
             return null;
 
@@ -250,7 +250,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         public IQueryable<TEntity> FindAll()
         {
             Logger.LogTrace("RepositoryBase FindAll: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            if (Exists) return DataBaseSet;
+            if (Exists) { return DataBaseSet; }
             Logger.LogWarning(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " Database not exists!");
             return null;
         }

@@ -145,7 +145,7 @@ namespace KSociety.Base.Srv.Shared.Class
                     var requestHandler = componentContext.ResolveNamed<IRequestHandlerAsync>(serviceName);
                     var methodInfo = type.GetMethod("ExecuteAsync");
                     //logger.LogTrace("ExecuteAsync: " + type.Name + " - " + serviceName + " Response: ValueTask");
-                    if (methodInfo != null) await ((ValueTask)methodInfo.Invoke(requestHandler, new[] { (object)cancellationToken })).ConfigureAwait(false);
+                    if (methodInfo != null) { await ((ValueTask)methodInfo.Invoke(requestHandler, new[] { (object)cancellationToken })).ConfigureAwait(false); }
                 }
                 catch (Exception ex)
                 {
