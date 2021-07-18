@@ -30,8 +30,22 @@ namespace KSociety.Base.EventBusRabbitMQ
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IExchangeDeclareParameters exchangeDeclareParameters,
             IQueueDeclareParameters queueDeclareParameters,
-            string queueName = null,
-            CancellationToken cancel = default)
+            string queueName)
+            : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName)
+        {
+            SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
+            ConsumerChannel = CreateConsumerChannel();
+            _queueNameReply = QueueName + "_Reply";
+            _consumerChannelReply = CreateConsumerChannelReply();
+            _correlationId = Guid.NewGuid().ToString();
+        }
+
+        public EventBusRabbitMqRpc(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IExchangeDeclareParameters exchangeDeclareParameters,
+            IQueueDeclareParameters queueDeclareParameters,
+            string queueName,
+            CancellationToken cancel)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
             SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;

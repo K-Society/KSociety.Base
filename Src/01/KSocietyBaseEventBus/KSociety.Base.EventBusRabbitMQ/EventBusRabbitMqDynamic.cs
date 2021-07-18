@@ -20,8 +20,19 @@ namespace KSociety.Base.EventBusRabbitMQ
             ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IExchangeDeclareParameters exchangeDeclareParameters,
             IQueueDeclareParameters queueDeclareParameters,
-            string queueName = null,
-            CancellationToken cancel = default)
+            string queueName)
+            : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName)
+        {
+            _autofac = autofac;
+            ConsumerChannel = CreateConsumerChannel();
+        }
+
+        public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
+            ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IExchangeDeclareParameters exchangeDeclareParameters,
+            IQueueDeclareParameters queueDeclareParameters,
+            string queueName,
+            CancellationToken cancel)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
             _autofac = autofac;

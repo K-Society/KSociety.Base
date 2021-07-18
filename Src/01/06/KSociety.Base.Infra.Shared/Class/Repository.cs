@@ -62,7 +62,32 @@ namespace KSociety.Base.Infra.Shared.Class
             return false;
         }
 
-        public async ValueTask<bool> ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+        public async ValueTask<bool> ImportCsvAsync(string fileName)
+        {
+            Logger.LogTrace("RepositoryBase ImportCsvAsync: " + fileName + " " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            try
+            {
+                //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken).ConfigureAwait(false);
+
+                DeleteRange(FindAll());
+                //Logger.LogTrace("DeleteRange OK.");
+                await foreach (var entity in ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName).ConfigureAwait(false).ConfigureAwait(false))
+                {
+                    var result = await AddAsync(entity).ConfigureAwait(false);
+                    //Logger.LogTrace("AddAsync OK. " + result.Entity.GetType().Name);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
+            }
+
+            return false;
+        }
+
+        public async ValueTask<bool> ImportCsvAsync(string fileName, CancellationToken cancellationToken)
         {
             Logger.LogTrace("RepositoryBase ImportCsvAsync: " + fileName + " " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
@@ -81,13 +106,37 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
+                Logger.LogError(ex, GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
             }
 
             return false;
         }
 
-        public async ValueTask<bool> ImportCsvAsync(byte[] byteArray, CancellationToken cancellationToken = default)
+        public async ValueTask<bool> ImportCsvAsync(byte[] byteArray)
+        {
+            Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            try
+            {
+                //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray, cancellationToken).ConfigureAwait(false);
+
+                DeleteRange(FindAll());
+
+                await foreach (var entity in ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray).ConfigureAwait(false).ConfigureAwait(false))
+                {
+                    await AddAsync(entity).ConfigureAwait(false);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
+            }
+
+            return false;
+        }
+
+        public async ValueTask<bool> ImportCsvAsync(byte[] byteArray, CancellationToken cancellationToken)
         {
             Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try

@@ -24,8 +24,18 @@ namespace KSociety.Base.EventBusRabbitMQ
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IExchangeDeclareParameters exchangeDeclareParameters,
             IQueueDeclareParameters queueDeclareParameters,
-            string queueName = null,
-            CancellationToken cancel = default)
+            string queueName)
+        : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName)
+        {
+            ConsumerChannel = CreateConsumerChannel();
+        }
+
+        public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IExchangeDeclareParameters exchangeDeclareParameters,
+            IQueueDeclareParameters queueDeclareParameters,
+            string queueName,
+            CancellationToken cancel)
         :base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
             ConsumerChannel = CreateConsumerChannel(cancel);

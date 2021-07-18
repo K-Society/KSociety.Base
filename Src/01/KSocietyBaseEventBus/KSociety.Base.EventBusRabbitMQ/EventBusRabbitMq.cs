@@ -34,8 +34,22 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
-            IExchangeDeclareParameters exchangeDeclareParameters, IQueueDeclareParameters queueDeclareParameters, string queueName = null,
-            CancellationToken cancel = default)
+            IExchangeDeclareParameters exchangeDeclareParameters, IQueueDeclareParameters queueDeclareParameters, string queueName)
+        {
+            ExchangeDeclareParameters = exchangeDeclareParameters;
+            PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
+            Logger = loggerFactory.CreateLogger<EventBusRabbitMq>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+            SubsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
+            QueueDeclareParameters = queueDeclareParameters;
+            QueueName = queueName;
+            EventHandler = eventHandler;
+            SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
+        }
+
+        protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IExchangeDeclareParameters exchangeDeclareParameters, IQueueDeclareParameters queueDeclareParameters, string queueName,
+            CancellationToken cancel)
         {
             ExchangeDeclareParameters = exchangeDeclareParameters;
             PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
@@ -49,8 +63,22 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IEventBusSubscriptionsManager subsManager,
-            IExchangeDeclareParameters exchangeDeclareParameters, IQueueDeclareParameters queueDeclareParameters, string queueName = null,
-            CancellationToken cancel = default)
+            IExchangeDeclareParameters exchangeDeclareParameters, IQueueDeclareParameters queueDeclareParameters, string queueName)
+        {
+            ExchangeDeclareParameters = exchangeDeclareParameters;
+            PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
+            Logger = loggerFactory.CreateLogger<EventBusRabbitMq>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+            SubsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
+            QueueDeclareParameters = queueDeclareParameters;
+            QueueName = queueName;
+            EventHandler = null;
+            SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
+        }
+
+        protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
+            IEventBusSubscriptionsManager subsManager,
+            IExchangeDeclareParameters exchangeDeclareParameters, IQueueDeclareParameters queueDeclareParameters, string queueName,
+            CancellationToken cancel)
         {
             ExchangeDeclareParameters = exchangeDeclareParameters;
             PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
