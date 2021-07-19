@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Csv
@@ -68,6 +69,27 @@ namespace KSociety.Base.Infra.Shared.Csv
                 var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
 
                 await writer.WriteRecordsAsync(records).ConfigureAwait(false);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "WriteCsv: ");
+            }
+
+            return false;
+        }
+
+        public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records, CancellationToken cancellationToken)
+        {
+            var logger = loggerFactory.CreateLogger("ExportAsyncCsv");
+
+            try
+            {
+                await using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
+                var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
+
+                await writer.WriteRecordsAsync(records, cancellationToken).ConfigureAwait(false);
 
                 return true;
             }

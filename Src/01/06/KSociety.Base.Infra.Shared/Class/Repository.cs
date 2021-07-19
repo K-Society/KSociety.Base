@@ -3,6 +3,7 @@ using KSociety.Base.Infra.Shared.Csv;
 using KSociety.Base.Infra.Shared.Interface;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,16 +23,11 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public bool ImportCsv(string fileName)
         {
-            //Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 var result = ReadCsv<TEntity>.Import(LoggerFactory, fileName);
-                if (!result.Any()) { return false; }
-                DeleteRange(FindAll());
-                
-                AddRange(result);
 
-                return true;
+                return Import(result);
             }
             catch (Exception ex)
             {
@@ -43,10 +39,24 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public bool ImportCsv(byte[] byteArray)
         {
-            //Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 var result = ReadCsv<TEntity>.Import(LoggerFactory, byteArray);
+
+                return Import(result);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
+            }
+
+            return false;
+        }
+
+        private bool Import(IEnumerable<TEntity> result)
+        {
+            try
+            {
                 if (!result.Any()) { return false; }
                 DeleteRange(FindAll());
 
@@ -54,9 +64,9 @@ namespace KSociety.Base.Infra.Shared.Class
 
                 return true;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
+                Logger.LogError(ex, GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
             }
 
             return false;
@@ -179,7 +189,6 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public async ValueTask<bool> ExportCsvAsync(string fileName)
         {
-            //Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 await WriteCsvClassMap<TEntity, TClassMap>.ExportAsync(LoggerFactory, fileName, FindAll())
@@ -197,10 +206,9 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public async ValueTask<bool> ExportCsvAsync(string fileName, CancellationToken cancellationToken)
         {
-            //Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                await WriteCsvClassMap<TEntity, TClassMap>.ExportAsync(LoggerFactory, fileName, FindAll())
+                await WriteCsvClassMap<TEntity, TClassMap>.ExportAsync(LoggerFactory, fileName, FindAll(), cancellationToken)
                     .ConfigureAwait(false);
 
                 return true;

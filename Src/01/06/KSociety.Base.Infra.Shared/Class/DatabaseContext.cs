@@ -153,13 +153,13 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public ValueTask<string> GetConnectionStringAsync()
         {
-            var result = Database.GetDbConnection().ConnectionString;
+            var result = GetConnectionString();
             return new ValueTask<string>(result);
         }
 
         public ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken)
         {
-            var result = Database.GetDbConnection().ConnectionString;
+            var result = GetConnectionString();
             return new ValueTask<string>(result);
         }
 
