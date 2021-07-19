@@ -1,6 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/svxutqmffkucfp0r?svg=true)](https://ci.appveyor.com/project/maniglia/ksociety-base)
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a5ea63d68e08495da1d3ab2e26b05159)](https://www.codacy.com/gh/K-Society/KSociety.Base/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=K-Society/KSociety.Base&amp;utm_campaign=Badge_Grade)
 # KSociety.Base - Framework for microservices
 
 ## Introduction
