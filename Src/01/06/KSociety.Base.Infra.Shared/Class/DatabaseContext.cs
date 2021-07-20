@@ -12,6 +12,9 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DatabaseContext : DbContext, IDatabaseUnitOfWork
     {
         public const string DefaultSchema = "ksociety";
@@ -26,6 +29,7 @@ namespace KSociety.Base.Infra.Shared.Class
         private readonly IDatabaseConfiguration _configuration;
         private readonly IMediator _mediator;
 
+        #region [Constructor]
         public DatabaseContext(DbContextOptions option)
             : base(option)
         {
@@ -46,6 +50,8 @@ namespace KSociety.Base.Infra.Shared.Class
             _mediator = mediator;
             Logger = LoggerFactory.CreateLogger<DatabaseContext>();
         }
+
+        #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
