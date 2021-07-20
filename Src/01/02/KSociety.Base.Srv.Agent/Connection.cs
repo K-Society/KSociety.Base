@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc;
+//using ProtoBuf.Grpc;
 using ProtoBuf.Grpc.Client;
 
 namespace KSociety.Base.Srv.Agent
@@ -35,9 +35,9 @@ namespace KSociety.Base.Srv.Agent
             }
         }
 
-        public CallOptions CallOptions { get; set; }
+        //public CallOptions CallOptions { get; set; }
 
-        public CallContext CallContext { get; set; }
+        //public CallContext CallContext { get; set; }
 
         public  bool DebugFlag { get; }
 
@@ -48,8 +48,8 @@ namespace KSociety.Base.Srv.Agent
             Logger = loggerFactory.CreateLogger<Connection>();
             _agentConfiguration = agentConfiguration;
 
-            CallOptions = new CallOptions();
-            CallContext = new CallContext(CallOptions);
+            //var callOptions = new CallOptions();
+            //var callContext = new CallContext(callOptions);
 
             DebugFlag = agentConfiguration.DebugFlag;
 
