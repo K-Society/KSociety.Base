@@ -34,10 +34,6 @@ namespace KSociety.Base.Srv.Agent
             }
         }
 
-        //public CallOptions CallOptions { get; set; }
-
-        //public CallContext CallContext { get; set; }
-
         public  bool DebugFlag { get; }
 
         private readonly IAgentConfiguration _agentConfiguration;
