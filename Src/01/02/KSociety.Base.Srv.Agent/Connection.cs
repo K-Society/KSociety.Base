@@ -1,7 +1,6 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
-//using ProtoBuf.Grpc;
 using ProtoBuf.Grpc.Client;
 
 namespace KSociety.Base.Srv.Agent

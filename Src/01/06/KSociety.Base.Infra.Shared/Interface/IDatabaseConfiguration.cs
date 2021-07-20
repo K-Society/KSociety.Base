@@ -2,6 +2,9 @@
 
 namespace KSociety.Base.Infra.Shared.Interface
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IDatabaseConfiguration
     {
         DatabaseEngine DatabaseEngine { get; }
