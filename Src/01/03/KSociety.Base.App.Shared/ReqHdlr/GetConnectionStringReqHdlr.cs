@@ -24,7 +24,13 @@ namespace KSociety.Base.App.Shared.ReqHdlr
             return new ConnectionString(_unitOfWork.GetConnectionString());
         }
 
-        public async ValueTask<ConnectionString> ExecuteAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<ConnectionString> ExecuteAsync()
+        {
+            var result = await _unitOfWork.GetConnectionStringAsync().ConfigureAwait(false);
+            return new ConnectionString(result);
+        }
+
+        public async ValueTask<ConnectionString> ExecuteAsync(CancellationToken cancellationToken)
         {
             var result = await _unitOfWork.GetConnectionStringAsync(cancellationToken).ConfigureAwait(false);
             return new ConnectionString(result);

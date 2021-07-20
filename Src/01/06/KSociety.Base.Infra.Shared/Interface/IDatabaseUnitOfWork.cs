@@ -7,6 +7,7 @@ namespace KSociety.Base.Infra.Shared.Interface
     {
         string GetConnectionString();
 
-        ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default);
+        ValueTask<string> GetConnectionStringAsync();
+        ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken);
     }
 }

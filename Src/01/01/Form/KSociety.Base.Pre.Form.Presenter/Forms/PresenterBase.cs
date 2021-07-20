@@ -59,11 +59,11 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
                 //Console.WriteLine("ViewLoadDataAsync");
                 if (_queryModel is null)
                 {
-                    Console.WriteLine("_queryModel is null");
+                    //Console.WriteLine("_queryModel is null");
                 }
                 else if (View is null)
                 {
-                    Console.WriteLine("View is null");
+                    //Console.WriteLine("View is null");
                 }
                 else
                 {

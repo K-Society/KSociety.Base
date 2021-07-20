@@ -66,8 +66,8 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
         {
             var dgv = (TView)sender;
 
-            if (dgv.DataGridView.CurrentRow == null) return;
-            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1) return;
+            if (dgv.DataGridView.CurrentRow == null) { return; }
+            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1) { return; }
             var row = dgv.DataGridView.CurrentRow;
 
             await Task.Run(() =>
@@ -126,8 +126,8 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
         {
             TView dgv = (TView)sender;
 
-            if (dgv.DataGridView.CurrentRow == null) return;
-            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1) return;
+            if (dgv.DataGridView.CurrentRow == null) { return; }
+            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1) { return; }
             DataGridViewRow row = dgv.DataGridView.CurrentRow;
 
             await Task.Run(() =>
@@ -155,8 +155,8 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
         {
             TView dgv = (TView)sender;
 
-            if (dgv.DataGridView.CurrentRow == null) return;
-            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1) return;
+            if (dgv.DataGridView.CurrentRow == null) { return; }
+            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1) { return; }
 
             DataGridViewRow row = dgv.DataGridView.CurrentRow;
 
@@ -181,14 +181,14 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
         private async void ViewModifyField(object sender, DataGridViewCellEventArgs e)
         {
             TView dgv = (TView)sender;
-            if (dgv.DataGridView.Rows[e.RowIndex].Index >= dgv.DataGridView.RowCount - 1) return;
+            if (dgv.DataGridView.Rows[e.RowIndex].Index >= dgv.DataGridView.RowCount - 1) { return; }
 
             DataGridViewRow row = dgv.DataGridView.Rows[e.RowIndex];
             DataGridViewCell cell = dgv.DataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
             var rowValue = (T)row.DataBoundItem;
 
-            if (rowValue.Id.Equals(Guid.Empty)) return;
+            if (rowValue.Id.Equals(Guid.Empty)) { return; }
 
             string columnName = dgv.DataGridView.Columns[cell.ColumnIndex].Name;
 

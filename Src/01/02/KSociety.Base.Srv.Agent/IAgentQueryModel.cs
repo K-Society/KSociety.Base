@@ -8,8 +8,10 @@ namespace KSociety.Base.Srv.Agent
         where T : IObject
         where TObject : IIdObject
     {
-        T Find(TObject idObject, CancellationToken cancellationToken = default);
+        T Find(TObject idObject);
+        T Find(TObject idObject, CancellationToken cancellationToken);
 
-        ValueTask<T> FindAsync(TObject idObject, CancellationToken cancellationToken = default);
+        ValueTask<T> FindAsync(TObject idObject);
+        ValueTask<T> FindAsync(TObject idObject, CancellationToken cancellationToken);
     }
 }

@@ -14,11 +14,11 @@ namespace KSociety.Base.Infra.Shared.Class
 {
     public class DatabaseContext : DbContext, IDatabaseUnitOfWork
     {
-        public const string DefaultSchema = "ksociety";
+        public static readonly string DefaultSchema = "ksociety";
 
         protected readonly ILogger<DatabaseContext> Logger;
 
-        protected static ILoggerFactory LoggerFactory;
+        protected readonly ILoggerFactory LoggerFactory;
 
         private IDbContextTransaction _transaction;
         private bool _debug = false;
@@ -151,9 +151,15 @@ namespace KSociety.Base.Infra.Shared.Class
             return Database.GetDbConnection().ConnectionString;
         }
 
-        public ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
+        public ValueTask<string> GetConnectionStringAsync()
         {
-            var result = Database.GetDbConnection().ConnectionString;
+            var result = GetConnectionString();
+            return new ValueTask<string>(result);
+        }
+
+        public ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken)
+        {
+            var result = GetConnectionString();
             return new ValueTask<string>(result);
         }
 
@@ -180,7 +186,22 @@ namespace KSociety.Base.Infra.Shared.Class
             return output;
         }
 
-        public virtual async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
+        public virtual async ValueTask<bool> EnsureCreatedAsync()
+        {
+            var output = false;
+            try
+            {
+                output = await Database.EnsureCreatedAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+            }
+
+            return output;
+        }
+
+        public virtual async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken)
         {
             var output = false;
             try
@@ -210,7 +231,22 @@ namespace KSociety.Base.Infra.Shared.Class
             return output;
         }
 
-        public virtual async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
+        public virtual async ValueTask<bool> EnsureDeletedAsync()
+        {
+            var output = false;
+            try
+            {
+                output = await Database.EnsureDeletedAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+            }
+
+            return output;
+        }
+
+        public virtual async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken)
         {
             var output = false;
             try
@@ -230,7 +266,12 @@ namespace KSociety.Base.Infra.Shared.Class
             Database.Migrate();
         }
 
-        public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
+        public async ValueTask MigrateAsync()
+        {
+            await Database.MigrateAsync().ConfigureAwait(false);
+        }
+
+        public async ValueTask MigrateAsync(CancellationToken cancellationToken)
         {
             await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -240,7 +281,12 @@ namespace KSociety.Base.Infra.Shared.Class
             _transaction = Database.BeginTransaction();
         }
 
-        public virtual async ValueTask BeginTransactionAsync(CancellationToken cancellationToken = default)
+        public virtual async ValueTask BeginTransactionAsync()
+        {
+            _transaction = await Database.BeginTransactionAsync().ConfigureAwait(false);
+        }
+
+        public virtual async ValueTask BeginTransactionAsync(CancellationToken cancellationToken)
         {
             _transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -289,7 +335,49 @@ namespace KSociety.Base.Infra.Shared.Class
             return output;
         }
 
-        public async ValueTask<int> CommitAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<int> CommitAsync()
+        {
+            var output = -1;
+            try
+            {
+                if (_debug)
+                {
+                    var entries = ChangeTracker.Entries();
+
+                    foreach (var entry in entries)
+                    {
+                        Logger?.LogDebug("CommitAsync entry: " + entry.Entity.GetType().FullName + " " + entry.State);
+                    }
+                }
+
+                // Dispatch Domain Events collection. 
+                // Choices:
+                // A) Right BEFORE committing data (EF SaveChanges) into the DB will make a single transaction including  
+                // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
+                // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
+                // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
+                await _mediator.DispatchDomainEventsAsync(this).ConfigureAwait(false);
+
+                // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
+                // performed through the DbContext will be committed
+                var result = await SaveChangesAsync().ConfigureAwait(false);
+                //await _transaction.CommitAsync(cancellationToken);
+                Logger?.LogTrace("CommitAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " Result: " + result);
+                output = result;
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogError("CommitAsync: " + ex.Source + " - " + ex.Message + " - " + ex.InnerException);
+                output = -1;
+            }
+            //finally
+            //{
+            //    await _transaction.DisposeAsync();
+            //}
+            return output;
+        }
+
+        public async ValueTask<int> CommitAsync(CancellationToken cancellationToken)
         {
             var output = -1;
             try
@@ -343,7 +431,19 @@ namespace KSociety.Base.Infra.Shared.Class
             }
         }
 
-        public async ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default)
+        public async ValueTask CommitTransactionAsync()
+        {
+            try
+            {
+                await _transaction.CommitAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                await _transaction.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async ValueTask CommitTransactionAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -361,7 +461,13 @@ namespace KSociety.Base.Infra.Shared.Class
             _transaction.Dispose();
         }
 
-        public virtual async ValueTask RollbackAsync(CancellationToken cancellationToken = default)
+        public virtual async ValueTask RollbackAsync()
+        {
+            await _transaction.RollbackAsync().ConfigureAwait(false);
+            await _transaction.DisposeAsync().ConfigureAwait(false);
+        }
+
+        public virtual async ValueTask RollbackAsync(CancellationToken cancellationToken)
         {
             await _transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
             await _transaction.DisposeAsync().ConfigureAwait(false);

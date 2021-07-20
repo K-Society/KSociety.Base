@@ -24,7 +24,12 @@ namespace KSociety.Base.App.Shared.ReqHdlr
             return new EnsureDeleted(_unitOfWork.EnsureDeleted());
         }
 
-        public async ValueTask<EnsureDeleted> ExecuteAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<EnsureDeleted> ExecuteAsync()
+        {
+            return new EnsureDeleted(await _unitOfWork.EnsureDeletedAsync().ConfigureAwait(false));
+        }
+
+        public async ValueTask<EnsureDeleted> ExecuteAsync(CancellationToken cancellationToken)
         {
             return new EnsureDeleted(await _unitOfWork.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false));
         }

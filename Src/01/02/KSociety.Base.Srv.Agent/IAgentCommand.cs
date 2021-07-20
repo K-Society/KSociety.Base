@@ -21,24 +21,34 @@ namespace KSociety.Base.Srv.Agent
         where TCopyRes : class
         where TModifyField : class
     {
-        bool Remove(TRemove removeItem, CancellationToken cancellationToken = default);
+        bool Remove(TRemove removeItem);
+        bool Remove(TRemove removeItem, CancellationToken cancellationToken);
 
-        ValueTask<bool> RemoveAsync(TRemove removeItem, CancellationToken cancellationToken = default);
+        ValueTask<bool> RemoveAsync(TRemove removeItem);
+        ValueTask<bool> RemoveAsync(TRemove removeItem, CancellationToken cancellationToken);
 
-        TAddRes Add(TAddReq addItem, CancellationToken cancellationToken = default);
+        TAddRes Add(TAddReq addItem);
+        TAddRes Add(TAddReq addItem, CancellationToken cancellationToken);
 
-        ValueTask<TAddRes> AddAsync(TAddReq addItem, CancellationToken cancellationToken = default);
+        ValueTask<TAddRes> AddAsync(TAddReq addItem);
+        ValueTask<TAddRes> AddAsync(TAddReq addItem, CancellationToken cancellationToken);
 
-        TUpdateRes Update(TUpdateReq updateItem, CancellationToken cancellationToken = default);
+        TUpdateRes Update(TUpdateReq updateItem);
+        TUpdateRes Update(TUpdateReq updateItem, CancellationToken cancellationToken);
 
-        ValueTask<TUpdateRes> UpdateAsync(TUpdateReq updateItem, CancellationToken cancellationToken = default);
+        ValueTask<TUpdateRes> UpdateAsync(TUpdateReq updateItem);
+        ValueTask<TUpdateRes> UpdateAsync(TUpdateReq updateItem, CancellationToken cancellationToken);
 
-        TCopyRes Copy(TCopyReq copyItem, CancellationToken cancellationToken = default);
+        TCopyRes Copy(TCopyReq copyItem);
+        TCopyRes Copy(TCopyReq copyItem, CancellationToken cancellationToken);
 
-        ValueTask<TCopyRes> CopyAsync(TCopyReq copyItem, CancellationToken cancellationToken = default);
+        ValueTask<TCopyRes> CopyAsync(TCopyReq copyItem);
+        ValueTask<TCopyRes> CopyAsync(TCopyReq copyItem, CancellationToken cancellationToken);
 
-        bool ModifyField(TModifyField modifyFieldItem, CancellationToken cancellationToken = default);
+        bool ModifyField(TModifyField modifyFieldItem);
+        bool ModifyField(TModifyField modifyFieldItem, CancellationToken cancellationToken);
 
-        ValueTask<bool> ModifyFieldAsync(TModifyField modifyFieldItem, CancellationToken cancellationToken = default);
+        ValueTask<bool> ModifyFieldAsync(TModifyField modifyFieldItem);
+        ValueTask<bool> ModifyFieldAsync(TModifyField modifyFieldItem, CancellationToken cancellationToken);
     }
 }

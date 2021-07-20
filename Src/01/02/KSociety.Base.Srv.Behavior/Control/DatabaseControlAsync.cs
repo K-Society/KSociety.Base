@@ -27,28 +27,52 @@ namespace KSociety.Base.Srv.Behavior.Control
             _logger = _loggerFactory.CreateLogger<DatabaseControlAsync>();
         }
 
-        public async ValueTask<EnsureCreated> EnsureCreatedAsync(CallContext context = default)
+        public async ValueTask<EnsureCreated> EnsureCreatedAsync()
+        {
+            _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return await _commandHandlerAsync.ExecuteWithResponseAsync<EnsureCreated>(_loggerFactory, _componentContext).ConfigureAwait(false);
+        }
+
+        public async ValueTask<EnsureCreated> EnsureCreatedAsync(CallContext context)
         {
             _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return await _commandHandlerAsync.ExecuteWithResponseAsync<EnsureCreated>(_loggerFactory, _componentContext, context.CancellationToken).ConfigureAwait(false);
         }
 
-        public async ValueTask<EnsureDeleted> EnsureDeletedAsync(CallContext context = default)
+        public async ValueTask<EnsureDeleted> EnsureDeletedAsync()
+        {
+            _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return await _commandHandlerAsync.ExecuteWithResponseAsync<EnsureDeleted>(_loggerFactory, _componentContext).ConfigureAwait(false);
+        }
+
+        public async ValueTask<EnsureDeleted> EnsureDeletedAsync(CallContext context)
         {
             _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return await _commandHandlerAsync.ExecuteWithResponseAsync<EnsureDeleted>(_loggerFactory, _componentContext, context.CancellationToken).ConfigureAwait(false);
         }
 
-        public async ValueTask MigrationAsync(CallContext context = default)
+        public async ValueTask MigrationAsync()
+        {
+            _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            await _commandHandlerAsync.ExecuteAsync(_loggerFactory, _componentContext, "MigrationReqHdlr").ConfigureAwait(false);
+        }
+
+        public async ValueTask MigrationAsync(CallContext context)
         {
             _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             await _commandHandlerAsync.ExecuteAsync(_loggerFactory, _componentContext, "MigrationReqHdlr", context.CancellationToken).ConfigureAwait(false);
         }
 
-        public async ValueTask<ConnectionString> GetConnectionStringAsync(CallContext context = default)
+        public async ValueTask<ConnectionString> GetConnectionStringAsync()
         {
             _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return await _commandHandlerAsync.ExecuteWithResponseAsync<ConnectionString>(_loggerFactory, _componentContext).ConfigureAwait(false);
+        }
+
+        public async ValueTask<ConnectionString> GetConnectionStringAsync(CallContext context)
+        {
+            _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return await _commandHandlerAsync.ExecuteWithResponseAsync<ConnectionString>(_loggerFactory, _componentContext, context.CancellationToken).ConfigureAwait(false);
         }
     }
 }

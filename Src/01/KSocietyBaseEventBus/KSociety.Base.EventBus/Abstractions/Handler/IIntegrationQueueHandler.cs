@@ -13,8 +13,9 @@ namespace KSociety.Base.EventBus.Abstractions.Handler
 
         bool IsEmpty { get; }
 
-        ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent, CancellationToken cancel = default);
+        ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent);
+        ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent, CancellationToken cancel);
 
-        IAsyncEnumerable<TIntegrationEvent> Dequeue([EnumeratorCancellation] CancellationToken cancel = default);
+        IAsyncEnumerable<TIntegrationEvent> Dequeue([EnumeratorCancellation] CancellationToken cancel);
     }
 }

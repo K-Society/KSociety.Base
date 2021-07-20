@@ -9,15 +9,27 @@ namespace KSociety.Base.Srv.Contract.Control
     public interface IDatabaseControlAsync
     {
         [Operation]
-        ValueTask<EnsureCreated> EnsureCreatedAsync(CallContext context = default);
+        ValueTask<EnsureCreated> EnsureCreatedAsync();
 
         [Operation]
-        ValueTask<EnsureDeleted> EnsureDeletedAsync(CallContext context = default);
+        ValueTask<EnsureCreated> EnsureCreatedAsync(CallContext context);
 
         [Operation]
-        ValueTask MigrationAsync(CallContext context = default);
+        ValueTask<EnsureDeleted> EnsureDeletedAsync();
 
         [Operation]
-        ValueTask<ConnectionString> GetConnectionStringAsync(CallContext context = default);
+        ValueTask<EnsureDeleted> EnsureDeletedAsync(CallContext context);
+
+        [Operation]
+        ValueTask MigrationAsync();
+
+        [Operation]
+        ValueTask MigrationAsync(CallContext context);
+
+        [Operation]
+        ValueTask<ConnectionString> GetConnectionStringAsync();
+
+        [Operation]
+        ValueTask<ConnectionString> GetConnectionStringAsync(CallContext context);
     }
 }

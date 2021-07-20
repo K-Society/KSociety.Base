@@ -82,7 +82,7 @@ namespace KSociety.Base.Pre.Model.Utility
             _sortProperty = prop;
             _sortDirection = direction;
 
-            if (!(Items is List<T> list)) return;
+            if (!(Items is List<T> list)) { return; }
 
             list.Sort(Compare);
 
@@ -97,7 +97,10 @@ namespace KSociety.Base.Pre.Model.Utility
             var result = OnComparison(lhs, rhs);
             //invert if descending
             if (_sortDirection == ListSortDirection.Descending)
+            {
                 result = -result;
+            }
+                
             return result;
         }
 

@@ -6,7 +6,10 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
     public interface IEventBusRpcClient : IEventBus
     {
-        Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event, CancellationToken cancellationToken = default)
+        Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event)
+            where TIntegrationEventReply : IIntegrationEventReply;
+
+        Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event, CancellationToken cancellationToken)
             where TIntegrationEventReply : IIntegrationEventReply;
 
         IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
