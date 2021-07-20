@@ -43,9 +43,6 @@ namespace KSociety.Base.Srv.Agent
             Logger = loggerFactory.CreateLogger<Connection>();
             _agentConfiguration = agentConfiguration;
 
-            //var callOptions = new CallOptions();
-            //var callContext = new CallContext(callOptions);
-
             DebugFlag = agentConfiguration.DebugFlag;
 
             if (DebugFlag)
