@@ -3,6 +3,9 @@ using MediatR;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Mediatr : Module
     {
         protected override void Load(ContainerBuilder builder)
