@@ -4,6 +4,10 @@ using KSociety.Base.Infra.Shared.Interface;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TContext"></typeparam>
     public class UnitOfWork<TContext> : Module where TContext : DatabaseContext
     {
         protected override void Load(ContainerBuilder builder)

@@ -6,6 +6,9 @@ using KSociety.Base.Srv.Shared.Interface;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class CommandHdlr : Module
     {
         private readonly string[] _assemblies;

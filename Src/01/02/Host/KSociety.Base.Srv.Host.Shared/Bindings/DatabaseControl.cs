@@ -8,6 +8,10 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TContext"></typeparam>
     public class DatabaseControl<TContext> : Module where TContext : DatabaseContext
     {
         protected override void Load(ContainerBuilder builder)

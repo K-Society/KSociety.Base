@@ -5,6 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TContext"></typeparam>
     public class DatabaseFactory<TContext> : Module where TContext : DatabaseContext
     {
         protected override void Load(ContainerBuilder builder)
