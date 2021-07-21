@@ -1,7 +1,10 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
+using ProtoBuf.Grpc;
 using ProtoBuf.Grpc.Client;
+using System;
+using System.Threading;
 
 namespace KSociety.Base.Srv.Agent
 {
@@ -49,6 +52,35 @@ namespace KSociety.Base.Srv.Agent
             {
                 Logger.LogTrace("Grpc Agent Connection for: " + _agentConfiguration.ConnectionUrl);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected virtual CallContext ConnectionOptions(CancellationToken cancellationToken = default)
+        {
+            var callOptions = new CallOptions().WithCancellationToken(cancellationToken);
+            return new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="headers"></param>
+        /// <param name="deadline"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="writeOptions"></param>
+        /// <param name="propagationToken"></param>
+        /// <param name="credentials"></param>
+        /// <returns></returns>
+        protected virtual CallContext ConnectionOptions(Metadata headers = null, 
+            DateTime? deadline = null, CancellationToken cancellationToken = default,
+            WriteOptions writeOptions = null, ContextPropagationToken propagationToken = null, CallCredentials credentials = null)
+        {
+            var callOptions = new CallOptions(headers, deadline, cancellationToken, writeOptions, propagationToken, credentials);
+            return new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
         }
     }
 }
