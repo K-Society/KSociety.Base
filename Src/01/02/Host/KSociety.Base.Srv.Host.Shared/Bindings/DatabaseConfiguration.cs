@@ -3,6 +3,9 @@ using KSociety.Base.Infra.Shared.Class;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DatabaseConfiguration : Module
     {
         private readonly DatabaseEngine _databaseEngine;
