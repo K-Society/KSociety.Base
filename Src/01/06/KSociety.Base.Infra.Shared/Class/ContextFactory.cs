@@ -7,12 +7,19 @@ namespace KSociety.Base.Infra.Shared.Class
     public class ContextFactory<TContext> : IDesignTimeDbContextFactory<TContext> 
         where TContext : DatabaseContext
     {
-        public TContext CreateDbContext(string[] args)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public virtual TContext CreateDbContext(string[] args)
         {
             TContext output = null;
             var dbEngine = DatabaseEngine.Sqlserver;
             var migrationsAssembly = string.Empty;
             var connectionString = string.Empty;
+
+            if (args.Length < 3) return output;
 
             if (args.Length > 0)
             {
@@ -35,6 +42,8 @@ namespace KSociety.Base.Infra.Shared.Class
 
             if (args.Length >= 2)
             {
+                Console.WriteLine("string: " 
+                    + args[1]);
                 connectionString = args[1];
             }
 
