@@ -9,13 +9,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
     /// <summary>
     /// 
     /// </summary>
-    public class DatabaseContext : DbContext, IDatabaseUnitOfWork
+    public class DatabaseContext : DbContext, IDatabaseUnitOfWork, IDesignTimeDbContextFactory<DatabaseContext>
     {
         public const string DefaultSchema = "ksociety";
 
@@ -30,6 +31,11 @@ namespace KSociety.Base.Infra.Shared.Class
         private readonly IMediator _mediator;
 
         #region [Constructor]
+        public DatabaseContext()
+        {
+
+        }
+
         public DatabaseContext(DbContextOptions option)
             : base(option)
         {
@@ -52,6 +58,89 @@ namespace KSociety.Base.Infra.Shared.Class
         }
 
         #endregion
+
+        public virtual DatabaseContext CreateDbContext(string[] args)
+        {
+            DatabaseContext output = null;
+            var dbEngine = DatabaseEngine.Sqlserver;
+            var migrationsAssembly = string.Empty;
+            var connectionString = string.Empty;
+
+            if (args.Length < 3) return output;
+
+            if (args.Length > 0)
+            {
+                switch (args[0])
+                {
+                    case "Sqlserver":
+                        dbEngine = DatabaseEngine.Sqlserver;
+                        break;
+                    case "Sqlite":
+                        dbEngine = DatabaseEngine.Sqlite;
+                        break;
+                    case "Npgsql":
+                        dbEngine = DatabaseEngine.Npgsql;
+                        break;
+                    case "MySql":
+                        dbEngine = DatabaseEngine.Mysql;
+                        break;
+                }
+            }
+
+            if (args.Length >= 2)
+            {
+                Console.WriteLine("string: "
+                    + args[1]);
+                connectionString = args[1];
+            }
+
+            if (args.Length >= 3)
+            {
+                migrationsAssembly = args[1];
+            }
+
+            var optionBuilder = new DbContextOptionsBuilder<DatabaseContext>();
+
+            switch (dbEngine)
+            {
+                case DatabaseEngine.Sqlserver:
+                    optionBuilder
+                        .EnableDetailedErrors()
+                        .EnableSensitiveDataLogging()
+                        .UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                    break;
+
+                case DatabaseEngine.Sqlite:
+                    optionBuilder
+                        .UseSqlite(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                    break;
+
+                case DatabaseEngine.Npgsql:
+                    break;
+
+                case DatabaseEngine.Mysql:
+                    optionBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), sql => sql.MigrationsAssembly(migrationsAssembly));
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            //try
+            //{
+
+            //}
+            //catch(Exception ex)
+            //{
+
+            //}
+
+            output = (DatabaseContext)Activator.CreateInstance(typeof(DatabaseContext), optionBuilder.Options);
+
+            return output;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
