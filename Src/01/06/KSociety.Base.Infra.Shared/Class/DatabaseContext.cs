@@ -31,6 +31,11 @@ namespace KSociety.Base.Infra.Shared.Class
         private readonly IMediator _mediator;
 
         #region [Constructor]
+        public DatabaseContext()
+        {
+
+        }
+
         public DatabaseContext(DbContextOptions option)
             : base(option)
         {
@@ -61,7 +66,7 @@ namespace KSociety.Base.Infra.Shared.Class
             var migrationsAssembly = string.Empty;
             var connectionString = string.Empty;
 
-            if (args.Length < 2) return output;
+            if (args.Length < 3) return output;
 
             if (args.Length > 0)
             {
@@ -82,14 +87,14 @@ namespace KSociety.Base.Infra.Shared.Class
                 }
             }
 
-            //if (args.Length >= 2)
-            //{
-            //    Console.WriteLine("string: " 
-            //        + args[1]);
-            //    connectionString = args[1];
-            //}
-
             if (args.Length >= 2)
+            {
+                Console.WriteLine("string: "
+                    + args[1]);
+                connectionString = args[1];
+            }
+
+            if (args.Length >= 3)
             {
                 migrationsAssembly = args[1];
             }
