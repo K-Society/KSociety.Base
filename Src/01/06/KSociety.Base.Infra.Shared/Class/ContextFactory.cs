@@ -58,7 +58,9 @@ namespace KSociety.Base.Infra.Shared.Class
             {
                 case DatabaseEngine.Sqlserver:
                     optionBuilder
-                    .UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                        .EnableDetailedErrors()
+                        .EnableSensitiveDataLogging()
+                        .UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
 
                     break;
 
@@ -79,14 +81,16 @@ namespace KSociety.Base.Infra.Shared.Class
                     throw new ArgumentOutOfRangeException();
             }
 
-            try
-            {
-                output = (TContext)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
-            }
-            catch(Exception ex)
-            {
+            //try
+            //{
+                
+            //}
+            //catch(Exception ex)
+            //{
 
-            }
+            //}
+
+            output = (TContext)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
 
             return output;
         }
