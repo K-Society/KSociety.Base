@@ -11,5 +11,7 @@ namespace KSociety.Base.Infra.Shared.Interface
         string ConnectionString { get; }
         bool Logging { get; }
         string MigrationsAssembly { get; }
+        bool LazyLoading { get; }
+
     }
 }
