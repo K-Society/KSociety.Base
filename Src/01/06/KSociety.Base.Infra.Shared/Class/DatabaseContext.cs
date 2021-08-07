@@ -31,8 +31,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         #region [Constructor]
 
-        public DatabaseContext() 
-            : base()
+        public DatabaseContext()
         {
 
         }
@@ -113,6 +112,7 @@ namespace KSociety.Base.Infra.Shared.Class
                         else
                         {
                             optionsBuilder
+                                .UseLazyLoadingProxies(_configuration.LazyLoading)
                                 .UseSqlServer(_configuration.ConnectionString,
                                     sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
@@ -129,6 +129,7 @@ namespace KSociety.Base.Infra.Shared.Class
                         else
                         {
                             optionsBuilder
+                                .UseLazyLoadingProxies(_configuration.LazyLoading)
                                 .UseSqlite(_configuration.ConnectionString,
                                     sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
@@ -145,6 +146,7 @@ namespace KSociety.Base.Infra.Shared.Class
                         else
                         {
                             optionsBuilder
+                                .UseLazyLoadingProxies(_configuration.LazyLoading)
                                 .UseNpgsql(_configuration.ConnectionString,
                                     sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
@@ -159,7 +161,9 @@ namespace KSociety.Base.Infra.Shared.Class
                         }
                         else
                         {
-                            optionsBuilder.UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString),
+                            optionsBuilder
+                                .UseLazyLoadingProxies(_configuration.LazyLoading)
+                                .UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString),
                                 sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
                             optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
