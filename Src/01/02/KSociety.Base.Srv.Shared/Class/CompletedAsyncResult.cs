@@ -3,6 +3,10 @@ using System.Threading;
 
 namespace KSociety.Base.Srv.Shared.Class
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class CompletedAsyncResult<T> : IAsyncResult
     {
         public CompletedAsyncResult(T data)

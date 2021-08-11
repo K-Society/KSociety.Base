@@ -10,6 +10,16 @@ namespace KSociety.Base.Srv.Shared.Class
     {
         #region [ExecuteListWithResponse<TRequest, TRequestList, TResponse>]
 
+        /// <summary>
+        /// The ExecuteListWithResponse.
+        /// </summary>
+        /// <typeparam name="TRequest"></typeparam>
+        /// <typeparam name="TRequestList"></typeparam>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="loggerFactory"></param>
+        /// <param name="componentContext"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public TResponse ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequestList request)
             where TRequest : IRequest, new()
             where TRequestList : IAppList<TRequest>, new()
@@ -54,6 +64,15 @@ namespace KSociety.Base.Srv.Shared.Class
 
         #region [Execute<TRequest, TResponse>]
 
+        /// <summary>
+        /// The ExecuteWithResponse.
+        /// </summary>
+        /// <typeparam name="TRequest"></typeparam>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="loggerFactory"></param>
+        /// <param name="componentContext"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public TResponse ExecuteWithResponse<TRequest, TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequest request)
             where TRequest : IRequest, new()
             where TResponse : IResponse, new()
@@ -96,6 +115,12 @@ namespace KSociety.Base.Srv.Shared.Class
 
         #region [Execute]
 
+        /// <summary>
+        /// The Execute.
+        /// </summary>
+        /// <param name="loggerFactory"></param>
+        /// <param name="componentContext"></param>
+        /// <param name="serviceName"></param>
         public void Execute(ILoggerFactory loggerFactory, IComponentContext componentContext, string serviceName)
         {
             var logger = loggerFactory.CreateLogger<CommandHandler>();
@@ -138,6 +163,13 @@ namespace KSociety.Base.Srv.Shared.Class
 
         #region [Execute<TRequest>]
 
+        /// <summary>
+        /// The Execute<TRequest>.
+        /// </summary>
+        /// <typeparam name="TRequest"></typeparam>
+        /// <param name="loggerFactory"></param>
+        /// <param name="componentContext"></param>
+        /// <param name="request"></param>
         public void Execute<TRequest>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequest request)
             where TRequest : IRequest, new()
         {
@@ -182,6 +214,13 @@ namespace KSociety.Base.Srv.Shared.Class
 
         #region [ExecuteWithResponse<TResponse>]
 
+        /// <summary>
+        /// The ExecuteWithResponse<TResponse>.
+        /// </summary>
+        /// <typeparam name="TResponse"></typeparam>
+        /// <param name="loggerFactory"></param>
+        /// <param name="componentContext"></param>
+        /// <returns></returns>
         public TResponse ExecuteWithResponse<TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext)
             where TResponse : IResponse, new()
         {

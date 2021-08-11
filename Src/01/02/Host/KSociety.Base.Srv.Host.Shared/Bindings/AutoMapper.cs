@@ -5,6 +5,9 @@ using AutoMapper;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AutoMapper : Module
     {
         private readonly string[] _assemblies;

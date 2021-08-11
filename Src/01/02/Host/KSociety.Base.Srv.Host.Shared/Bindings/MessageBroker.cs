@@ -5,6 +5,9 @@ using RabbitMQ.Client;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MessageBroker : Module
     {
         private readonly bool _debugFlag;

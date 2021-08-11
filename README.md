@@ -1,4 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/svxutqmffkucfp0r?svg=true)](https://ci.appveyor.com/project/maniglia/ksociety-base)
+
 # KSociety.Base - Framework for microservices
 
 ## Introduction
@@ -15,7 +16,6 @@ Its advanced features are ideal for Domain Driven Design (DDD), Command Query Re
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.InstallAction](https://github.com/K-Society/KSociety.Base/tree/master/Src/00/KSociety.Base.InstallAction) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InstallAction)](https://www.nuget.org/packages/KSociety.Base.InstallAction) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InstallAction) |
-
 
 ### 1. Presentation
 | GitHub Repository | NuGet | Download |

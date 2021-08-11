@@ -1,7 +1,4 @@
 ﻿using KSociety.Base.Infra.Shared.Class.SqlGenerator;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using KSociety.Base.Infra.Shared.Interface;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +6,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DatabaseContext : DbContext, IDatabaseUnitOfWork
     {
         public const string DefaultSchema = "ksociety";
@@ -26,7 +29,27 @@ namespace KSociety.Base.Infra.Shared.Class
         private readonly IDatabaseConfiguration _configuration;
         private readonly IMediator _mediator;
 
+        #region [Constructor]
+
+        public DatabaseContext()
+        {
+
+        }
+
         public DatabaseContext(DbContextOptions option)
+            : base(option)
+        {
+
+            LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+                builder.SetMinimumLevel(LogLevel.Trace);
+            });
+
+            Logger = LoggerFactory.CreateLogger<DatabaseContext>();
+        }
+
+        public DatabaseContext(DbContextOptions<DatabaseContext> option)
             : base(option)
         {
 
@@ -46,6 +69,8 @@ namespace KSociety.Base.Infra.Shared.Class
             _mediator = mediator;
             Logger = LoggerFactory.CreateLogger<DatabaseContext>();
         }
+
+        #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -87,6 +112,7 @@ namespace KSociety.Base.Infra.Shared.Class
                         else
                         {
                             optionsBuilder
+                                .UseLazyLoadingProxies(_configuration.LazyLoading)
                                 .UseSqlServer(_configuration.ConnectionString,
                                     sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
@@ -103,6 +129,7 @@ namespace KSociety.Base.Infra.Shared.Class
                         else
                         {
                             optionsBuilder
+                                .UseLazyLoadingProxies(_configuration.LazyLoading)
                                 .UseSqlite(_configuration.ConnectionString,
                                     sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
@@ -119,6 +146,7 @@ namespace KSociety.Base.Infra.Shared.Class
                         else
                         {
                             optionsBuilder
+                                .UseLazyLoadingProxies(_configuration.LazyLoading)
                                 .UseNpgsql(_configuration.ConnectionString,
                                     sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
@@ -133,7 +161,9 @@ namespace KSociety.Base.Infra.Shared.Class
                         }
                         else
                         {
-                            optionsBuilder.UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString),
+                            optionsBuilder
+                                .UseLazyLoadingProxies(_configuration.LazyLoading)
+                                .UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString),
                                 sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
                             optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();

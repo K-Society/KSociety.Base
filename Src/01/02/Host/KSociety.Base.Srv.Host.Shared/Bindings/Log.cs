@@ -4,6 +4,9 @@ using Serilog.Extensions.Logging;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Log : Module
     {
         protected override void Load(ContainerBuilder builder)
