@@ -6,9 +6,11 @@ namespace KSociety.Base.Infra.Shared.Class
 {
     public class ContextFactory<TContext> : IContextFactory<TContext> where TContext : DatabaseContext
     {
-        //public virtual TContext CreateDbContext(string[] args)
-        public virtual TContext CreateDbContext(string databaseEngine, string connectionString, string migrationsAssembly)
+        public virtual TContext CreateDbContext(string[] args)
+        //public virtual TContext CreateDbContext(string databaseEngine, string connectionString, string migrationsAssembly)
         {
+
+            //args = "\"" + Regex.Replace(args, @"(\\+)$", @"$1$1") + "\"";
             //DatabaseEngine dbEngine = DatabaseEngine.Sqlserver;
 
             //if (args.Length > 0)
@@ -51,16 +53,16 @@ namespace KSociety.Base.Infra.Shared.Class
 
             TContext output = null;
             var dbEngine = DatabaseEngine.Sqlserver;
-            //var migrationsAssembly = string.Empty;
-            //var connectionString = string.Empty;
+            var migrationsAssembly = string.Empty;
+            var connectionString = string.Empty;
 
-            //if (args.Length < 2) return output;
+            if (args.Length < 2) return output;
 
-            //if (args.Length > 0)
-            //{
-                //switch (args[0])
-                switch (databaseEngine)
+            if (args.Length > 0)
             {
+                switch (args[0])
+                //switch (databaseEngine)
+                {
                     case "Sqlserver":
                         dbEngine = DatabaseEngine.Sqlserver;
                         break;
@@ -74,17 +76,17 @@ namespace KSociety.Base.Infra.Shared.Class
                         dbEngine = DatabaseEngine.Mysql;
                         break;
                 }
-            //}
+            }
 
-            //if (args.Length >= 2)
-            //{
-            //    connectionString = args[1];
-            //}
+            if (args.Length >= 2)
+            {
+                connectionString = args[1];
+            }
 
-            //if (args.Length >= 2)
-            //{
-            //    migrationsAssembly = args[1];
-            //}
+            if (args.Length >= 3)
+            {
+                migrationsAssembly = args[2];
+            }
 
             var optionBuilder = new DbContextOptionsBuilder<TContext>();
 
