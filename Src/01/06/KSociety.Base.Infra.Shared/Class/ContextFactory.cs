@@ -6,7 +6,8 @@ namespace KSociety.Base.Infra.Shared.Class
 {
     public class ContextFactory<TContext> : IContextFactory<TContext> where TContext : DatabaseContext
     {
-        public virtual TContext CreateDbContext(string[] args)
+        //public virtual TContext CreateDbContext(string[] args)
+        public virtual TContext CreateDbContext(string databaseEngine, string connectionString, string migrationsAssembly)
         {
             //DatabaseEngine dbEngine = DatabaseEngine.Sqlserver;
 
@@ -50,15 +51,16 @@ namespace KSociety.Base.Infra.Shared.Class
 
             TContext output = null;
             var dbEngine = DatabaseEngine.Sqlserver;
-            var migrationsAssembly = string.Empty;
-            var connectionString = string.Empty;
+            //var migrationsAssembly = string.Empty;
+            //var connectionString = string.Empty;
 
-            if (args.Length < 2) return output;
+            //if (args.Length < 2) return output;
 
-            if (args.Length > 0)
+            //if (args.Length > 0)
+            //{
+                //switch (args[0])
+                switch (databaseEngine)
             {
-                switch (args[0])
-                {
                     case "Sqlserver":
                         dbEngine = DatabaseEngine.Sqlserver;
                         break;
@@ -72,17 +74,17 @@ namespace KSociety.Base.Infra.Shared.Class
                         dbEngine = DatabaseEngine.Mysql;
                         break;
                 }
-            }
+            //}
 
-            if (args.Length >= 2)
-            {
-                connectionString = args[1];
-            }
+            //if (args.Length >= 2)
+            //{
+            //    connectionString = args[1];
+            //}
 
-            if (args.Length >= 2)
-            {
-                migrationsAssembly = args[1];
-            }
+            //if (args.Length >= 2)
+            //{
+            //    migrationsAssembly = args[1];
+            //}
 
             var optionBuilder = new DbContextOptionsBuilder<TContext>();
 
