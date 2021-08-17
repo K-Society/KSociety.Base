@@ -1,5 +1,7 @@
-﻿using KSociety.Base.Infra.Shared.Interface;
+﻿using KSociety.Base.Infra.Shared.Class.SqlGenerator;
+using KSociety.Base.Infra.Shared.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using System;
 
@@ -62,12 +64,14 @@ namespace KSociety.Base.Infra.Shared.Class
                         .EnableSensitiveDataLogging()
                         .UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
 
+                    optionBuilder.ReplaceService<IMigrationsSqlGenerator, SqlServerGenerator>();
                     break;
 
                 case DatabaseEngine.Sqlite:
                     optionBuilder
                         .UseSqlite(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
 
+                    optionBuilder.ReplaceService<IMigrationsSqlGenerator, SqliteGenerator>();
                     break;
 
                 case DatabaseEngine.Npgsql:
@@ -75,6 +79,8 @@ namespace KSociety.Base.Infra.Shared.Class
 
                 case DatabaseEngine.Mysql:
                     optionBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                    optionBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
                     break;
 
                 default:
