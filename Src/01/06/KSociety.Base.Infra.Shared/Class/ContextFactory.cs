@@ -69,16 +69,27 @@ namespace KSociety.Base.Infra.Shared.Class
 
                 case DatabaseEngine.Sqlite:
                     optionBuilder
+                        .EnableDetailedErrors()
+                        .EnableSensitiveDataLogging()
                         .UseSqlite(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
 
                     optionBuilder.ReplaceService<IMigrationsSqlGenerator, SqliteGenerator>();
                     break;
 
                 case DatabaseEngine.Npgsql:
+                    optionBuilder
+                        .EnableDetailedErrors()
+                        .EnableSensitiveDataLogging()
+                        .UseNpgsql(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                    optionBuilder.ReplaceService<IMigrationsSqlGenerator, NpgsqlGenerator>();
                     break;
 
                 case DatabaseEngine.Mysql:
-                    optionBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), sql => sql.MigrationsAssembly(migrationsAssembly));
+                    optionBuilder
+                        .EnableDetailedErrors()
+                        .EnableSensitiveDataLogging()
+                        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), sql => sql.MigrationsAssembly(migrationsAssembly));
 
                     optionBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
                     break;
