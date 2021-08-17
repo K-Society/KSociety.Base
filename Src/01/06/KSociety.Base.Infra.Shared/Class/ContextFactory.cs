@@ -1,5 +1,6 @@
 ﻿using KSociety.Base.Infra.Shared.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 
 namespace KSociety.Base.Infra.Shared.Class
@@ -7,53 +8,11 @@ namespace KSociety.Base.Infra.Shared.Class
     public class ContextFactory<TContext> : IContextFactory<TContext> where TContext : DatabaseContext
     {
         public virtual TContext CreateDbContext(string[] args)
-        //public virtual TContext CreateDbContext(string databaseEngine, string connectionString, string migrationsAssembly)
         {
-
-            //args = "\"" + Regex.Replace(args, @"(\\+)$", @"$1$1") + "\"";
-            //DatabaseEngine dbEngine = DatabaseEngine.Sqlserver;
-
-            //if (args.Length > 0)
-            //{
-            //    switch (args[0])
-            //    {
-            //        case "Sqlserver":
-            //            dbEngine = DatabaseEngine.Sqlserver;
-            //            break;
-            //        case "Sqlite":
-            //            dbEngine = DatabaseEngine.Sqlite;
-            //            break;
-            //        case "Npgsql":
-            //            dbEngine = DatabaseEngine.Npgsql;
-            //            break;
-            //    }
-            //}
-
-            //var optionBuilder = new DbContextOptionsBuilder<ComContext>();
-
-            //switch (dbEngine)
-            //{
-            //    case DatabaseEngine.Sqlserver:
-            //        optionBuilder
-            //            .UseSqlServer(@"Server=(LocalDB)\MSSQLLocalDB;Database=KSociety.Com;AttachDbFilename=C:\DB\ComDb.mdf;Integrated Security=True;Connect Timeout=30;", sql => sql.MigrationsAssembly("KSociety.Com.Infra.Migration.SqlServer"));
-
-            //        break;
-
-            //    case DatabaseEngine.Sqlite:
-            //        optionBuilder
-            //            .UseSqlite(@"Data Source=C:\DB\ComDb.db;", sql => sql.MigrationsAssembly("KSociety.Com.Infra.Migration.Sqlite"));
-
-            //        break;
-
-            //    case DatabaseEngine.Npgsql:
-            //        break;
-            //}
-
-            //return new ComContext(optionBuilder.Options);
-
             TContext output = null;
             var dbEngine = DatabaseEngine.Sqlserver;
             var migrationsAssembly = string.Empty;
+            var connectionStringName = string.Empty;
             var connectionString = string.Empty;
 
             if (args.Length < 2) return output;
@@ -80,7 +39,12 @@ namespace KSociety.Base.Infra.Shared.Class
 
             if (args.Length >= 2)
             {
-                connectionString = args[1];
+                connectionStringName = args[1];
+
+                var config = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+                connectionString = config.GetConnectionString(connectionStringName);
             }
 
             if (args.Length >= 3)
