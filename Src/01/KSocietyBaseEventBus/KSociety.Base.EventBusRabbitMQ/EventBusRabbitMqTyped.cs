@@ -20,7 +20,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
             
-            ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = CreateConsumerChannel(cancel);
         }
 
         public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
@@ -32,7 +32,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             : base(persistentConnection, loggerFactory, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
 
-            ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = CreateConsumerChannel(cancel);
         }
 
         #endregion

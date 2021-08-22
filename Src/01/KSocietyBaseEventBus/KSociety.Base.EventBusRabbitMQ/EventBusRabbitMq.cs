@@ -30,6 +30,8 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected IModel ConsumerChannel;
         protected string QueueName;
 
+        public ValueTask Initialization { get; private set; }
+
         #region [Constructor]
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
@@ -45,6 +47,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             QueueName = queueName;
             EventHandler = eventHandler;
             SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
+
+            Initialization = InitializeAsync(cancel);
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
@@ -60,15 +64,22 @@ namespace KSociety.Base.EventBusRabbitMQ
             QueueName = queueName;
             EventHandler = null;
             SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
+
+            Initialization = InitializeAsync(cancel);
         }
 
         #endregion
 
-        private void SubsManager_OnEventRemoved(object sender, string eventName)
+        protected async virtual ValueTask InitializeAsync(CancellationToken cancel = default)
+        {
+            ConsumerChannel = await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
+        }
+
+        private async void SubsManager_OnEventRemoved(object sender, string eventName)
         {
             if (!PersistentConnection.IsConnected)
             {
-                PersistentConnection.TryConnect();
+                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
             using var channel = PersistentConnection.CreateModel();
@@ -85,7 +96,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (!PersistentConnection.IsConnected)
                 {
-                    PersistentConnection.TryConnect();
+                    await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
                 }
 
                 var policy = Policy.Handle<BrokerUnreachableException>()
@@ -139,13 +150,13 @@ namespace KSociety.Base.EventBusRabbitMQ
             StartBasicConsume();
         }
 
-        protected void DoInternalSubscription(string eventName)
+        protected async void DoInternalSubscription(string eventName)
         {
             var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
             if (containsKey) return;
             if (!PersistentConnection.IsConnected)
             {
-                PersistentConnection.TryConnect();
+                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
             using var channel = PersistentConnection.CreateModel();
@@ -248,30 +259,60 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual IModel CreateConsumerChannel(CancellationToken cancel = default)
+        //protected virtual IModel CreateConsumerChannel(CancellationToken cancel = default)
+        //{
+        //    if (!PersistentConnection.IsConnected)
+        //    {
+        //        PersistentConnection.TryConnect();
+        //    }
+
+        //    var channel = PersistentConnection.CreateModel();
+
+        //    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, 
+        //        ExchangeDeclareParameters.ExchangeType, 
+        //        ExchangeDeclareParameters.ExchangeDurable, 
+        //        ExchangeDeclareParameters.ExchangeAutoDelete);
+
+        //    channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, 
+        //        QueueDeclareParameters.QueueExclusive, 
+        //        QueueDeclareParameters.QueueAutoDelete, null);
+        //    channel.BasicQos(0, 1, false);
+
+        //    channel.CallbackException += (sender, ea) =>
+        //    {
+        //        Logger.LogError("CallbackException: " + ExchangeDeclareParameters.ExchangeName + " " + QueueName + " " + ea.Exception.Message + " - " + ea.Exception.StackTrace);
+        //        ConsumerChannel.Dispose();
+        //        ConsumerChannel = CreateConsumerChannel(cancel);
+        //        StartBasicConsume();
+        //    };
+
+        //    return channel;
+        //}
+
+        protected async virtual ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             if (!PersistentConnection.IsConnected)
             {
-                PersistentConnection.TryConnect();
+                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
             var channel = PersistentConnection.CreateModel();
 
-            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, 
-                ExchangeDeclareParameters.ExchangeType, 
-                ExchangeDeclareParameters.ExchangeDurable, 
+            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
+                ExchangeDeclareParameters.ExchangeType,
+                ExchangeDeclareParameters.ExchangeDurable,
                 ExchangeDeclareParameters.ExchangeAutoDelete);
 
-            channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, 
-                QueueDeclareParameters.QueueExclusive, 
+            channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable,
+                QueueDeclareParameters.QueueExclusive,
                 QueueDeclareParameters.QueueAutoDelete, null);
             channel.BasicQos(0, 1, false);
 
-            channel.CallbackException += (sender, ea) =>
+            channel.CallbackException += async (sender, ea) =>
             {
                 Logger.LogError("CallbackException: " + ExchangeDeclareParameters.ExchangeName + " " + QueueName + " " + ea.Exception.Message + " - " + ea.Exception.StackTrace);
                 ConsumerChannel.Dispose();
-                ConsumerChannel = CreateConsumerChannel(cancel);
+                ConsumerChannel = await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
                 StartBasicConsume();
             };
 
