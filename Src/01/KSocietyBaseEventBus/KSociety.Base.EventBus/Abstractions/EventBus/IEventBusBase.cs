@@ -1,9 +1,9 @@
 ﻿using KSociety.Base.EventBus.Abstractions.Handler;
-using KSociety.Base.InfraSub.Shared.Interface;
+//using KSociety.Base.InfraSub.Shared.Interface;
 
 namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
-    public interface IEventBusBase : IAsyncInitialization
+    public interface IEventBusBase //: IAsyncInitialization
     {
         IIntegrationGeneralHandler EventHandler { get; }
 
