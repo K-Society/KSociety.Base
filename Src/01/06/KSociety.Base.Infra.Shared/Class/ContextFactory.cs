@@ -33,7 +33,7 @@ namespace KSociety.Base.Infra.Shared.Class
                     case "Npgsql":
                         dbEngine = DatabaseEngine.Npgsql;
                         break;
-                    case "MySql":
+                    case "Mysql":
                         dbEngine = DatabaseEngine.Mysql;
                         break;
                 }

@@ -39,6 +39,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
             //ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
         }
 
         #endregion
@@ -71,7 +72,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             _queueNameReply = string.Empty;
             QueueName = string.Empty;
-            ConsumerChannel?.Close();
+            ConsumerChannel?.Value.Close();
 
         }
 
@@ -222,7 +223,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override void DisposeManagedResources()
         {
-            ConsumerChannel?.Dispose();
+            ConsumerChannel?.Value.Dispose();
             SubsManager?.Clear();
             SubsManager?.ClearReply();
         }
@@ -233,14 +234,14 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (ConsumerChannel != null)
             {
-                var consumer = new AsyncEventingBasicConsumer(ConsumerChannel);
+                var consumer = new AsyncEventingBasicConsumer(ConsumerChannel.Value);
 
                 consumer.Received += ConsumerReceivedAsync;
 
 
                 // autoAck specifies that as soon as the consumer gets the message,
                 // it will ack, even if it dies mid-way through the callback
-                ConsumerChannel.BasicConsume(
+                ConsumerChannel.Value.BasicConsume(
                     queue: _queueNameReply, //ToDo
                     autoAck: true, //ToDo
                     consumer: consumer);
@@ -408,8 +409,8 @@ namespace KSociety.Base.EventBusRabbitMQ
                 channel.CallbackException += async (sender, ea) =>
                 {
                     Logger.LogError("CallbackException: " + ea.Exception.Message);
-                    ConsumerChannel?.Dispose();
-                    ConsumerChannel = await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
+                    ConsumerChannel?.Value.Dispose();
+                    ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
                     StartBasicConsume();
                 };
 

@@ -19,7 +19,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 {
     public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
     {
-        private IModel _consumerChannelReply;
+        private Lazy<IModel> _consumerChannelReply;
         private string _queueNameReply;
 
         private readonly string _correlationId;
@@ -36,8 +36,10 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
             //ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
             //_queueNameReply = QueueName + "_Reply";
             //_consumerChannelReply = CreateConsumerChannelReply(cancel);
+            //_consumerChannelReply = new Lazy<IModel>(CreateConsumerChannelReplyAsync(cancel).Result);
             _correlationId = Guid.NewGuid().ToString();
         }
 
@@ -45,9 +47,10 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected async override ValueTask InitializeAsync(CancellationToken cancel = default)
         {
-            ConsumerChannel = await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
+            ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
             _queueNameReply = QueueName + "_Reply";
-            _consumerChannelReply = await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false);
+            _consumerChannelReply =
+                new Lazy<IModel>(await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false)); //await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false);
         }
 
         public IIntegrationRpcHandler<T, TR> GetIntegrationRpcHandler<T, TR>()
@@ -77,7 +80,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             if (!SubsManager.IsReplyEmpty) return;
 
             _queueNameReply = string.Empty;
-            _consumerChannelReply?.Close();
+            _consumerChannelReply?.Value.Close();
 
         }
 
@@ -161,8 +164,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override void DisposeManagedResources()
         {
-            _consumerChannelReply?.Dispose();
-            ConsumerChannel?.Dispose();
+            _consumerChannelReply?.Value.Dispose();
+            ConsumerChannel?.Value.Dispose();
             SubsManager?.Clear();
             SubsManager?.ClearReply();
         }
@@ -173,11 +176,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (ConsumerChannel != null)
             {
-                var consumer = new AsyncEventingBasicConsumer(ConsumerChannel);
+                var consumer = new AsyncEventingBasicConsumer(ConsumerChannel.Value);
 
                 consumer.Received += ConsumerReceivedAsync;
 
-                ConsumerChannel.BasicConsume(
+                ConsumerChannel.Value.BasicConsume(
                     queue: QueueName,
                     autoAck: false,
                     consumer: consumer);
@@ -194,11 +197,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (_consumerChannelReply != null)
             {
-                var consumer = new AsyncEventingBasicConsumer(_consumerChannelReply);
+                var consumer = new AsyncEventingBasicConsumer(_consumerChannelReply.Value);
 
                 consumer.Received += ConsumerReceivedReply;
 
-                _consumerChannelReply.BasicConsume(
+                _consumerChannelReply.Value.BasicConsume(
                     queue: _queueNameReply,
                     autoAck: false,
                     consumer: consumer);
@@ -219,14 +222,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                 try
                 {
                     var props = eventArgs.BasicProperties;
-                    var replyProps = ConsumerChannel.CreateBasicProperties();
+                    var replyProps = ConsumerChannel.Value.CreateBasicProperties();
                     replyProps.CorrelationId = props.CorrelationId;
 
                     var response = await ProcessEventRpc(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
                     var ms = new MemoryStream();
                     Serializer.Serialize<IIntegrationEventReply>(ms, response);
                     var body = ms.ToArray();
-                    ConsumerChannel.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
+                    ConsumerChannel.Value.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
                 }
                 catch (Exception ex)
                 {
@@ -245,7 +248,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                ConsumerChannel.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -274,7 +277,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                ConsumerChannel.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -324,8 +327,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             channel.CallbackException += async (sender, ea) =>
             {
                 Logger.LogError("CallbackException: " + ea.Exception.Message);
-                ConsumerChannel.Dispose();
-                ConsumerChannel = await CreateConsumerChannelAsync(cancel);
+                ConsumerChannel.Value.Dispose();
+                ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel);
                 StartBasicConsume();
             };
 
@@ -374,8 +377,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             channel.CallbackException += async (sender, ea) =>
             {
                 Logger.LogError("CallbackException Rpc: " + ea.Exception.Message);
-                _consumerChannelReply.Dispose();
-                _consumerChannelReply = await CreateConsumerChannelReplyAsync(cancel);
+                _consumerChannelReply.Value.Dispose();
+                _consumerChannelReply = new Lazy<IModel>(await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelReplyAsync(cancel);
                 StartBasicConsumeReply();
             };
 

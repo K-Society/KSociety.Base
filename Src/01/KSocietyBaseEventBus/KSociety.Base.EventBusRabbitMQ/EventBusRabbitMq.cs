@@ -27,10 +27,10 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public IIntegrationGeneralHandler EventHandler { get; }
 
-        protected IModel ConsumerChannel;
+        protected Lazy<IModel> ConsumerChannel;
         protected string QueueName;
 
-        public ValueTask Initialization { get; private set; }
+        //public ValueTask Initialization { get; private set; }
 
         #region [Constructor]
 
@@ -48,7 +48,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             EventHandler = eventHandler;
             SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
 
-            Initialization = InitializeAsync(cancel);
+            //Initialization = InitializeAsync(cancel);
+            InitializeAsync(cancel);
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
@@ -65,14 +66,16 @@ namespace KSociety.Base.EventBusRabbitMQ
             EventHandler = null;
             SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
 
-            Initialization = InitializeAsync(cancel);
+            //Initialization = InitializeAsync(cancel);
+            InitializeAsync(cancel);
         }
 
         #endregion
 
         protected async virtual ValueTask InitializeAsync(CancellationToken cancel = default)
         {
-            ConsumerChannel = await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
+            //ConsumerChannel = await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
+            ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         }
 
         private async void SubsManager_OnEventRemoved(object sender, string eventName)
@@ -87,7 +90,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!SubsManager.IsEmpty) return;
             QueueName = string.Empty;
-            ConsumerChannel?.Close();
+            ConsumerChannel?.Value.Close();
         }
 
         public virtual async ValueTask Publish(IIntegrationEvent @event)
@@ -178,7 +181,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override void DisposeManagedResources()
         {
-            ConsumerChannel?.Dispose();
+            ConsumerChannel?.Value.Dispose();
             SubsManager?.Clear();
         }
 
@@ -188,11 +191,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (ConsumerChannel != null)
             {
-                var consumer = new AsyncEventingBasicConsumer(ConsumerChannel);
+                var consumer = new AsyncEventingBasicConsumer(ConsumerChannel.Value);
 
                 consumer.Received += ConsumerReceivedAsync;
 
-                ConsumerChannel.BasicConsume(
+                ConsumerChannel.Value.BasicConsume(
                     queue: QueueName,
                     autoAck: false,
                     consumer: consumer);
@@ -223,7 +226,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                ConsumerChannel.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -251,7 +254,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                ConsumerChannel.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -311,8 +314,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             channel.CallbackException += async (sender, ea) =>
             {
                 Logger.LogError("CallbackException: " + ExchangeDeclareParameters.ExchangeName + " " + QueueName + " " + ea.Exception.Message + " - " + ea.Exception.StackTrace);
-                ConsumerChannel.Dispose();
-                ConsumerChannel = await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
+                ConsumerChannel.Value.Dispose();
+                ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
                 StartBasicConsume();
             };
 
