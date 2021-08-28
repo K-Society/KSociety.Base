@@ -1,9 +1,9 @@
-﻿using System.Threading;
-using KSociety.Base.EventBus;
+﻿using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
@@ -19,8 +19,9 @@ namespace KSociety.Base.EventBusRabbitMQ
             CancellationToken cancel = default)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
-            
-            ConsumerChannel = CreateConsumerChannel(cancel);
+
+            //ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
         }
 
         public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
@@ -32,7 +33,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             : base(persistentConnection, loggerFactory, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
 
-            ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
         }
 
         #endregion

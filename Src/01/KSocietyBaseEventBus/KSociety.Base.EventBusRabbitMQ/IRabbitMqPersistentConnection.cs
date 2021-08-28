@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using RabbitMQ.Client;
 
 namespace KSociety.Base.EventBusRabbitMQ
@@ -7,9 +8,8 @@ namespace KSociety.Base.EventBusRabbitMQ
         : IDisposable
     {
         bool IsConnected { get; }
-
-        bool TryConnect();
-
+        //bool TryConnect();
+        ValueTask<bool> TryConnectAsync();
         IModel CreateModel();
     }
 }

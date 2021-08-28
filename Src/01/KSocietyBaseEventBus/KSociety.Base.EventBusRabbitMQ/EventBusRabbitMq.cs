@@ -27,7 +27,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public IIntegrationGeneralHandler EventHandler { get; }
 
-        protected IModel ConsumerChannel;
+        protected Lazy<IModel> ConsumerChannel;
         protected string QueueName;
 
         #region [Constructor]
@@ -45,6 +45,9 @@ namespace KSociety.Base.EventBusRabbitMQ
             QueueName = queueName;
             EventHandler = eventHandler;
             SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
+
+            //Initialization = InitializeAsync(cancel);
+            InitializeAsync(cancel);
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
@@ -60,15 +63,23 @@ namespace KSociety.Base.EventBusRabbitMQ
             QueueName = queueName;
             EventHandler = null;
             SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
+
+            //Initialization = InitializeAsync(cancel);
+            InitializeAsync(cancel);
         }
 
         #endregion
 
-        private void SubsManager_OnEventRemoved(object sender, string eventName)
+        protected async virtual ValueTask InitializeAsync(CancellationToken cancel = default)
+        {
+            ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+        }
+
+        private async void SubsManager_OnEventRemoved(object sender, string eventName)
         {
             if (!PersistentConnection.IsConnected)
             {
-                PersistentConnection.TryConnect();
+                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
             using var channel = PersistentConnection.CreateModel();
@@ -76,7 +87,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!SubsManager.IsEmpty) return;
             QueueName = string.Empty;
-            ConsumerChannel?.Close();
+            ConsumerChannel?.Value.Close();
         }
 
         public virtual async ValueTask Publish(IIntegrationEvent @event)
@@ -85,7 +96,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (!PersistentConnection.IsConnected)
                 {
-                    PersistentConnection.TryConnect();
+                    await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
                 }
 
                 var policy = Policy.Handle<BrokerUnreachableException>()
@@ -139,13 +150,13 @@ namespace KSociety.Base.EventBusRabbitMQ
             StartBasicConsume();
         }
 
-        protected void DoInternalSubscription(string eventName)
+        protected async void DoInternalSubscription(string eventName)
         {
             var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
             if (containsKey) return;
             if (!PersistentConnection.IsConnected)
             {
-                PersistentConnection.TryConnect();
+                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
             using var channel = PersistentConnection.CreateModel();
@@ -167,28 +178,35 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override void DisposeManagedResources()
         {
-            ConsumerChannel?.Dispose();
+            ConsumerChannel?.Value.Dispose();
             SubsManager?.Clear();
         }
 
         protected virtual void StartBasicConsume()
         {
-            Logger.LogTrace("Starting RabbitMQ basic consume");
-
-            if (ConsumerChannel != null)
+            Logger.LogTrace("Starting RabbitMQ basic consume.");
+            try
             {
-                var consumer = new AsyncEventingBasicConsumer(ConsumerChannel);
+                if (ConsumerChannel is null) { Logger.LogWarning("ConsumerChannel is null!"); return; }
+                if (ConsumerChannel?.Value is not null)
+                {
+                    var consumer = new AsyncEventingBasicConsumer(ConsumerChannel?.Value);
 
-                consumer.Received += ConsumerReceivedAsync;
+                    consumer.Received += ConsumerReceivedAsync;
 
-                ConsumerChannel.BasicConsume(
-                    queue: QueueName,
-                    autoAck: false,
-                    consumer: consumer);
+                    ConsumerChannel?.Value.BasicConsume(
+                        queue: QueueName,
+                        autoAck: false,
+                        consumer: consumer);
+                }
+                else
+                {
+                    Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Logger.LogError("StartBasicConsume can't call on ConsumerChannel == null");
+                Logger.LogError(ex, "StartBasicConsume: ");
             }
         }
 
@@ -212,7 +230,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                ConsumerChannel?.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -240,7 +258,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                ConsumerChannel?.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -248,30 +266,60 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual IModel CreateConsumerChannel(CancellationToken cancel = default)
+        //protected virtual IModel CreateConsumerChannel(CancellationToken cancel = default)
+        //{
+        //    if (!PersistentConnection.IsConnected)
+        //    {
+        //        PersistentConnection.TryConnect();
+        //    }
+
+        //    var channel = PersistentConnection.CreateModel();
+
+        //    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, 
+        //        ExchangeDeclareParameters.ExchangeType, 
+        //        ExchangeDeclareParameters.ExchangeDurable, 
+        //        ExchangeDeclareParameters.ExchangeAutoDelete);
+
+        //    channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, 
+        //        QueueDeclareParameters.QueueExclusive, 
+        //        QueueDeclareParameters.QueueAutoDelete, null);
+        //    channel.BasicQos(0, 1, false);
+
+        //    channel.CallbackException += (sender, ea) =>
+        //    {
+        //        Logger.LogError("CallbackException: " + ExchangeDeclareParameters.ExchangeName + " " + QueueName + " " + ea.Exception.Message + " - " + ea.Exception.StackTrace);
+        //        ConsumerChannel.Dispose();
+        //        ConsumerChannel = CreateConsumerChannel(cancel);
+        //        StartBasicConsume();
+        //    };
+
+        //    return channel;
+        //}
+
+        protected async virtual ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             if (!PersistentConnection.IsConnected)
             {
-                PersistentConnection.TryConnect();
+                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
             var channel = PersistentConnection.CreateModel();
 
-            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, 
-                ExchangeDeclareParameters.ExchangeType, 
-                ExchangeDeclareParameters.ExchangeDurable, 
+            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
+                ExchangeDeclareParameters.ExchangeType,
+                ExchangeDeclareParameters.ExchangeDurable,
                 ExchangeDeclareParameters.ExchangeAutoDelete);
 
-            channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, 
-                QueueDeclareParameters.QueueExclusive, 
+            channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable,
+                QueueDeclareParameters.QueueExclusive,
                 QueueDeclareParameters.QueueAutoDelete, null);
             channel.BasicQos(0, 1, false);
 
-            channel.CallbackException += (sender, ea) =>
+            channel.CallbackException += async (sender, ea) =>
             {
                 Logger.LogError("CallbackException: " + ExchangeDeclareParameters.ExchangeName + " " + QueueName + " " + ea.Exception.Message + " - " + ea.Exception.StackTrace);
-                ConsumerChannel.Dispose();
-                ConsumerChannel = CreateConsumerChannel(cancel);
+                ConsumerChannel?.Value.Dispose();
+                ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
                 StartBasicConsume();
             };
 

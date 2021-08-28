@@ -28,7 +28,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             CancellationToken cancel = default)
         :base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
-            ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
         }
 
         #endregion
@@ -37,7 +38,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             where T : IIntegrationEvent
             where TH : IIntegrationQueueHandler<T>
         {
-            if (!(EventHandler is null) && EventHandler is IIntegrationQueueHandler<T> queue)
+            if (EventHandler is not null && EventHandler is IIntegrationQueueHandler<T> queue)
             {
                 return queue;
             }
@@ -49,7 +50,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             if (!PersistentConnection.IsConnected)
             {
-                PersistentConnection.TryConnect();
+                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
             var policy = Policy.Handle<BrokerUnreachableException>()

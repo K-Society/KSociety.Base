@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
@@ -25,7 +25,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
             _autofac = autofac;
-            ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = CreateConsumerChannel(cancel);
+            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
         }
 
         #endregion
