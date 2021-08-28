@@ -298,6 +298,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected async virtual ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
+            Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", QueueName);
+
             if (!PersistentConnection.IsConnected)
             {
                 await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
@@ -317,7 +319,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             channel.CallbackException += async (sender, ea) =>
             {
-                Logger.LogError("CallbackException: " + ExchangeDeclareParameters.ExchangeName + " " + QueueName + " " + ea.Exception.Message + " - " + ea.Exception.StackTrace);
+                Logger.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}", ExchangeDeclareParameters.ExchangeName, QueueName);
                 ConsumerChannel?.Value.Dispose();
                 ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
                 StartBasicConsume();
