@@ -277,10 +277,19 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             var channel = PersistentConnection.CreateModel();
 
-            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+            try
+            {
+                channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType,
+                    ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
 
-            channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-            channel.BasicQos(0, 1, false);
+                channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable,
+                    QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+                channel.BasicQos(0, 1, false);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "CreateConsumerChannelAsync: ");
+            }
 
             channel.CallbackException += async (sender, ea) =>
             {
@@ -328,10 +337,19 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             var channel = PersistentConnection.CreateModel();
 
-            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+            try
+            {
+                channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType,
+                    ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
 
-            channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-            channel.BasicQos(0, 1, false);
+                channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
+                    QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+                channel.BasicQos(0, 1, false);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "CreateConsumerChannelReplyAsync: ");
+            }
 
             channel.CallbackException += async (sender, ea) =>
             {
