@@ -46,7 +46,6 @@ namespace KSociety.Base.EventBusRabbitMQ
             EventHandler = eventHandler;
             SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
 
-            //Initialization = InitializeAsync(cancel);
             InitializeAsync(cancel);
         }
 
@@ -64,7 +63,6 @@ namespace KSociety.Base.EventBusRabbitMQ
             EventHandler = null;
             SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
 
-            //Initialization = InitializeAsync(cancel);
             InitializeAsync(cancel);
         }
 
@@ -72,6 +70,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected async virtual ValueTask InitializeAsync(CancellationToken cancel = default)
         {
+            Logger.LogTrace("EventBusRabbitMq InitializeAsync.");
             ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         }
 

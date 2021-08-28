@@ -35,11 +35,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             CancellationToken cancel = default)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
-            //_queueNameReply = QueueName + "_Reply";
 
-            //SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-            //ConsumerChannel = CreateConsumerChannel(cancel);
-            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
         }
 
         #endregion
@@ -49,10 +45,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             Logger.LogTrace("EventBusRabbitMqRpcClient InitializeAsync.");
             _queueNameReply = QueueName + "_Reply";
             SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-            ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false)); //await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
-            
-            //_consumerChannelReply =
-            //    new Lazy<IModel>(await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false)); //await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false);
+            ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         }
 
         public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
