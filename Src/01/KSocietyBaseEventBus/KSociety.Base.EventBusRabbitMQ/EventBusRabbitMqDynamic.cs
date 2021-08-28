@@ -25,8 +25,6 @@ namespace KSociety.Base.EventBusRabbitMQ
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
             _autofac = autofac;
-            //ConsumerChannel = CreateConsumerChannel(cancel);
-            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
         }
 
         #endregion

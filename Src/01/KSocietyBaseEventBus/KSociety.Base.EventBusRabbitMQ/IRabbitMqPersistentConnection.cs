@@ -8,7 +8,6 @@ namespace KSociety.Base.EventBusRabbitMQ
         : IDisposable
     {
         bool IsConnected { get; }
-        //bool TryConnect();
         ValueTask<bool> TryConnectAsync();
         IModel CreateModel();
     }
