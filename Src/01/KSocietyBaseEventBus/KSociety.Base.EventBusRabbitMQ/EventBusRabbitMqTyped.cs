@@ -1,11 +1,9 @@
-﻿using System;
-using System.Threading;
-using KSociety.Base.EventBus;
+﻿using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+using System.Threading;
 
 namespace KSociety.Base.EventBusRabbitMQ
 {

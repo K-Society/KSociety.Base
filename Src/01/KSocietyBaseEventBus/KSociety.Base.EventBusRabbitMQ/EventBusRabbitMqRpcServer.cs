@@ -140,20 +140,29 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             Logger.LogTrace("Starting RabbitMQ basic consume");
 
-            if (ConsumerChannel != null)
+            try
             {
-                var consumer = new AsyncEventingBasicConsumer(ConsumerChannel.Value);
+                if (ConsumerChannel is null) {Logger.LogWarning("ConsumerChannel is null"); return;}
 
-                consumer.Received += ConsumerReceivedAsync;
+                if (ConsumerChannel?.Value is not null)
+                {
+                    var consumer = new AsyncEventingBasicConsumer(ConsumerChannel?.Value);
 
-                ConsumerChannel.Value.BasicConsume(
-                    queue: QueueName,
-                    autoAck: false,
-                    consumer: consumer);
+                    consumer.Received += ConsumerReceivedAsync;
+
+                    ConsumerChannel?.Value.BasicConsume(
+                        queue: QueueName,
+                        autoAck: false,
+                        consumer: consumer);
+                }
+                else
+                {
+                    Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Logger.LogError("StartBasicConsume can't call on ConsumerChannel == null");
+                Logger.LogError(ex, "StartBasicConsume: ");
             }
         }
 
@@ -165,7 +174,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             try
             {
                 var props = eventArgs.BasicProperties;
-                var replyProps = ConsumerChannel.Value.CreateBasicProperties();
+                var replyProps = ConsumerChannel?.Value.CreateBasicProperties();
                 replyProps.CorrelationId = props.CorrelationId;
 
                 var response = ProcessEventRpc(eventArgs.RoutingKey, eventName, eventArgs.Body);
@@ -173,7 +182,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 Serializer.Serialize<IIntegrationEventReply>(ms, response);
                 var body = ms.ToArray();
 
-                _consumerChannelReply.Value.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
+                _consumerChannelReply?.Value.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
             }
             catch (Exception ex)
             {
@@ -187,7 +196,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                ConsumerChannel?.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -203,7 +212,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             try
             {
                 var props = eventArgs.BasicProperties;
-                var replyProps = ConsumerChannel.Value.CreateBasicProperties();
+                var replyProps = ConsumerChannel?.Value.CreateBasicProperties();
                 replyProps.CorrelationId = props.CorrelationId;
                     
                 var response = await ProcessEventRpcAsync(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
@@ -212,7 +221,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 var body = ms.ToArray();
 
-                _consumerChannelReply.Value.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
+                _consumerChannelReply?.Value.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
             }
             catch (Exception ex)
             {
@@ -225,7 +234,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                ConsumerChannel?.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -275,7 +284,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             channel.CallbackException += async (sender, ea) =>
             {
                 Logger.LogError("CallbackException: " + ea.Exception.Message);
-                ConsumerChannel.Value.Dispose();
+                ConsumerChannel?.Value.Dispose();
                 ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel);
                 StartBasicConsume();
             };
@@ -325,7 +334,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             channel.CallbackException += async (sender, ea) =>
             {
                 Logger.LogError("CallbackException Rpc: " + ea.Exception.Message);
-                _consumerChannelReply.Value.Dispose();
+                _consumerChannelReply?.Value.Dispose();
                 _consumerChannelReply = new Lazy<IModel>(await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false)); //await CreateConsumerChannelReplyAsync(cancel);
                 //StartBasicConsumeReply();
             };

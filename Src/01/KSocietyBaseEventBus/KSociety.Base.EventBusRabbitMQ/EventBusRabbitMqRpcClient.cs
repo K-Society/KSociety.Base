@@ -232,23 +232,31 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             Logger.LogTrace("Starting RabbitMQ basic consume");
 
-            if (ConsumerChannel != null)
+            try
             {
-                var consumer = new AsyncEventingBasicConsumer(ConsumerChannel.Value);
+                if (ConsumerChannel is null) { Logger.LogWarning("ConsumerChannel is null"); return; }
+                if (ConsumerChannel?.Value is not null)
+                {
+                    var consumer = new AsyncEventingBasicConsumer(ConsumerChannel?.Value);
 
-                consumer.Received += ConsumerReceivedAsync;
+                    consumer.Received += ConsumerReceivedAsync;
 
 
-                // autoAck specifies that as soon as the consumer gets the message,
-                // it will ack, even if it dies mid-way through the callback
-                ConsumerChannel.Value.BasicConsume(
-                    queue: _queueNameReply, //ToDo
-                    autoAck: true, //ToDo
-                    consumer: consumer);
+                    // autoAck specifies that as soon as the consumer gets the message,
+                    // it will ack, even if it dies mid-way through the callback
+                    ConsumerChannel?.Value.BasicConsume(
+                        queue: _queueNameReply, //ToDo
+                        autoAck: true, //ToDo
+                        consumer: consumer);
+                }
+                else
+                {
+                    Logger.LogError("StartBasicConsume can't call on ConsumerChannel == null");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Logger.LogError("StartBasicConsume can't call on ConsumerChannel == null");
+                Logger.LogError(ex, "StartBasicConsume: ");
             }
         }
 
