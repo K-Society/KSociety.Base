@@ -29,7 +29,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             CancellationToken cancel = default)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
-            SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
+            //SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
             //ConsumerChannel = CreateConsumerChannel(cancel);
             //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
             //_queueNameReply = QueueName + "_Reply";
@@ -41,6 +41,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected async override ValueTask InitializeAsync(CancellationToken cancel = default)
         {
+            Logger.LogTrace("EventBusRabbitMqRpcServer InitializeAsync.");
+            SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
             ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false)); //await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
             _queueNameReply = QueueName + "_Reply";
             _consumerChannelReply =
@@ -279,6 +281,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
+                //Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", QueueName);
                 channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType,
                     ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
 
