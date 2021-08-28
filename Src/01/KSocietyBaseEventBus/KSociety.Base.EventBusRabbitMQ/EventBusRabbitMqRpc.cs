@@ -34,12 +34,6 @@ namespace KSociety.Base.EventBusRabbitMQ
             CancellationToken cancel = default)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
-            SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-            //ConsumerChannel = CreateConsumerChannel(cancel);
-            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
-            //_queueNameReply = QueueName + "_Reply";
-            //_consumerChannelReply = CreateConsumerChannelReply(cancel);
-            //_consumerChannelReply = new Lazy<IModel>(CreateConsumerChannelReplyAsync(cancel).Result);
             _correlationId = Guid.NewGuid().ToString();
         }
 
@@ -47,6 +41,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected async override ValueTask InitializeAsync(CancellationToken cancel = default)
         {
+            Logger.LogTrace("EventBusRabbitMqRpc InitializeAsync.");
+            SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
             ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
             _queueNameReply = QueueName + "_Reply";
             _consumerChannelReply =
@@ -354,7 +350,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             channel.CallbackException += async (sender, ea) =>
             {
-                Logger.LogError("CallbackException: " + ea.Exception.Message);
+                Logger.LogError(ea.Exception, "CallbackException: ");
                 ConsumerChannel?.Value.Dispose();
                 ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel);
                 StartBasicConsume();

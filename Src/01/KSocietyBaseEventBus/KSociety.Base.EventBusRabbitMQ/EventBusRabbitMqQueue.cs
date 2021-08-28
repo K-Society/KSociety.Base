@@ -28,8 +28,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             CancellationToken cancel = default)
         :base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
-            //ConsumerChannel = CreateConsumerChannel(cancel);
-            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
+
         }
 
         #endregion

@@ -22,7 +22,6 @@ namespace KSociety.Base.EventBusRabbitMQ
         private readonly SemaphoreSlim _connectionLock = new(1, 1);
         private readonly CancellationTokenSource _closeTokenSource = new();
         private readonly CancellationToken _closeToken;
-        //private readonly object _syncRoot = new();
 
         public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILoggerFactory loggerFactory)
         {

@@ -35,14 +35,18 @@ namespace KSociety.Base.EventBusRabbitMQ
             CancellationToken cancel = default)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
         {
-            _queueNameReply = QueueName + "_Reply";
 
-            SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-            //ConsumerChannel = CreateConsumerChannel(cancel);
-            //ConsumerChannel = new Lazy<IModel>(CreateConsumerChannelAsync(cancel).Result);
         }
 
         #endregion
+
+        protected async override ValueTask InitializeAsync(CancellationToken cancel = default)
+        {
+            Logger.LogTrace("EventBusRabbitMqRpcClient InitializeAsync.");
+            _queueNameReply = QueueName + "_Reply";
+            SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
+            ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+        }
 
         public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
             where TIntegrationEventReply : IIntegrationEventReply
@@ -251,7 +255,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 }
                 else
                 {
-                    Logger.LogError("StartBasicConsume can't call on ConsumerChannel == null");
+                    Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
                 }
             }
             catch (Exception ex)
@@ -396,6 +400,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected async override ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
+            Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", QueueName, _queueNameReply);
             try
             {
                 if (!PersistentConnection.IsConnected)
@@ -405,18 +410,29 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 var channel = PersistentConnection.CreateModel();
 
-                channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType,
-                    ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+                try
+                {
 
-                channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-                //ToDo
-                channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
-                    QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-                //channel.BasicQos(0, 1, false);
+
+                    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
+                        ExchangeDeclareParameters.ExchangeType,
+                        ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+
+                    channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable,
+                        QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+                    //ToDo
+                    channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
+                        QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+                    //channel.BasicQos(0, 1, false);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "CreateConsumerChannelAsync: ");
+                }
 
                 channel.CallbackException += async (sender, ea) =>
                 {
-                    Logger.LogError("CallbackException: " + ea.Exception.Message);
+                    Logger.LogError(ea.Exception, "CallbackException: ");
                     ConsumerChannel?.Value.Dispose();
                     ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
                     StartBasicConsume();
@@ -426,7 +442,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             catch (Exception ex)
             {
-                Logger.LogError("CreateConsumerChannel: " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogError(ex, "CreateConsumerChannelAsync: ");
             }
 
             return null;
