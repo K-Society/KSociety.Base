@@ -189,7 +189,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             Logger.LogTrace("Starting RabbitMQ basic consume");
 
-            if (ConsumerChannel != null)
+            if (ConsumerChannel.Value is not null)
             {
                 var consumer = new AsyncEventingBasicConsumer(ConsumerChannel.Value);
 
@@ -202,7 +202,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             else
             {
-                Logger.LogError("StartBasicConsume can't call on ConsumerChannel == null");
+                Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
             }
         }
 
