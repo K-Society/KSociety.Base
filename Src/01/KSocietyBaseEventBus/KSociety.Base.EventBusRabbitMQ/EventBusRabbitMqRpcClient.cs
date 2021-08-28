@@ -251,7 +251,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 }
                 else
                 {
-                    Logger.LogError("StartBasicConsume can't call on ConsumerChannel == null");
+                    Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
                 }
             }
             catch (Exception ex)
@@ -416,7 +416,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 channel.CallbackException += async (sender, ea) =>
                 {
-                    Logger.LogError("CallbackException: " + ea.Exception.Message);
+                    Logger.LogError(ea.Exception, "CallbackException: ");
                     ConsumerChannel?.Value.Dispose();
                     ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
                     StartBasicConsume();
@@ -426,7 +426,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             catch (Exception ex)
             {
-                Logger.LogError("CreateConsumerChannel: " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogError(ex, "CreateConsumerChannel: ");
             }
 
             return null;
