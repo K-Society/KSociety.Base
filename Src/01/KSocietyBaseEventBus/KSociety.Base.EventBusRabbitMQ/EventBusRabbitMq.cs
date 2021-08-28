@@ -30,8 +30,6 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected Lazy<IModel> ConsumerChannel;
         protected string QueueName;
 
-        //public ValueTask Initialization { get; private set; }
-
         #region [Constructor]
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
@@ -74,7 +72,6 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected async virtual ValueTask InitializeAsync(CancellationToken cancel = default)
         {
-            //ConsumerChannel = await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
             ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         }
 
@@ -190,15 +187,14 @@ namespace KSociety.Base.EventBusRabbitMQ
             Logger.LogTrace("Starting RabbitMQ basic consume.");
             try
             {
-
-
-                if (ConsumerChannel.Value is not null)
+                if (ConsumerChannel is null) { Logger.LogWarning("ConsumerChannel is null!"); return; }
+                if (ConsumerChannel?.Value is not null)
                 {
-                    var consumer = new AsyncEventingBasicConsumer(ConsumerChannel.Value);
+                    var consumer = new AsyncEventingBasicConsumer(ConsumerChannel?.Value);
 
                     consumer.Received += ConsumerReceivedAsync;
 
-                    ConsumerChannel.Value.BasicConsume(
+                    ConsumerChannel?.Value.BasicConsume(
                         queue: QueueName,
                         autoAck: false,
                         consumer: consumer);
@@ -234,7 +230,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                ConsumerChannel?.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -262,7 +258,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                ConsumerChannel?.Value.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -322,7 +318,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             channel.CallbackException += async (sender, ea) =>
             {
                 Logger.LogError("CallbackException: " + ExchangeDeclareParameters.ExchangeName + " " + QueueName + " " + ea.Exception.Message + " - " + ea.Exception.StackTrace);
-                ConsumerChannel.Value.Dispose();
+                ConsumerChannel?.Value.Dispose();
                 ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
                 StartBasicConsume();
             };
