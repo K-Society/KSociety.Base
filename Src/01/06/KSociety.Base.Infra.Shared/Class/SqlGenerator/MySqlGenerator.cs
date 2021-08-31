@@ -43,7 +43,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             }
             catch (Exception ex)
             {
-                _logger.LogError("Generate " + ex.Message + " " + ex.StackTrace);
+                _logger.LogError(ex, "Generate: ");
             }
         }
     }

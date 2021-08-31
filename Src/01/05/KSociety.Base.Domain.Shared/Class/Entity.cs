@@ -22,10 +22,10 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="value">New value of the domaint entiy field.</param>
         public void ModifyField(string fieldName, string value)
         {
-            Logger?.LogTrace("ModifyField Entity: " +
-                             GetType().FullName + "." +
-                             MethodBase.GetCurrentMethod()?.Name +
-                             " - " + fieldName + " - " + value);
+            Logger?.LogTrace("ModifyField Entity: {0}.{1} - {2} - {3}",
+                GetType().FullName, 
+                MethodBase.GetCurrentMethod()?.Name, 
+                fieldName, value);
 
             AddEntityModifyFieldEvent(fieldName, value);
             try
@@ -57,10 +57,10 @@ namespace KSociety.Base.Domain.Shared.Class
                             }
                             else
                             {
-                                Logger?.LogWarning("ModifyField Entity: " +
-                                                   GetType().FullName + "." +
-                                                   MethodBase.GetCurrentMethod()?.Name +
-                                                   " - " + fieldName + " - " + value + ": Byte Array on data!");
+                                Logger?.LogWarning("ModifyField Entity: {0}.{1} - {2} - {3}: Byte Array on data!",
+                                                   GetType().FullName,
+                                                   MethodBase.GetCurrentMethod()?.Name,
+                                                   fieldName, value);
                             }
                         }
                     }
@@ -86,10 +86,9 @@ namespace KSociety.Base.Domain.Shared.Class
                 }
                 else
                 {
-                    Logger?.LogWarning("ModifyField Entity: " + 
-                                       GetType().FullName + "." + 
-                                       MethodBase.GetCurrentMethod()?.Name +
-                                       " - " + fieldName + " - " + value + ": Can not write OR null!");
+                    Logger?.LogWarning("ModifyField Entity: {0}.{1} - {2} - {3}: Can not write OR null!",
+                                       GetType().FullName, 
+                                       MethodBase.GetCurrentMethod()?.Name, fieldName, value);
                 }
             }
             catch (Exception ex)
