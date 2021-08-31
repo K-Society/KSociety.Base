@@ -204,7 +204,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger?.LogError(ex, "EnsureCreated: ");
             }
 
             return output;
@@ -219,7 +219,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger?.LogError(ex, "EnsureCreatedAsync: ");
             }
 
             return output;
@@ -234,7 +234,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger?.LogError(ex, "EnsureDeleted: ");
             }
 
             return output;
@@ -249,7 +249,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger?.LogError(ex, "EnsureDeletedAsync: ");
             }
 
             return output;
@@ -287,7 +287,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
                     foreach (var entry in entries)
                     {
-                        Logger?.LogDebug("CommitAsync entry: " + entry.Entity.GetType().FullName + " " + entry.State);
+                        Logger?.LogDebug("CommitAsync entry: {0} {1}", entry.Entity.GetType().FullName, entry.State);
                     }
                 }
 
@@ -303,12 +303,22 @@ namespace KSociety.Base.Infra.Shared.Class
                 // performed through the DbContext will be committed
                 var result = SaveChanges();
                 //_transaction.Commit();
-                Logger?.LogTrace("Commit: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " Result: " + result);
+                Logger?.LogTrace("Commit: {0}.{1} Result: {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, result);
                 output = result;
+            }
+            catch (DbUpdateConcurrencyException duce)
+            {
+                Logger?.LogWarning(duce, "Commit DbUpdateConcurrencyException: ");
+                output = -3;
+            }
+            catch (DbUpdateException due)
+            {
+                Logger?.LogWarning(due, "Commit DbUpdateException: ");
+                output = -2;
             }
             catch (Exception ex)
             {
-                Logger?.LogError("Commit: " + ex.Source + " - " + ex.Message + " - " + ex.InnerException);
+                Logger?.LogError(ex, "Commit Exception: ");
                 output = -1;
             }
             //finally
@@ -330,7 +340,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
                     foreach (var entry in entries)
                     {
-                        Logger?.LogDebug("CommitAsync entry: " + entry.Entity.GetType().FullName + " " + entry.State);
+                        Logger?.LogDebug("CommitAsync entry: {0} {1}", entry.Entity.GetType().FullName, entry.State);
                     }
                 }
 
@@ -346,12 +356,22 @@ namespace KSociety.Base.Infra.Shared.Class
                 // performed through the DbContext will be committed
                 var result = await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 //await _transaction.CommitAsync(cancellationToken);
-                Logger?.LogTrace("CommitAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " Result: " + result);
+                Logger?.LogTrace("CommitAsync: {0}.{1} Result: {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, result);
                 output = result;
+            }
+            catch (DbUpdateConcurrencyException duce)
+            {
+                Logger?.LogWarning(duce, "CommitAsync DbUpdateConcurrencyException: ");
+                output = -3;
+            }
+            catch (DbUpdateException due)
+            {
+                Logger?.LogWarning(due, "CommitAsync DbUpdateException: ");
+                output = -2;
             }
             catch (Exception ex)
             {
-                Logger?.LogError("CommitAsync: " + ex.Source + " - " + ex.Message + " - " + ex.InnerException);
+                Logger?.LogError(ex, "CommitAsync Exception: ");
                 output = -1;
             }
             //finally

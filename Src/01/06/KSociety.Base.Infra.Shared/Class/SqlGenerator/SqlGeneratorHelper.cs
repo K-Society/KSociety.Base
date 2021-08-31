@@ -33,7 +33,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             }
             catch (Exception ex)
             {
-                logger.LogError("Generate " + ex.Message + " " + ex.StackTrace);
+                logger.LogError(ex, "Generate: ");
             }
         }
     }
