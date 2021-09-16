@@ -43,7 +43,7 @@ namespace KSociety.Base.Srv.Shared.Class
 
             if (!componentContext.IsRegistered(type))
             {
-                logger.LogError("Execute: " + type.FullName + " - " + " Request: " + typeof(TRequest).FullName + " Response: " + typeof(TResponse).FullName + " not registered!");
+                logger.LogError("Execute: {0} - Request: {1} Response: {2} not registered!", type.FullName, typeof(TRequest).FullName, typeof(TResponse).FullName);
                 return new TResponse();
             }
 
@@ -94,7 +94,7 @@ namespace KSociety.Base.Srv.Shared.Class
             
             if (!componentContext.IsRegistered(type))
             {
-                logger.LogError("Execute: " + type.FullName + " - " + " Request: " + typeof(TRequest).FullName + " Response: " + typeof(TResponse).FullName + " not registered!");
+                logger.LogError("Execute: {0} - Request: {1} Response: {2} not registered!", type.FullName, typeof(TRequest).FullName, typeof(TResponse).FullName);
                 return new TResponse();
             }
 
@@ -135,7 +135,7 @@ namespace KSociety.Base.Srv.Shared.Class
                 var type = typeof(IRequestHandler); // Type is your runtime type.
                 if (!componentContext.IsRegisteredWithName<IRequestHandler>(serviceName))
                 {
-                    logger.LogError("Execute: " + type.FullName + " - " + serviceName + " not registered!");
+                    logger.LogError("Execute: {0} - {1} not registered!", type.FullName, serviceName);
                     return;
                 }
 
@@ -186,7 +186,7 @@ namespace KSociety.Base.Srv.Shared.Class
                 var type = openType.MakeGenericType(typeof(TRequest)); // Type is your runtime type.
                 if (!componentContext.IsRegistered(type))
                 {
-                    logger.LogError("Execute: " + type.FullName + " - " + " Request: " + typeof(TRequest).FullName + " not registered!");
+                    logger.LogError("Execute: {0} - Request: {1} not registered!", type.FullName, typeof(TRequest).FullName);
                     return;
                 }
 
@@ -237,7 +237,7 @@ namespace KSociety.Base.Srv.Shared.Class
                 var type = openType.MakeGenericType(typeof(TResponse)); // Type is your runtime type.
                 if (!componentContext.IsRegistered(type))
                 {
-                    logger.LogError("Execute: " + type.FullName + " - " + " Response: " + typeof(TResponse).FullName + " not registered!");
+                    logger.LogError("Execute: {0} - Response: {1} not registered!", type.FullName, typeof(TResponse).FullName);
                     return new TResponse();
                 }
 

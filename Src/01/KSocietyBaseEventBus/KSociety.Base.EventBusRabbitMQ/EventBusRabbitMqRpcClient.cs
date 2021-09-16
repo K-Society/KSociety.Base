@@ -200,16 +200,23 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async void DoInternalSubscriptionRpc(string eventNameResult)
         {
-            var containsKey = SubsManager.HasSubscriptionsForEvent(eventNameResult);
-            if (containsKey) return;
-            if (!PersistentConnection.IsConnected)
+            try
             {
-                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                var containsKey = SubsManager.HasSubscriptionsForEvent(eventNameResult);
+                if (containsKey) return;
+                if (!PersistentConnection.IsConnected)
+                {
+                    await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                }
+
+                using var channel = PersistentConnection.CreateModel();
+
+                channel.QueueBind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventNameResult); //ToDo
             }
-
-            using var channel = PersistentConnection.CreateModel();
-
-            channel.QueueBind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventNameResult); //ToDo
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "DoInternalSubscriptionRpc: ");
+            }
         }
 
         #endregion

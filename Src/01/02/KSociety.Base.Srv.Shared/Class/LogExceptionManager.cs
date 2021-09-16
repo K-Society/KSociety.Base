@@ -7,11 +7,11 @@ namespace KSociety.Base.Srv.Shared.Class
     {
         public static Exception LogException(ILogger logger, Exception ex)
         {
-            logger.LogError("Execute Exception: " + ex.Message + " - " + ex.StackTrace);
+            logger.LogError(ex, "Execute Exception: ");
             if (ex.InnerException == null) return ex;
-            logger.LogError("Execute InnerException: " + ex.InnerException.Message + " - " + ex.InnerException.StackTrace);
+            logger.LogError(ex.InnerException,"Execute InnerException: ");
             if (ex.InnerException.InnerException == null) return ex.InnerException;
-            logger.LogError("Execute Inner Inner Exception: " + ex.InnerException.InnerException.Message + " - " + ex.InnerException.InnerException.StackTrace);
+            logger.LogError(ex.InnerException.InnerException,"Execute Inner Inner Exception: ");
             return ex.InnerException.InnerException;
         }
     }

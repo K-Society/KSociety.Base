@@ -18,7 +18,7 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public string GetConnectionString(CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("{0}.{1}",GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 using (Channel)
@@ -30,11 +30,11 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (RpcException rex)
             {
-                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+                Logger.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger.LogError(ex, "{0}.{1} - {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
             return string.Empty;
@@ -42,7 +42,7 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public async ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 using (Channel)
@@ -54,11 +54,11 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (RpcException rex)
             {
-                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+                Logger.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger.LogError(ex, "{0}.{1} - {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
             return string.Empty;
@@ -66,7 +66,7 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public bool EnsureCreated(CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 using (Channel)
@@ -78,11 +78,11 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (RpcException rex)
             {
-                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+                Logger.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger.LogError(ex, "{0}.{1} - {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
             return false;
@@ -90,7 +90,7 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 using (Channel)
@@ -104,11 +104,11 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (RpcException rex)
             {
-                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+                Logger.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger.LogError(ex, "{0}.{1} - {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
             return false;
@@ -116,7 +116,7 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public bool EnsureDeleted(CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 using (Channel)
@@ -128,11 +128,11 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (RpcException rex)
             {
-                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+                Logger.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger.LogError(ex, "{0}.{1} - {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
             return false;
@@ -140,7 +140,7 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 using (Channel)
@@ -154,11 +154,11 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (RpcException rex)
             {
-                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+                Logger.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger.LogError(ex, "{0}.{1} - {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
             return false;
@@ -166,7 +166,7 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public void Migration(CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 using (Channel)
@@ -178,17 +178,17 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (RpcException rex)
             {
-                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+                Logger.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger.LogError(ex, "{0}.{1} - {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
         }
 
         public async ValueTask MigrationAsync(CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 using (Channel)
@@ -200,11 +200,11 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (RpcException rex)
             {
-                Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+                Logger.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger.LogError(ex, "{0}.{1} - {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
         }
     }
