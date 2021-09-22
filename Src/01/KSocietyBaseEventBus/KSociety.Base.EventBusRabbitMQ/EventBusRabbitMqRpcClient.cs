@@ -45,7 +45,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             Logger.LogTrace("EventBusRabbitMqRpcClient InitializeAsync.");
             _queueNameReply = QueueName + "_Reply";
             SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-            ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+            //ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+            ConsumerChannel = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelAsync(cancel); });
         }
 
         public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
@@ -76,7 +77,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             _queueNameReply = string.Empty;
             QueueName = string.Empty;
-            ConsumerChannel?.Value.Close();
+            //ConsumerChannel?.Value.Close();
+            (await ConsumerChannel).Close();
 
         }
 
@@ -196,11 +198,11 @@ namespace KSociety.Base.EventBusRabbitMQ
             Logger.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
             DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey);
             SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(eventNameResult + "." + replyRoutingKey);
-            //var result = StartBasicConsume();
-            if (!StartBasicConsume())
-            {
-                StartBasicConsume();
-            }
+            var result = StartBasicConsume();
+            //if (!StartBasicConsume().)
+            //{
+            //    StartBasicConsume();
+            //}
         }
 
         private async void DoInternalSubscriptionRpc(string eventNameResult)
@@ -244,7 +246,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             SubsManager?.ClearReply();
         }
 
-        protected override bool StartBasicConsume()
+        protected override async ValueTask<bool> StartBasicConsume()
         {
             Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
 
@@ -253,14 +255,20 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (ConsumerChannel is null) { Logger.LogWarning("EventBusRabbitMqRpcClient ConsumerChannel is null!"); return false; }
                 if (ConsumerChannel?.Value is not null)
                 {
-                    var consumer = new AsyncEventingBasicConsumer(ConsumerChannel?.Value);
+                    //var consumer = new AsyncEventingBasicConsumer(ConsumerChannel?.Value);
+                    var consumer = new AsyncEventingBasicConsumer(await ConsumerChannel);
 
                     consumer.Received += ConsumerReceivedAsync;
 
 
                     // autoAck specifies that as soon as the consumer gets the message,
                     // it will ack, even if it dies mid-way through the callback
-                    ConsumerChannel?.Value.BasicConsume(
+                    //ConsumerChannel?.Value.BasicConsume(
+                    //    queue: _queueNameReply, //ToDo
+                    //    autoAck: true, //ToDo
+                    //    consumer: consumer);
+
+                    (await ConsumerChannel).BasicConsume(
                         queue: _queueNameReply, //ToDo
                         autoAck: true, //ToDo
                         consumer: consumer);
@@ -450,8 +458,9 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     Logger.LogError(ea.Exception, "CallbackException: ");
                     ConsumerChannel?.Value.Dispose();
-                    ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
-                    StartBasicConsume();
+                    //ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
+                    ConsumerChannel = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelAsync(cancel); });//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
+                    await StartBasicConsume();
                 };
 
                 return channel;
