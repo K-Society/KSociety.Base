@@ -218,11 +218,29 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 using var channel = PersistentConnection.CreateModel();
 
+                //
+
+                channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
+                        ExchangeDeclareParameters.ExchangeType,
+                        ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+
+                channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable,
+                    QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+                //ToDo
+                channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
+                    QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+
+                //
+
                 channel.QueueBind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventNameResult); //ToDo
+            }
+            catch(RabbitMQClientException rex)
+            {
+                Logger.LogError(rex, "EventBusRabbitMqRpcClient RabbitMQClientException DoInternalSubscriptionRpc: ");
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "DoInternalSubscriptionRpc: ");
+                Logger.LogError(ex, "EventBusRabbitMqRpcClient DoInternalSubscriptionRpc: ");
             }
         }
 
