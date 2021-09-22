@@ -91,6 +91,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             var eventName = SubsManager.GetEventKey<T>();
             var eventNameResult = SubsManager.GetEventReplyKey<TR>();
+            Logger.LogTrace("SubscribeRpcServer routing key: {0}, event name: {1}, event name result: {2}", routingKey, eventName, eventNameResult);
             DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey);
             SubsManager.AddSubscriptionRpcServer<T, TR, TH>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
             StartBasicConsume();
@@ -133,14 +134,13 @@ namespace KSociety.Base.EventBusRabbitMQ
             SubsManager?.ClearReply();
         }
 
-        protected override void StartBasicConsume()
+        protected override bool StartBasicConsume()
         {
-            Logger.LogTrace("Starting RabbitMQ basic consume.");
+            Logger.LogTrace("EventBusRabbitMqRpcServer Starting RabbitMQ basic consume.");
 
             try
             {
-                if (ConsumerChannel is null) {Logger.LogWarning("ConsumerChannel is null."); return;}
-
+                if (ConsumerChannel is null) {Logger.LogWarning("EventBusRabbitMqRpcServer ConsumerChannel is null!"); return false;}
                 if (ConsumerChannel?.Value is not null)
                 {
                     var consumer = new AsyncEventingBasicConsumer(ConsumerChannel?.Value);
@@ -151,6 +151,9 @@ namespace KSociety.Base.EventBusRabbitMQ
                         queue: QueueName,
                         autoAck: false,
                         consumer: consumer);
+                    Logger.LogInformation("EventBusRabbitMqRpcServer StartBasicConsume done. Queue name: {0}, autoAck: {1}", QueueName, false);
+
+                    return true;
                 }
                 else
                 {
@@ -161,6 +164,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 Logger.LogError(ex, "StartBasicConsume: ");
             }
+            return false;
         }
 
         protected override void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)
@@ -266,7 +270,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected async override ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
-            Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", QueueName);
+            Logger.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", QueueName);
             if (!PersistentConnection.IsConnected)
             {
                 await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
@@ -456,7 +460,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (!subscriptions.Any())
                 {
-                    Logger.LogError("ProcessEventRpc subscriptions no items! " + routingKey);
+                    Logger.LogError("ProcessEventRpc subscriptions no items! {0}", routingKey);
                 }
                 foreach (var subscription in subscriptions)
                 {
@@ -478,14 +482,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     var eventType = SubsManager.GetEventTypeByName(routingKey);
                                     if (eventType is null)
                                     {
-                                        Logger.LogError("ProcessEventRpcServer: eventType is null! " + routingKey);
+                                        Logger.LogError("ProcessEventRpcServer: eventType is null! {0}", routingKey);
                                         return null;
                                     }
 
                                     var eventReplyType = SubsManager.GetEventReplyTypeByName(routingKey);
                                     if (eventReplyType is null)
                                     {
-                                        Logger.LogError("ProcessEventRpcServer: eventReplyType is null! " + routingKey);
+                                        Logger.LogError("ProcessEventRpcServer: eventReplyType is null! {0}", routingKey);
                                         return null;
                                     }
 
@@ -507,7 +511,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogError("ProcessEventRpcServer: " + ex.Message + " - " + ex.StackTrace);
+                                Logger.LogError(ex, "ProcessEventRpcServer: ");
                             }
                             break;
 
@@ -525,7 +529,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             else
             {
-                Logger.LogError("ProcessEventRpc HasSubscriptionsForEvent " + routingKey + " No Subscriptions!");
+                Logger.LogError("ProcessEventRpc HasSubscriptionsForEvent {0} No Subscriptions!", routingKey);
             }
             return output;
         }//ProcessEventRpcAsync.

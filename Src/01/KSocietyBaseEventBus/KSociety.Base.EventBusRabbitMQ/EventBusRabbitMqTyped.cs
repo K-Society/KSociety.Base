@@ -43,6 +43,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
 
             var eventName = SubsManager.GetEventKey<T>();
+            Logger.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
             DoInternalSubscription(eventName + "." + routingKey);
             SubsManager.AddSubscription<T, TH>(eventName + "." + routingKey);
             StartBasicConsume();
