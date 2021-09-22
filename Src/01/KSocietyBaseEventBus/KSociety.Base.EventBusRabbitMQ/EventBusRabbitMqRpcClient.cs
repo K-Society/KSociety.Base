@@ -181,7 +181,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             catch (Exception ex)
             {
-                Logger.LogError("CallAsync: " + ex.Message + " " + ex.StackTrace);
+                Logger.LogError(ex, "CallAsync: ");
             }
             return default;
         }
@@ -191,8 +191,9 @@ namespace KSociety.Base.EventBusRabbitMQ
         public void SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
             where TIntegrationEventReply : IIntegrationEventReply
             where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>
-        {
+        {          
             var eventNameResult = SubsManager.GetEventReplyKey<TIntegrationEventReply>();
+            Logger.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
             DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey);
             SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(eventNameResult + "." + replyRoutingKey);
             StartBasicConsume();
@@ -239,13 +240,13 @@ namespace KSociety.Base.EventBusRabbitMQ
             SubsManager?.ClearReply();
         }
 
-        protected override void StartBasicConsume()
+        protected override bool StartBasicConsume()
         {
-            Logger.LogTrace("Starting RabbitMQ basic consume");
+            Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
 
             try
             {
-                if (ConsumerChannel is null) { Logger.LogWarning("ConsumerChannel is null"); return; }
+                if (ConsumerChannel is null) { Logger.LogWarning("EventBusRabbitMqRpcClient ConsumerChannel is null!"); return false; }
                 if (ConsumerChannel?.Value is not null)
                 {
                     var consumer = new AsyncEventingBasicConsumer(ConsumerChannel?.Value);
@@ -259,6 +260,10 @@ namespace KSociety.Base.EventBusRabbitMQ
                         queue: _queueNameReply, //ToDo
                         autoAck: true, //ToDo
                         consumer: consumer);
+
+                    Logger.LogInformation("EventBusRabbitMqRpcClient StartBasicConsume done. Queue name: {0}, autoAck: {1}", _queueNameReply, true);
+
+                    return true;
                 }
                 else
                 {
@@ -269,6 +274,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 Logger.LogError(ex, "StartBasicConsume: ");
             }
+
+            return false;
         }
 
         protected override void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)
@@ -419,8 +426,6 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 try
                 {
-
-
                     channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
                         ExchangeDeclareParameters.ExchangeType,
                         ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);

@@ -181,12 +181,12 @@ namespace KSociety.Base.EventBusRabbitMQ
             SubsManager?.Clear();
         }
 
-        protected virtual void StartBasicConsume()
+        protected virtual bool StartBasicConsume()
         {
-            Logger.LogTrace("Starting RabbitMQ basic consume.");
+            Logger.LogTrace("EventBusRabbitMq Starting RabbitMQ basic consume.");
             try
             {
-                if (ConsumerChannel is null) { Logger.LogWarning("ConsumerChannel is null!"); return; }
+                if (ConsumerChannel is null) { Logger.LogWarning("ConsumerChannel is null!"); return false; }
                 if (ConsumerChannel?.Value is not null)
                 {
                     var consumer = new AsyncEventingBasicConsumer(ConsumerChannel?.Value);
@@ -197,6 +197,10 @@ namespace KSociety.Base.EventBusRabbitMQ
                         queue: QueueName,
                         autoAck: false,
                         consumer: consumer);
+
+                    Logger.LogInformation("EventBusRabbitMq StartBasicConsume done. Queue name: {0}, autoAck: {1}", QueueName, true);
+
+                    return true;
                 }
                 else
                 {
@@ -207,6 +211,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 Logger.LogError(ex, "StartBasicConsume: ");
             }
+
+            return false;
         }
 
         protected virtual void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)

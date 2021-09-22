@@ -28,25 +28,25 @@ namespace KSociety.Base.Srv.Behavior.Control
 
         public EnsureCreated EnsureCreated(CallContext context = default)
         {
-            _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return _commandHandler.ExecuteWithResponse<EnsureCreated>(_loggerFactory, _componentContext);
         }
 
         public EnsureDeleted EnsureDeleted(CallContext context = default)
         {
-            _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return _commandHandler.ExecuteWithResponse<EnsureDeleted>(_loggerFactory, _componentContext);
         }
 
         public void Migration(CallContext context = default)
         {
-            _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             _commandHandler.Execute(_loggerFactory, _componentContext, "MigrationReqHdlr");
         }
 
         public ConnectionString GetConnectionString(CallContext context = default)
         {
-            _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return _commandHandler.ExecuteWithResponse<ConnectionString>(_loggerFactory, _componentContext);
         }
     }
