@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.EventBusRabbitMQ
+namespace KSociety.Base.InfraSub.Shared.Class
 {
     public class AsyncLazy<T> : Lazy<Task<T>>
     {
