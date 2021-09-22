@@ -196,7 +196,11 @@ namespace KSociety.Base.EventBusRabbitMQ
             Logger.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
             DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey);
             SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(eventNameResult + "." + replyRoutingKey);
-            StartBasicConsume();
+            //var result = StartBasicConsume();
+            if (!StartBasicConsume())
+            {
+                StartBasicConsume();
+            }
         }
 
         private async void DoInternalSubscriptionRpc(string eventNameResult)
