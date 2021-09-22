@@ -164,6 +164,20 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
 
             using var channel = PersistentConnection.CreateModel();
+
+            //
+
+            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
+                ExchangeDeclareParameters.ExchangeType,
+                ExchangeDeclareParameters.ExchangeDurable,
+                ExchangeDeclareParameters.ExchangeAutoDelete);
+
+            channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable,
+                QueueDeclareParameters.QueueExclusive,
+                QueueDeclareParameters.QueueAutoDelete, null);
+
+            //
+
             channel.QueueBind(QueueName, ExchangeDeclareParameters.ExchangeName, eventName);
         }
 

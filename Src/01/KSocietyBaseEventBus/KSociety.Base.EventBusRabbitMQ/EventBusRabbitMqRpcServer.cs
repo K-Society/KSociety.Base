@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using ProtoBuf;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
@@ -107,16 +108,38 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async void DoInternalSubscriptionRpc(string eventName, string eventNameResult)
         {
-            var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
-            if (containsKey) return;
-            if (!PersistentConnection.IsConnected)
+            try
             {
-                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-            }
+                var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
+                if (containsKey) return;
+                if (!PersistentConnection.IsConnected)
+                {
+                    var connection = await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                }
 
-            using var channel = PersistentConnection.CreateModel();
-            channel.QueueBind(QueueName, ExchangeDeclareParameters.ExchangeName, eventName);
-            channel.QueueBind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventNameResult);
+                using var channel = PersistentConnection.CreateModel();
+
+                //
+
+                channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType,
+                    ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+
+                channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
+                    QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+
+                //
+
+                channel.QueueBind(QueueName, ExchangeDeclareParameters.ExchangeName, eventName);
+                channel.QueueBind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventNameResult);
+            }
+            catch (RabbitMQClientException rex)
+            {
+                Logger.LogError(rex, "EventBusRabbitMqRpcClient RabbitMQClientException DoInternalSubscriptionRpc: ");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "EventBusRabbitMqRpcServer DoInternalSubscriptionRpc: ");
+            }
         }
 
         #endregion
