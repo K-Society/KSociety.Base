@@ -150,7 +150,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 using (var channel = PersistentConnection.CreateModel())
                 {
                     var routingKey = @event.RoutingKey;
-
+                    //channel.ContinuationTimeout = TimeSpan.FromSeconds(continuationTimeout);
                     channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
                         ExchangeDeclareParameters.ExchangeType,
                         ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
