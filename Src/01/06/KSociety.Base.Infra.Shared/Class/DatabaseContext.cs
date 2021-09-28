@@ -24,7 +24,7 @@ namespace KSociety.Base.Infra.Shared.Class
         protected static ILoggerFactory LoggerFactory;
 
         private IDbContextTransaction _transaction;
-        private bool _debug = false;
+        //private bool _debug = false;
 
         private readonly IDatabaseConfiguration _configuration;
         private readonly IMediator _mediator;
@@ -95,10 +95,9 @@ namespace KSociety.Base.Infra.Shared.Class
             {
                 if (_configuration.Logging)
                 {
-                    _debug = true;
-
                     optionsBuilder.UseLoggerFactory(LoggerFactory)
-                        .EnableSensitiveDataLogging();
+                        .EnableSensitiveDataLogging()
+                        .EnableDetailedErrors();
                 }
 
                 switch (_configuration.DatabaseEngine)
@@ -281,7 +280,7 @@ namespace KSociety.Base.Infra.Shared.Class
             var output = -1;
             try
             {
-                if (_debug)
+                if (_configuration.Logging)
                 {
                     var entries = ChangeTracker.Entries();
 
@@ -334,7 +333,7 @@ namespace KSociety.Base.Infra.Shared.Class
             var output = -1;
             try
             {
-                if (_debug)
+                if (_configuration.Logging)
                 {
                     var entries = ChangeTracker.Entries();
 
@@ -361,7 +360,9 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (DbUpdateConcurrencyException duce)
             {
+                //duce.
                 Logger?.LogWarning(duce, "CommitAsync DbUpdateConcurrencyException: ");
+                //Logger?.LogWarning("CommitAsync: Rows affected: {0}", duce.Entries.Count);
                 output = -3;
             }
             catch (DbUpdateException due)
