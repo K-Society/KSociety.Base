@@ -24,7 +24,6 @@ namespace KSociety.Base.Infra.Shared.Class
         protected static ILoggerFactory LoggerFactory;
 
         private IDbContextTransaction _transaction;
-        //private bool _debug = false;
 
         private readonly IDatabaseConfiguration _configuration;
         private readonly IMediator _mediator;
