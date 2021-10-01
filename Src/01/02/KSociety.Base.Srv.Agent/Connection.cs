@@ -26,7 +26,11 @@ namespace KSociety.Base.Srv.Agent
                     //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                     //};
                     //var httpClient = new HttpClient(httpClientHandler);
-                    return GrpcChannel.ForAddress(_agentConfiguration.ConnectionUrl /*, new GrpcChannelOptions { HttpClient = httpClient }*/);
+                    return GrpcChannel.ForAddress(_agentConfiguration.ConnectionUrl , new GrpcChannelOptions
+                    {
+                        MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB
+                        MaxSendMessageSize = null // 2 * 1024 * 1024 // 2 MB
+                    });
                 }
                 catch (RpcException rex)
                 {
