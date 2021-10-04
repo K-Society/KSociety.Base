@@ -21,12 +21,12 @@ namespace KSociety.Base.EventBus.Handlers
 
         public virtual void HandleReply(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default)
         {
-            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: NotImplemented! " + @integrationEventReply.RoutingKey);
+            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}",  "NotImplemented!", @integrationEventReply.RoutingKey);
         }
 
         public virtual async ValueTask HandleReplyAsync(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default)
         {
-            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: NotImplemented! " + @integrationEventReply.RoutingKey);
+            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}", "NotImplemented!", @integrationEventReply.RoutingKey);
         }
     }
 }

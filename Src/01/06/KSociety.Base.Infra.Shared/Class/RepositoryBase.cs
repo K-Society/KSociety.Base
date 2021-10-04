@@ -185,7 +185,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         }
 
-        public async ValueTask<TEntity> FindAsync(CancellationToken cancellationToken = default, params object[] keyObject)
+        public virtual async ValueTask<TEntity> FindAsync(CancellationToken cancellationToken = default, params object[] keyObject)
         {
             //Logger.LogTrace("RepositoryBase FindAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");
             if (Exists)
@@ -205,7 +205,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         }
 
-        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter)
+        public virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter)
         {
             //Logger.LogTrace("RepositoryBase Query: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName + ")");
             if (Exists)
@@ -225,7 +225,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         }
 
-        public IQueryable<TEntity> QueryObjectGraph(Expression<Func<TEntity, bool>> filter, string children)
+        public virtual IQueryable<TEntity> QueryObjectGraph(Expression<Func<TEntity, bool>> filter, string children)
         {
             //Logger.LogTrace("RepositoryBase QueryObjectGraph: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName + "," + children + ")");
             if (Exists) return DataBaseSet.Include(children).Where(filter);
@@ -234,7 +234,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         }
 
-        public IQueryable<TEntity> FindAll()
+        public virtual IQueryable<TEntity> FindAll()
         {
             //Logger.LogTrace("RepositoryBase FindAll: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             if (Exists)

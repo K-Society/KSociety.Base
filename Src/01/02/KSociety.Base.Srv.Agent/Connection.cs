@@ -26,11 +26,15 @@ namespace KSociety.Base.Srv.Agent
                     //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                     //};
                     //var httpClient = new HttpClient(httpClientHandler);
-                    return GrpcChannel.ForAddress(_agentConfiguration.ConnectionUrl /*, new GrpcChannelOptions { HttpClient = httpClient }*/);
+                    return GrpcChannel.ForAddress(_agentConfiguration.ConnectionUrl , new GrpcChannelOptions
+                    {
+                        MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB
+                        MaxSendMessageSize = null // 2 * 1024 * 1024 // 2 MB
+                    });
                 }
                 catch (RpcException rex)
                 {
-                    Logger.LogError(rex.Source + " - " + rex.Status.StatusCode + " " + rex.Status.Detail + " " + rex.Message + " " + rex.StackTrace);
+                    Logger.LogError(rex, "Channel: ");
                 }
 
                 return null;
@@ -50,7 +54,7 @@ namespace KSociety.Base.Srv.Agent
 
             if (DebugFlag)
             {
-                Logger.LogTrace("Grpc Agent Connection for: " + _agentConfiguration.ConnectionUrl);
+                Logger.LogTrace("Grpc Agent Connection for: {0}", _agentConfiguration.ConnectionUrl);
             }
         }
 

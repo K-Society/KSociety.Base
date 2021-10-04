@@ -9,6 +9,7 @@ using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
+using KSociety.Base.InfraSub.Shared.Class;
 using Microsoft.Extensions.Logging;
 using Polly;
 using ProtoBuf;
@@ -45,7 +46,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             Logger.LogTrace("EventBusRabbitMqRpcClient InitializeAsync.");
             _queueNameReply = QueueName + "_Reply";
             SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-            ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+            ConsumerChannel = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelAsync(cancel); });
         }
 
         public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
@@ -76,7 +77,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             _queueNameReply = string.Empty;
             QueueName = string.Empty;
-            ConsumerChannel?.Value.Close();
+            (await ConsumerChannel).Close();
 
         }
 
@@ -149,7 +150,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 using (var channel = PersistentConnection.CreateModel())
                 {
                     var routingKey = @event.RoutingKey;
-
+                    //channel.ContinuationTimeout = TimeSpan.FromSeconds(continuationTimeout);
                     channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
                         ExchangeDeclareParameters.ExchangeType,
                         ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
@@ -181,9 +182,33 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             catch (Exception ex)
             {
-                Logger.LogError("CallAsync: " + ex.Message + " " + ex.StackTrace);
+                Logger.LogError(ex, "CallAsync: ");
             }
             return default;
+        }
+
+        protected override void QueueInitialize(IModel channel)
+        {
+            try
+            {
+                channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
+                            ExchangeDeclareParameters.ExchangeType,
+                            ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+
+                channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable,
+                    QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+                //ToDo
+                channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
+                    QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+            }
+            catch(RabbitMQClientException rex)
+            {
+                Logger.LogError(rex, "EventBusRabbitMqRpcClient RabbitMQClientException QueueInitialize: ");
+            }
+            catch(Exception ex)
+            {
+                Logger.LogError(ex, "EventBusRabbitMqRpcClient QueueInitialize: ");
+            }
         }
 
         #region [Subscribe]
@@ -191,8 +216,9 @@ namespace KSociety.Base.EventBusRabbitMQ
         public void SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
             where TIntegrationEventReply : IIntegrationEventReply
             where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>
-        {
+        {          
             var eventNameResult = SubsManager.GetEventReplyKey<TIntegrationEventReply>();
+            Logger.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
             DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey);
             SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(eventNameResult + "." + replyRoutingKey);
             StartBasicConsume();
@@ -211,11 +237,17 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 using var channel = PersistentConnection.CreateModel();
 
+                QueueInitialize(channel);
+
                 channel.QueueBind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventNameResult); //ToDo
+            }
+            catch(RabbitMQClientException rex)
+            {
+                Logger.LogError(rex, "EventBusRabbitMqRpcClient RabbitMQClientException DoInternalSubscriptionRpc: ");
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "DoInternalSubscriptionRpc: ");
+                Logger.LogError(ex, "EventBusRabbitMqRpcClient DoInternalSubscriptionRpc: ");
             }
         }
 
@@ -239,26 +271,31 @@ namespace KSociety.Base.EventBusRabbitMQ
             SubsManager?.ClearReply();
         }
 
-        protected override void StartBasicConsume()
+        protected override async ValueTask<bool> StartBasicConsume()
         {
-            Logger.LogTrace("Starting RabbitMQ basic consume");
+            Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
 
             try
             {
-                if (ConsumerChannel is null) { Logger.LogWarning("ConsumerChannel is null"); return; }
+                if (ConsumerChannel is null) { Logger.LogWarning("EventBusRabbitMqRpcClient ConsumerChannel is null!"); return false; }
                 if (ConsumerChannel?.Value is not null)
                 {
-                    var consumer = new AsyncEventingBasicConsumer(ConsumerChannel?.Value);
+                    var consumer = new AsyncEventingBasicConsumer(await ConsumerChannel);
 
                     consumer.Received += ConsumerReceivedAsync;
 
 
                     // autoAck specifies that as soon as the consumer gets the message,
                     // it will ack, even if it dies mid-way through the callback
-                    ConsumerChannel?.Value.BasicConsume(
+
+                    (await ConsumerChannel).BasicConsume(
                         queue: _queueNameReply, //ToDo
                         autoAck: true, //ToDo
                         consumer: consumer);
+
+                    Logger.LogInformation("EventBusRabbitMqRpcClient StartBasicConsume done. Queue name: {0}, autoAck: {1}", _queueNameReply, true);
+
+                    return true;
                 }
                 else
                 {
@@ -269,6 +306,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 Logger.LogError(ex, "StartBasicConsume: ");
             }
+
+            return false;
         }
 
         protected override void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)
@@ -417,32 +456,14 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 var channel = PersistentConnection.CreateModel();
 
-                try
-                {
-
-
-                    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
-                        ExchangeDeclareParameters.ExchangeType,
-                        ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-                    channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable,
-                        QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-                    //ToDo
-                    channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
-                        QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-                    //channel.BasicQos(0, 1, false);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "CreateConsumerChannelAsync: ");
-                }
+                QueueInitialize(channel);
 
                 channel.CallbackException += async (sender, ea) =>
                 {
                     Logger.LogError(ea.Exception, "CallbackException: ");
                     ConsumerChannel?.Value.Dispose();
-                    ConsumerChannel = new Lazy<IModel>(await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));//await CreateConsumerChannelAsync(cancel).ConfigureAwait(false);
-                    StartBasicConsume();
+                    ConsumerChannel = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelAsync(cancel); });
+                    await StartBasicConsume();
                 };
 
                 return channel;

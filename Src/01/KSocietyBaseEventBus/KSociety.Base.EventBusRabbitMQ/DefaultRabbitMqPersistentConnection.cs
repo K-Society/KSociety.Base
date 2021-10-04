@@ -123,7 +123,8 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     await Task.Run(() =>
                     {
-                        _logger.LogInformation("RabbitMQ CreateConnection");
+                        _logger.LogInformation("RabbitMQ CreateConnection.");
+                        //_logger.LogTrace("RabbitMQ CreateConnection StackTrace: {0}", System.Environment.StackTrace);
                         _connection = _connectionFactory
                             .CreateConnection(); //ToDo
                     }, _closeToken);
