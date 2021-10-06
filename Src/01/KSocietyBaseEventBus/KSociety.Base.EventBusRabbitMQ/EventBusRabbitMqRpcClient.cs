@@ -46,7 +46,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             Logger.LogTrace("EventBusRabbitMqRpcClient InitializeAsync.");
             _queueNameReply = QueueName + "_Reply";
             SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-            ConsumerChannel = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelAsync(cancel); });
+            ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
         }
 
         public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
@@ -324,7 +324,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             catch (Exception ex)
             {
-                Logger.LogWarning("ConsumerReceivedReply: " + eventName + " - " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogWarning(ex, "ConsumerReceivedReply: {0}", eventName);
             }
 
             // Even on exception we take the message off the queue.
@@ -343,7 +343,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (!_callbackMapper.TryRemove(eventArgs.BasicProperties.CorrelationId,
                     out TaskCompletionSource<dynamic> tcs))
                 {
-                    Logger.LogWarning("ConsumerReceivedAsync TryRemove: " + eventArgs.BasicProperties.CorrelationId);
+                    Logger.LogWarning("ConsumerReceivedAsync TryRemove: {0}", eventArgs.BasicProperties.CorrelationId);
                     return;
                 }
 
@@ -359,7 +359,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             catch (Exception ex)
             {
-                Logger.LogWarning("ConsumerReceivedReply: " + eventName + " - " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogWarning(ex, "ConsumerReceivedReply: {0}", eventName);
             }
 
             // Even on exception we take the message off the queue.
@@ -462,7 +462,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     Logger.LogError(ea.Exception, "CallbackException: ");
                     ConsumerChannel?.Value.Dispose();
-                    ConsumerChannel = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelAsync(cancel); });
+                    ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
                     await StartBasicConsume();
                 };
 
@@ -484,7 +484,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 var subscriptions = SubsManager.GetHandlersForEventReply(routingKey);
                 if (!subscriptions.Any())
                 {
-                    Logger.LogError("ProcessEventReply subscriptions no items! " + routingKey);
+                    Logger.LogError("ProcessEventReply subscriptions no items! {0}", routingKey);
                 }
                 foreach (var subscription in subscriptions)
                 {
@@ -512,7 +512,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     var eventResultType = SubsManager.GetEventReplyTypeByName(routingKey);
                                     if (eventResultType is null)
                                     {
-                                        Logger.LogError("ProcessEventReplyClient: eventResultType is null! " + routingKey);
+                                        Logger.LogError("ProcessEventReplyClient: eventResultType is null! {0}", routingKey);
                                         return;
                                     }
 
@@ -528,7 +528,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogError("ProcessEventReplyClient: " + ex.Message + " - " + ex.StackTrace);
+                                Logger.LogError(ex, "ProcessEventReplyClient: ");
                             }
                             break;
 
@@ -548,7 +548,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             else
             {
-                Logger.LogError("ProcessEventReplyClient HasSubscriptionsForEventReply " + routingKey + " No Subscriptions!");
+                Logger.LogError("ProcessEventReplyClient HasSubscriptionsForEventReply {0} No Subscriptions!", routingKey);
             }
         }
 
@@ -560,7 +560,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 var subscriptions = SubsManager.GetHandlersForEventReply(routingKey);
                 if (!subscriptions.Any())
                 {
-                    Logger.LogError("ProcessEventReply subscriptions no items! " + routingKey);
+                    Logger.LogError("ProcessEventReply subscriptions no items! {0}", routingKey);
                 }
                 foreach (var subscription in subscriptions)
                 {
@@ -588,7 +588,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     var eventResultType = SubsManager.GetEventReplyTypeByName(routingKey);
                                     if (eventResultType is null)
                                     {
-                                        Logger.LogError("ProcessEventReplyClient: eventResultType is null! " + routingKey);
+                                        Logger.LogError("ProcessEventReplyClient: eventResultType is null! {0}", routingKey);
                                         return;
                                     }
 
@@ -607,7 +607,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogError("ProcessEventReplyClient: " + ex.Message + " - " + ex.StackTrace);
+                                Logger.LogError(ex, "ProcessEventReplyClient: ");
                             }
                             break;
 
@@ -627,7 +627,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             else
             {
-                Logger.LogError("ProcessEventReplyClient HasSubscriptionsForEventReply " + routingKey + " No Subscriptions!");
+                Logger.LogError("ProcessEventReplyClient HasSubscriptionsForEventReply {0} No Subscriptions!");
             }
         }
     }
