@@ -8,9 +8,7 @@
 
         public MessageBrokerOptions()
         {
-            ConnectionFactory = new ConnectionFactory();
-            ExchangeDeclareParameters = new ExchangeDeclareParameters();
-            QueueDeclareParameters = new QueueDeclareParameters();
+            
         }
     }
 }
