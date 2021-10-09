@@ -6,6 +6,11 @@
         public ExchangeDeclareParameters ExchangeDeclareParameters { get; set; }
         public QueueDeclareParameters QueueDeclareParameters { get; set; }
 
-        public MessageBrokerOptions(){}
+        public MessageBrokerOptions()
+        {
+            ConnectionFactory = new ConnectionFactory();
+            ExchangeDeclareParameters = new ExchangeDeclareParameters();
+            QueueDeclareParameters = new QueueDeclareParameters();
+        }
     }
 }
