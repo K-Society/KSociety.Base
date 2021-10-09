@@ -6,5 +6,10 @@
         public Base.EventBus.ExchangeType ExchangeType { get; set; } = EventBus.ExchangeType.Direct;
         public bool ExchangeDurable { get; set; } = false;
         public bool ExchangeAutoDelete { get; set; } = true;
+
+        public ExchangeDeclareParameters()
+        {
+
+        }
     }
 }
