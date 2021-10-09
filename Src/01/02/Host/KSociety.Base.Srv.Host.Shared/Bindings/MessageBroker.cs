@@ -6,7 +6,7 @@ using RabbitMQ.Client;
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
     /// <summary>
-    /// 
+    /// The MessageBroker module for Autofac.
     /// </summary>
     public class MessageBroker : Module
     {
@@ -47,6 +47,24 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
             _mqHostName = mqHostName;
             _mqUserName = mqUserName;
             _mqPassword = mqPassword;
+        }
+
+        public MessageBroker(Class.MessageBroker messageBroker, bool debugFlag = false)
+        {
+            _debugFlag = debugFlag;
+
+            _brokerName = messageBroker.ExchangeDeclareParameters.BrokerName;
+            _exchangeType = messageBroker.ExchangeDeclareParameters.ExchangeType;
+            _exchangeDurable = messageBroker.ExchangeDeclareParameters.ExchangeDurable;
+            _exchangeAutoDelete = messageBroker.ExchangeDeclareParameters.ExchangeAutoDelete;
+
+            _queueDurable = messageBroker.QueueDeclareParameters.QueueDurable;
+            _queueExclusive = messageBroker.QueueDeclareParameters.QueueExclusive;
+            _queueAutoDelete = messageBroker.QueueDeclareParameters.QueueAutoDelete;
+
+            _mqHostName = messageBroker.ConnectionFactory.MqHostName;
+            _mqUserName = messageBroker.ConnectionFactory.MqUserName;
+            _mqPassword = messageBroker.ConnectionFactory.MqPassword;
         }
 
         protected override void Load(ContainerBuilder builder)
