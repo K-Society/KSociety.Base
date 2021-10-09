@@ -20,6 +20,9 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
             //builder.RegisterType<NLogLoggerFactory>()
             //    .AsImplementedInterfaces().InstancePerLifetimeScope();
 
+            //builder.RegisterType<LoggerFactory>()
+            //    .As<ILoggerFactory>()
+            //    .SingleInstance();
 
             builder.Register(_ => new LoggerFactory(new ILoggerProvider[] { new SerilogLoggerProvider() }))
                 .As<ILoggerFactory>()
