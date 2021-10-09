@@ -18,11 +18,12 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
-            IExchangeDeclareParameters exchangeDeclareParameters,
-            IQueueDeclareParameters queueDeclareParameters,
+            IEventBusParameters eventBusParameters,
+            //IExchangeDeclareParameters exchangeDeclareParameters,
+            //IQueueDeclareParameters queueDeclareParameters,
             string queueName = null,
             CancellationToken cancel = default)
-            : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
+            : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters,/*exchangeDeclareParameters, queueDeclareParameters,*/ queueName, cancel)
         {
             _autofac = autofac;
         }

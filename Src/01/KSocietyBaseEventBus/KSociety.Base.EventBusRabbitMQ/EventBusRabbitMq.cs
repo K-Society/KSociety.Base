@@ -19,11 +19,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 {
     public class EventBusRabbitMq : DisposableObject, IEventBus
     {
+        protected readonly bool Debug;
         protected readonly IRabbitMqPersistentConnection PersistentConnection;
         protected readonly ILogger<EventBusRabbitMq> Logger;
         protected readonly IEventBusSubscriptionsManager SubsManager;
-        protected readonly IExchangeDeclareParameters ExchangeDeclareParameters;
-        protected readonly IQueueDeclareParameters QueueDeclareParameters;
+        //protected readonly IExchangeDeclareParameters ExchangeDeclareParameters;
+        //protected readonly IQueueDeclareParameters QueueDeclareParameters;
+        protected readonly IEventBusParameters EventBusParameters;
 
         public IIntegrationGeneralHandler EventHandler { get; }
 
@@ -34,14 +36,17 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
-            IExchangeDeclareParameters exchangeDeclareParameters, IQueueDeclareParameters queueDeclareParameters, string queueName = null,
+            IEventBusParameters eventBusParameters,
+            /*IExchangeDeclareParameters exchangeDeclareParameters, IQueueDeclareParameters queueDeclareParameters,*/ string queueName = null,
             CancellationToken cancel = default)
         {
-            ExchangeDeclareParameters = exchangeDeclareParameters;
+            Debug = eventBusParameters.Debug;
+            EventBusParameters = eventBusParameters;
+            //ExchangeDeclareParameters = exchangeDeclareParameters;
             PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
             Logger = loggerFactory.CreateLogger<EventBusRabbitMq>() ?? throw new ArgumentNullException(nameof(loggerFactory));
             SubsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
-            QueueDeclareParameters = queueDeclareParameters;
+            //QueueDeclareParameters = queueDeclareParameters;
             QueueName = queueName;
             EventHandler = eventHandler;
             SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
@@ -51,14 +56,17 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IEventBusSubscriptionsManager subsManager,
-            IExchangeDeclareParameters exchangeDeclareParameters, IQueueDeclareParameters queueDeclareParameters, string queueName = null,
+            IEventBusParameters eventBusParameters,
+            /*IExchangeDeclareParameters exchangeDeclareParameters, IQueueDeclareParameters queueDeclareParameters,*/ string queueName = null,
             CancellationToken cancel = default)
         {
-            ExchangeDeclareParameters = exchangeDeclareParameters;
+            Debug = eventBusParameters.Debug;
+            EventBusParameters = eventBusParameters;
+            //ExchangeDeclareParameters = exchangeDeclareParameters;
             PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
             Logger = loggerFactory.CreateLogger<EventBusRabbitMq>() ?? throw new ArgumentNullException(nameof(loggerFactory));
             SubsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
-            QueueDeclareParameters = queueDeclareParameters;
+            //QueueDeclareParameters = queueDeclareParameters;
             QueueName = queueName;
             EventHandler = null;
             SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
@@ -82,7 +90,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
 
             using var channel = PersistentConnection.CreateModel();
-            channel.QueueUnbind(QueueName, ExchangeDeclareParameters.ExchangeName, eventName);
+            channel.QueueUnbind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
 
             if (!SubsManager.IsEmpty) return;
             QueueName = string.Empty;
@@ -108,9 +116,9 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 using var channel = PersistentConnection.CreateModel();
                 var routingKey = @event.RoutingKey;
-                channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
-                    ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable,
-                    ExchangeDeclareParameters.ExchangeAutoDelete);
+                channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                    EventBusParameters.ExchangeDeclareParameters.ExchangeType, EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                    EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
                 await using var ms = new MemoryStream();
                 Serializer.Serialize(ms, @event);
@@ -121,7 +129,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     var properties = channel.CreateBasicProperties();
                     properties.DeliveryMode = 1; //2 = persistent, write on disk
 
-                    channel.BasicPublish(ExchangeDeclareParameters.ExchangeName, 
+                    channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, 
                         routingKey, true, properties,
                         body);
                 });
@@ -136,14 +144,14 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             try
             {
-                channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName,
-                ExchangeDeclareParameters.ExchangeType,
-                ExchangeDeclareParameters.ExchangeDurable,
-                ExchangeDeclareParameters.ExchangeAutoDelete);
+                channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                    EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                    EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                    EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
-                channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable,
-                    QueueDeclareParameters.QueueExclusive,
-                    QueueDeclareParameters.QueueAutoDelete, null);
+                channel.QueueDeclare(QueueName, EventBusParameters.QueueDeclareParameters.QueueDurable,
+                    EventBusParameters.QueueDeclareParameters.QueueExclusive,
+                    EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
             }
             catch (RabbitMQClientException rex)
             {
@@ -181,7 +189,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             QueueInitialize(channel);
 
-            channel.QueueBind(QueueName, ExchangeDeclareParameters.ExchangeName, eventName);
+            channel.QueueBind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
         }
 
         #endregion
@@ -340,7 +348,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             channel.CallbackException += async (sender, ea) =>
             {
-                Logger.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}", ExchangeDeclareParameters.ExchangeName, QueueName);
+                Logger.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}", EventBusParameters.ExchangeDeclareParameters.ExchangeName, QueueName);
                 ConsumerChannel?.Value.Dispose();
                 ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
                 await StartBasicConsume();
