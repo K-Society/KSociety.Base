@@ -25,11 +25,12 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public EventBusRabbitMqRpcServer(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
-            IExchangeDeclareParameters exchangeDeclareParameters,
-            IQueueDeclareParameters queueDeclareParameters,
+            IEventBusParameters eventBusParameters,
+            //IExchangeDeclareParameters exchangeDeclareParameters,
+            //IQueueDeclareParameters queueDeclareParameters,
             string queueName = null,
             CancellationToken cancel = default)
-            : base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
+            : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters,/*exchangeDeclareParameters, queueDeclareParameters,*/ queueName, cancel)
         {
 
         }
@@ -68,9 +69,9 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             using (var channel = PersistentConnection.CreateModel())
             {
-                channel.QueueUnbind(QueueName, ExchangeDeclareParameters.ExchangeName, eventName);
+                channel.QueueUnbind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
 
-                channel.QueueUnbind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventName);
+                channel.QueueUnbind(_queueNameReply, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
             }
 
             if (!SubsManager.IsReplyEmpty) return;
@@ -89,11 +90,11 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             try
             {
-                channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType,
-                    ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+                channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName, EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                    EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
-                channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
-                    QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
+                channel.QueueDeclare(_queueNameReply, EventBusParameters.QueueDeclareParameters.QueueDurable,
+                    EventBusParameters.QueueDeclareParameters.QueueExclusive, EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
             }
             catch (RabbitMQClientException rex)
             {
@@ -135,8 +136,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 QueueInitialize(channel);
 
-                channel.QueueBind(QueueName, ExchangeDeclareParameters.ExchangeName, eventName);
-                channel.QueueBind(_queueNameReply, ExchangeDeclareParameters.ExchangeName, eventNameResult);
+                channel.QueueBind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+                channel.QueueBind(_queueNameReply, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventNameResult);
             }
             catch (RabbitMQClientException rex)
             {
@@ -219,7 +220,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 Serializer.Serialize<IIntegrationEventReply>(ms, response);
                 var body = ms.ToArray();
 
-                _consumerChannelReply?.Value.Result.BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
+                _consumerChannelReply?.Value.Result.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
             }
             catch (Exception ex)
             {
@@ -257,7 +258,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 Serializer.Serialize<IIntegrationEventReply>(ms, response);
 
                 var body = ms.ToArray();
-                (await _consumerChannelReply).BasicPublish(ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
+                (await _consumerChannelReply).BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, (string)response.RoutingKey, replyProps, body);
             }
             catch (Exception ex)
             {
