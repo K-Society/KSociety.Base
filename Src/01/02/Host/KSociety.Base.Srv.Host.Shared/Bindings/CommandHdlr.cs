@@ -7,7 +7,7 @@ using KSociety.Base.Srv.Shared.Interface;
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
     /// <summary>
-    /// 
+    /// The Command Handler module for Autofac.
     /// </summary>
     public class CommandHdlr : Module
     {

@@ -71,7 +71,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected async virtual ValueTask InitializeAsync(CancellationToken cancel = default)
         {
             Logger.LogTrace("EventBusRabbitMq InitializeAsync.");
-            ConsumerChannel = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelAsync(cancel); });
+            ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
         }
 
         private async void SubsManager_OnEventRemoved(object sender, string eventName)
@@ -128,11 +128,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             catch (Exception ex)
             {
-                Logger.LogError("EventBusRabbitMq Publish: " + ex.Message + " - " + ex.StackTrace);
-                if (!(ex.InnerException is null))
-                {
-                    Logger.LogError("EventBusRabbitMq Publish InnerException: " + ex.InnerException.Message + " - " + ex.InnerException.StackTrace);
-                }
+                Logger.LogError(ex, "EventBusRabbitMq Publish: ");
             }
         }
 
@@ -265,7 +261,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             catch (Exception ex)
             {
-                Logger.LogError("CreateConsumerChannel RPC Received 2: " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogError(ex, "CreateConsumerChannel RPC Received 2: ");
             }
         }
 
@@ -280,7 +276,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             catch (Exception ex)
             {
-                Logger.LogWarning("ConsumerReceived: " + eventName + " - " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogWarning(ex, "ConsumerReceived: {0}", eventName);
             }
 
             try
@@ -293,7 +289,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             catch (Exception ex)
             {
-                Logger.LogError("CreateConsumerChannel RPC Received 2: " + ex.Message + " - " + ex.StackTrace);
+                Logger.LogError(ex, "CreateConsumerChannel RPC Received 2: ");
             }
         }
 
@@ -346,7 +342,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 Logger.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}", ExchangeDeclareParameters.ExchangeName, QueueName);
                 ConsumerChannel?.Value.Dispose();
-                ConsumerChannel = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelAsync(cancel); });
+                ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
                 await StartBasicConsume();
             };
 
@@ -379,7 +375,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     var eventType = SubsManager.GetEventTypeByName(routingKey);
                                     if (eventType is null)
                                     {
-                                        Logger.LogError("ProcessEvent Typed: eventType is null! " + routingKey);
+                                        Logger.LogError("ProcessEvent Typed: eventType is null! {0}", routingKey);
                                         return;
                                     }
 
@@ -393,7 +389,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogError("ProcessEvent Typed: " + ex.Message + " - " + ex.StackTrace);
+                                Logger.LogError(ex, "ProcessEvent Typed: ");
                             }
                             break;
 
@@ -409,7 +405,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     var eventType = SubsManager.GetEventTypeByName(routingKey);
                                     if (eventType is null)
                                     {
-                                        Logger.LogError("ProcessQueue: eventType is null! " + routingKey);
+                                        Logger.LogError("ProcessQueue: eventType is null! {0}", routingKey);
                                         return;
                                     }
 
@@ -423,7 +419,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogError("ProcessQueue: " + ex.Message + " - " + ex.StackTrace);
+                                Logger.LogError(ex, "ProcessQueue: ");
                             }
                             break;
 
@@ -439,14 +435,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     var eventType = SubsManager.GetEventTypeByName(routingKey);
                                     if (eventType is null)
                                     {
-                                        Logger.LogError("ProcessEvent: eventType is null! " + routingKey);
+                                        Logger.LogError("ProcessEvent: eventType is null! {0}", routingKey);
                                         return;
                                     }
 
                                     var eventResultType = SubsManager.GetEventReplyTypeByName(routingKey);
                                     if (eventResultType is null)
                                     {
-                                        Logger.LogError("ProcessEvent: eventResultType is null! " + routingKey);
+                                        Logger.LogError("ProcessEvent: eventResultType is null! {0}", routingKey);
                                         return;
                                     }
 
@@ -461,7 +457,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogError("ProcessEvent Rpc: " + ex.Message + " - " + ex.StackTrace);
+                                Logger.LogError(ex, "ProcessEvent Rpc: ");
                             }
                             break;
 

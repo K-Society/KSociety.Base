@@ -40,11 +40,11 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             Logger.LogTrace("EventBusRabbitMqRpcServer InitializeAsync.");
             SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-            ConsumerChannel = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelAsync(cancel); });
+            ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
             _queueNameReply = QueueName + "_Reply";
 
             _consumerChannelReply =
-                new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelReplyAsync(cancel); });
+                new AsyncLazy<IModel>(async () => await CreateConsumerChannelReplyAsync(cancel));
         }
 
         public IIntegrationRpcServerHandler<T, TR> GetIntegrationRpcServerHandler<T, TR>()
@@ -327,7 +327,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 Logger.LogError(ea.Exception, "CallbackException: ");
                 ConsumerChannel?.Value.Dispose();
-                ConsumerChannel = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelAsync(cancel); });
+                ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
                 await StartBasicConsume();
             };
 
@@ -383,7 +383,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 Logger.LogError(ea.Exception, "CallbackException Rpc: ");
                 _consumerChannelReply?.Value.Dispose();
-                _consumerChannelReply = new AsyncLazy<IModel>(async () => { return await CreateConsumerChannelReplyAsync(cancel); });
+                _consumerChannelReply = new AsyncLazy<IModel>(async () => await CreateConsumerChannelReplyAsync(cancel));
                 //StartBasicConsumeReply();
             };
 
@@ -400,7 +400,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (!subscriptions.Any())
                 {
-                    Logger.LogError("ProcessEventRpc subscriptions no items! " + routingKey);
+                    Logger.LogError("ProcessEventRpc subscriptions no items! {0}", routingKey);
                 }
                 foreach (var subscription in subscriptions)
                 {
@@ -422,14 +422,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     var eventType = SubsManager.GetEventTypeByName(routingKey);
                                     if (eventType is null)
                                     {
-                                        Logger.LogError("ProcessEventRpcServer: eventType is null! " + routingKey);
+                                        Logger.LogError("ProcessEventRpcServer: eventType is null! {0}", routingKey);
                                         return null;
                                     }
 
                                     var eventReplyType = SubsManager.GetEventReplyTypeByName(routingKey);
                                     if (eventReplyType is null)
                                     {
-                                        Logger.LogError("ProcessEventRpcServer: eventReplyType is null! " + routingKey);
+                                        Logger.LogError("ProcessEventRpcServer: eventReplyType is null! {0}", routingKey);
                                         return null;
                                     }
 
@@ -453,7 +453,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogError("ProcessEventRpcServer: " + ex.Message + " - " + ex.StackTrace);
+                                Logger.LogError(ex, "ProcessEventRpcServer: ");
                             }
                             break;
 
@@ -471,7 +471,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             else
             {
-                Logger.LogError("ProcessEventRpc HasSubscriptionsForEvent " + routingKey + " No Subscriptions!");
+                Logger.LogError("ProcessEventRpc HasSubscriptionsForEvent {0} No Subscriptions!", routingKey);
             }
             return output;
         }//ProcessEventRpc.

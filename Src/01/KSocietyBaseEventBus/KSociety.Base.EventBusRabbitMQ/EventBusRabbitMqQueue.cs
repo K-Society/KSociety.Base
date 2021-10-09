@@ -135,7 +135,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.LogError("ProcessQueue: " + ex.Message + " - " + ex.StackTrace);
+                                    Logger.LogError(ex, "ProcessQueue: ");
                                 }
                                 break;
 
