@@ -3,7 +3,7 @@
 namespace KSociety.Base.Infra.Shared.Interface
 {
     /// <summary>
-    /// 
+    /// The Database configuration.
     /// </summary>
     public interface IDatabaseConfiguration
     {

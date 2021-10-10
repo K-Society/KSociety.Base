@@ -14,7 +14,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
         public TestEventBusTyped()
         {
 
-            _eventBusTyped = new EventBusRabbitMqTyped(PersistentConnection, LoggerFactory, new TestEventHandler(LoggerFactory), null, ExchangeDeclareParameters, QueueDeclareParameters, "Test", CancellationToken.None);
+            _eventBusTyped = new EventBusRabbitMqTyped(PersistentConnection, LoggerFactory, new TestEventHandler(LoggerFactory), null, EventBusParameters, "Test", CancellationToken.None);
             _eventBusTyped.Subscribe<TestIntegrationEvent, TestEventHandler>("pippo");
         }
 
