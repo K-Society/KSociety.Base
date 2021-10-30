@@ -1,10 +1,15 @@
 ﻿namespace KSociety.Base.EventBus
 {
+    ///<inheritdoc/>
     public class ExchangeDeclareParameters : IExchangeDeclareParameters
     {
+        ///<inheritdoc/>
         public string BrokerName { get; set; }
+
+        ///<inheritdoc/>
         public string ExchangeType { get; set; }
 
+        ///<inheritdoc/>
         public string ExchangeName
         {
             get
@@ -13,7 +18,10 @@
             }
         }
 
+        ///<inheritdoc/>
         public bool ExchangeDurable { get; set; }
+
+        ///<inheritdoc/>
         public bool ExchangeAutoDelete { get; set; }
 
         public ExchangeDeclareParameters(){}

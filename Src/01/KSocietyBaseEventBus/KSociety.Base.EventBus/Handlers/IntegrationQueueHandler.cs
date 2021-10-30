@@ -45,7 +45,7 @@ namespace KSociety.Base.EventBus.Handlers
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError("Dequeue: " + ex.Message + " - " + ex.StackTrace);
+                    Logger.LogError(ex, "Dequeue: ");
                 }
 
                 if (result != null)

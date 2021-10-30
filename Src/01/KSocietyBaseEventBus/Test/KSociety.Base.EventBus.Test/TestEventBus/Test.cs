@@ -15,8 +15,9 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
         protected ILoggerFactory LoggerFactory;
         protected IConnectionFactory ConnectionFactory;
         protected IRabbitMqPersistentConnection PersistentConnection;
-        protected IExchangeDeclareParameters ExchangeDeclareParameters;
-        protected IQueueDeclareParameters QueueDeclareParameters;
+        protected IEventBusParameters EventBusParameters;
+        private readonly IExchangeDeclareParameters _exchangeDeclareParameters;
+        private readonly IQueueDeclareParameters _queueDeclareParameters;
         protected IComponentContext ComponentContext;
         protected IEventBus EventBus;
         //protected readonly IEventBusRpcServer _eventBusRpcServer;
@@ -41,9 +42,10 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
                 DispatchConsumersAsync = true
             };
 
-            ExchangeDeclareParameters = new ExchangeDeclareParameters("k-society_test", KSociety.Base.EventBus.ExchangeType.Direct, false, ExchangeAutoDelete);
-            QueueDeclareParameters = new QueueDeclareParameters(false, false, QueueAutoDelete);
+            _exchangeDeclareParameters = new ExchangeDeclareParameters("k-society_test", KSociety.Base.EventBus.ExchangeType.Direct, false, ExchangeAutoDelete);
+            _queueDeclareParameters = new QueueDeclareParameters(false, false, QueueAutoDelete);
 
+            EventBusParameters = new EventBusParameters(_exchangeDeclareParameters, _queueDeclareParameters, true);
             PersistentConnection = new DefaultRabbitMqPersistentConnection(ConnectionFactory, LoggerFactory);
 
             var builder = new ContainerBuilder();
