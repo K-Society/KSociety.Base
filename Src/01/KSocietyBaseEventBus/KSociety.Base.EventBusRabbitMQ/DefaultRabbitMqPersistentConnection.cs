@@ -115,7 +115,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                         (ex, time) =>
                                 {
-                                    _logger.LogWarning(ex.Message + " - " + ex.StackTrace);
+                                    _logger.LogWarning(ex, "TryConnectAsync: ");
                                 });
 
 

@@ -34,7 +34,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
         private void StartServer()
         {
             _eventBusRpcServer = new EventBusRabbitMqRpcServer(PersistentConnection, LoggerFactory,
-                new TestRpcServerHandler(LoggerFactory, ComponentContext), null, ExchangeDeclareParameters, QueueDeclareParameters, "ServerTest", CancellationToken.None);
+                new TestRpcServerHandler(LoggerFactory, ComponentContext), null, EventBusParameters, "ServerTest", CancellationToken.None);
             _eventBusRpcServer.SubscribeRpcServer<TestIntegrationEventRpc, TestIntegrationEventReply, TestRpcServerHandler>("pippo.server");
 
         }
@@ -42,7 +42,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
         private void StartClient()
         {
             _eventBusRpcClient = new EventBusRabbitMqRpcClient(PersistentConnection, LoggerFactory,
-                new TestRpcClientHandler(LoggerFactory, ComponentContext), null, ExchangeDeclareParameters, QueueDeclareParameters, "ClientTest", CancellationToken.None);
+                new TestRpcClientHandler(LoggerFactory, ComponentContext), null, EventBusParameters, "ClientTest", CancellationToken.None);
             _eventBusRpcClient.SubscribeRpcClient<TestIntegrationEventReply, TestRpcClientHandler>("pippo.client");
         }
 

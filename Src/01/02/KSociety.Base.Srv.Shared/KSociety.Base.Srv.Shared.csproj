@@ -7,10 +7,10 @@
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.240" PrivateAssets="All" />
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.244" PrivateAssets="All" />
     </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="Autofac" Version="6.3.0" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="5.0.0" />

@@ -22,11 +22,10 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
-            IExchangeDeclareParameters exchangeDeclareParameters,
-            IQueueDeclareParameters queueDeclareParameters,
+            IEventBusParameters eventBusParameters,
             string queueName = null,
             CancellationToken cancel = default)
-        :base(persistentConnection, loggerFactory, eventHandler, subsManager, exchangeDeclareParameters, queueDeclareParameters, queueName, cancel)
+        :base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName, cancel)
         {
 
         }
@@ -63,7 +62,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             using var channel = PersistentConnection.CreateModel();
             var routingKey = @event.RoutingKey;
 
-            channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
+            channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName, EventBusParameters.ExchangeDeclareParameters.ExchangeType, EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
             await using var ms = new MemoryStream();
             Serializer.Serialize(ms, @event);
@@ -74,7 +73,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 var properties = channel.CreateBasicProperties();
                 properties.DeliveryMode = 1; //2 = persistent, write on disk
 
-                channel.BasicPublish(ExchangeDeclareParameters.ExchangeName, routingKey, true, properties, body);
+                channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey, true, properties, body);
             });
         }
 
@@ -135,7 +134,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.LogError("ProcessQueue: " + ex.Message + " - " + ex.StackTrace);
+                                    Logger.LogError(ex, "ProcessQueue: ");
                                 }
                                 break;
 
