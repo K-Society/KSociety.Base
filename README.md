@@ -13,11 +13,13 @@ Its advanced features are ideal for Domain Driven Design (DDD), Command Query Re
 ![Image of Architecture](https://github.com/K-Society/KSociety.Base/blob/experimental/docs/Architecture_view_for_KSociety.Base.png)
 
 ### 0. Install
+The install utility library.
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.InstallAction](https://github.com/K-Society/KSociety.Base/tree/master/Src/00/KSociety.Base.InstallAction) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InstallAction)](https://www.nuget.org/packages/KSociety.Base.InstallAction) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InstallAction) |
 
 ### 1. Presentation
+The presentation layer.
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.Pre.Model](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/01/KSociety.Base.Pre.Model) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Pre.Model)](https://www.nuget.org/packages/KSociety.Base.Pre.Model) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Pre.Model) |
@@ -44,7 +46,7 @@ The service layer.
 | [KSociety.Base.Srv.Host.Shared](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/02/Host/KSociety.Base.Srv.Host.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Host.Shared)](https://www.nuget.org/packages/KSociety.Base.Srv.Host.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Host.Shared) |
 
 ### 3. Application
-The application layer.
+The application layer, abstraction on the command handler library.
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.App.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/03/KSociety.Base.App.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.App.Shared)](https://www.nuget.org/packages/KSociety.Base.App.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.App.Shared) |
@@ -54,6 +56,7 @@ The application layer.
 | ------------- | ------------- | ------------- |
 
 ### 5. Domain
+The domain layer.
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.Domain.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/05/KSociety.Base.Domain.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Domain.Shared)](https://www.nuget.org/packages/KSociety.Base.Domain.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Domain.Shared) |
@@ -78,7 +81,18 @@ The generic shared library.
 | [KSociety.Base.InfraSub.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/KSociety.Base.InfraSub.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InfraSub.Shared)](https://www.nuget.org/packages/KSociety.Base.InfraSub.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InfraSub.Shared) |
 
 ## License
+The project is under:
+Microsoft Reciprocal License [(MS-RL)](http://www.opensource.org/licenses/MS-RL)
 
-Microsoft Reciprocal License (MS-RL)
+## Dependencies
 
-http://www.opensource.org/licenses/MS-RL
+List of technologies, frameworks and libraries used for implementation:
+
+- [.NET Core 5](https://dotnet.microsoft.com/download) (platform). Note for Visual Studio users: **VS 2019** is required.
+- [Autofac](https://autofac.org/) (Inversion of Control Container)
+- [IdentityServer4](http://docs.identityserver.io) (Authentication and Authorization)
+- [Serilog](https://serilog.net/) (structured logging)
+- [Quartz.NET](https://www.quartz-scheduler.net/) (background processing)
+- [FluentValidation](https://fluentvalidation.net/) (data validation)
+- [MediatR](https://github.com/jbogard/MediatR) (mediator implementation)
+- [Polly](https://github.com/App-vNext/Polly) (Resilience and transient-fault-handling library)
