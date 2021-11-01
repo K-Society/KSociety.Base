@@ -7,11 +7,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations;
 
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
-    //No Abstract
+    //No Abstract.
     public class NpgsqlGenerator : NpgsqlMigrationsSqlGenerator
     {
         private readonly ILogger<SqliteGenerator> _logger;
-        //It must be public
+        //It must be public.
         public NpgsqlGenerator(
             ILoggerFactory loggerFactory,
             MigrationsSqlGeneratorDependencies dependencies,

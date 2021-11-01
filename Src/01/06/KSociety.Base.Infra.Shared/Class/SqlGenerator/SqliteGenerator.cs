@@ -6,12 +6,12 @@ using System;
 
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
-    //No Abstract
+    //No Abstract.
     public class SqliteGenerator : SqliteMigrationsSqlGenerator
     {
         private readonly ILogger<SqliteGenerator> _logger;
 
-        //It must be public
+        //It must be public.
         public SqliteGenerator(
             ILoggerFactory loggerFactory,
             MigrationsSqlGeneratorDependencies dependencies,

@@ -6,12 +6,12 @@ using System;
 
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
-    //No Abstract
+    //No Abstract.
     public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
     {
         private readonly ILogger<SqlServerGenerator> _logger;
 
-        //It must be public
+        //It must be public.
         public SqlServerGenerator(
             ILoggerFactory loggerFactory,
             MigrationsSqlGeneratorDependencies dependencies,

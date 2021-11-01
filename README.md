@@ -2,6 +2,8 @@
 
 # KSociety.Base - Framework for microservices
 
+K-Society Base is a full stack framework for .NET 5 application.
+
 ## Introduction
 
 KSociety.Base is a .NET 5.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
@@ -81,8 +83,7 @@ The generic shared library.
 | [KSociety.Base.InfraSub.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/KSociety.Base.InfraSub.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InfraSub.Shared)](https://www.nuget.org/packages/KSociety.Base.InfraSub.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InfraSub.Shared) |
 
 ## License
-The project is under:
-Microsoft Reciprocal License [(MS-RL)](http://www.opensource.org/licenses/MS-RL)
+The project is under Microsoft Reciprocal License [(MS-RL)](http://www.opensource.org/licenses/MS-RL)
 
 ## Dependencies
 
