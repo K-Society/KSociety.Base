@@ -2,11 +2,11 @@
 
 # KSociety.Base - Framework for microservices
 
-K-Society Base is a full stack framework for .NET 5 application.
+K-Society Base is a full stack framework for .NET 6 application.
 
 ## Introduction
 
-KSociety.Base is a .NET 5.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
+KSociety.Base is a .NET 6.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
 Its advanced features are ideal for Domain Driven Design (DDD), Command Query Responsibilty Segragation (CQRS) and Event Sourcing, is an open sourse 
 .NET framework and represents the basic infrastructure. The whole framework is divided into layers listed below.
 
@@ -89,7 +89,7 @@ The project is under Microsoft Reciprocal License [(MS-RL)](http://www.opensourc
 
 List of technologies, frameworks and libraries used for implementation:
 
-- [.NET Core 5](https://dotnet.microsoft.com/download) (platform). Note for Visual Studio users: **VS 2019** is required.
+- [.NET Core 5](https://dotnet.microsoft.com/download) (platform). Note for Visual Studio users: **VS 2022** is required.
 - [Autofac](https://autofac.org/) (Inversion of Control Container)
 - [IdentityServer4](http://docs.identityserver.io) (Authentication and Authorization)
 - [Serilog](https://serilog.net/) (structured logging)
