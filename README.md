@@ -91,9 +91,12 @@ List of technologies, frameworks and libraries used for implementation:
 
 - [.NET 6](https://dotnet.microsoft.com/download/dotnet/6.0) (platform). Note for Visual Studio users: **VS 2022** is required.
 - [Autofac](https://autofac.org/) (Inversion of Control Container)
-- [IdentityServer4](http://docs.identityserver.io) (Authentication and Authorization)
-- [Serilog](https://serilog.net/) (structured logging)
-- [Quartz.NET](https://www.quartz-scheduler.net/) (background processing)
-- [FluentValidation](https://fluentvalidation.net/) (data validation)
+- [AutoMapper](https://automapper.org/) (A convention-based object-object mapper)
+- [CsvHelper](https://joshclose.github.io/CsvHelper/) (A .NET library for reading and writing CSV files)
+- [Grpc.Net.Client](https://github.com/grpc/grpc-dotnet) (.NET client for gRPC)
 - [MediatR](https://github.com/jbogard/MediatR) (mediator implementation)
 - [Polly](https://github.com/App-vNext/Polly) (Resilience and transient-fault-handling library)
+- [protobuf-net](https://github.com/protobuf-net/protobuf-net) (protobuf-net is a contract based serializer for .NET code)
+- [Quartz.NET](https://www.quartz-scheduler.net/) (background processing)
+- [RabbitMQ.Client](https://www.rabbitmq.com/dotnet.html) (The RabbitMQ .NET client is an implementation of an AMQP 0-9-1 client library for C#)
+- [Serilog](https://serilog.net/) (structured logging)
