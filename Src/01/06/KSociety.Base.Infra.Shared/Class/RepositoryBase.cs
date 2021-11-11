@@ -245,11 +245,11 @@ namespace KSociety.Base.Infra.Shared.Class
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " " + ex.Message + " - " + ex.StackTrace);
+                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                     return null;
                 }
             }
-            Logger.LogWarning(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " Database not exists!");
+            Logger.LogWarning("{0}.{1} Database not exists!", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return null;
         }
 
