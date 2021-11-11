@@ -3,7 +3,7 @@
 
 <Project>
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 	
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <!--MSBuildErrorsAsMessages>NU1202</MSBuildErrorsAsMessages-->
@@ -17,7 +17,7 @@
     <Company>K-Society</Company>
     <Copyright>Copyright (c) K-Society and contributors. All rights reserved.</Copyright>
 	<PackageLicenseExpression>MS-RL</PackageLicenseExpression>
-	<Description>K-Society Base is a full stack framework for .NET 5 application https://github.com/K-Society/KSociety.Base</Description>
+	<Description>K-Society Base is a full stack framework for .NET 6 application https://github.com/K-Society/KSociety.Base</Description>
     <Product>K-Society Base</Product>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
