@@ -21,11 +21,11 @@ namespace KSociety.Base.Infra.Shared.Csv
         {
             var logger = loggerFactory?.CreateLogger("ReadCsv");
             var csvFileName = @"." + fileName + @".csv";
-            logger?.LogTrace("ReadCsv csvFileName: " + csvFileName);
+            logger?.LogTrace("ReadCsv csvFileName: {0}", csvFileName);
 
             var assembly = Assembly.GetCallingAssembly();
             var resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(csvFileName));
-            logger?.LogTrace("ReadCsv resourceName: " + resourceName);
+            logger?.LogTrace("ReadCsv resourceName: {0}", resourceName);
 
             try
             {
@@ -37,7 +37,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                logger?.LogError("Error ReadCsv: " + ex.Message + " - " + ex.StackTrace);
+                logger?.LogError(ex, "Error ReadCsv: ");
             }
             return null;
         }
@@ -93,7 +93,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             }
             catch (Exception ex)
             {
-                logger?.LogError(ex, "ReadCsv.ImportAsync: " + ex.Message);
+                logger?.LogError(ex, "ReadCsv.ImportAsync: ");
             }
             return output;
         }

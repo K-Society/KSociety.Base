@@ -64,7 +64,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public async ValueTask<bool> ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace("RepositoryBase ImportCsvAsync: " + fileName + " " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("RepositoryBase ImportCsvAsync: {0} {1}.{2}",  fileName, GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken).ConfigureAwait(false);
@@ -81,7 +81,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
 
             return false;
@@ -89,7 +89,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public async ValueTask<bool> ImportCsvAsync(byte[] byteArray, CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            Logger.LogTrace("RepositoryBase ImportCsvAsync: {0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
                 //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray, cancellationToken).ConfigureAwait(false);
@@ -105,7 +105,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
 
             return false;
@@ -122,7 +122,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
+                Logger.LogError(ex, "{0}.{1}",GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
 
             return false;
@@ -140,7 +140,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
 
             return false;

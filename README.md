@@ -2,9 +2,11 @@
 
 # KSociety.Base - Framework for microservices
 
+K-Society Base is a full stack framework for .NET 6 application.
+
 ## Introduction
 
-KSociety.Base is a .NET 5.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
+KSociety.Base is a .NET 6.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
 Its advanced features are ideal for Domain Driven Design (DDD), Command Query Responsibilty Segragation (CQRS) and Event Sourcing, is an open sourse 
 .NET framework and represents the basic infrastructure. The whole framework is divided into layers listed below.
 
@@ -81,18 +83,20 @@ The generic shared library.
 | [KSociety.Base.InfraSub.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/KSociety.Base.InfraSub.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InfraSub.Shared)](https://www.nuget.org/packages/KSociety.Base.InfraSub.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InfraSub.Shared) |
 
 ## License
-The project is under:
-Microsoft Reciprocal License [(MS-RL)](http://www.opensource.org/licenses/MS-RL)
+The project is under Microsoft Reciprocal License [(MS-RL)](http://www.opensource.org/licenses/MS-RL)
 
 ## Dependencies
 
 List of technologies, frameworks and libraries used for implementation:
 
-- [.NET Core 5](https://dotnet.microsoft.com/download) (platform). Note for Visual Studio users: **VS 2019** is required.
+- [.NET 6](https://dotnet.microsoft.com/download/dotnet/6.0) (platform). Note for Visual Studio users: **VS 2022** is required.
 - [Autofac](https://autofac.org/) (Inversion of Control Container)
-- [IdentityServer4](http://docs.identityserver.io) (Authentication and Authorization)
-- [Serilog](https://serilog.net/) (structured logging)
-- [Quartz.NET](https://www.quartz-scheduler.net/) (background processing)
-- [FluentValidation](https://fluentvalidation.net/) (data validation)
+- [AutoMapper](https://automapper.org/) (A convention-based object-object mapper)
+- [CsvHelper](https://joshclose.github.io/CsvHelper/) (A .NET library for reading and writing CSV files)
+- [Grpc.Net.Client](https://github.com/grpc/grpc-dotnet) (.NET client for gRPC)
 - [MediatR](https://github.com/jbogard/MediatR) (mediator implementation)
 - [Polly](https://github.com/App-vNext/Polly) (Resilience and transient-fault-handling library)
+- [protobuf-net](https://github.com/protobuf-net/protobuf-net) (protobuf-net is a contract based serializer for .NET code)
+- [Quartz.NET](https://www.quartz-scheduler.net/) (background processing)
+- [RabbitMQ.Client](https://www.rabbitmq.com/dotnet.html) (The RabbitMQ .NET client is an implementation of an AMQP 0-9-1 client library for C#)
+- [Serilog](https://serilog.net/) (structured logging)
