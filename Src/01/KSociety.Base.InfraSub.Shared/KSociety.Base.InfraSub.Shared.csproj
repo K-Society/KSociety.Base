@@ -7,9 +7,9 @@
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.244" PrivateAssets="All" />
-    </ItemGroup>
+  <ItemGroup>   
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.244" PrivateAssets="All" />  
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="9.0.0" />
