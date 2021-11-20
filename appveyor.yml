@@ -42,7 +42,9 @@ skip_tags: true
 
 artifacts:
   - path: build\**\Release\*.nupkg
-    name: nuget
+    name: NuGetPackage
+  - path: build\**\Release\*.snupkg
+    name: NuGetPackage
 #- path: build\Release\**\*.msi
 #  name: msi
 
