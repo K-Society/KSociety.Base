@@ -54,7 +54,7 @@ deploy:
     api_key:
       secure: jIQOXURv/wJ2bys5OTJpp+zTyN8tyVAnczeodJUK3Nw=
     skip_symbols: false
-    symbol_server: 
+    symbol_server: https://ci.appveyor.com/nuget/k-society/api/v2/package
     artifact: /.*(\.|\.s)nupkg/
     on:
       branch: /^(master|develop)$/
