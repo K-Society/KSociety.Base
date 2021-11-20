@@ -57,7 +57,7 @@ namespace KSociety.Base.Infra.Shared.Csv
 
                 return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ;
             }
