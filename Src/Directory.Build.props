@@ -24,6 +24,10 @@
     <PackageProjectUrl>https://github.com/K-Society/KSociety.Base</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/K-Society/KSociety.Base</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
+	<EmbedUntrackedSources>true</EmbedUntrackedSources>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <Import Project="Icon.Build.props" Condition=" '$(MSBuildProjectExtension)'=='.csproj' and Exists('Icon.Build.props') " />
