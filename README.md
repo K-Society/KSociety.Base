@@ -2,7 +2,7 @@
 
 # KSociety.Base - Framework for microservices
 
-K-Society Base is a full stack framework for .NET 6 application.
+K-Society Base is a full stack framework for .NET 6 application, ideal for implementing microservices.
 
 ## Introduction
 
