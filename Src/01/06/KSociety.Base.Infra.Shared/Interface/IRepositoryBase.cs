@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Interface
 {
+    /// <include file='..\Doc\RepositoryBase.xml' path='docs/members[@name="RepositoryBase"]/RepositoryBase/*'/>
     public interface IRepositoryBase<TEntity> : IDisposable where TEntity : class
     {
         Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<TEntity> Add(TEntity entity);
@@ -30,6 +31,12 @@ namespace KSociety.Base.Infra.Shared.Interface
         TEntity Find(params object[] keyObjects);
 
         ValueTask<TEntity> FindAsync(CancellationToken cancellationToken = default, params object[] keyObjects);
+
+        /// <include file='..\Doc\RepositoryBase.xml' path='docs/members[@name="RepositoryBase"]/Count/*'/>
+        int Count(Expression<Func<TEntity, bool>> filter);
+
+        /// <include file='..\Doc\RepositoryBase.xml' path='docs/members[@name="RepositoryBase"]/CountAsync/*'/>
+        ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default);
 
         IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter);
 

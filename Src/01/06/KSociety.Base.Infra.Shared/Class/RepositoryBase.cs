@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
+    ///<inheritdoc cref="IRepositoryBase{TEntity}"/>
     public abstract class RepositoryBase<TContext, TEntity> : IRepositoryBase<TEntity>
         where TContext : DatabaseContext
         where TEntity : class
@@ -70,7 +71,6 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             else
             {
-
                 DataBaseSet.AddRange(entities);
                 //Logger.LogTrace("RepositoryBase AddRange: " + GetType().FullName + "." +
                 //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
@@ -202,7 +202,42 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             Logger.LogWarning("Database not exists!");
             return null;
+        }
 
+        public virtual int Count(Expression<Func<TEntity, bool>> filter)
+        {
+            if (Exists)
+            {
+                try
+                {
+                    return DataBaseSet.Count(filter);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                    return -1;
+                }
+            }
+            Logger.LogWarning("Database not exists!");
+            return -1;
+        }
+
+        public virtual async ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
+        {
+            if (Exists)
+            {
+                try
+                {
+                    return await DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                    return -1;
+                }
+            }
+            Logger.LogWarning("Database not exists!");
+            return -1;
         }
 
         public virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter)

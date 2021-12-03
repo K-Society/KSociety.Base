@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Interface
 {
+    ///<inheritdoc cref="IRepositoryBase{TEntity}"/>
     public interface IRepository<TEntity> : IRepositoryBase<TEntity> where TEntity : class
     {
         bool ImportCsv(string fileName);

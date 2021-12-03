@@ -34,4 +34,10 @@
     <ProjectReference Include="..\..\KSociety.Base.InfraSub.Shared\KSociety.Base.InfraSub.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Doc\RepositoryBase.xml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
