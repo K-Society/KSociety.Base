@@ -18,7 +18,7 @@ namespace KSociety.Base.Infra.Shared.Csv
             var logger = loggerFactory.CreateLogger("WriteCsv");
 
             var csvFileName = @"." + fileName + @".csv";
-            logger.LogTrace("WriteCsv csvFileName: " + csvFileName);
+            logger.LogTrace("WriteCsv csvFileName: {0}", csvFileName);
             var assembly = Assembly.GetCallingAssembly();
             var resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(csvFileName));
             logger.LogTrace("WriteCsv resourceName: {0}", resourceName);

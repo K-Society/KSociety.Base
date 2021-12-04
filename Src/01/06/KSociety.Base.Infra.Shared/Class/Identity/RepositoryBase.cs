@@ -194,6 +194,42 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         }
 
+        public virtual int Count(Expression<Func<TEntity, bool>> filter)
+        {
+            if (Exists)
+            {
+                try
+                {
+                    return DataBaseSet.Count(filter);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                    return -1;
+                }
+            }
+            Logger.LogWarning("Database not exists!");
+            return -1;
+        }
+
+        public virtual async ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
+        {
+            if (Exists)
+            {
+                try
+                {
+                    return await DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                    return -1;
+                }
+            }
+            Logger.LogWarning("Database not exists!");
+            return -1;
+        }
+
         public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter)
         {
             Logger.LogTrace("RepositoryBase Query: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName + ")");

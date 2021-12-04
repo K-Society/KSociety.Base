@@ -93,7 +93,7 @@ namespace KSociety.Base.Domain.Shared.Class
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                Logger?.LogError(ex, "ModifyField");
             }
         }
 

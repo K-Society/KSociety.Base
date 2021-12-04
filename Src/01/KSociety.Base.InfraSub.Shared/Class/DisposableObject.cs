@@ -2,6 +2,9 @@
 
 namespace KSociety.Base.InfraSub.Shared.Class
 {
+    /// <summary>
+    /// DisposableObject
+    /// </summary>
     public abstract class DisposableObject : IDisposable
     {
         protected bool Disposed { get; private set; }
@@ -29,7 +32,14 @@ namespace KSociety.Base.InfraSub.Shared.Class
             Disposed = true;
         }
 
+        /// <summary>
+        /// DisposeManagedResources
+        /// </summary>
         protected virtual void DisposeManagedResources() { }
+
+        /// <summary>
+        /// DisposeUnmanagedResources
+        /// </summary>
         protected virtual void DisposeUnmanagedResources() { }
     }
 }

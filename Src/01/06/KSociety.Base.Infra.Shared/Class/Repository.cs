@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
+    ///<inheritdoc cref="IRepository{TEntity}"/>
     public abstract class Repository<TContext, TEntity, TClassMap> : RepositoryBase<TContext, TEntity>, IRepository<TEntity>
         where TContext : DatabaseContext
         where TEntity : class
