@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright (c) K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information. -->
+
+<docs>
+  <members name="RepositoryBase">
+    <RepositoryBase>
+      <summary>
+        RepositoryBase
+      </summary>
+      <typeparam name="TEntity">Entity class</typeparam>
+    </RepositoryBase>
+    <Count>
+      <summary>
+        Returns the number of elements in the specified sequence that satisfies a condition.
+      </summary>  
+      <returns>
+        The number of elements in the sequence that satisfies the condition in the predicate function.
+      </returns>
+      <example> Example:
+        <code>
+          int result = Count(item => item.Activated);
+        </code>
+      </example>
+      <param name="filter">The predicate function.</param>
+    </Count>
+    <CountAsync>
+      <summary>
+        Returns the number of elements in the specified sequence that satisfies a condition.
+      </summary>
+      <returns>
+        The number of elements in the sequence that satisfies the condition in the predicate function.
+      </returns>
+      <example> Example:
+        <code>
+          int result = await CountAsync(item => item.Activated, cancellationToken);
+        </code>
+      </example>
+      <param name="filter">The predicate function.</param>
+      <param name="cancellationToken">Cancellation token.</param>
+    </CountAsync>
+  </members>
+</docs>

@@ -19,7 +19,7 @@
 	<PackageLicenseExpression>MS-RL</PackageLicenseExpression>
 	<Description>K-Society Base is a full stack framework for .NET 6 application https://github.com/K-Society/KSociety.Base</Description>
     <Product>K-Society Base</Product>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageProjectUrl>https://github.com/K-Society/KSociety.Base</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/K-Society/KSociety.Base</RepositoryUrl>
