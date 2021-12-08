@@ -176,7 +176,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ") " + ex.Message + " - " + ex.StackTrace);
+                    Logger.LogError(ex, "{0}.{1}({2})", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, keyObject.GetType().FullName);
                     return null;
                 }
             }
@@ -196,7 +196,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ") " + ex.Message + " - " + ex.StackTrace);
+                    Logger.LogError(ex, "FindAsync {0}.{1}({2})", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, keyObject.GetType().FullName);
                     return null;
                 }
             }
@@ -214,7 +214,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                    Logger.LogError(ex, "Count {0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                     return -1;
                 }
             }
@@ -232,7 +232,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                    Logger.LogError(ex, "CountAsync {0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                     return -1;
                 }
             }
@@ -251,7 +251,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " " + ex.Message + " - " + ex.StackTrace);
+                    Logger.LogError(ex, "Query {0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                     return null;
                 }
             }
