@@ -210,14 +210,7 @@ namespace KSociety.Base.Infra.Shared.Class
             {
                 try
                 {
-                    if(filter is null)
-                    {
-                        return DataBaseSet.Count();
-                    }
-                    else
-                    {
-                        return DataBaseSet.Count(filter);
-                    }                    
+                    return filter is null ? DataBaseSet.Count() : DataBaseSet.Count(filter);
                 }
                 catch (Exception ex)
                 {
@@ -254,14 +247,14 @@ namespace KSociety.Base.Infra.Shared.Class
             return -1;
         }
 
-        public virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter)
+        public virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter = null)
         {
             //Logger.LogTrace("RepositoryBase Query: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName + ")");
             if (Exists)
             {
                 try
                 {
-                    return DataBaseSet.Where(filter);
+                    return filter is null ? DataBaseSet : DataBaseSet.Where(filter);
                 }
                 catch (Exception ex)
                 {
@@ -291,6 +284,25 @@ namespace KSociety.Base.Infra.Shared.Class
                 try
                 {
                     return DataBaseSet;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                    return null;
+                }
+            }
+            Logger.LogWarning("{0}.{1} Database not exists!", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return null;
+        }
+
+        public virtual IQueryable<TEntity> GetPage(int pageIndex, int pageSize)
+        {
+            if (Exists)
+            {
+                try
+                {
+                    var skip = (pageIndex - 1) * pageSize;
+                    return DataBaseSet.Skip(skip).Take(pageSize);
                 }
                 catch (Exception ex)
                 {
