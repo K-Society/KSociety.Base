@@ -37,14 +37,14 @@ namespace KSociety.Base.Srv.Dto
         //    return typeof(T).GetProperties().ToList();
         //}
 
-        public void AddRange(InfraSub.Shared.Interface.IList<T> items)
-        {
-            List.AddRange(items.List);
-        }
+        //public void AddRange(InfraSub.Shared.Interface.IList<T> items)
+        //{
+        //    List.AddRange(items.List);
+        //}
 
-        public void AddRange(IEnumerable<T> items)
-        {
-            List.AddRange(items);
-        }
+        //public void AddRange(IEnumerable<T> items)
+        //{
+        //    List.AddRange(items);
+        //}
     }
 }

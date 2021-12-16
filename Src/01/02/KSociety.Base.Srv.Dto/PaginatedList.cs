@@ -1,41 +1,44 @@
 ﻿using KSociety.Base.InfraSub.Shared.Interface;
+using ProtoBuf;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace KSociety.Base.Srv.Dto
 {
-    public class PaginatedList<T> 
+    [ProtoContract]
+    public class PaginatedList<T>
         : ObjectList<T> where T : IObject
     {
-        public int PageIndex { get; private set; }
+        [ProtoMember(1)]
+        public int TotalRows { get; set; }
+
+        [ProtoMember(2)]
+        public int PageNumber { get; set; }
+
+        [ProtoMember(3)]
+        public int PageSize { get; set; }
+
+        [ProtoMember(4)]
         public int TotalPages { get; set; }
+
 
         public PaginatedList()
         {
 
         }
 
-        public PaginatedList(InfraSub.Shared.Interface.IList<T> items, int pageIndex, int pageSize)
+        public PaginatedList(int totalRows, int pageNumber, int pageSize)
         {
-            PageIndex = pageIndex;
-            TotalPages = (int)Math.Ceiling(items.Count / (double)pageSize);
-            AddRange(items);
-        }
-
-        private PaginatedList(IEnumerable<T> items, int pageIndex, int pageSize)
-        {
-            PageIndex = pageIndex;
-            TotalPages = (int)Math.Ceiling(items.Count() / (double)pageSize);
-            AddRange(items);
+            TotalRows = totalRows;
+            PageNumber = pageNumber;
+            PageSize = pageSize;
+            TotalPages = (int)Math.Ceiling((double)totalRows / pageSize);
         }
 
         public bool PreviousPage
         {
             get
             {
-                return (PageIndex > 1);
+                return (PageNumber > 1);
             }
         }
 
@@ -43,20 +46,8 @@ namespace KSociety.Base.Srv.Dto
         {
             get
             {
-                return (PageIndex < TotalPages);
+                return (PageNumber < TotalPages);
             }
-        }
-
-        public static PaginatedList<T> Create(InfraSub.Shared.Interface.IList<T> source, int pageIndex, int pageSize)
-        {
-            var items = source.List.Skip((pageIndex - 1) * pageSize).Take(pageSize);
-            return new PaginatedList<T>(items, pageIndex, pageSize);
-        }
-
-        public static async Task<PaginatedList<T>> CreateAsync(InfraSub.Shared.Interface.IList<T> source, int pageIndex, int pageSize)
-        {
-            var items = source.List.Skip((pageIndex - 1) * pageSize).Take(pageSize);
-            return new PaginatedList<T>(items, pageIndex, pageSize);
         }
     }
 }
