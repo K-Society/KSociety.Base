@@ -44,6 +44,8 @@ namespace KSociety.Base.Infra.Shared.Interface
 
         IQueryable<TEntity> FindAll();
 
-        IQueryable<TEntity> GetPaged(int pageIndex, int pageSize);
+        //IQueryable<TEntity> GetPaged(int pageIndex, int pageSize);
+
+        IQueryable<TEntity> GetPaged<TKeySelector>(int pageIndex, int pageSize, Expression<Func<TEntity, TKeySelector>> keySelector = null);
     }
 }

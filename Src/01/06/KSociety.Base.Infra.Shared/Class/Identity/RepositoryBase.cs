@@ -256,7 +256,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return null;
         }
 
-        public virtual IQueryable<TEntity> GetPaged(int pageIndex, int pageSize)
+        public virtual IQueryable<TEntity> GetPaged<TKeySelector>(int pageIndex, int pageSize, Expression<Func<TEntity, TKeySelector>> keySelector = null)
         {
             //Logger.LogTrace("RepositoryBase FindAll: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             if (Exists)
@@ -264,7 +264,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
                 try
                 {
                     var skip = (pageIndex - 1) * pageSize;
-                    return DataBaseSet.Skip(skip).Take(pageSize);
+                    return keySelector is null ? DataBaseSet.Skip(skip).Take(pageSize) : DataBaseSet.OrderBy(keySelector).Skip(skip).Take(pageSize);
                 }
                 catch (Exception ex)
                 {
