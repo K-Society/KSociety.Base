@@ -12,6 +12,11 @@ namespace KSociety.Base.Srv.Dto
         public int PageIndex { get; private set; }
         public int TotalPages { get; set; }
 
+        public PaginatedList()
+        {
+
+        }
+
         public PaginatedList(InfraSub.Shared.Interface.IList<T> items, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;

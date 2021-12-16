@@ -256,14 +256,14 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return null;
         }
 
-        public virtual IQueryable<TEntity> GetPaged<TKeySelector>(int pageIndex, int pageSize, Expression<Func<TEntity, TKeySelector>> keySelector = null)
+        public virtual IQueryable<TEntity> GetPaged<TKeySelector>(int pageNumber, int pageSize, Expression<Func<TEntity, TKeySelector>> keySelector = null)
         {
             //Logger.LogTrace("RepositoryBase FindAll: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             if (Exists)
             {
                 try
                 {
-                    var skip = (pageIndex - 1) * pageSize;
+                    var skip = (pageNumber - 1) * pageSize;
                     return keySelector is null ? DataBaseSet.Skip(skip).Take(pageSize) : DataBaseSet.OrderBy(keySelector).Skip(skip).Take(pageSize);
                 }
                 catch (Exception ex)
@@ -289,7 +289,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         public async ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
         {
             Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            var result = ReadCsv<TEntity>.ImportAsync(_loggerFactory, fileName);
+            var result = ReadCsv<TEntity>.ImportAsync(_loggerFactory, fileName, cancellationToken);
 
             DeleteRange(FindAll());
 
