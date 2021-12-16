@@ -5,7 +5,7 @@ using System;
 namespace KSociety.Base.Srv.Dto
 {
     [ProtoContract]
-    public class PaginatedList<T>
+    public class PagedList<T>
         : ObjectList<T> where T : IObject
     {
         [ProtoMember(1)]
@@ -21,12 +21,12 @@ namespace KSociety.Base.Srv.Dto
         public int TotalPages { get; set; }
 
 
-        public PaginatedList()
+        public PagedList()
         {
 
         }
 
-        public PaginatedList(int totalRows, int pageNumber, int pageSize)
+        public PagedList(int totalRows, int pageNumber, int pageSize)
         {
             TotalRows = totalRows;
             PageNumber = pageNumber;
