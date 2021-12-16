@@ -6,7 +6,7 @@ namespace KSociety.Base.InfraSub.Shared.Interface
     {
         List<T> List { get; set; }
         int Count { get; }
-        void AddRange(IList<T> items);
-        void AddRange(IEnumerable<T> items);
+        //void AddRange(IList<T> items);
+        //void AddRange(IEnumerable<T> items);
     }
 }
