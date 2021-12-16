@@ -38,10 +38,12 @@ namespace KSociety.Base.Infra.Shared.Interface
         /// <include file='..\Doc\RepositoryBase.xml' path='docs/members[@name="RepositoryBase"]/CountAsync/*'/>
         ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default);
 
-        IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter);
+        IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter = null);
 
         IQueryable<TEntity> QueryObjectGraph(Expression<Func<TEntity, bool>> filter, string children);
 
         IQueryable<TEntity> FindAll();
+
+        IQueryable<TEntity> GetPage(int pageIndex, int pageSize);
     }
 }

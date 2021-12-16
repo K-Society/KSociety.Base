@@ -256,6 +256,26 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return null;
         }
 
+        public virtual IQueryable<TEntity> GetPage(int pageIndex, int pageSize)
+        {
+            //Logger.LogTrace("RepositoryBase FindAll: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            if (Exists)
+            {
+                try
+                {
+                    var skip = (pageIndex - 1) * pageSize;
+                    return DataBaseSet.Skip(skip).Take(pageSize);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                    return null;
+                }
+            }
+            Logger.LogWarning("{0}.{1} Database not exists!", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return null;
+        }
+
         public void ImportCsv(string fileName)
         {
             Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
