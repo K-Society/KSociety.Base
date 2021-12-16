@@ -15,6 +15,14 @@ namespace KSociety.Base.Srv.Dto
             get; set;
         }
 
+        public int Count
+        {
+            get
+            {
+                return List.Count;
+            }
+        }
+
         public static void AddBaseTypeProtoMembers(MetaType metaType, Type derivedType)
         {
             //var myType = runtimeTypeModel[typeof(MachineTarget)];
@@ -26,9 +34,17 @@ namespace KSociety.Base.Srv.Dto
         //public List<PropertyInfo> GetProperties()
         //{
         //    List<string> output
-
-
         //    return typeof(T).GetProperties().ToList();
         //}
+
+        public void AddRange(InfraSub.Shared.Interface.IList<T> items)
+        {
+            List.AddRange(items.List);
+        }
+
+        public void AddRange(IEnumerable<T> items)
+        {
+            List.AddRange(items);
+        }
     }
 }
