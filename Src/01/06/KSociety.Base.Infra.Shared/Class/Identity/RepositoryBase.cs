@@ -256,7 +256,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return null;
         }
 
-        public virtual IQueryable<TEntity> GetPage(int pageIndex, int pageSize)
+        public virtual IQueryable<TEntity> GetPaged(int pageIndex, int pageSize)
         {
             //Logger.LogTrace("RepositoryBase FindAll: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             if (Exists)
