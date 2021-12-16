@@ -295,32 +295,13 @@ namespace KSociety.Base.Infra.Shared.Class
             return null;
         }
 
-        //public virtual IQueryable<TEntity> GetPaged(int pageIndex, int pageSize)
-        //{
-        //    if (Exists)
-        //    {
-        //        try
-        //        {
-        //            var skip = (pageIndex - 1) * pageSize;
-        //            return DataBaseSet.Skip(skip).Take(pageSize);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        //            return null;
-        //        }
-        //    }
-        //    Logger.LogWarning("{0}.{1} Database not exists!", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        //    return null;
-        //}
-
-        public virtual IQueryable<TEntity> GetPaged<TKeySelector>(int pageIndex, int pageSize, Expression<Func<TEntity, TKeySelector>> keySelector = null)
+        public virtual IQueryable<TEntity> GetPaged<TKeySelector>(int pageNumber, int pageSize, Expression<Func<TEntity, TKeySelector>> keySelector = null)
         {
             if (Exists)
             {
                 try
                 {
-                    var skip = (pageIndex - 1) * pageSize;
+                    var skip = (pageNumber - 1) * pageSize;
                     return keySelector is null ? DataBaseSet.Skip(skip).Take(pageSize) : DataBaseSet.OrderBy(keySelector).Skip(skip).Take(pageSize);
                 }
                 catch (Exception ex)
