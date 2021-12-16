@@ -295,7 +295,7 @@ namespace KSociety.Base.Infra.Shared.Class
             return null;
         }
 
-        public virtual IQueryable<TEntity> GetPage(int pageIndex, int pageSize)
+        public virtual IQueryable<TEntity> GetPaged(int pageIndex, int pageSize)
         {
             if (Exists)
             {
