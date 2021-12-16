@@ -176,7 +176,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ") " + ex.Message + " - " + ex.StackTrace);
+                    Logger.LogError(ex, "{0}.{1}({2})", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, keyObject.GetType().FullName);
                     return null;
                 }
             }
@@ -196,7 +196,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ") " + ex.Message + " - " + ex.StackTrace);
+                    Logger.LogError(ex, "FindAsync {0}.{1}({2})", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, keyObject.GetType().FullName);
                     return null;
                 }
             }
@@ -204,17 +204,24 @@ namespace KSociety.Base.Infra.Shared.Class
             return null;
         }
 
-        public virtual int Count(Expression<Func<TEntity, bool>> filter)
+        public virtual int Count(Expression<Func<TEntity, bool>> filter = null)
         {
             if (Exists)
             {
                 try
                 {
-                    return DataBaseSet.Count(filter);
+                    if(filter is null)
+                    {
+                        return DataBaseSet.Count();
+                    }
+                    else
+                    {
+                        return DataBaseSet.Count(filter);
+                    }                    
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                    Logger.LogError(ex, "Count {0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                     return -1;
                 }
             }
@@ -222,17 +229,24 @@ namespace KSociety.Base.Infra.Shared.Class
             return -1;
         }
 
-        public virtual async ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default)
         {
             if (Exists)
             {
                 try
                 {
-                    return await DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
+                    if(filter is null)
+                    {
+                        return await DataBaseSet.CountAsync(cancellationToken).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        return await DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
+                    }               
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                    Logger.LogError(ex, "CountAsync {0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                     return -1;
                 }
             }
@@ -251,7 +265,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " " + ex.Message + " - " + ex.StackTrace);
+                    Logger.LogError(ex, "Query {0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                     return null;
                 }
             }

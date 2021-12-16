@@ -30,6 +30,7 @@ namespace KSociety.Base.Srv.Agent
                     {
                         MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB
                         MaxSendMessageSize = null // 2 * 1024 * 1024 // 2 MB
+                       
                     });
                 }
                 catch (RpcException rex)
@@ -54,7 +55,7 @@ namespace KSociety.Base.Srv.Agent
 
             if (DebugFlag)
             {
-                Logger.LogTrace("Grpc Agent Connection for: {0}", _agentConfiguration.ConnectionUrl);
+                Logger.LogTrace(@"Grpc Agent Connection for: {0}", _agentConfiguration.ConnectionUrl);
             }
         }
 

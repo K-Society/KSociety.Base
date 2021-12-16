@@ -33,10 +33,10 @@ namespace KSociety.Base.Infra.Shared.Interface
         ValueTask<TEntity> FindAsync(CancellationToken cancellationToken = default, params object[] keyObjects);
 
         /// <include file='..\Doc\RepositoryBase.xml' path='docs/members[@name="RepositoryBase"]/Count/*'/>
-        int Count(Expression<Func<TEntity, bool>> filter);
+        int Count(Expression<Func<TEntity, bool>> filter = null);
 
         /// <include file='..\Doc\RepositoryBase.xml' path='docs/members[@name="RepositoryBase"]/CountAsync/*'/>
-        ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default);
+        ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default);
 
         IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter);
 
