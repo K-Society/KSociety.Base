@@ -1,29 +1,28 @@
-﻿namespace KSociety.Base.EventBus
+﻿namespace KSociety.Base.EventBus;
+
+///<inheritdoc/>
+public class QueueDeclareParameters : IQueueDeclareParameters
 {
     ///<inheritdoc/>
-    public class QueueDeclareParameters : IQueueDeclareParameters
+    public bool QueueDurable { get; set; }
+
+    ///<inheritdoc/>
+    public bool QueueExclusive { get; set; }
+
+    ///<inheritdoc/>
+    public bool QueueAutoDelete { get; set; }
+
+    public QueueDeclareParameters()
     {
-        ///<inheritdoc/>
-        public bool QueueDurable { get; set; }
+        QueueDurable = true;
+        QueueExclusive = false;
+        QueueAutoDelete = false;
+    }
 
-        ///<inheritdoc/>
-        public bool QueueExclusive { get; set; }
-
-        ///<inheritdoc/>
-        public bool QueueAutoDelete { get; set; }
-
-        public QueueDeclareParameters()
-        {
-            QueueDurable = true;
-            QueueExclusive = false;
-            QueueAutoDelete = false;
-        }
-
-        public QueueDeclareParameters(bool queueDurable, bool queueExclusive, bool queueAutoDelete)
-        {
-            QueueDurable = queueDurable;
-            QueueExclusive = queueExclusive;
-            QueueAutoDelete = queueAutoDelete;
-        }
+    public QueueDeclareParameters(bool queueDurable, bool queueExclusive, bool queueAutoDelete)
+    {
+        QueueDurable = queueDurable;
+        QueueExclusive = queueExclusive;
+        QueueAutoDelete = queueAutoDelete;
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace KSociety.Base.InfraSub.Shared.Interface
+namespace KSociety.Base.InfraSub.Shared.Interface;
+
+public interface IModifyField
 {
-    public interface IModifyField
-    {
-        Guid Id { get; set; }
-        string FieldName { get; set; }
-        string Value { get; set; }
-    }
+    Guid Id { get; set; }
+    string FieldName { get; set; }
+    string Value { get; set; }
 }

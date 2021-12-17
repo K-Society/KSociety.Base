@@ -4,46 +4,45 @@ using Autofac;
 using KSociety.Base.App.Shared;
 using Microsoft.Extensions.Logging;
 
-namespace KSociety.Base.Srv.Shared.Interface
+namespace KSociety.Base.Srv.Shared.Interface;
+
+public interface ICommandHandlerAsync
 {
-    public interface ICommandHandlerAsync
-    {
-        #region [ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>]
+    #region [ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>]
 
-        ValueTask<TResponse> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequestList request, CancellationToken cancellationToken = default)
-            where TRequest : IRequest, new()
-            where TRequestList : IAppList<TRequest>, new()
-            where TResponse : IResponse, new();
+    ValueTask<TResponse> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequestList request, CancellationToken cancellationToken = default)
+        where TRequest : IRequest, new()
+        where TRequestList : IAppList<TRequest>, new()
+        where TResponse : IResponse, new();
 
-        #endregion
+    #endregion
 
-        #region [Execute<TRequest, TResponse>]
+    #region [Execute<TRequest, TResponse>]
 
-        ValueTask<TResponse> ExecuteWithResponseAsync<TRequest, TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequest request, CancellationToken cancellationToken = default)
-            where TRequest : IRequest, new()
-            where TResponse : IResponse, new();
+    ValueTask<TResponse> ExecuteWithResponseAsync<TRequest, TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequest request, CancellationToken cancellationToken = default)
+        where TRequest : IRequest, new()
+        where TResponse : IResponse, new();
 
-        #endregion
+    #endregion
 
-        #region [Execute]
+    #region [Execute]
 
-        ValueTask ExecuteAsync(ILoggerFactory loggerFactory, IComponentContext componentContext, string serviceName, CancellationToken cancellationToken = default);
+    ValueTask ExecuteAsync(ILoggerFactory loggerFactory, IComponentContext componentContext, string serviceName, CancellationToken cancellationToken = default);
 
-        #endregion
+    #endregion
 
-        #region [Execute<TRequest>]
+    #region [Execute<TRequest>]
 
-        ValueTask ExecuteAsync<TRequest>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequest request, CancellationToken cancellationToken = default)
-            where TRequest : IRequest, new();
+    ValueTask ExecuteAsync<TRequest>(ILoggerFactory loggerFactory, IComponentContext componentContext, TRequest request, CancellationToken cancellationToken = default)
+        where TRequest : IRequest, new();
 
-        #endregion
+    #endregion
 
-        #region [Execute<TResponse>]
+    #region [Execute<TResponse>]
 
-        ValueTask<TResponse> ExecuteWithResponseAsync<TResponse>(ILoggerFactory loggerFactory,
-            IComponentContext componentContext, CancellationToken cancellationToken = default)
-            where TResponse : IResponse, new();
+    ValueTask<TResponse> ExecuteWithResponseAsync<TResponse>(ILoggerFactory loggerFactory,
+        IComponentContext componentContext, CancellationToken cancellationToken = default)
+        where TResponse : IResponse, new();
 
-        #endregion
-    }
+    #endregion
 }

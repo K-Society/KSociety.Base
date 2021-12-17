@@ -1,9 +1,8 @@
-﻿namespace KSociety.Base.App.Shared
+﻿namespace KSociety.Base.App.Shared;
+
+/// <summary>
+/// The IRequest interface.
+/// </summary>
+public interface IRequest
 {
-    /// <summary>
-    /// The IRequest interface.
-    /// </summary>
-    public interface IRequest
-    {
-    }
 }

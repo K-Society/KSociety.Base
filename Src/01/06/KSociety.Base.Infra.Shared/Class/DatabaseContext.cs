@@ -10,411 +10,410 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Infra.Shared.Class
+namespace KSociety.Base.Infra.Shared.Class;
+
+/// <summary>
+/// 
+/// </summary>
+public class DatabaseContext : DbContext, IDatabaseUnitOfWork
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class DatabaseContext : DbContext, IDatabaseUnitOfWork
+    public const string DefaultSchema = "ksociety";
+
+    protected readonly ILogger<DatabaseContext> Logger;
+
+    protected static ILoggerFactory LoggerFactory;
+
+    private IDbContextTransaction _transaction;
+
+    private readonly IDatabaseConfiguration _configuration;
+    private readonly IMediator _mediator;
+
+    #region [Constructor]
+
+    public DatabaseContext()
     {
-        public const string DefaultSchema = "ksociety";
 
-        protected readonly ILogger<DatabaseContext> Logger;
+    }
 
-        protected static ILoggerFactory LoggerFactory;
+    public DatabaseContext(DbContextOptions option)
+        : base(option)
+    {
 
-        private IDbContextTransaction _transaction;
-
-        private readonly IDatabaseConfiguration _configuration;
-        private readonly IMediator _mediator;
-
-        #region [Constructor]
-
-        public DatabaseContext()
+        LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
         {
+            builder.AddConsole();
+            builder.SetMinimumLevel(LogLevel.Trace);
+        });
 
-        }
+        Logger = LoggerFactory.CreateLogger<DatabaseContext>();
+    }
 
-        public DatabaseContext(DbContextOptions option)
-            : base(option)
+    public DatabaseContext(DbContextOptions<DatabaseContext> option)
+        : base(option)
+    {
+
+        LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
         {
+            builder.AddConsole();
+            builder.SetMinimumLevel(LogLevel.Trace);
+        });
 
-            LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
-            {
-                builder.AddConsole();
-                builder.SetMinimumLevel(LogLevel.Trace);
-            });
+        Logger = LoggerFactory.CreateLogger<DatabaseContext>();
+    }
 
-            Logger = LoggerFactory.CreateLogger<DatabaseContext>();
-        }
+    public DatabaseContext(ILoggerFactory loggerFactory, IDatabaseConfiguration configuration, IMediator mediator)
+    {
+        LoggerFactory = loggerFactory;
+        _configuration = configuration;
+        _mediator = mediator;
+        Logger = LoggerFactory.CreateLogger<DatabaseContext>();
+    }
 
-        public DatabaseContext(DbContextOptions<DatabaseContext> option)
-            : base(option)
-        {
+    #endregion
 
-            LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
-            {
-                builder.AddConsole();
-                builder.SetMinimumLevel(LogLevel.Trace);
-            });
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        //Logger?.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        //string path = Assembly.GetExecutingAssembly().Location;
 
-            Logger = LoggerFactory.CreateLogger<DatabaseContext>();
-        }
-
-        public DatabaseContext(ILoggerFactory loggerFactory, IDatabaseConfiguration configuration, IMediator mediator)
-        {
-            LoggerFactory = loggerFactory;
-            _configuration = configuration;
-            _mediator = mediator;
-            Logger = LoggerFactory.CreateLogger<DatabaseContext>();
-        }
-
-        #endregion
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //Logger?.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            //string path = Assembly.GetExecutingAssembly().Location;
-
-            //Console.WriteLine(path);
-            //Configuration config = ConfigurationManager.OpenExeConfiguration(path);
-            //Console.WriteLine("OpenExeConfiguration: " + config.FilePath);
-            //string conn = config.ConnectionStrings
+        //Console.WriteLine(path);
+        //Configuration config = ConfigurationManager.OpenExeConfiguration(path);
+        //Console.WriteLine("OpenExeConfiguration: " + config.FilePath);
+        //string conn = config.ConnectionStrings
             
 
-            //Console.WriteLine("ConnectionString: " + _configuration.ConnectionString);
-            if (_configuration is null || string.IsNullOrEmpty(_configuration.ConnectionString))
-            {
-                //string path = Assembly.GetExecutingAssembly().Location;
-                //Configuration config = ConfigurationManager.OpenExeConfiguration(path);
+        //Console.WriteLine("ConnectionString: " + _configuration.ConnectionString);
+        if (_configuration is null || string.IsNullOrEmpty(_configuration.ConnectionString))
+        {
+            //string path = Assembly.GetExecutingAssembly().Location;
+            //Configuration config = ConfigurationManager.OpenExeConfiguration(path);
                 
-                //optionsBuilder.UseSqlServer(@"Server=(LocalDB)\MSSQLLocalDB;Database=Master.CtrDb;AttachDbFilename=C:\DB\CtrDB.mdf;Integrated Security=True;Connect Timeout=30;");
-            }
-            else
+            //optionsBuilder.UseSqlServer(@"Server=(LocalDB)\MSSQLLocalDB;Database=Master.CtrDb;AttachDbFilename=C:\DB\CtrDB.mdf;Integrated Security=True;Connect Timeout=30;");
+        }
+        else
+        {
+            if (_configuration.Logging)
             {
-                if (_configuration.Logging)
-                {
-                    optionsBuilder.UseLoggerFactory(LoggerFactory)
-                        .EnableSensitiveDataLogging()
-                        .EnableDetailedErrors();
-                }
+                optionsBuilder.UseLoggerFactory(LoggerFactory)
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors();
+            }
 
-                switch (_configuration.DatabaseEngine)
-                {
-                    case DatabaseEngine.Sqlserver:
-                        if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
-                        {
-                            optionsBuilder
-                                .UseSqlServer(_configuration.ConnectionString);
-                        }
-                        else
-                        {
-                            optionsBuilder
-                                .UseLazyLoadingProxies(_configuration.LazyLoading)
-                                .UseSqlServer(_configuration.ConnectionString,
-                                    sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
-
-                            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, SqlServerGenerator>();
-                        }
-                        break;
-
-                    case DatabaseEngine.Sqlite:
-                        if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
-                        {
-                            optionsBuilder
-                                .UseSqlite(_configuration.ConnectionString);
-                        }
-                        else
-                        {
-                            optionsBuilder
-                                .UseLazyLoadingProxies(_configuration.LazyLoading)
-                                .UseSqlite(_configuration.ConnectionString,
-                                    sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
-
-                            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, SqliteGenerator>();
-                        }
-                        break;
-
-                    case DatabaseEngine.Npgsql:
-                        if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
-                        {
-                            optionsBuilder
-                                .UseNpgsql(_configuration.ConnectionString);
-                        }
-                        else
-                        {
-                            optionsBuilder
-                                .UseLazyLoadingProxies(_configuration.LazyLoading)
-                                .UseNpgsql(_configuration.ConnectionString,
-                                    sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
-
-                            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, NpgsqlGenerator>();
-                        }
-                        break;
-
-                    case DatabaseEngine.Mysql:
-                        if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
-                        {
-                            optionsBuilder.UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString));
-                        }
-                        else
-                        {
-                            optionsBuilder
-                                .UseLazyLoadingProxies(_configuration.LazyLoading)
-                                .UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString),
+            switch (_configuration.DatabaseEngine)
+            {
+                case DatabaseEngine.Sqlserver:
+                    if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
+                    {
+                        optionsBuilder
+                            .UseSqlServer(_configuration.ConnectionString);
+                    }
+                    else
+                    {
+                        optionsBuilder
+                            .UseLazyLoadingProxies(_configuration.LazyLoading)
+                            .UseSqlServer(_configuration.ConnectionString,
                                 sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
-                            optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        }
-
-        public string GetConnectionString()
-        {
-            return Database.GetDbConnection().ConnectionString;
-        }
-
-        public ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
-        {
-            var result = Database.GetDbConnection().ConnectionString;
-            return new ValueTask<string>(result);
-        }
-
-        public bool Exists()
-        {
-            var exists =
-                (Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator)?.Exists();
-
-            return exists.HasValue && exists.Value;
-        }
-
-        public virtual bool EnsureCreated()
-        {
-            var output = false;
-            try
-            {
-                output = Database.EnsureCreated();
-            }
-            catch (Exception ex)
-            {
-                Logger?.LogError(ex, "EnsureCreated: ");
-            }
-
-            return output;
-        }
-
-        public virtual async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
-        {
-            var output = false;
-            try
-            {
-                output = await Database.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                Logger?.LogError(ex, "EnsureCreatedAsync: ");
-            }
-
-            return output;
-        }
-
-        public virtual bool EnsureDeleted()
-        {
-            var output = false;
-            try
-            {
-                output = Database.EnsureDeleted();
-            }
-            catch (Exception ex)
-            {
-                Logger?.LogError(ex, "EnsureDeleted: ");
-            }
-
-            return output;
-        }
-
-        public virtual async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
-        {
-            var output = false;
-            try
-            {
-                output = await Database.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                Logger?.LogError(ex, "EnsureDeletedAsync: ");
-            }
-
-            return output;
-        }
-
-        public void Migrate()
-        {
-            Database.Migrate();
-        }
-
-        public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
-        {
-            await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
-        }
-
-        public virtual void BeginTransaction()
-        {
-            _transaction = Database.BeginTransaction();
-        }
-
-        public virtual async ValueTask BeginTransactionAsync(CancellationToken cancellationToken = default)
-        {
-            _transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
-        }
-
-
-        public int Commit()
-        {
-            var output = -1;
-            try
-            {
-                if (_configuration.Logging)
-                {
-                    var entries = ChangeTracker.Entries();
-
-                    foreach (var entry in entries)
-                    {
-                        Logger?.LogDebug("CommitAsync entry: {0} {1}", entry.Entity.GetType().FullName, entry.State);
+                        optionsBuilder.ReplaceService<IMigrationsSqlGenerator, SqlServerGenerator>();
                     }
-                }
+                    break;
 
-                // Dispatch Domain Events collection. 
-                // Choices:
-                // A) Right BEFORE committing data (EF SaveChanges) into the DB will make a single transaction including  
-                // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
-                // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
-                // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
-                _mediator.DispatchDomainEvents(this);
-
-                // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
-                // performed through the DbContext will be committed
-                var result = SaveChanges();
-                //_transaction.Commit();
-                Logger?.LogTrace("Commit: {0}.{1} Result: {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, result);
-                output = result;
-            }
-            catch (DbUpdateConcurrencyException duce)
-            {
-                Logger?.LogWarning(duce, "Commit DbUpdateConcurrencyException: ");
-                output = -3;
-            }
-            catch (DbUpdateException due)
-            {
-                Logger?.LogWarning(due, "Commit DbUpdateException: ");
-                output = -2;
-            }
-            catch (Exception ex)
-            {
-                Logger?.LogError(ex, "Commit Exception: ");
-                output = -1;
-            }
-            //finally
-            //{
-            //    _transaction.Dispose();
-            //}
-
-            return output;
-        }
-
-        public async ValueTask<int> CommitAsync(CancellationToken cancellationToken = default)
-        {
-            var output = -1;
-            try
-            {
-                if (_configuration.Logging)
-                {
-                    var entries = ChangeTracker.Entries();
-
-                    foreach (var entry in entries)
+                case DatabaseEngine.Sqlite:
+                    if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
                     {
-                        Logger?.LogDebug("CommitAsync entry: {0} {1}", entry.Entity.GetType().FullName, entry.State);
+                        optionsBuilder
+                            .UseSqlite(_configuration.ConnectionString);
                     }
+                    else
+                    {
+                        optionsBuilder
+                            .UseLazyLoadingProxies(_configuration.LazyLoading)
+                            .UseSqlite(_configuration.ConnectionString,
+                                sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+
+                        optionsBuilder.ReplaceService<IMigrationsSqlGenerator, SqliteGenerator>();
+                    }
+                    break;
+
+                case DatabaseEngine.Npgsql:
+                    if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
+                    {
+                        optionsBuilder
+                            .UseNpgsql(_configuration.ConnectionString);
+                    }
+                    else
+                    {
+                        optionsBuilder
+                            .UseLazyLoadingProxies(_configuration.LazyLoading)
+                            .UseNpgsql(_configuration.ConnectionString,
+                                sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+
+                        optionsBuilder.ReplaceService<IMigrationsSqlGenerator, NpgsqlGenerator>();
+                    }
+                    break;
+
+                case DatabaseEngine.Mysql:
+                    if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
+                    {
+                        optionsBuilder.UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString));
+                    }
+                    else
+                    {
+                        optionsBuilder
+                            .UseLazyLoadingProxies(_configuration.LazyLoading)
+                            .UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString),
+                                sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+
+                        optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    public string GetConnectionString()
+    {
+        return Database.GetDbConnection().ConnectionString;
+    }
+
+    public ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
+    {
+        var result = Database.GetDbConnection().ConnectionString;
+        return new ValueTask<string>(result);
+    }
+
+    public bool Exists()
+    {
+        var exists =
+            (Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator)?.Exists();
+
+        return exists.HasValue && exists.Value;
+    }
+
+    public virtual bool EnsureCreated()
+    {
+        var output = false;
+        try
+        {
+            output = Database.EnsureCreated();
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "EnsureCreated: ");
+        }
+
+        return output;
+    }
+
+    public virtual async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
+    {
+        var output = false;
+        try
+        {
+            output = await Database.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "EnsureCreatedAsync: ");
+        }
+
+        return output;
+    }
+
+    public virtual bool EnsureDeleted()
+    {
+        var output = false;
+        try
+        {
+            output = Database.EnsureDeleted();
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "EnsureDeleted: ");
+        }
+
+        return output;
+    }
+
+    public virtual async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
+    {
+        var output = false;
+        try
+        {
+            output = await Database.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "EnsureDeletedAsync: ");
+        }
+
+        return output;
+    }
+
+    public void Migrate()
+    {
+        Database.Migrate();
+    }
+
+    public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
+    {
+        await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    public virtual void BeginTransaction()
+    {
+        _transaction = Database.BeginTransaction();
+    }
+
+    public virtual async ValueTask BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        _transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+
+    public int Commit()
+    {
+        var output = -1;
+        try
+        {
+            if (_configuration.Logging)
+            {
+                var entries = ChangeTracker.Entries();
+
+                foreach (var entry in entries)
+                {
+                    Logger?.LogDebug("CommitAsync entry: {0} {1}", entry.Entity.GetType().FullName, entry.State);
                 }
+            }
 
-                // Dispatch Domain Events collection. 
-                // Choices:
-                // A) Right BEFORE committing data (EF SaveChanges) into the DB will make a single transaction including  
-                // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
-                // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
-                // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
-                await _mediator.DispatchDomainEventsAsync(this, cancellationToken).ConfigureAwait(false);
+            // Dispatch Domain Events collection. 
+            // Choices:
+            // A) Right BEFORE committing data (EF SaveChanges) into the DB will make a single transaction including  
+            // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
+            // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
+            // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
+            _mediator.DispatchDomainEvents(this);
 
-                // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
-                // performed through the DbContext will be committed
-                var result = await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                //await _transaction.CommitAsync(cancellationToken);
-                Logger?.LogTrace("CommitAsync: {0}.{1} Result: {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, result);
-                output = result;
-            }
-            catch (DbUpdateConcurrencyException duce)
-            {
-                //duce.
-                Logger?.LogWarning(duce, "CommitAsync DbUpdateConcurrencyException: ");
-                //Logger?.LogWarning("CommitAsync: Rows affected: {0}", duce.Entries.Count);
-                output = -3;
-            }
-            catch (DbUpdateException due)
-            {
-                Logger?.LogWarning(due, "CommitAsync DbUpdateException: ");
-                output = -2;
-            }
-            catch (Exception ex)
-            {
-                Logger?.LogError(ex, "CommitAsync Exception: ");
-                output = -1;
-            }
-            //finally
-            //{
-            //    await _transaction.DisposeAsync();
-            //}
-            return output;
+            // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
+            // performed through the DbContext will be committed
+            var result = SaveChanges();
+            //_transaction.Commit();
+            Logger?.LogTrace("Commit: {0}.{1} Result: {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, result);
+            output = result;
         }
-
-        public void CommitTransaction()
+        catch (DbUpdateConcurrencyException duce)
         {
-            try
-            {
-                _transaction.Commit();
-            }
-            finally
-            {
-                _transaction.Dispose();
-            }
+            Logger?.LogWarning(duce, "Commit DbUpdateConcurrencyException: ");
+            output = -3;
         }
-
-        public async ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default)
+        catch (DbUpdateException due)
         {
-            try
-            {
-                await _transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                await _transaction.DisposeAsync().ConfigureAwait(false);
-            }
+            Logger?.LogWarning(due, "Commit DbUpdateException: ");
+            output = -2;
         }
-
-        public virtual void Rollback()
+        catch (Exception ex)
         {
-            _transaction.Rollback();
+            Logger?.LogError(ex, "Commit Exception: ");
+            output = -1;
+        }
+        //finally
+        //{
+        //    _transaction.Dispose();
+        //}
+
+        return output;
+    }
+
+    public async ValueTask<int> CommitAsync(CancellationToken cancellationToken = default)
+    {
+        var output = -1;
+        try
+        {
+            if (_configuration.Logging)
+            {
+                var entries = ChangeTracker.Entries();
+
+                foreach (var entry in entries)
+                {
+                    Logger?.LogDebug("CommitAsync entry: {0} {1}", entry.Entity.GetType().FullName, entry.State);
+                }
+            }
+
+            // Dispatch Domain Events collection. 
+            // Choices:
+            // A) Right BEFORE committing data (EF SaveChanges) into the DB will make a single transaction including  
+            // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
+            // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
+            // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
+            await _mediator.DispatchDomainEventsAsync(this, cancellationToken).ConfigureAwait(false);
+
+            // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
+            // performed through the DbContext will be committed
+            var result = await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            //await _transaction.CommitAsync(cancellationToken);
+            Logger?.LogTrace("CommitAsync: {0}.{1} Result: {2}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name, result);
+            output = result;
+        }
+        catch (DbUpdateConcurrencyException duce)
+        {
+            //duce.
+            Logger?.LogWarning(duce, "CommitAsync DbUpdateConcurrencyException: ");
+            //Logger?.LogWarning("CommitAsync: Rows affected: {0}", duce.Entries.Count);
+            output = -3;
+        }
+        catch (DbUpdateException due)
+        {
+            Logger?.LogWarning(due, "CommitAsync DbUpdateException: ");
+            output = -2;
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogError(ex, "CommitAsync Exception: ");
+            output = -1;
+        }
+        //finally
+        //{
+        //    await _transaction.DisposeAsync();
+        //}
+        return output;
+    }
+
+    public void CommitTransaction()
+    {
+        try
+        {
+            _transaction.Commit();
+        }
+        finally
+        {
             _transaction.Dispose();
         }
+    }
 
-        public virtual async ValueTask RollbackAsync(CancellationToken cancellationToken = default)
+    public async ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        try
         {
-            await _transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            await _transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
             await _transaction.DisposeAsync().ConfigureAwait(false);
         }
+    }
+
+    public virtual void Rollback()
+    {
+        _transaction.Rollback();
+        _transaction.Dispose();
+    }
+
+    public virtual async ValueTask RollbackAsync(CancellationToken cancellationToken = default)
+    {
+        await _transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+        await _transaction.DisposeAsync().ConfigureAwait(false);
     }
 }

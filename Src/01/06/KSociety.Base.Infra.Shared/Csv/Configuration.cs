@@ -5,64 +5,63 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace KSociety.Base.Infra.Shared.Csv
+namespace KSociety.Base.Infra.Shared.Csv;
+
+public static class Configuration
 {
-    public static class Configuration
+    public static CsvConfiguration CsvConfiguration => new(CultureInfo.InvariantCulture)
     {
-        public static CsvConfiguration CsvConfiguration => new(CultureInfo.InvariantCulture)
-        {
-            Delimiter = ";",
-            PrepareHeaderForMatch = header => header.Header.ToLower(),
-            //PrepareHeaderForMatch = (header, index) => header.Header.ToLower(),
+        Delimiter = ";",
+        PrepareHeaderForMatch = header => header.Header.ToLower(),
+        //PrepareHeaderForMatch = (header, index) => header.Header.ToLower(),
 
-            GetConstructor = GetConstructor
+        GetConstructor = GetConstructor
 
-        };
+    };
 
-        public static CsvConfiguration CsvConfigurationWrite => new(CultureInfo.InvariantCulture)
-        {
-            Delimiter = ";",
+    public static CsvConfiguration CsvConfigurationWrite => new(CultureInfo.InvariantCulture)
+    {
+        Delimiter = ";",
 
-            PrepareHeaderForMatch = (header) => header.Header.ToLower(),
+        PrepareHeaderForMatch = (header) => header.Header.ToLower(),
             
-            GetConstructor = GetConstructor
+        GetConstructor = GetConstructor
 
-        };
+    };
 
-        private static bool ShouldUseConstructorParameters(Type type)
+    private static bool ShouldUseConstructorParameters(Type type)
+    {
+        return true;
+        //if (!type.IsValueType)
+        //{
+        //    return type.HasConstructor();
+        //}
+
+        //return false;
+
+        //if (type.Name.Equals("DtoTestClass5"))
+        //{
+        //    return true;
+        //}
+        //else
+        //{
+        //    return false;
+        //}
+    }
+
+    private static ConstructorInfo GetConstructor(GetConstructorArgs args)
+    {
+        try
         {
-            return true;
-            //if (!type.IsValueType)
-            //{
-            //    return type.HasConstructor();
-            //}
+            var result = args.ClassType.GetConstructors().FirstOrDefault();
 
-            //return false;
-
-            //if (type.Name.Equals("DtoTestClass5"))
-            //{
-            //    return true;
-            //}
-            //else
-            //{
-            //    return false;
-            //}
+            return result;
+        }
+        catch (Exception)
+        {
+            ;
         }
 
-        private static ConstructorInfo GetConstructor(GetConstructorArgs args)
-        {
-            try
-            {
-                var result = args.ClassType.GetConstructors().FirstOrDefault();
-
-                return result;
-            }
-            catch (Exception)
-            {
-                ;
-            }
-
-            return null;
-        }
+        return null;
     }
 }

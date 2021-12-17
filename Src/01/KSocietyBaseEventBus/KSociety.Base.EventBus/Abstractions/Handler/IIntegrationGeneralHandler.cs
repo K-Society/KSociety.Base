@@ -1,6 +1,5 @@
-﻿namespace KSociety.Base.EventBus.Abstractions.Handler
+﻿namespace KSociety.Base.EventBus.Abstractions.Handler;
+
+public interface IIntegrationGeneralHandler
 {
-    public interface IIntegrationGeneralHandler
-    {
-    }
 }

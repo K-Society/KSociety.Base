@@ -7,27 +7,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace KSociety.Base.Pre.Form.View.Forms
+namespace KSociety.Base.Pre.Form.View.Forms;
+
+public partial class DataGridViewByteArrayColumn : DataGridViewTextBoxColumn
 {
-    public partial class DataGridViewByteArrayColumn : DataGridViewTextBoxColumn
+    public DataGridViewByteArrayColumn()
     {
-        public DataGridViewByteArrayColumn()
-        {
-            InitializeComponent();
-            Initialize();
-        }
+        InitializeComponent();
+        Initialize();
+    }
 
-        public DataGridViewByteArrayColumn(IContainer container)
-        {
-            container.Add(this);
+    public DataGridViewByteArrayColumn(IContainer container)
+    {
+        container.Add(this);
 
-            InitializeComponent();
-            Initialize();
-        }
+        InitializeComponent();
+        Initialize();
+    }
 
-        private void Initialize()
-        {
-            CellTemplate = new DataGridViewByteArrayCell();
-        }
+    private void Initialize()
+    {
+        CellTemplate = new DataGridViewByteArrayCell();
     }
 }

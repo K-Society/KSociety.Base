@@ -6,20 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Pre.Form.View.Forms
+namespace KSociety.Base.Pre.Form.View.Forms;
+
+public partial class DataGridViewComboBoxColumn : System.Windows.Forms.DataGridViewComboBoxColumn
 {
-    public partial class DataGridViewComboBoxColumn : System.Windows.Forms.DataGridViewComboBoxColumn
+    public DataGridViewComboBoxColumn()
     {
-        public DataGridViewComboBoxColumn()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        public DataGridViewComboBoxColumn(IContainer container)
-        {
-            container.Add(this);
+    public DataGridViewComboBoxColumn(IContainer container)
+    {
+        container.Add(this);
 
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

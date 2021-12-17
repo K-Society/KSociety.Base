@@ -1,7 +1,6 @@
-﻿namespace KSociety.Base.InfraSub.Shared.Interface
+﻿namespace KSociety.Base.InfraSub.Shared.Interface;
+
+public interface IExport
 {
-    public interface IExport
-    {
-        string FileName { get; set; }
-    }
+    string FileName { get; set; }
 }

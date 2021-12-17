@@ -1,10 +1,9 @@
-﻿namespace KSociety.Base.Pre.Web.Shared
+﻿namespace KSociety.Base.Pre.Web.Shared;
+
+public enum Alignment
 {
-    public enum Alignment
-    {
-        NotSet,
-        Left,
-        Center,
-        Right
-    }
+    NotSet,
+    Left,
+    Center,
+    Right
 }
