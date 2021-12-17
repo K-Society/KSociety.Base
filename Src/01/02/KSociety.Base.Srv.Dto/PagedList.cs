@@ -20,6 +20,21 @@ public class PagedList<T>
     [ProtoMember(4)]
     public int TotalPages { get; set; }
 
+    public bool PreviousPage
+    {
+        get
+        {
+            return PageNumber > 1;
+        }
+    }
+
+    public bool NextPage
+    {
+        get
+        {
+            return PageNumber < TotalPages;
+        }
+    }
 
     public PagedList()
     {
@@ -32,21 +47,5 @@ public class PagedList<T>
         PageNumber = pageNumber;
         PageSize = pageSize;
         TotalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-    }
-
-    public bool PreviousPage
-    {
-        get
-        {
-            return (PageNumber > 1);
-        }
-    }
-
-    public bool NextPage
-    {
-        get
-        {
-            return (PageNumber < TotalPages);
-        }
     }
 }
