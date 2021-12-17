@@ -1,9 +1,8 @@
 ﻿using KSociety.Base.InfraSub.Shared.Interface;
 
-namespace KSociety.Base.Pre.Form.View.Abstractions
+namespace KSociety.Base.Pre.Form.View.Abstractions;
+
+public interface IListView<T, in TList> where T : IObject where TList : IList<T>
 {
-    public interface IListView<T, in TList> where T : IObject where TList : IList<T>
-    {
-        TList ListView { set; }
-    }
+    TList ListView { set; }
 }

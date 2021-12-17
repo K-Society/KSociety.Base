@@ -1,9 +1,8 @@
-﻿namespace KSociety.Base.App.Shared
+﻿namespace KSociety.Base.App.Shared;
+
+/// <summary>
+/// The IResponse interface.
+/// </summary>
+public interface IResponse
 {
-    /// <summary>
-    /// The IResponse interface.
-    /// </summary>
-    public interface IResponse
-    {
-    }
 }

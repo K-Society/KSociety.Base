@@ -4,55 +4,54 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace KSociety.Base.InfraSub.Shared.Class
+namespace KSociety.Base.InfraSub.Shared.Class;
+
+/// <summary>
+/// The AssemblyTool static class.
+/// </summary>
+public static class AssemblyTool
 {
     /// <summary>
-    /// The AssemblyTool static class.
+    /// GetAssembly
     /// </summary>
-    public static class AssemblyTool
+    /// <returns></returns>
+    public static string[] GetAssembly()
     {
-        /// <summary>
-        /// GetAssembly
-        /// </summary>
-        /// <returns></returns>
-        public static string[] GetAssembly()
-        {
-            var assemblyLibPath = AppDomain.CurrentDomain.BaseDirectory;
+        var assemblyLibPath = AppDomain.CurrentDomain.BaseDirectory;
 
-            List<string> assemblyLibList = Directory.EnumerateFiles(assemblyLibPath, "*.dll",
-                    SearchOption.TopDirectoryOnly)
-                .Where(filePath => Path.GetFileName(filePath).StartsWith("KSociety"))
-                .ToList();
+        List<string> assemblyLibList = Directory.EnumerateFiles(assemblyLibPath, "*.dll",
+                SearchOption.TopDirectoryOnly)
+            .Where(filePath => Path.GetFileName(filePath).StartsWith("KSociety"))
+            .ToList();
 
-            return assemblyLibList.ToArray();
-        }
+        return assemblyLibList.ToArray();
+    }
 
-        /// <summary>
-        /// GetAssembly
-        /// </summary>
-        /// <param name="startWith"></param>
-        /// <returns></returns>
-        public static string[] GetAssembly(string startWith)
-        {
-            var assemblyLibPath = AppDomain.CurrentDomain.BaseDirectory;
+    /// <summary>
+    /// GetAssembly
+    /// </summary>
+    /// <param name="startWith"></param>
+    /// <returns></returns>
+    public static string[] GetAssembly(string startWith)
+    {
+        var assemblyLibPath = AppDomain.CurrentDomain.BaseDirectory;
 
-            List<string> assemblyLibList = Directory.EnumerateFiles(assemblyLibPath, "*.dll",
-                    SearchOption.TopDirectoryOnly)
-                .Where(filePath => Path.GetFileName(filePath).StartsWith(startWith))
-                .ToList();
+        List<string> assemblyLibList = Directory.EnumerateFiles(assemblyLibPath, "*.dll",
+                SearchOption.TopDirectoryOnly)
+            .Where(filePath => Path.GetFileName(filePath).StartsWith(startWith))
+            .ToList();
 
-            return assemblyLibList.ToArray();
-        }
+        return assemblyLibList.ToArray();
+    }
 
-        /// <summary>
-        /// GetAssemblyByName
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static Assembly GetAssemblyByName(string name)
-        {
-            return AppDomain.CurrentDomain.GetAssemblies()
-                .SingleOrDefault(assembly => assembly.GetName().Name.Equals(name));
-        }
+    /// <summary>
+    /// GetAssemblyByName
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static Assembly GetAssemblyByName(string name)
+    {
+        return AppDomain.CurrentDomain.GetAssemblies()
+            .SingleOrDefault(assembly => assembly.GetName().Name.Equals(name));
     }
 }

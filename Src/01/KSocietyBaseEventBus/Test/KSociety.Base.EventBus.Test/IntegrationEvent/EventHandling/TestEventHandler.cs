@@ -4,23 +4,22 @@ using KSociety.Base.EventBus.Abstractions.Handler;
 using KSociety.Base.EventBus.Test.IntegrationEvent.Event;
 using Microsoft.Extensions.Logging;
 
-namespace KSociety.Base.EventBus.Test.IntegrationEvent.EventHandling
+namespace KSociety.Base.EventBus.Test.IntegrationEvent.EventHandling;
+
+public class TestEventHandler : IIntegrationEventHandler<TestIntegrationEvent>
 {
-    public class TestEventHandler : IIntegrationEventHandler<TestIntegrationEvent>
+    private readonly ILoggerFactory _loggerFactory;
+    private ILogger _logger;
+
+    public TestEventHandler(
+        ILoggerFactory loggerFactory
+    )
     {
-        private readonly ILoggerFactory _loggerFactory;
-        private ILogger _logger;
+        _loggerFactory = loggerFactory;
+    }
 
-        public TestEventHandler(
-            ILoggerFactory loggerFactory
-        )
-        {
-            _loggerFactory = loggerFactory;
-        }
-
-        public async ValueTask Handle(TestIntegrationEvent @event, CancellationToken cancellationToken = default)
-        {
-            ;
-        }
+    public async ValueTask Handle(TestIntegrationEvent @event, CancellationToken cancellationToken = default)
+    {
+        ;
     }
 }

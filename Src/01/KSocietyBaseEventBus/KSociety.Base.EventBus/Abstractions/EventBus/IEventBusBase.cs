@@ -1,17 +1,16 @@
 ﻿using KSociety.Base.EventBus.Abstractions.Handler;
 
-namespace KSociety.Base.EventBus.Abstractions.EventBus
+namespace KSociety.Base.EventBus.Abstractions.EventBus;
+
+public interface IEventBusBase
 {
-    public interface IEventBusBase
-    {
-        IIntegrationGeneralHandler EventHandler { get; }
+    IIntegrationGeneralHandler EventHandler { get; }
 
-        void Subscribe<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
+    void Subscribe<T, TH>()
+        where T : IIntegrationEvent
+        where TH : IIntegrationEventHandler<T>;
 
-        void Unsubscribe<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
-    }
+    void Unsubscribe<T, TH>()
+        where T : IIntegrationEvent
+        where TH : IIntegrationEventHandler<T>;
 }

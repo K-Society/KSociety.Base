@@ -6,50 +6,49 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace KSociety.Base.Infra.Shared.Test.Csv
+namespace KSociety.Base.Infra.Shared.Test.Csv;
+
+public class Export
 {
-    public class Export
+    private readonly ILoggerFactory _loggerFactory;
+    private readonly ILogger _logger;
+    private readonly List<Dto.TestClassPrivateSetter> _list = new List<TestClassPrivateSetter>(); 
+
+    public Export()
     {
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger _logger;
-        private readonly List<Dto.TestClassPrivateSetter> _list = new List<TestClassPrivateSetter>(); 
-
-        public Export()
+        _loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
         {
-            _loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
-            {
-                builder.AddConsole();
-                builder.SetMinimumLevel(LogLevel.Trace);
-            });
-            _logger = _loggerFactory.CreateLogger<ReadCsvTest>();
-            _list.Add(new TestClassPrivateSetter(Guid.NewGuid(), 1, "Pippo", "0.0.0.0", true, "Test"));
-        }
+            builder.AddConsole();
+            builder.SetMinimumLevel(LogLevel.Trace);
+        });
+        _logger = _loggerFactory.CreateLogger<ReadCsvTest>();
+        _list.Add(new TestClassPrivateSetter(Guid.NewGuid(), 1, "Pippo", "0.0.0.0", true, "Test"));
+    }
 
-        [Fact]
-        public void ExportCsv()
-        {
-            var result = WriteCsv<Dto.TestClassPrivateSetter>.Export(_loggerFactory, @"C:\temp\Test.csv", _list);
+    [Fact]
+    public void ExportCsv()
+    {
+        var result = WriteCsv<Dto.TestClassPrivateSetter>.Export(_loggerFactory, @"C:\temp\Test.csv", _list);
 
-            Assert.NotNull(result);
+        Assert.NotNull(result);
 
-        }
+    }
 
-        [Fact]
-        public void ExportCsvPrivateSetter()
-        {
-            var result = WriteCsv<Dto.TestClassPrivateSetter>.Export(_loggerFactory, @"C:\temp\Test.csv", _list);
+    [Fact]
+    public void ExportCsvPrivateSetter()
+    {
+        var result = WriteCsv<Dto.TestClassPrivateSetter>.Export(_loggerFactory, @"C:\temp\Test.csv", _list);
 
-            Assert.NotNull(result);
+        Assert.NotNull(result);
 
-        }
+    }
 
-        [Fact]
-        public void ExportCsvClassMap()
-        {
-            var result = WriteCsvClassMap<Dto.TestClassPrivateSetter, ClassMap.TestClassPrivateSetter>.Export(_loggerFactory, @"C:\temp\Test.csv", _list);
+    [Fact]
+    public void ExportCsvClassMap()
+    {
+        var result = WriteCsvClassMap<Dto.TestClassPrivateSetter, ClassMap.TestClassPrivateSetter>.Export(_loggerFactory, @"C:\temp\Test.csv", _list);
 
-            Assert.NotNull(result);
+        Assert.NotNull(result);
 
-        }
     }
 }

@@ -4,45 +4,44 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
+namespace KSociety.Base.Infra.Shared.Class.SqlGenerator;
+
+//No Abstract.
+public class SqliteGenerator : SqliteMigrationsSqlGenerator
 {
-    //No Abstract.
-    public class SqliteGenerator : SqliteMigrationsSqlGenerator
+    private readonly ILogger<SqliteGenerator> _logger;
+
+    //It must be public.
+    public SqliteGenerator(
+        ILoggerFactory loggerFactory,
+        MigrationsSqlGeneratorDependencies dependencies,
+        IRelationalAnnotationProvider migrationsAnnotations)
+        : base(dependencies, migrationsAnnotations)
     {
-        private readonly ILogger<SqliteGenerator> _logger;
+        _logger = loggerFactory.CreateLogger<SqliteGenerator>();
+        _logger.LogTrace("SqliteGenerator");
+    }
 
-        //It must be public.
-        public SqliteGenerator(
-            ILoggerFactory loggerFactory,
-            MigrationsSqlGeneratorDependencies dependencies,
-            IRelationalAnnotationProvider migrationsAnnotations)
-            : base(dependencies, migrationsAnnotations)
+    protected override void Generate(
+        MigrationOperation operation,
+        IModel model,
+        MigrationCommandListBuilder builder)
+    {
+        try
         {
-            _logger = loggerFactory.CreateLogger<SqliteGenerator>();
-            _logger.LogTrace("SqliteGenerator");
+            if (operation is CreateViewOperation createViewOperation)
+            {
+                //Generate(createViewOperation, builder);
+                SqlGeneratorHelper.Generate(_logger, createViewOperation, builder, Dependencies.SqlGenerationHelper);
+            }
+            else
+            {
+                base.Generate(operation, model, builder);
+            }
         }
-
-        protected override void Generate(
-            MigrationOperation operation,
-            IModel model,
-            MigrationCommandListBuilder builder)
+        catch (Exception ex)
         {
-            try
-            {
-                if (operation is CreateViewOperation createViewOperation)
-                {
-                    //Generate(createViewOperation, builder);
-                    SqlGeneratorHelper.Generate(_logger, createViewOperation, builder, Dependencies.SqlGenerationHelper);
-                }
-                else
-                {
-                    base.Generate(operation, model, builder);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Generate: ");
-            }
+            _logger.LogError(ex, "Generate: ");
         }
     }
 }

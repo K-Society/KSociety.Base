@@ -1,19 +1,18 @@
 ﻿using ProtoBuf;
 
-namespace KSociety.Base.EventBus.Test.IntegrationEvent.Event
+namespace KSociety.Base.EventBus.Test.IntegrationEvent.Event;
+
+[ProtoContract]
+public class BaseTestIntegrationEventRpc : KSociety.Base.EventBus.Events.IntegrationEventRpc
 {
-    [ProtoContract]
-    public class BaseTestIntegrationEventRpc : KSociety.Base.EventBus.Events.IntegrationEventRpc
+    public BaseTestIntegrationEventRpc()
     {
-        public BaseTestIntegrationEventRpc()
-        {
 
-        }
+    }
 
-        public BaseTestIntegrationEventRpc(string routingKey, string replyRoutingKey)
-            : base(routingKey, replyRoutingKey)
-        {
+    public BaseTestIntegrationEventRpc(string routingKey, string replyRoutingKey)
+        : base(routingKey, replyRoutingKey)
+    {
 
-        }
     }
 }

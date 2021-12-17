@@ -1,11 +1,10 @@
 ﻿
-namespace KSociety.Base.Pre.Form.View.Forms
+namespace KSociety.Base.Pre.Form.View.Forms;
+
+public partial class DataGridViewComboBoxCell : System.Windows.Forms.DataGridViewComboBoxCell
 {
-    public partial class DataGridViewComboBoxCell : System.Windows.Forms.DataGridViewComboBoxCell
+    public DataGridViewComboBoxCell()
     {
-        public DataGridViewComboBoxCell()
-        {
             
-        }
     }
 }
