@@ -293,14 +293,27 @@ public abstract class RepositoryBase<TContext, TEntity> : IRepositoryBase<TEntit
         return null;
     }
 
-    public virtual IQueryable<TEntity> GetPaged<TKeySelector>(int pageNumber, int pageSize, Expression<Func<TEntity, TKeySelector>> keySelector = null)
+    public virtual IQueryable<TEntity> GetPaged<TKeySelector>(
+        int pageNumber, int pageSize, 
+        Expression<Func<TEntity, TKeySelector>> keySelector = null,
+        Expression<Func<TEntity, bool>> filter = null)
     {
         if (Exists)
         {
             try
             {
                 var skip = (pageNumber - 1) * pageSize;
-                return keySelector is null ? DataBaseSet.Skip(skip).Take(pageSize) : DataBaseSet.OrderBy(keySelector).Skip(skip).Take(pageSize);
+
+                if (filter is null)
+                {
+                    return keySelector is null
+                        ? DataBaseSet.Skip(skip).Take(pageSize)
+                        : DataBaseSet.OrderBy(keySelector).Skip(skip).Take(pageSize);
+                }
+
+                return keySelector is null
+                    ? DataBaseSet.Where(filter).Skip(skip).Take(pageSize)
+                    : DataBaseSet.Where(filter).OrderBy(keySelector).Skip(skip).Take(pageSize);
             }
             catch (Exception ex)
             {
