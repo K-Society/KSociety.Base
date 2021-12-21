@@ -15,13 +15,22 @@ public class DatabaseConfiguration : Module
     private readonly bool _lazyLoading;
 
     public DatabaseConfiguration(DatabaseEngine databaseEngine, 
-        string masterString, bool debugFlag, string migrationsAssembly = "", bool lazyLoading = false)
+        string masterString, bool debugFlag = false, string migrationsAssembly = "", bool lazyLoading = false)
     {
         _databaseEngine = databaseEngine;
         _masterString = masterString;
         _debugFlag = debugFlag;
         _migrationsAssembly = migrationsAssembly;
         _lazyLoading = lazyLoading;
+    }
+
+    public DatabaseConfiguration(DatabaseOptions databaseOptions)
+    {
+        _databaseEngine = databaseOptions.DatabaseEngine;
+        _masterString = databaseOptions.ConnectionString;
+        _debugFlag = databaseOptions.Logging;
+        _migrationsAssembly = databaseOptions.MigrationsAssembly;
+        _lazyLoading = databaseOptions.LazyLoading;
     }
 
     protected override void Load(ContainerBuilder builder)
