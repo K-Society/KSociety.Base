@@ -89,8 +89,8 @@ The event bus abstraction and [RbbitMQ](https://www.rabbitmq.com/) implementatio
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
-| [EventBus](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/KSociety.BaseEventBus/KSociety.Base.EventBus) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.EventBus)](https://www.nuget.org/packages/KSociety.Base.EventBus) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.EventBus) |
-| [EventBusRabbitMQ](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/KSociety.BaseEventBus/KSociety.Base.EventBusRabbitMQ) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.EventBusRabbitMQ)](https://www.nuget.org/packages/KSociety.Base.EventBusRabbitMQ) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.EventBusRabbitMQ) |
+| [EventBus](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/KSocietyBaseEventBus/KSociety.Base.EventBus) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.EventBus)](https://www.nuget.org/packages/KSociety.Base.EventBus) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.EventBus) |
+| [EventBusRabbitMQ](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/KSocietyBaseEventBus/KSociety.Base.EventBusRabbitMQ) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.EventBusRabbitMQ)](https://www.nuget.org/packages/KSociety.Base.EventBusRabbitMQ) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.EventBusRabbitMQ) |
 
 ### InfrastructureSub (KSociety.Base.InfraSub.)
 The generic shared library.
