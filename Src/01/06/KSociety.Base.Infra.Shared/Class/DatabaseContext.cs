@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -253,19 +254,23 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
         return output;
     }
 
-    public void Migrate()
+    public void Migrate(string targetMigration = null)
     {
-        Database.Migrate();
+        var migrator = Database.GetInfrastructure().GetService<IMigrator>();
+        migrator.Migrate(targetMigration);
+
     }
 
-    public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
+    public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)
     {
-        await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+        var migrator = Database.GetInfrastructure().GetService<IMigrator>();
+        await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
     }
 
     public string CreateScript()
     {
-        return Database.GenerateCreateScript();
+        var migrator = Database.GetInfrastructure().GetService<IMigrator>();
+        return migrator.GenerateScript();
     }
 
     public virtual void BeginTransaction()
