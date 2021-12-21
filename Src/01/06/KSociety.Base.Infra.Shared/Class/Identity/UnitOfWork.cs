@@ -74,6 +74,11 @@ public class UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUs
         await Context.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 
+    public string CreateScript()
+    {
+        return Context.CreateScript();
+    }
+
     public void BeginTransaction()
     {
         Context.BeginTransaction();

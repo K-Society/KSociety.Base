@@ -212,6 +212,11 @@ public class DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TR
         await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 
+    public string CreateScript()
+    {
+        return Database.GenerateCreateScript();
+    }
+
     public virtual void BeginTransaction()
     {
         _transaction = Database.BeginTransaction();
