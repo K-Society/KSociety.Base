@@ -53,6 +53,8 @@ public interface IUnitOfWork : IDisposable
     /// <returns></returns>
     ValueTask MigrateAsync(CancellationToken cancellationToken = default);
 
+    string CreateScript();
+
     /// <summary>
     /// BeginTransaction
     /// </summary>

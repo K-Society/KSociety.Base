@@ -8,7 +8,13 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings;
 /// <summary>
 /// The MessageBroker module for Autofac.
 /// </summary>
-public class MessageBroker : Module
+public class MessageBroker<
+    TExchangeDeclareParameters, TQueueDeclareParameters, 
+    TEventBusParameters, TConnectionFactory> : Module 
+    where TExchangeDeclareParameters : IExchangeDeclareParameters 
+    where TQueueDeclareParameters : IQueueDeclareParameters
+    where TEventBusParameters : IEventBusParameters
+    where TConnectionFactory : IConnectionFactory
 {
     private readonly bool _debug;
     private readonly string _brokerName;
@@ -77,12 +83,13 @@ public class MessageBroker : Module
             AutomaticRecoveryEnabled = true,
             NetworkRecoveryInterval = TimeSpan.FromSeconds(10),
             RequestedHeartbeat = TimeSpan.FromSeconds(10),
+            ContinuationTimeout = TimeSpan.FromSeconds(120),
             DispatchConsumersAsync = true
         };
 
-        builder.RegisterInstance(exchangeDeclareParameters).As<IExchangeDeclareParameters>().SingleInstance();
-        builder.RegisterInstance(queueDeclareParameters).As<IQueueDeclareParameters>().SingleInstance();
-        builder.RegisterInstance(eventBusParameters).As<IEventBusParameters>().SingleInstance();
-        builder.RegisterInstance(rabbitMqConnectionFactory).As<IConnectionFactory>().SingleInstance();
+        builder.RegisterInstance(exchangeDeclareParameters).As<TExchangeDeclareParameters>().SingleInstance();
+        builder.RegisterInstance(queueDeclareParameters).As<TQueueDeclareParameters>().SingleInstance();
+        builder.RegisterInstance(eventBusParameters).As<TEventBusParameters>().SingleInstance();
+        builder.RegisterInstance(rabbitMqConnectionFactory).As<TConnectionFactory>().SingleInstance();
     }
 }

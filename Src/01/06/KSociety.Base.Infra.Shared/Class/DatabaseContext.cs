@@ -263,6 +263,11 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
         await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 
+    public string CreateScript()
+    {
+        return Database.GenerateCreateScript();
+    }
+
     public virtual void BeginTransaction()
     {
         _transaction = Database.BeginTransaction();

@@ -74,6 +74,11 @@ public class UnitOfWork<TContext> : DisposableObject, IDatabaseUnitOfWork
         await Context.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 
+    public string CreateScript()
+    {
+        return Context.CreateScript();
+    }
+
     ///<inheritdoc/>
     public void BeginTransaction()
     {
