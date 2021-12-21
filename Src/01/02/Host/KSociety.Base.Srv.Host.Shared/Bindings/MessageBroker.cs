@@ -20,9 +20,9 @@ public class MessageBroker<
     where TQueueDeclareParameters : IQueueDeclareParameters
     where TEventBusParameters : IEventBusParameters
     where TConnectionFactory : IConnectionFactory
-    where TExchangeDeclareParametersClass : class, TExchangeDeclareParameters
-    where TQueueDeclareParametersClass : class, TQueueDeclareParameters
-    where TEventBusParametersClass : class, TEventBusParameters
+    where TExchangeDeclareParametersClass : ExchangeDeclareParameters, new()
+    where TQueueDeclareParametersClass : QueueDeclareParameters, new()
+    where TEventBusParametersClass : EventBusParameters, new()
 {
     private readonly bool _debug;
     private readonly string _brokerName;
@@ -79,11 +79,27 @@ public class MessageBroker<
 
     protected override void Load(ContainerBuilder builder)
     {
-        var exchangeDeclareParameters = new ExchangeDeclareParameters(_brokerName, _exchangeType, _exchangeDurable, _exchangeAutoDelete) as TExchangeDeclareParametersClass;
-        var queueDeclareParameters = new QueueDeclareParameters(_queueDurable, _queueExclusive, _queueAutoDelete) as TQueueDeclareParametersClass;
-        var eventBusParameters =
-            new EventBusParameters(exchangeDeclareParameters, queueDeclareParameters, _debug) as
-                TEventBusParametersClass;
+        var exchangeDeclareParameters = new TExchangeDeclareParametersClass
+        {
+            BrokerName = _brokerName,
+            ExchangeType = _exchangeType.ToString().ToLower(),
+            ExchangeDurable = _exchangeDurable,
+            ExchangeAutoDelete = _exchangeAutoDelete
+        };
+
+        var queueDeclareParameters = new TQueueDeclareParametersClass
+        {
+            QueueDurable = _queueDurable,
+            QueueExclusive = _queueExclusive,
+            QueueAutoDelete = _queueAutoDelete
+        };
+
+        var eventBusParameters = new TEventBusParametersClass
+        {
+            ExchangeDeclareParameters = exchangeDeclareParameters,
+            QueueDeclareParameters = queueDeclareParameters,
+            Debug = _debug
+        };
 
         var rabbitMqConnectionFactory = new ConnectionFactory
         {
