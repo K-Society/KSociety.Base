@@ -63,15 +63,15 @@ public class UnitOfWork<TContext> : DisposableObject, IDatabaseUnitOfWork
     }
 
     ///<inheritdoc/>
-    public void Migrate()
+    public void Migrate(string targetMigration = null)
     {
-        Context.Migrate();
+        Context.Migrate(targetMigration);
     }
 
     ///<inheritdoc/>
-    public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
+    public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)
     {
-        await Context.MigrateAsync(cancellationToken).ConfigureAwait(false);
+        await Context.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
     }
 
     public string CreateScript()

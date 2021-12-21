@@ -64,14 +64,14 @@ public class UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUs
         return await Context.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    public void Migrate()
+    public void Migrate(string targetMigration = null)
     {
-        Context.Migrate();
+        Context.Migrate(targetMigration);
     }
 
-    public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
+    public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)
     {
-        await Context.MigrateAsync(cancellationToken).ConfigureAwait(false);
+        await Context.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
     }
 
     public string CreateScript()
