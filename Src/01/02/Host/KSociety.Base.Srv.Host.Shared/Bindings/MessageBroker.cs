@@ -9,12 +9,20 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings;
 /// The MessageBroker module for Autofac.
 /// </summary>
 public class MessageBroker<
-    TExchangeDeclareParameters, TQueueDeclareParameters, 
-    TEventBusParameters, TConnectionFactory> : Module 
+    TExchangeDeclareParameters, 
+    TQueueDeclareParameters, 
+    TEventBusParameters, 
+    TConnectionFactory,
+    TExchangeDeclareParametersClass,
+    TQueueDeclareParametersClass,
+    TEventBusParametersClass> : Module 
     where TExchangeDeclareParameters : IExchangeDeclareParameters 
     where TQueueDeclareParameters : IQueueDeclareParameters
     where TEventBusParameters : IEventBusParameters
     where TConnectionFactory : IConnectionFactory
+    where TExchangeDeclareParametersClass : class, TExchangeDeclareParameters
+    where TQueueDeclareParametersClass : class, TQueueDeclareParameters
+    where TEventBusParametersClass : class, TEventBusParameters
 {
     private readonly bool _debug;
     private readonly string _brokerName;
@@ -71,9 +79,11 @@ public class MessageBroker<
 
     protected override void Load(ContainerBuilder builder)
     {
-        var exchangeDeclareParameters = new ExchangeDeclareParameters(_brokerName, _exchangeType, _exchangeDurable, _exchangeAutoDelete);
-        var queueDeclareParameters = new QueueDeclareParameters(_queueDurable, _queueExclusive, _queueAutoDelete);
-        var eventBusParameters = new EventBusParameters(exchangeDeclareParameters, queueDeclareParameters, _debug);
+        var exchangeDeclareParameters = new ExchangeDeclareParameters(_brokerName, _exchangeType, _exchangeDurable, _exchangeAutoDelete) as TExchangeDeclareParametersClass;
+        var queueDeclareParameters = new QueueDeclareParameters(_queueDurable, _queueExclusive, _queueAutoDelete) as TQueueDeclareParametersClass;
+        var eventBusParameters =
+            new EventBusParameters(exchangeDeclareParameters, queueDeclareParameters, _debug) as
+                TEventBusParametersClass;
 
         var rabbitMqConnectionFactory = new ConnectionFactory
         {
