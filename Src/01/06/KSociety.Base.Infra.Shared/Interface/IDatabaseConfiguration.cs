@@ -12,5 +12,5 @@ public interface IDatabaseConfiguration
     bool Logging { get; }
     string MigrationsAssembly { get; }
     bool LazyLoading { get; }
-
+    string ToString();
 }
