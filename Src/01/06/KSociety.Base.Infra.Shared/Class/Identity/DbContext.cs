@@ -203,10 +203,20 @@ public class DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TR
         return output;
     }
 
+    public void Migrate()
+    {
+        Database.Migrate();
+    }
+
     public void Migrate(string targetMigration = null)
     {
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
         migrator.Migrate(targetMigration);
+    }
+
+    public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
+    {
+        await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)

@@ -120,15 +120,6 @@ public class ContextFactory<TContext> : IContextFactory<TContext> where TContext
                 throw new ArgumentOutOfRangeException();
         }
 
-        //try
-        //{
-
-        //}
-        //catch(Exception ex)
-        //{
-
-        //}
-
         output = (TContext)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
 
         return output; //new TContext(optionBuilder.Options);
