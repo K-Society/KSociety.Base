@@ -68,6 +68,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
         _configuration = configuration;
         _mediator = mediator;
         Logger = LoggerFactory.CreateLogger<DatabaseContext>();
+        Logger.LogTrace("DatabaseContext: {0}", _configuration.ToString());
     }
 
     #endregion
@@ -196,6 +197,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
 
     public virtual bool EnsureCreated()
     {
+        Logger.LogTrace("EnsureCreated");
         var output = false;
         try
         {
@@ -211,6 +213,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
 
     public virtual async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
     {
+        Logger.LogTrace("EnsureCreatedAsync");
         var output = false;
         try
         {
@@ -226,6 +229,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
 
     public virtual bool EnsureDeleted()
     {
+        Logger.LogTrace("EnsureDeleted");
         var output = false;
         try
         {
@@ -241,6 +245,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
 
     public virtual async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
     {
+        Logger.LogTrace("EnsureDeletedAsync");
         var output = false;
         try
         {
@@ -256,6 +261,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
 
     public void Migrate(string targetMigration = null)
     {
+        Logger.LogTrace("Migrate");
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
         migrator.Migrate(targetMigration);
 
@@ -264,6 +270,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
 
     public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)
     {
+        Logger.LogTrace("MigrateAsync");
         foreach (var variable in Database.GetMigrations())
         {
             Logger.LogTrace("Migrations: {0}", variable);

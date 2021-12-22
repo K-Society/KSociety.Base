@@ -29,4 +29,9 @@ public class DatabaseConfiguration : IDatabaseConfiguration
         MigrationsAssembly = databaseOptions.MigrationsAssembly;
         LazyLoading = databaseOptions.LazyLoading;
     }
+
+    public override string ToString()
+    {
+        return DatabaseEngine + " " + ConnectionString + " " + Logging + " " + MigrationsAssembly + " " + LazyLoading;
+    }
 }
