@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -281,6 +282,13 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
             Logger.LogTrace("PendingMigrations: {0}", variable);
         }
 
+        var migrationsAssembly = Database.GetInfrastructure().GetService<IMigrationsAssembly>();
+        Logger.LogTrace("MigrationsAssembly: {0}", migrationsAssembly.Assembly.FullName);
+
+        foreach ((string key, TypeInfo value) in migrationsAssembly.Migrations)
+        {
+            Logger.LogTrace("Migrations: {0} {1}", key, value.Assembly.FullName);
+        }
         //var migrator = Database.GetInfrastructure().GetService<IMigrator>();
         //await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
 
