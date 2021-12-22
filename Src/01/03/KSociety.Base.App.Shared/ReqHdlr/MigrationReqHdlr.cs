@@ -23,6 +23,6 @@ public class MigrationReqHdlr : IRequestHandler, IRequestHandlerAsync
 
     public async ValueTask ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        await _unitOfWork.MigrateAsync(null, cancellationToken).ConfigureAwait(false);
+        await _unitOfWork.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 }
