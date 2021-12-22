@@ -213,10 +213,14 @@ public class DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TR
     {
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
         await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
+
+        //Database.Mi
     }
 
     public string CreateScript()
     {
+        //var migratorAssembly = Database.GetInfrastructure().GetService<IMigrationsAssembly>();
+        //migratorAssembly.Assembly.FullName
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
         return migrator.GenerateScript();
     }
