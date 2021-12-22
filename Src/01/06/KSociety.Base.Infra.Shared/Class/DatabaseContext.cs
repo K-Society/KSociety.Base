@@ -264,7 +264,6 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
 
     public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)
     {
-        
         foreach (var variable in Database.GetMigrations())
         {
             Logger.LogTrace("Migrations: {0}", variable);
