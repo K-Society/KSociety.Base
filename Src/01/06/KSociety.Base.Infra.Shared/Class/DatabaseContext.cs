@@ -259,12 +259,36 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
         migrator.Migrate(targetMigration);
 
+        //Database
     }
 
     public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)
     {
-        var migrator = Database.GetInfrastructure().GetService<IMigrator>();
-        await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
+        
+        foreach (var variable in Database.GetMigrations())
+        {
+            Logger.LogTrace("Migrations: {0}", variable);
+        }
+
+        foreach (var variable in await Database.GetPendingMigrationsAsync(cancellationToken))
+        {
+            Logger.LogTrace("PendingMigrations: {0}", variable);
+        }
+
+        //var migrator = Database.GetInfrastructure().GetService<IMigrator>();
+        //await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
+
+        await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+
+        foreach (var variable in await Database.GetAppliedMigrationsAsync(cancellationToken))
+        {
+            Logger.LogTrace("AppliedMigrations: {0}", variable);
+        }
+
+        foreach (var variable in await Database.GetPendingMigrationsAsync(cancellationToken))
+        {
+            Logger.LogTrace("PendingMigrations: {0}", variable);
+        }
     }
 
     public string CreateScript()
