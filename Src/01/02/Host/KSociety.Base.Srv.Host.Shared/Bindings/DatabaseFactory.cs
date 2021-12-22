@@ -13,7 +13,11 @@ public class DatabaseFactory<TContext> : Module where TContext : DatabaseContext
 {
     protected override void Load(ContainerBuilder builder)
     {
-        builder.RegisterType<DatabaseFactory<ILoggerFactory, Infra.Shared.Class.DatabaseConfiguration, TContext>>()
+
+        //builder.RegisterType<DatabaseFactory<ILoggerFactory, Infra.Shared.Class.DatabaseConfiguration, TContext>>()
+        //    .As<IDatabaseFactory<TContext>>().InstancePerLifetimeScope();
+
+        builder.RegisterType<DatabaseFactory<ILoggerFactory, IDatabaseConfiguration, TContext>>()
             .As<IDatabaseFactory<TContext>>().InstancePerLifetimeScope();
     }
 }
