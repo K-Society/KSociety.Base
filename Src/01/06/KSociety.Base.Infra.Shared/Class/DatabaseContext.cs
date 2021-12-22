@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -260,49 +259,30 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
         return output;
     }
 
+    public void Migrate()
+    {
+        Database.Migrate();
+    }
+
     public void Migrate(string targetMigration = null)
     {
-        Logger.LogTrace("Migrate");
+        Logger.LogTrace("Migrate {0}", targetMigration);
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
         migrator.Migrate(targetMigration);
+    }
 
-        //Database
+    public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
+    {
+        Logger.LogTrace("MigrateAsync");
+
+        await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)
     {
-        Logger.LogTrace("MigrateAsync");
-        foreach (var variable in Database.GetMigrations())
-        {
-            Logger.LogTrace("Migrations: {0}", variable);
-        }
-
-        foreach (var variable in await Database.GetPendingMigrationsAsync(cancellationToken))
-        {
-            Logger.LogTrace("PendingMigrations: {0}", variable);
-        }
-
-        var migrationsAssembly = Database.GetInfrastructure().GetService<IMigrationsAssembly>();
-        Logger.LogTrace("MigrationsAssembly: {0}", migrationsAssembly.Assembly.FullName);
-
-        foreach ((string key, TypeInfo value) in migrationsAssembly.Migrations)
-        {
-            Logger.LogTrace("Migrations: {0} {1}", key, value.Assembly.FullName);
-        }
-        //var migrator = Database.GetInfrastructure().GetService<IMigrator>();
-        //await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
-
-        await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
-
-        foreach (var variable in await Database.GetAppliedMigrationsAsync(cancellationToken))
-        {
-            Logger.LogTrace("AppliedMigrations: {0}", variable);
-        }
-
-        foreach (var variable in await Database.GetPendingMigrationsAsync(cancellationToken))
-        {
-            Logger.LogTrace("PendingMigrations: {0}", variable);
-        }
+        Logger.LogTrace("MigrateAsync {0}", targetMigration);
+        var migrator = Database.GetInfrastructure().GetService<IMigrator>();
+        await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
     }
 
     public string CreateScript()
