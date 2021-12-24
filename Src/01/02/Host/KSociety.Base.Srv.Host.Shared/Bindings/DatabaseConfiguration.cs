@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using KSociety.Base.Infra.Shared.Class;
+using KSociety.Base.Infra.Shared.Interface;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings;
 
@@ -36,6 +37,6 @@ public class DatabaseConfiguration : Module
     protected override void Load(ContainerBuilder builder)
     {
         var conf = new Infra.Shared.Class.DatabaseConfiguration(_databaseEngine, _masterString, _debugFlag, _migrationsAssembly, _lazyLoading);
-        builder.RegisterInstance(conf).AsSelf().SingleInstance();
+        builder.RegisterInstance(conf).As<IDatabaseConfiguration>().SingleInstance();
     }
 }
