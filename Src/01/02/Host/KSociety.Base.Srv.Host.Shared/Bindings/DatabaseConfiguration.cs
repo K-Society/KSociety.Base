@@ -37,6 +37,6 @@ public class DatabaseConfiguration : Module
     protected override void Load(ContainerBuilder builder)
     {
         var conf = new Infra.Shared.Class.DatabaseConfiguration(_databaseEngine, _masterString, _debugFlag, _migrationsAssembly, _lazyLoading);
-        builder.RegisterInstance(conf).As<IDatabaseConfiguration>().SingleInstance();
+        builder.RegisterInstance<IDatabaseConfiguration>(conf).SingleInstance();
     }
 }
