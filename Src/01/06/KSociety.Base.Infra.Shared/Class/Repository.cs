@@ -7,144 +7,143 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Infra.Shared.Class
+namespace KSociety.Base.Infra.Shared.Class;
+
+///<inheritdoc cref="IRepository{TEntity}"/>
+public abstract class Repository<TContext, TEntity, TClassMap> : RepositoryBase<TContext, TEntity>, IRepository<TEntity>
+    where TContext : DatabaseContext
+    where TEntity : class
+    where TClassMap : ClassMap<TEntity>
 {
-    ///<inheritdoc cref="IRepository{TEntity}"/>
-    public abstract class Repository<TContext, TEntity, TClassMap> : RepositoryBase<TContext, TEntity>, IRepository<TEntity>
-        where TContext : DatabaseContext
-        where TEntity : class
-        where TClassMap : ClassMap<TEntity>
+    protected Repository(ILoggerFactory loggerFactory, IDatabaseFactory<TContext> databaseFactory)
+        : base(loggerFactory, databaseFactory)
     {
-        protected Repository(ILoggerFactory loggerFactory, IDatabaseFactory<TContext> databaseFactory)
-            : base(loggerFactory, databaseFactory)
-        {
 
-        }
+    }
 
-        public bool ImportCsv(string fileName)
+    public bool ImportCsv(string fileName)
+    {
+        //Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        try
         {
-            //Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            try
-            {
-                var result = ReadCsv<TEntity>.Import(LoggerFactory, fileName);
-                if (!result.Any()) return false;
-                DeleteRange(FindAll());
+            var result = ReadCsv<TEntity>.Import(LoggerFactory, fileName);
+            if (!result.Any()) return false;
+            DeleteRange(FindAll());
                 
-                AddRange(result);
+            AddRange(result);
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
-            }
-
-            return false;
+            return true;
         }
-
-        public bool ImportCsv(byte[] byteArray)
+        catch (Exception ex)
         {
-            //Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            try
-            {
-                var result = ReadCsv<TEntity>.Import(LoggerFactory, byteArray);
-                if (!result.Any()) return false;
-                DeleteRange(FindAll());
-
-                AddRange(result);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
-            }
-
-            return false;
+            Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
         }
 
-        public async ValueTask<bool> ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+        return false;
+    }
+
+    public bool ImportCsv(byte[] byteArray)
+    {
+        //Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        try
         {
-            Logger.LogTrace("RepositoryBase ImportCsvAsync: {0} {1}.{2}",  fileName, GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            try
-            {
-                //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken).ConfigureAwait(false);
+            var result = ReadCsv<TEntity>.Import(LoggerFactory, byteArray);
+            if (!result.Any()) return false;
+            DeleteRange(FindAll());
 
-                DeleteRange(FindAll());
-                //Logger.LogTrace("DeleteRange OK.");
-                await foreach (var entity in ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken).ConfigureAwait(false).WithCancellation(cancellationToken).ConfigureAwait(false))
-                {
-                    var result = await AddAsync(entity, cancellationToken).ConfigureAwait(false);
-                    //Logger.LogTrace("AddAsync OK. " + result.Entity.GetType().Name);
-                }
+            AddRange(result);
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            }
-
-            return false;
+            return true;
         }
-
-        public async ValueTask<bool> ImportCsvAsync(byte[] byteArray, CancellationToken cancellationToken = default)
+        catch (Exception ex)
         {
-            Logger.LogTrace("RepositoryBase ImportCsvAsync: {0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            try
-            {
-                //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray, cancellationToken).ConfigureAwait(false);
-
-                DeleteRange(FindAll());
-
-                await foreach (var entity in ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray, cancellationToken).ConfigureAwait(false).WithCancellation(cancellationToken).ConfigureAwait(false))
-                {
-                    await AddAsync(entity, cancellationToken).ConfigureAwait(false);
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            }
-
-            return false;
+            Logger.LogError(ex,GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + ": " + ex.Message);
         }
 
-        public bool ExportCsv(string fileName)
+        return false;
+    }
+
+    public async ValueTask<bool> ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+    {
+        Logger.LogTrace("RepositoryBase ImportCsvAsync: {0} {1}.{2}",  fileName, GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        try
         {
-            //Logger.LogTrace("RepositoryBase ExportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            try
-            {
-                WriteCsvClassMap<TEntity, TClassMap>.Export(LoggerFactory, fileName, FindAll());
+            //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken).ConfigureAwait(false);
 
-                return true;
-            }
-            catch (Exception ex)
+            DeleteRange(FindAll());
+            //Logger.LogTrace("DeleteRange OK.");
+            await foreach (var entity in ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken).ConfigureAwait(false).WithCancellation(cancellationToken).ConfigureAwait(false))
             {
-                Logger.LogError(ex, "{0}.{1}",GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                var result = await AddAsync(entity, cancellationToken).ConfigureAwait(false);
+                //Logger.LogTrace("AddAsync OK. " + result.Entity.GetType().Name);
             }
 
-            return false;
+            return true;
         }
-
-        public async ValueTask<bool> ExportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+        catch (Exception ex)
         {
-            //Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            try
-            {
-                await WriteCsvClassMap<TEntity, TClassMap>.ExportAsync(LoggerFactory, fileName, FindAll())
-                    .ConfigureAwait(false);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            }
-
-            return false;
+            Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
         }
+
+        return false;
+    }
+
+    public async ValueTask<bool> ImportCsvAsync(byte[] byteArray, CancellationToken cancellationToken = default)
+    {
+        Logger.LogTrace("RepositoryBase ImportCsvAsync: {0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        try
+        {
+            //var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray, cancellationToken).ConfigureAwait(false);
+
+            DeleteRange(FindAll());
+
+            await foreach (var entity in ReadCsv<TEntity>.ImportAsync(LoggerFactory, byteArray, cancellationToken).ConfigureAwait(false).WithCancellation(cancellationToken).ConfigureAwait(false))
+            {
+                await AddAsync(entity, cancellationToken).ConfigureAwait(false);
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        }
+
+        return false;
+    }
+
+    public bool ExportCsv(string fileName)
+    {
+        //Logger.LogTrace("RepositoryBase ExportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        try
+        {
+            WriteCsvClassMap<TEntity, TClassMap>.Export(LoggerFactory, fileName, FindAll());
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "{0}.{1}",GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        }
+
+        return false;
+    }
+
+    public async ValueTask<bool> ExportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+    {
+        //Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        try
+        {
+            await WriteCsvClassMap<TEntity, TClassMap>.ExportAsync(LoggerFactory, fileName, FindAll())
+                .ConfigureAwait(false);
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        }
+
+        return false;
     }
 }

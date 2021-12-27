@@ -6,34 +6,36 @@ using KSociety.Base.Infra.Shared.Class;
 using KSociety.Base.Infra.Shared.Interface;
 using Microsoft.Extensions.Logging;
 
-namespace KSociety.Base.Srv.Host.Shared.Bindings
+namespace KSociety.Base.Srv.Host.Shared.Bindings;
+
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TContext"></typeparam>
+public class DatabaseControl<TContext> : Module where TContext : DatabaseContext
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="TContext"></typeparam>
-    public class DatabaseControl<TContext> : Module where TContext : DatabaseContext
+    protected override void Load(ContainerBuilder builder)
     {
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterType<GetConnectionStringReqHdlr>()
-                .As(typeof(IRequestHandlerWithResponse<ConnectionString>))
-                .As(typeof(IRequestHandlerWithResponseAsync<ConnectionString>));
+        builder.RegisterType<GetConnectionStringReqHdlr>()
+            .As(typeof(IRequestHandlerWithResponse<ConnectionString>))
+            .As(typeof(IRequestHandlerWithResponseAsync<ConnectionString>));
 
-            builder.RegisterType<EnsureCreatedReqHdlr>()
-                .As(typeof(IRequestHandlerWithResponse<EnsureCreated>))
-                .As(typeof(IRequestHandlerWithResponseAsync<EnsureCreated>));
+        builder.RegisterType<EnsureCreatedReqHdlr>()
+            .As(typeof(IRequestHandlerWithResponse<EnsureCreated>))
+            .As(typeof(IRequestHandlerWithResponseAsync<EnsureCreated>));
 
-            builder.RegisterType<EnsureDeletedReqHdlr>()
-                .As(typeof(IRequestHandlerWithResponse<EnsureDeleted>))
-                .As(typeof(IRequestHandlerWithResponseAsync<EnsureDeleted>));
+        builder.RegisterType<EnsureDeletedReqHdlr>()
+            .As(typeof(IRequestHandlerWithResponse<EnsureDeleted>))
+            .As(typeof(IRequestHandlerWithResponseAsync<EnsureDeleted>));
 
-            builder.RegisterType<MigrationReqHdlr>()
-                .Named<IRequestHandler>("MigrationReqHdlr")
-                .Named<IRequestHandlerAsync>("MigrationReqHdlr");
+        builder.RegisterType<MigrationReqHdlr>()
+            .Named<IRequestHandler>("MigrationReqHdlr")
+            .Named<IRequestHandlerAsync>("MigrationReqHdlr");
 
-            builder.RegisterType<DatabaseFactory<ILoggerFactory, Infra.Shared.Class.DatabaseConfiguration, TContext>>()
-                .As<IDatabaseFactory<TContext>>().InstancePerLifetimeScope();
-        }
+        //builder.RegisterType<DatabaseFactory<ILoggerFactory, Infra.Shared.Class.DatabaseConfiguration, TContext>>()
+        //    .As<IDatabaseFactory<TContext>>().InstancePerLifetimeScope();
+
+        builder.RegisterType<DatabaseFactory<ILoggerFactory, IDatabaseConfiguration, TContext>>()
+            .As<IDatabaseFactory<TContext>>().InstancePerLifetimeScope();
     }
 }

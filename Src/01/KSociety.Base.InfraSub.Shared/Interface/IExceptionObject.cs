@@ -1,8 +1,7 @@
-﻿namespace KSociety.Base.InfraSub.Shared.Interface
+﻿namespace KSociety.Base.InfraSub.Shared.Interface;
+
+public interface IExceptionObject
 {
-    public interface IExceptionObject
-    {
-        string ErrorMessage { get; set; }
-        string ErrorStackTrace { get; set; }
-    }
+    string ErrorMessage { get; set; }
+    string ErrorStackTrace { get; set; }
 }

@@ -1,13 +1,12 @@
-﻿namespace KSociety.Base.Pre.Web.Shared
+﻿namespace KSociety.Base.Pre.Web.Shared;
+
+public enum DataType
 {
-    public enum DataType
-    {
-        NotSet,
-        String,
-        Number,
-        Date,
-        DateTime,
-        Boolean,
-        Currency
-    }
+    NotSet,
+    String,
+    Number,
+    Date,
+    DateTime,
+    Boolean,
+    Currency
 }

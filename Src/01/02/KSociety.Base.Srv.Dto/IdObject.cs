@@ -2,23 +2,22 @@
 using KSociety.Base.InfraSub.Shared.Interface;
 using ProtoBuf;
 
-namespace KSociety.Base.Srv.Dto
+namespace KSociety.Base.Srv.Dto;
+
+[ProtoContract]
+public class IdObject : IIdObject
 {
-    [ProtoContract]
-    public class IdObject : IIdObject
-    {
         
-        [ProtoMember(1), CompatibilityLevel(CompatibilityLevel.Level200)]
-        public Guid Id { get; set; }
+    [ProtoMember(1), CompatibilityLevel(CompatibilityLevel.Level200)]
+    public Guid Id { get; set; }
 
-        public IdObject()
-        {
+    public IdObject()
+    {
 
-        }
+    }
 
-        public IdObject(Guid id)
-        {
-            Id = id;
-        }
+    public IdObject(Guid id)
+    {
+        Id = id;
     }
 }

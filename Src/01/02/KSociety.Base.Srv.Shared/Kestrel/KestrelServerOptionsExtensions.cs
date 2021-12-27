@@ -8,86 +8,85 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace KSociety.Base.Srv.Shared.Kestrel
+namespace KSociety.Base.Srv.Shared.Kestrel;
+
+public static class KestrelServerOptionsExtensions
 {
-    public static class KestrelServerOptionsExtensions
+    public static void ConfigureEndpoints(this KestrelServerOptions options)
     {
-        public static void ConfigureEndpoints(this KestrelServerOptions options)
-        {
-            var configuration = options.ApplicationServices.GetRequiredService<IConfiguration>();
-            var environment = options.ApplicationServices.GetRequiredService<IHostingEnvironment>();
+        var configuration = options.ApplicationServices.GetRequiredService<IConfiguration>();
+        var environment = options.ApplicationServices.GetRequiredService<IHostingEnvironment>();
 
-            var endpoints = configuration.GetSection("HttpServer:Endpoints")
-                .GetChildren()
-                .ToDictionary(section => section.Key, section =>
-                {
-                    var endpoint = new EndpointConfiguration();
-                    section.Bind(endpoint);
-                    return endpoint;
-                });
-
-            foreach (var endpoint in endpoints)
+        var endpoints = configuration.GetSection("HttpServer:Endpoints")
+            .GetChildren()
+            .ToDictionary(section => section.Key, section =>
             {
-                var config = endpoint.Value;
-                var port = config.Port ?? (config.Scheme == "https" ? 443 : 80);
+                var endpoint = new EndpointConfiguration();
+                section.Bind(endpoint);
+                return endpoint;
+            });
 
-                var ipAddresses = new List<IPAddress>();
-                if (config.Host == "localhost")
-                {
-                    ipAddresses.Add(IPAddress.IPv6Loopback);
-                    ipAddresses.Add(IPAddress.Loopback);
-                }
-                else if (IPAddress.TryParse(config.Host, out var address))
-                {
-                    ipAddresses.Add(address);
-                }
-                else
-                {
-                    ipAddresses.Add(IPAddress.IPv6Any);
-                }
+        foreach (var endpoint in endpoints)
+        {
+            var config = endpoint.Value;
+            var port = config.Port ?? (config.Scheme == "https" ? 443 : 80);
 
-                foreach (var address in ipAddresses)
-                {
-                    options.Listen(address, port,
-                        listenOptions =>
-                        {
-                            if (config.Scheme == "https")
-                            {
-                                var certificate = LoadCertificate(config, environment);
-                                listenOptions.UseHttps(certificate);
-                            }
-                        });
-                }
+            var ipAddresses = new List<IPAddress>();
+            if (config.Host == "localhost")
+            {
+                ipAddresses.Add(IPAddress.IPv6Loopback);
+                ipAddresses.Add(IPAddress.Loopback);
             }
-        }
-
-        private static X509Certificate2 LoadCertificate(EndpointConfiguration config, IHostingEnvironment environment)
-        {
-            if (config.StoreName != null && config.StoreLocation != null)
+            else if (IPAddress.TryParse(config.Host, out var address))
             {
-                using (var store = new X509Store(config.StoreName, Enum.Parse<StoreLocation>(config.StoreLocation)))
-                {
-                    store.Open(OpenFlags.ReadOnly);
-                    var certificate = store.Certificates.Find(
-                        X509FindType.FindBySubjectName,
-                        config.Host,
-                        validOnly: !environment.IsDevelopment());
+                ipAddresses.Add(address);
+            }
+            else
+            {
+                ipAddresses.Add(IPAddress.IPv6Any);
+            }
 
-                    if (certificate.Count == 0)
+            foreach (var address in ipAddresses)
+            {
+                options.Listen(address, port,
+                    listenOptions =>
                     {
-                        throw new InvalidOperationException($"Certificate not found for {config.Host}.");
-                    }
-
-                    return certificate[0];
-                }
+                        if (config.Scheme == "https")
+                        {
+                            var certificate = LoadCertificate(config, environment);
+                            listenOptions.UseHttps(certificate);
+                        }
+                    });
             }
-
-            if (config.FilePath != null && config.Password != null)
-            {
-                return new X509Certificate2(config.FilePath, config.Password);
-            }
-
-            throw new InvalidOperationException("No valid certificate configuration found for the current endpoint.");
         }
+    }
+
+    private static X509Certificate2 LoadCertificate(EndpointConfiguration config, IHostingEnvironment environment)
+    {
+        if (config.StoreName != null && config.StoreLocation != null)
+        {
+            using (var store = new X509Store(config.StoreName, Enum.Parse<StoreLocation>(config.StoreLocation)))
+            {
+                store.Open(OpenFlags.ReadOnly);
+                var certificate = store.Certificates.Find(
+                    X509FindType.FindBySubjectName,
+                    config.Host,
+                    validOnly: !environment.IsDevelopment());
+
+                if (certificate.Count == 0)
+                {
+                    throw new InvalidOperationException($"Certificate not found for {config.Host}.");
+                }
+
+                return certificate[0];
+            }
+        }
+
+        if (config.FilePath != null && config.Password != null)
+        {
+            return new X509Certificate2(config.FilePath, config.Password);
+        }
+
+        throw new InvalidOperationException("No valid certificate configuration found for the current endpoint.");
     }
 }

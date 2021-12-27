@@ -4,22 +4,21 @@ using KSociety.Base.Infra.Shared.Class.Identity;
 using KSociety.Base.Infra.Shared.Interface;
 using Microsoft.AspNetCore.Identity;
 
-namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity
+namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity;
+
+public class IdentityUnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : Module
+    where TContext : DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+    where TUser : IdentityUser<TKey>
+    where TRole : IdentityRole<TKey>
+    where TKey : IEquatable<TKey>
+    where TUserClaim : IdentityUserClaim<TKey>
+    where TUserRole : IdentityUserRole<TKey>
+    where TUserLogin : IdentityUserLogin<TKey>
+    where TRoleClaim : IdentityRoleClaim<TKey>
+    where TUserToken : IdentityUserToken<TKey>
 {
-    public class IdentityUnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : Module
-        where TContext : DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
-        where TUser : IdentityUser<TKey>
-        where TRole : IdentityRole<TKey>
-        where TKey : IEquatable<TKey>
-        where TUserClaim : IdentityUserClaim<TKey>
-        where TUserRole : IdentityUserRole<TKey>
-        where TUserLogin : IdentityUserLogin<TKey>
-        where TRoleClaim : IdentityRoleClaim<TKey>
-        where TUserToken : IdentityUserToken<TKey>
+    protected override void Load(ContainerBuilder builder)
     {
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterType<UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>().As<IDatabaseUnitOfWork>();
-        }
+        builder.RegisterType<UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>().As<IDatabaseUnitOfWork>();
     }
 }

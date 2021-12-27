@@ -1,6 +1,5 @@
-﻿namespace KSociety.Base.Pre.Form.View.Abstractions
+﻿namespace KSociety.Base.Pre.Form.View.Abstractions;
+
+public interface IDataGridViewReadOnly
 {
-    public interface IDataGridViewReadOnly
-    {
-    }
 }
