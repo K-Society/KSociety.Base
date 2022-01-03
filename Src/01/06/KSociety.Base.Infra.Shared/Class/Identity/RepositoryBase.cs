@@ -27,7 +27,7 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
     where TUserToken : IdentityUserToken<TKey>
 {
     private TContext _dataContext;
-    private readonly ILoggerFactory _loggerFactory;
+    protected readonly ILoggerFactory LoggerFactory;
 
     protected TContext DataContext => _dataContext ??= DatabaseFactory.Get();
 
@@ -41,11 +41,11 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
 
     protected RepositoryBase(ILoggerFactory loggerFactory, IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> databaseFactory)
     {
-        _loggerFactory = loggerFactory;
+        LoggerFactory = loggerFactory;
         DatabaseFactory = databaseFactory;
         DataBaseSet = DataContext.Set<TEntity>();
 
-        Logger = _loggerFactory.CreateLogger<RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
+        Logger = LoggerFactory.CreateLogger<RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
     }
 
     public virtual EntityEntry<TEntity> Add(TEntity entity)
@@ -291,7 +291,7 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
     public void ImportCsv(string fileName)
     {
         Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        var result = ReadCsv<TEntity>.Import(_loggerFactory, fileName);
+        var result = ReadCsv<TEntity>.Import(LoggerFactory, fileName);
         if (!result.Any()) return;
         DeleteRange(FindAll());
 
@@ -301,7 +301,7 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
     public async ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
     {
         Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        var result = ReadCsv<TEntity>.ImportAsync(_loggerFactory, fileName, cancellationToken);
+        var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken);
 
         DeleteRange(FindAll());
 
@@ -315,13 +315,13 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
     public void ExportCsv(string fileName)
     {
         Logger.LogTrace("RepositoryBase ExportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        WriteCsv<TEntity>.Export(_loggerFactory, fileName, FindAll());
+        WriteCsv<TEntity>.Export(LoggerFactory, fileName, FindAll());
     }
 
     public async ValueTask ExportCsvAsync(string fileName, CancellationToken cancellationToken = default)
     {
         Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        await WriteCsv<TEntity>.ExportAsync(_loggerFactory, fileName, FindAll()).ConfigureAwait(false);
+        await WriteCsv<TEntity>.ExportAsync(LoggerFactory, fileName, FindAll()).ConfigureAwait(false);
     }
 
     public void Dispose()
