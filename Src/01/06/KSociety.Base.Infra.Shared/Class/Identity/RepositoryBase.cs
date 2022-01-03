@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace KSociety.Base.Infra.Shared.Class.Identity;
 
 public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : IRepositoryBase<TEntity>
-    where TContext : DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+    where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
     where TEntity : class
     where TUser : IdentityUser<TKey>
     where TRole : IdentityRole<TKey>
