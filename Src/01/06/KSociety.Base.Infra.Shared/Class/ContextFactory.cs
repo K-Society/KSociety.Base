@@ -9,6 +9,7 @@ using System.IO;
 
 namespace KSociety.Base.Infra.Shared.Class;
 
+///<inheritdoc cref="IContextFactory{TContext}"/>
 public class ContextFactory<TContext> : IContextFactory<TContext> where TContext : DatabaseContext
 {
     private readonly ILogger<ContextFactory<TContext>> _logger;
