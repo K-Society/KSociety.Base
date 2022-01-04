@@ -10,10 +10,10 @@ public class GetConnectionStringReqHdlr :
     IRequestHandlerWithResponse<ConnectionString>,
     IRequestHandlerWithResponseAsync<ConnectionString>
 {
-    private readonly ILogger<MigrationReqHdlr> _logger;
+    private readonly ILogger<GetConnectionStringReqHdlr> _logger;
     private readonly IDatabaseUnitOfWork _unitOfWork;
 
-    public GetConnectionStringReqHdlr(ILogger<MigrationReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
+    public GetConnectionStringReqHdlr(ILogger<GetConnectionStringReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
