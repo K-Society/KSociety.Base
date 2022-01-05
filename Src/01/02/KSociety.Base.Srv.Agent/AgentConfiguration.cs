@@ -9,9 +9,12 @@ public class AgentConfiguration : IAgentConfiguration
     ///<inheritdoc/>
     public bool DebugFlag { get; }
 
-    public AgentConfiguration(string connectionUrl, bool debugFlag)
+    public string Token { get; }
+
+    public AgentConfiguration(string connectionUrl, bool debugFlag, string token)
     {
         ConnectionUrl = connectionUrl;
         DebugFlag = debugFlag;
+        Token = token;
     }
 }

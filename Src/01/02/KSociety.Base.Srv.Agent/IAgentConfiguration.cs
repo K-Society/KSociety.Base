@@ -14,4 +14,6 @@ public interface IAgentConfiguration
     /// The debug flag.
     /// </summary>
     bool DebugFlag { get; }
+
+    string Token { get; }
 }

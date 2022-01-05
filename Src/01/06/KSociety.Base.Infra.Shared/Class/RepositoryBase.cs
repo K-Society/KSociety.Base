@@ -230,10 +230,8 @@ public abstract class RepositoryBase<TContext, TEntity> : IRepositoryBase<TEntit
                 {
                     return await DataBaseSet.CountAsync(cancellationToken).ConfigureAwait(false);
                 }
-                else
-                {
-                    return await DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
-                }               
+
+                return await DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
