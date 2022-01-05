@@ -194,13 +194,13 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
 
     }
 
-    public virtual int Count(Expression<Func<TEntity, bool>> filter)
+    public virtual int Count(Expression<Func<TEntity, bool>> filter = null)
     {
         if (Exists)
         {
             try
             {
-                return DataBaseSet.Count(filter);
+                return filter is null ? DataBaseSet.Count() : DataBaseSet.Count(filter);
             }
             catch (Exception ex)
             {
@@ -212,12 +212,17 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
         return -1;
     }
 
-    public virtual async ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
+    public virtual async ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default)
     {
         if (Exists)
         {
             try
             {
+                if (filter is null)
+                {
+                    return await DataBaseSet.CountAsync(cancellationToken).ConfigureAwait(false);
+                }
+
                 return await DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
