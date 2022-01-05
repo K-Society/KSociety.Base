@@ -11,7 +11,7 @@ public class AgentConfiguration : IAgentConfiguration
 
     public string Token { get; }
 
-    public AgentConfiguration(string connectionUrl, bool debugFlag, string token)
+    public AgentConfiguration(string connectionUrl, bool debugFlag, string token = null)
     {
         ConnectionUrl = connectionUrl;
         DebugFlag = debugFlag;
