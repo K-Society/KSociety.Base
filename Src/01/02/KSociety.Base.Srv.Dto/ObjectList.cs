@@ -19,7 +19,7 @@ public class ObjectList<T> : InfraSub.Shared.Interface.IList<T> where T : IObjec
     {
         get
         {
-            return List.Count;
+            return List?.Count ?? 0;
         }
     }
 
