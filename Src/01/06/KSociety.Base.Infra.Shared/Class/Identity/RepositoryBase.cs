@@ -20,11 +20,11 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
     where TUser : IdentityUser<TKey>
     where TRole : IdentityRole<TKey>
     where TKey : IEquatable<TKey>
-    where TUserClaim : IdentityUserClaim<TKey>
-    where TUserRole : IdentityUserRole<TKey>
-    where TUserLogin : IdentityUserLogin<TKey>
-    where TRoleClaim : IdentityRoleClaim<TKey>
-    where TUserToken : IdentityUserToken<TKey>
+    where TUserClaim : IdentityUserClaim<TKey>, new()
+    where TUserRole : IdentityUserRole<TKey>, new()
+    where TUserLogin : IdentityUserLogin<TKey>, new()
+    where TRoleClaim : IdentityRoleClaim<TKey>, new()
+    where TUserToken : IdentityUserToken<TKey>, new()
 {
     private TContext _dataContext;
     protected readonly ILoggerFactory LoggerFactory;
