@@ -3,6 +3,7 @@ using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -10,13 +11,28 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper;
 
 public class Subscriber
 {
+    private readonly ILoggerFactory _loggerFactory;
+    private readonly IEventBusParameters _eventBusParameters;
+    public IRabbitMqPersistentConnection PersistentConnection { get; }
+    public Dictionary<string, IEventBus> EventBus { get; } = new();
+
+    public Subscriber(
+        ILoggerFactory loggerFactory,
+        IConnectionFactory connectionFactory,
+        IEventBusParameters eventBusParameters)
+    {
+        _loggerFactory = loggerFactory;
+        _eventBusParameters = eventBusParameters;
+
+        PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, _loggerFactory);
+    }
     public void SubscribeClientServer<
         TIntegrationRpcClientHandler, TIntegrationRpcServerHandler,
         TIntegrationEvent, TIntegrationEventReply>(
         string eventBusName, string queueName,
         string routingKey, string replyRoutingKey,
         TIntegrationRpcClientHandler integrationRpcClientHandler, TIntegrationRpcServerHandler integrationRpcServerHandler,
-        IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory, IEventBusParameters eventBusParameters, ref Dictionary<string, IEventBus> eventBusDictionary, CancellationToken cancellationToken = default
+        CancellationToken cancellationToken = default
     )
         where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
@@ -26,42 +42,41 @@ public class Subscriber
         SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
             eventBusName, queueName,
             replyRoutingKey, integrationRpcClientHandler,
-            persistentConnection, loggerFactory, eventBusParameters, ref eventBusDictionary,
             cancellationToken);
 
         SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
             eventBusName, queueName,
             routingKey, integrationRpcServerHandler,
-            persistentConnection, loggerFactory, eventBusParameters, ref eventBusDictionary, cancellationToken);
+            cancellationToken);
     }
-    public static void SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
+    public void SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
         string eventBusName, string queueName,
         string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler, 
-        IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory, IEventBusParameters eventBusParameters, ref Dictionary<string, IEventBus> eventBusDictionary, CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
         where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         where TIntegrationEventReply : IIntegrationEventReply
     {
-        eventBusDictionary.Add(eventBusName,
-            new EventBusRabbitMqRpcClient(persistentConnection, loggerFactory, integrationRpcClientHandler,
-                null, eventBusParameters, queueName, cancellationToken));
+        EventBus.Add(eventBusName + "_Client",
+            new EventBusRabbitMqRpcClient(PersistentConnection, _loggerFactory, integrationRpcClientHandler,
+                null, _eventBusParameters, queueName, cancellationToken));
 
-        ((IEventBusRpcClient)eventBusDictionary[eventBusName])
+        ((IEventBusRpcClient)EventBus[eventBusName + "_Client"])
             .SubscribeRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(replyRoutingKey);
     }
 
-    public static void SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
+    public void SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
         string eventBusName, string queueName,
         string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler,
-        IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory, IEventBusParameters eventBusParameters, ref Dictionary<string, IEventBus> eventBusDictionary, CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
         where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
         where TIntegrationEvent : IIntegrationEventRpc
         where TIntegrationEventReply : IIntegrationEventReply
     {
-        eventBusDictionary.Add(eventBusName,
-            new EventBusRabbitMqRpcServer(persistentConnection, loggerFactory, integrationRpcServerHandler,
-                null, eventBusParameters, queueName, CancellationToken.None));
+        EventBus.Add(eventBusName + "_Server",
+            new EventBusRabbitMqRpcServer(PersistentConnection, _loggerFactory, integrationRpcServerHandler,
+                null, _eventBusParameters, queueName, CancellationToken.None));
 
-        ((IEventBusRpcServer)eventBusDictionary[eventBusName])
+        ((IEventBusRpcServer)EventBus[eventBusName + "_Server"])
             .SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcServerHandler>(routingKey);
     }
 }
