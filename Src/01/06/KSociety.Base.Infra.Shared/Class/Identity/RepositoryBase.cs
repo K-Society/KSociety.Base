@@ -45,7 +45,7 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
         LoggerFactory = loggerFactory;
         DatabaseFactory = databaseFactory;
         DataBaseSet = DataContext.Set<TEntity>();
-
+        
         Logger = LoggerFactory.CreateLogger<RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
     }
 
