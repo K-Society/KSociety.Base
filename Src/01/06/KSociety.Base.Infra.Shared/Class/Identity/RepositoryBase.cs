@@ -27,9 +27,11 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
     where TUserToken : IdentityUserToken<TKey>, new()
 {
     private TContext _dataContext;
+    private IUserStore<TUser> _userStore;
     protected readonly ILoggerFactory LoggerFactory;
 
     protected TContext DataContext => _dataContext ??= DatabaseFactory.Get();
+    protected IUserStore<TUser> UserStore => _userStore ??= DatabaseFactory.GetUserStore();
 
     protected readonly DbSet<TEntity> DataBaseSet;
 
