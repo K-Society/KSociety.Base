@@ -21,10 +21,34 @@ public class DatabaseFactory<TLoggerFactory, TConfiguration, TContext, TUser, TR
     where TRoleClaim : IdentityRoleClaim<TKey>, new()
     where TUserToken : IdentityUserToken<TKey>, new()
 {
+    private IUserStore<TUser> _userStore;
+
     public DatabaseFactory(TLoggerFactory loggerFactory, TConfiguration configuration)
         :base(loggerFactory, configuration)
     {
 
     }
 
+    public IUserStore<TUser> GetUserStore()
+    {
+        if (_userStore is not null) return _userStore;
+        _userStore = CreateUserStore();
+
+        return _userStore;
+    }
+
+    private IUserStore<TUser> CreateUserStore()
+    {
+        IUserStore<TUser> output = null;
+        try
+        {
+            output = (UserStore<TUser, TRole, TContext, TKey, TUserClaim, TUserRole, TUserLogin, TUserToken, TRoleClaim>)Activator.CreateInstance(typeof(UserStore<TUser, TRole, TContext, TKey, TUserClaim, TUserRole, TUserLogin, TUserToken, TRoleClaim>), Get(), null);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "CreateUserStore: ");
+        }
+
+        return output;
+    }
 }
