@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.Infra.Shared.Csv;
-using KSociety.Base.Infra.Shared.Interface;
+﻿using KSociety.Base.Infra.Shared.Csv;
 using KSociety.Base.Infra.Shared.Interface.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Class.Identity;
 
-public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : IRepositoryBase<TEntity>
+public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : Interface.IRepositoryBase<TEntity>
     where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
     where TEntity : class
     where TUser : IdentityUser<TKey>
