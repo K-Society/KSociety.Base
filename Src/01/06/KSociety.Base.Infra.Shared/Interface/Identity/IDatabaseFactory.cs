@@ -15,5 +15,5 @@ public interface IDatabaseFactory<out TContext, TUser, TRole, TKey, TUserClaim, 
     where TRoleClaim : IdentityRoleClaim<TKey>, new()
     where TUserToken : IdentityUserToken<TKey>, new()
 {
-
+    IUserStore<TUser> GetUserStore();
 }
