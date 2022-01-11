@@ -22,6 +22,7 @@ public class UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUs
     private IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> _dbFactory;
     private TContext _context;
     private IUserStore<TUser> _userStore;
+    private IRoleStore<TRole> _roleStore;
 
     public UnitOfWork(IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> dbFactory)
     {
@@ -30,6 +31,7 @@ public class UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUs
 
     public TContext Context => _context ??= _dbFactory.Get();
     public IUserStore<TUser> UserStore => _userStore ??= _dbFactory.GetUserStore();
+    public IRoleStore<TRole> RoleStore => _roleStore ??= _dbFactory.GetRoleStore();
 
     public string GetConnectionString()
     {

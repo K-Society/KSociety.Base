@@ -27,10 +27,12 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
 {
     private TContext _dataContext;
     private IUserStore<TUser> _userStore;
+    private IRoleStore<TRole> _roleStore;
     protected readonly ILoggerFactory LoggerFactory;
 
     protected TContext DataContext => _dataContext ??= DatabaseFactory.Get();
     protected IUserStore<TUser> UserStore => _userStore ??= DatabaseFactory.GetUserStore();
+    protected IRoleStore<TRole> RoleStore => _roleStore ??= DatabaseFactory.GetRoleStore();
 
     protected readonly DbSet<TEntity> DataBaseSet;
 

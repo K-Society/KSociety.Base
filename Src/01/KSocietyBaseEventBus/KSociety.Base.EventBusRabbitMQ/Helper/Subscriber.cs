@@ -49,6 +49,17 @@ public class Subscriber
             routingKey, integrationRpcServerHandler,
             cancellationToken);
     }
+
+    //public void Subscribe<TIntegrationRpcHandler, TIntegrationEvent, TIntegrationEventReply>(
+    //    string eventBusName, string queueName,
+    //    string replyRoutingKey, TIntegrationRpcHandler integrationRpcHandler, CancellationToken cancellationToken = default)
+    //    where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
+    //    where TIntegrationEvent : IIntegrationEvent
+    //    where TIntegrationEventReply : IIntegrationEventReply
+    //{
+
+    //}
+
     public void SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
         string eventBusName, string queueName,
         string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler, 
