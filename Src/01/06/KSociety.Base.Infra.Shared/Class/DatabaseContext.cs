@@ -170,6 +170,22 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
                     }
                     break;
 
+                case DatabaseEngine.Cosmos:
+                    if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
+                    {
+                        optionsBuilder.UseCosmos(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString));
+                    }
+                    else
+                    {
+                        optionsBuilder
+                            .UseLazyLoadingProxies(_configuration.LazyLoading)
+                            .UseCosmos(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString),
+                                sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+
+                        optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CosmosGenerator>();
+                    }
+                    break;
+
                 default:
                     break;
             }

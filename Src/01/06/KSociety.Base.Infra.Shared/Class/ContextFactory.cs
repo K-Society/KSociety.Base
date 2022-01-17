@@ -55,6 +55,12 @@ public class ContextFactory<TContext> : IContextFactory<TContext> where TContext
                 case "Mysql":
                     dbEngine = DatabaseEngine.Mysql;
                     break;
+                case "Cosmos":
+                    dbEngine = DatabaseEngine.Cosmos;
+                    break;
+                case "InMemory":
+                    dbEngine = DatabaseEngine.InMemory;
+                    break;
             }
         }
 
@@ -115,6 +121,15 @@ public class ContextFactory<TContext> : IContextFactory<TContext> where TContext
                     .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), sql => sql.MigrationsAssembly(migrationsAssembly));
 
                 optionBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
+                break;
+
+            case DatabaseEngine.Cosmos:
+                optionBuilder
+                    .EnableDetailedErrors()
+                    .EnableSensitiveDataLogging()
+                    .UseCosmos(connectionString, ServerVersion.AutoDetect(connectionString), sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                optionBuilder.ReplaceService<IMigrationsSqlGenerator, CosmosGenerator>();
                 break;
 
             default:
