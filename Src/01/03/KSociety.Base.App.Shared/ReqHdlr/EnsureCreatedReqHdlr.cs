@@ -10,10 +10,10 @@ public class EnsureCreatedReqHdlr :
     IRequestHandlerWithResponse<EnsureCreated>, 
     IRequestHandlerWithResponseAsync<EnsureCreated>
 {
-    private readonly ILogger<MigrationReqHdlr> _logger;
+    private readonly ILogger<EnsureCreatedReqHdlr> _logger;
     private readonly IDatabaseUnitOfWork _unitOfWork;
 
-    public EnsureCreatedReqHdlr(ILogger<MigrationReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
+    public EnsureCreatedReqHdlr(ILogger<EnsureCreatedReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;

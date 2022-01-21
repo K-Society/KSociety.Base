@@ -15,37 +15,33 @@ public class DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>
 {
     private TContext _dataContext;
 
-    private readonly ILogger _logger;
-    private readonly TLoggerFactory _loggerFactory;
+    protected readonly ILogger Logger;
+    protected readonly TLoggerFactory LoggerFactory;
     private readonly TConfiguration _configuration;
     private readonly IMediator _mediator;
 
 
     protected DatabaseFactoryBase(TLoggerFactory loggerFactory, TConfiguration configuration)
     {
-        _loggerFactory = loggerFactory;
+        LoggerFactory = loggerFactory;
         _configuration = configuration;
 
-        _logger = loggerFactory.CreateLogger<DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>>();
+        Logger = loggerFactory.CreateLogger<DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>>();
     }
 
     protected DatabaseFactoryBase(TLoggerFactory loggerFactory, TConfiguration configuration, IMediator mediator)
     {
-        _loggerFactory = loggerFactory;
+        LoggerFactory = loggerFactory;
         _configuration = configuration;
         _mediator = mediator;
 
-        _logger = loggerFactory.CreateLogger<DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>>();
+        Logger = loggerFactory.CreateLogger<DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>>();
     }
 
     public TContext Get()
     {
         if (_dataContext is not null) return _dataContext;
         _dataContext = CreateContext();
-        //if (!Exists())
-        //{
-        //    EnsureCreated();
-        //}
 
         return _dataContext;
     }
@@ -57,21 +53,17 @@ public class DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>
         {
             if (_mediator is null)
             {
-                output = (TContext)Activator.CreateInstance(typeof(TContext), _loggerFactory, _configuration);
+                output = (TContext)Activator.CreateInstance(typeof(TContext), LoggerFactory, _configuration);
             }
             else
             {
-                output = (TContext)Activator.CreateInstance(typeof(TContext), _loggerFactory, _configuration,
+                output = (TContext)Activator.CreateInstance(typeof(TContext), LoggerFactory, _configuration,
                     _mediator);
             }
-
-            //output.Database.Migrate();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "CreateContext: ");
-            //Console.WriteLine(@"Base CreateContext: " + ex.Message + @" - " + ex.StackTrace);
-            //throw ex.InnerExceptio
+            Logger.LogError(ex, "CreateContext: ");
         }
 
         return output;

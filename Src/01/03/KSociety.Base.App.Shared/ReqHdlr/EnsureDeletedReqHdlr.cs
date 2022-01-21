@@ -10,10 +10,10 @@ public class EnsureDeletedReqHdlr :
     IRequestHandlerWithResponse<EnsureDeleted>, 
     IRequestHandlerWithResponseAsync<EnsureDeleted>
 {
-    private readonly ILogger<MigrationReqHdlr> _logger;
+    private readonly ILogger<EnsureDeletedReqHdlr> _logger;
     private readonly IDatabaseUnitOfWork _unitOfWork;
 
-    public EnsureDeletedReqHdlr(ILogger<MigrationReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
+    public EnsureDeletedReqHdlr(ILogger<EnsureDeletedReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;

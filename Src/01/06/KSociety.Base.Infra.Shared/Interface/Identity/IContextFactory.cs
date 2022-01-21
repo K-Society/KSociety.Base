@@ -1,11 +1,12 @@
-﻿using System;
+﻿using KSociety.Base.Infra.Shared.Class.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using System;
 
 namespace KSociety.Base.Infra.Shared.Interface.Identity;
 
-public interface IDatabaseFactory<out TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : IDatabaseFactoryBase<TContext>
-    where TContext : IdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+public interface IContextFactory<out TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+    : IDesignTimeDbContextFactory<TContext>
     where TUser : IdentityUser<TKey>
     where TRole : IdentityRole<TKey>
     where TKey : IEquatable<TKey>
@@ -14,7 +15,6 @@ public interface IDatabaseFactory<out TContext, TUser, TRole, TKey, TUserClaim, 
     where TUserLogin : IdentityUserLogin<TKey>, new()
     where TRoleClaim : IdentityRoleClaim<TKey>, new()
     where TUserToken : IdentityUserToken<TKey>, new()
+    where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
 {
-    IUserStore<TUser> GetUserStore();
-    IRoleStore<TRole> GetRoleStore();
 }

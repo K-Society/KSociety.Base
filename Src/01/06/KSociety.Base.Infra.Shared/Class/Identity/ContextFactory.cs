@@ -1,5 +1,6 @@
 ﻿using KSociety.Base.Infra.Shared.Class.SqlGenerator;
-using KSociety.Base.Infra.Shared.Interface;
+using KSociety.Base.Infra.Shared.Interface.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
@@ -7,12 +8,21 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 
-namespace KSociety.Base.Infra.Shared.Class;
+namespace KSociety.Base.Infra.Shared.Class.Identity;
 
-///<inheritdoc cref="IContextFactory{TContext}"/>
-public class ContextFactory<TContext> : IContextFactory<TContext> where TContext : DatabaseContext
+public class ContextFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> 
+    : IContextFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+    where TUser : IdentityUser<TKey>
+    where TRole : IdentityRole<TKey>
+    where TKey : IEquatable<TKey>
+    where TUserClaim : IdentityUserClaim<TKey>, new()
+    where TUserRole : IdentityUserRole<TKey>, new()
+    where TUserLogin : IdentityUserLogin<TKey>, new()
+    where TRoleClaim : IdentityRoleClaim<TKey>, new()
+    where TUserToken : IdentityUserToken<TKey>, new()
+    where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
 {
-    private readonly ILogger<ContextFactory<TContext>> _logger;
+    private readonly ILogger<ContextFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>> _logger;
 
     public ContextFactory()
     {
@@ -21,12 +31,12 @@ public class ContextFactory<TContext> : IContextFactory<TContext> where TContext
             builder.AddConsole();
             builder.SetMinimumLevel(LogLevel.Trace);
         });
-        _logger = loggerFactory.CreateLogger<ContextFactory<TContext>>();
+        _logger = loggerFactory.CreateLogger<ContextFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
     }
 
     public ContextFactory(ILoggerFactory loggerFactory)
     {
-        _logger = loggerFactory.CreateLogger<ContextFactory<TContext>>();
+        _logger = loggerFactory.CreateLogger<ContextFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
     }
 
     public virtual TContext CreateDbContext(string[] args)

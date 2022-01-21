@@ -9,18 +9,20 @@ using Microsoft.AspNetCore.Identity;
 namespace KSociety.Base.Infra.Shared.Class.Identity;
 
 public class UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : DisposableObject, IDatabaseUnitOfWork
-    where TContext : DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+    where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
     where TUser : IdentityUser<TKey>
     where TRole : IdentityRole<TKey>
     where TKey : IEquatable<TKey>
-    where TUserClaim : IdentityUserClaim<TKey>
-    where TUserRole : IdentityUserRole<TKey>
-    where TUserLogin : IdentityUserLogin<TKey>
-    where TRoleClaim : IdentityRoleClaim<TKey>
-    where TUserToken : IdentityUserToken<TKey>
+    where TUserClaim : IdentityUserClaim<TKey>, new()
+    where TUserRole : IdentityUserRole<TKey>, new()
+    where TUserLogin : IdentityUserLogin<TKey>, new()
+    where TRoleClaim : IdentityRoleClaim<TKey>, new()
+    where TUserToken : IdentityUserToken<TKey>, new()
 {
     private IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> _dbFactory;
     private TContext _context;
+    private IUserStore<TUser> _userStore;
+    private IRoleStore<TRole> _roleStore;
 
     public UnitOfWork(IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> dbFactory)
     {
@@ -28,6 +30,8 @@ public class UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUs
     }
 
     public TContext Context => _context ??= _dbFactory.Get();
+    public IUserStore<TUser> UserStore => _userStore ??= _dbFactory.GetUserStore();
+    public IRoleStore<TRole> RoleStore => _roleStore ??= _dbFactory.GetRoleStore();
 
     public string GetConnectionString()
     {

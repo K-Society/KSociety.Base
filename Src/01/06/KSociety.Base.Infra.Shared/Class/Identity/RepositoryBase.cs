@@ -1,35 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.Infra.Shared.Csv;
-using KSociety.Base.Infra.Shared.Interface;
+﻿using KSociety.Base.Infra.Shared.Csv;
 using KSociety.Base.Infra.Shared.Interface.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Class.Identity;
 
-public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : IRepositoryBase<TEntity>
-    where TContext : DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : Interface.IRepositoryBase<TEntity>
+    where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
     where TEntity : class
     where TUser : IdentityUser<TKey>
     where TRole : IdentityRole<TKey>
     where TKey : IEquatable<TKey>
-    where TUserClaim : IdentityUserClaim<TKey>
-    where TUserRole : IdentityUserRole<TKey>
-    where TUserLogin : IdentityUserLogin<TKey>
-    where TRoleClaim : IdentityRoleClaim<TKey>
-    where TUserToken : IdentityUserToken<TKey>
+    where TUserClaim : IdentityUserClaim<TKey>, new()
+    where TUserRole : IdentityUserRole<TKey>, new()
+    where TUserLogin : IdentityUserLogin<TKey>, new()
+    where TRoleClaim : IdentityRoleClaim<TKey>, new()
+    where TUserToken : IdentityUserToken<TKey>, new()
 {
     private TContext _dataContext;
-    private readonly ILoggerFactory _loggerFactory;
+    private IUserStore<TUser> _userStore;
+    private IRoleStore<TRole> _roleStore;
+    protected readonly ILoggerFactory LoggerFactory;
 
     protected TContext DataContext => _dataContext ??= DatabaseFactory.Get();
+    protected IUserStore<TUser> UserStore => _userStore ??= DatabaseFactory.GetUserStore();
+    protected IRoleStore<TRole> RoleStore => _roleStore ??= DatabaseFactory.GetRoleStore();
 
     protected readonly DbSet<TEntity> DataBaseSet;
 
@@ -41,11 +44,11 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
 
     protected RepositoryBase(ILoggerFactory loggerFactory, IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> databaseFactory)
     {
-        _loggerFactory = loggerFactory;
+        LoggerFactory = loggerFactory;
         DatabaseFactory = databaseFactory;
         DataBaseSet = DataContext.Set<TEntity>();
-
-        Logger = _loggerFactory.CreateLogger<RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
+        
+        Logger = LoggerFactory.CreateLogger<RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
     }
 
     public virtual EntityEntry<TEntity> Add(TEntity entity)
@@ -194,13 +197,13 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
 
     }
 
-    public virtual int Count(Expression<Func<TEntity, bool>> filter)
+    public virtual int Count(Expression<Func<TEntity, bool>> filter = null)
     {
         if (Exists)
         {
             try
             {
-                return DataBaseSet.Count(filter);
+                return filter is null ? DataBaseSet.Count() : DataBaseSet.Count(filter);
             }
             catch (Exception ex)
             {
@@ -212,12 +215,17 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
         return -1;
     }
 
-    public virtual async ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
+    public virtual async ValueTask<int> CountAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default)
     {
         if (Exists)
         {
             try
             {
+                if (filter is null)
+                {
+                    return await DataBaseSet.CountAsync(cancellationToken).ConfigureAwait(false);
+                }
+
                 return await DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -291,7 +299,7 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
     public void ImportCsv(string fileName)
     {
         Logger.LogTrace("RepositoryBase ImportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        var result = ReadCsv<TEntity>.Import(_loggerFactory, fileName);
+        var result = ReadCsv<TEntity>.Import(LoggerFactory, fileName);
         if (!result.Any()) return;
         DeleteRange(FindAll());
 
@@ -301,7 +309,7 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
     public async ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
     {
         Logger.LogTrace("RepositoryBase ImportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        var result = ReadCsv<TEntity>.ImportAsync(_loggerFactory, fileName, cancellationToken);
+        var result = ReadCsv<TEntity>.ImportAsync(LoggerFactory, fileName, cancellationToken);
 
         DeleteRange(FindAll());
 
@@ -315,13 +323,13 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
     public void ExportCsv(string fileName)
     {
         Logger.LogTrace("RepositoryBase ExportCsv: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        WriteCsv<TEntity>.Export(_loggerFactory, fileName, FindAll());
+        WriteCsv<TEntity>.Export(LoggerFactory, fileName, FindAll());
     }
 
     public async ValueTask ExportCsvAsync(string fileName, CancellationToken cancellationToken = default)
     {
         Logger.LogTrace("RepositoryBase ExportCsvAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        await WriteCsv<TEntity>.ExportAsync(_loggerFactory, fileName, FindAll()).ConfigureAwait(false);
+        await WriteCsv<TEntity>.ExportAsync(LoggerFactory, fileName, FindAll()).ConfigureAwait(false);
     }
 
     public void Dispose()

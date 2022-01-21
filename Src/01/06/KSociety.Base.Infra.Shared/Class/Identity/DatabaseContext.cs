@@ -14,18 +14,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace KSociety.Base.Infra.Shared.Class.Identity;
 
-public class DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> 
+public class DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> 
     : IdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>, IDatabaseUnitOfWork
     where TUser : IdentityUser<TKey>
     where TRole : IdentityRole<TKey>
     where TKey : IEquatable<TKey>
-    where TUserClaim : IdentityUserClaim<TKey>
-    where TUserRole : IdentityUserRole<TKey>
-    where TUserLogin : IdentityUserLogin<TKey>
-    where TRoleClaim : IdentityRoleClaim<TKey>
-    where TUserToken : IdentityUserToken<TKey>
+    where TUserClaim : IdentityUserClaim<TKey>, new()
+    where TUserRole : IdentityUserRole<TKey>, new()
+    where TUserLogin : IdentityUserLogin<TKey>, new()
+    where TRoleClaim : IdentityRoleClaim<TKey>, new()
+    where TUserToken : IdentityUserToken<TKey>, new()
 {
-    protected readonly ILogger<DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>> Logger;
+    protected readonly ILogger<DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>> Logger;
 
     protected static ILoggerFactory LoggerFactory;
 
@@ -33,7 +33,7 @@ public class DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TR
     private bool _debug = false;
     private readonly IDatabaseConfiguration _configuration;
 
-    public DbContext(DbContextOptions option)
+    public DatabaseContext(DbContextOptions option)
         : base(option)
     {
         LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
@@ -44,15 +44,15 @@ public class DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TR
             });
         });
 
-        Logger = LoggerFactory.CreateLogger<DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
+        Logger = LoggerFactory.CreateLogger<DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
     }
 
-    public DbContext(ILoggerFactory loggerFactory, IDatabaseConfiguration configuration)
+    public DatabaseContext(ILoggerFactory loggerFactory, IDatabaseConfiguration configuration)
     {
         LoggerFactory = loggerFactory;
         _configuration = configuration;
         //_mediator = mediator;
-        Logger = LoggerFactory.CreateLogger<DbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
+        Logger = LoggerFactory.CreateLogger<DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
