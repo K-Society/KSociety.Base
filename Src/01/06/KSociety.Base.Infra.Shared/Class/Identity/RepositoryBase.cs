@@ -179,6 +179,78 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
 
     }
 
+    public virtual TEntity First(Expression<Func<TEntity, bool>> filter = null)
+    {
+        if (Exists)
+        {
+            try
+            {
+                return filter is null ? DataBaseSet.FirstOrDefault() : DataBaseSet.FirstOrDefault(filter);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                return null;
+            }
+        }
+        Logger.LogWarning("Database not exists!");
+        return null;
+    }
+
+    public virtual async ValueTask<TEntity> FirstAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default)
+    {
+        if (Exists)
+        {
+            try
+            {
+                return filter is null ? await DataBaseSet.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false) : await DataBaseSet.FirstOrDefaultAsync(filter, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                return null;
+            }
+        }
+        Logger.LogWarning("Database not exists!");
+        return null;
+    }
+
+    public virtual TEntity Last(Expression<Func<TEntity, bool>> filter = null)
+    {
+        if (Exists)
+        {
+            try
+            {
+                return filter is null ? DataBaseSet.LastOrDefault() : DataBaseSet.LastOrDefault(filter);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                return null;
+            }
+        }
+        Logger.LogWarning("Database not exists!");
+        return null;
+    }
+
+    public virtual async ValueTask<TEntity> LastAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default)
+    {
+        if (Exists)
+        {
+            try
+            {
+                return filter is null ? await DataBaseSet.LastOrDefaultAsync(cancellationToken).ConfigureAwait(false) : await DataBaseSet.LastOrDefaultAsync(filter, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                return null;
+            }
+        }
+        Logger.LogWarning("Database not exists!");
+        return null;
+    }
+
     public TEntity Find(params object[] keyObject)
     {
         Logger.LogTrace("RepositoryBase Find: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");

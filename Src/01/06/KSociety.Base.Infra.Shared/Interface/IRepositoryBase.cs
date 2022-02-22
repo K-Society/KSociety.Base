@@ -28,6 +28,14 @@ public interface IRepositoryBase<TEntity> : IDisposable where TEntity : class
 
     IEnumerable<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<TEntity>> Delete(Expression<Func<TEntity, bool>> where);
 
+    TEntity First(Expression<Func<TEntity, bool>> filter = null);
+
+    ValueTask<TEntity> FirstAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default);
+
+    TEntity Last(Expression<Func<TEntity, bool>> filter = null);
+
+    ValueTask<TEntity> LastAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default);
+
     TEntity Find(params object[] keyObjects);
 
     ValueTask<TEntity> FindAsync(CancellationToken cancellationToken = default, params object[] keyObjects);
