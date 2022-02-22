@@ -32,9 +32,9 @@ public interface IRepositoryBase<TEntity> : IDisposable where TEntity : class
 
     ValueTask<TEntity> FirstAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default);
 
-    TEntity Last(Expression<Func<TEntity, bool>> filter = null);
+    TEntity Last<TKeySelector>(Expression<Func<TEntity, TKeySelector>> keySelector, Expression<Func<TEntity, bool>> filter = null);
 
-    ValueTask<TEntity> LastAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default);
+    ValueTask<TEntity> LastAsync<TKeySelector>(Expression<Func<TEntity, TKeySelector>> keySelector, Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default);
 
     TEntity Find(params object[] keyObjects);
 
