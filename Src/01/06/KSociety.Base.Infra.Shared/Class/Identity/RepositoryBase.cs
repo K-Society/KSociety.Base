@@ -215,13 +215,13 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
         return null;
     }
 
-    public virtual TEntity Last(Expression<Func<TEntity, bool>> filter = null)
+    public virtual TEntity Last<TKeySelector>(Expression<Func<TEntity, TKeySelector>> keySelector, Expression<Func<TEntity, bool>> filter = null)
     {
         if (Exists)
         {
             try
             {
-                return filter is null ? DataBaseSet.LastOrDefault() : DataBaseSet.LastOrDefault(filter);
+                return filter is null ? DataBaseSet.OrderBy(keySelector).LastOrDefault() : DataBaseSet.OrderBy(keySelector).LastOrDefault(filter);
             }
             catch (Exception ex)
             {
@@ -233,13 +233,13 @@ public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUse
         return null;
     }
 
-    public virtual async ValueTask<TEntity> LastAsync(Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default)
+    public virtual async ValueTask<TEntity> LastAsync<TKeySelector>(Expression<Func<TEntity, TKeySelector>> keySelector, Expression<Func<TEntity, bool>> filter = null, CancellationToken cancellationToken = default)
     {
         if (Exists)
         {
             try
             {
-                return filter is null ? await DataBaseSet.LastOrDefaultAsync(cancellationToken).ConfigureAwait(false) : await DataBaseSet.LastOrDefaultAsync(filter, cancellationToken).ConfigureAwait(false);
+                return filter is null ? await DataBaseSet.OrderBy(keySelector).LastOrDefaultAsync(cancellationToken).ConfigureAwait(false) : await DataBaseSet.OrderBy(keySelector).LastOrDefaultAsync(filter, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
