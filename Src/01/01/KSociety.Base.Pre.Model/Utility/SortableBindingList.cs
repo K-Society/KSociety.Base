@@ -68,7 +68,7 @@ public class SortableBindingList<T> : ObjectBindingList<T> where T : IObject
     {
         _sortDirection = ListSortDirection.Ascending;
         _sortProperty = null;
-        _isSorted = false; //thanks Luca
+        _isSorted = false;
     }
 
     /// <inheritdoc />
@@ -82,7 +82,7 @@ public class SortableBindingList<T> : ObjectBindingList<T> where T : IObject
         _sortProperty = prop;
         _sortDirection = direction;
 
-        if (!(Items is List<T> list)) return;
+        if (Items is not List<T> list) return;
 
         list.Sort(Compare);
 
