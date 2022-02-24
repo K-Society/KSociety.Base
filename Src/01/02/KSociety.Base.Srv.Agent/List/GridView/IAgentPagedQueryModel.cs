@@ -7,7 +7,7 @@ namespace KSociety.Base.Srv.Agent.List.GridView;
 
 public interface IAgentPagedQueryModel<T, TList>
     where T : IObject
-    where TList : InfraSub.Shared.Interface.IList<T>
+    where TList : IList<T>
 {
     TList LoadPagedRecords(PagedRequest pagedRequest, CancellationToken cancellationToken = default);
 
