@@ -10,19 +10,21 @@ using System.Windows.Forms;
 
 namespace KSociety.Base.Pre.Form.Presenter.Forms;
 
-public abstract class Presenter<TView, T, TRemove, TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyField, TList, TCommand, TQuery>
+public abstract class Presenter<TView, T, TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes, TList, TCommand, TQuery>
     : PresenterBase<TView, T, TList, TQuery>, IPresenter<TView, T, TList>
-    where T : IObject, IAppDtoObject<TRemove, TAddReq, TUpdateReq, TCopyReq>
-    where TRemove : class
+    where T : IObject, IAppDtoObject<TRemoveReq, TAddReq, TUpdateReq, TCopyReq>
     where TAddReq : class
     where TAddRes : class, IIdObject
     where TUpdateReq : class
     where TUpdateRes : class, IIdObject
     where TCopyReq : class
     where TCopyRes : class, IIdObject
-    where TModifyField : class, IModifyField, new()
+    where TModifyFieldReq : class, IModifyField, new()
+    where TModifyFieldRes : class, IBoolResponse
+    where TRemoveReq : class
+    where TRemoveRes : class, IBoolResponse
     where TList : IList<T>
-    where TCommand : IAgentCommand<TRemove, TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyField>
+    where TCommand : IAgentCommand<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>
     where TQuery : Srv.Agent.List.GridView.IAgentQueryModel<T, TList>
     where TView : IView<T, TList>
 {
@@ -55,7 +57,7 @@ public abstract class Presenter<TView, T, TRemove, TAddReq, TAddRes, TUpdateReq,
         {
             var result = CommandModel.Remove(e.GetRemoveReq());
 
-            if (result)
+            if (result.Result)
             {
                 View.BindingSource.Remove(e);
             }
@@ -211,10 +213,10 @@ public abstract class Presenter<TView, T, TRemove, TAddReq, TAddRes, TUpdateReq,
 
         await Task.Run(() =>
         {
-            var modifyResult = CommandModel.ModifyField(new TModifyField
+            var modifyResult = CommandModel.ModifyField(new TModifyFieldReq
                 { Id = id, FieldName = columnName, Value = value });
 
-            dgv.DataGridView.Rows[row.Index].Cells[columnName].Style.BackColor = modifyResult ? Color.Green : Color.DarkRed;
+            dgv.DataGridView.Rows[row.Index].Cells[columnName].Style.BackColor = modifyResult.Result ? Color.Green : Color.DarkRed;
         }).ConfigureAwait(false);
     }
 }
