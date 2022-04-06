@@ -28,7 +28,7 @@ namespace KSociety.Base.Srv.Agent
 
         }
 
-        public TAddRes Add(TAddReq addItem, CancellationToken cancellationToken = default)
+        public virtual TAddRes Add(TAddReq addItem, CancellationToken cancellationToken = default)
         {
             TAddRes output = default;
             try
@@ -50,7 +50,7 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public async ValueTask<TAddRes> AddAsync(TAddReq addItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TAddRes> AddAsync(TAddReq addItem, CancellationToken cancellationToken = default)
         {
             TAddRes output = default;
             try
@@ -72,7 +72,7 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public TUpdateRes Update(TUpdateReq updateItem, CancellationToken cancellationToken = default)
+        public virtual TUpdateRes Update(TUpdateReq updateItem, CancellationToken cancellationToken = default)
         {
             TUpdateRes output = default;
             try
@@ -94,7 +94,7 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public async ValueTask<TUpdateRes> UpdateAsync(TUpdateReq updateItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TUpdateRes> UpdateAsync(TUpdateReq updateItem, CancellationToken cancellationToken = default)
         {
             TUpdateRes output = default;
             try
@@ -116,7 +116,7 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public TCopyRes Copy(TCopyReq copyItem, CancellationToken cancellationToken = default)
+        public virtual TCopyRes Copy(TCopyReq copyItem, CancellationToken cancellationToken = default)
         {
             TCopyRes output = default;
             try
@@ -138,7 +138,7 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public async ValueTask<TCopyRes> CopyAsync(TCopyReq copyItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TCopyRes> CopyAsync(TCopyReq copyItem, CancellationToken cancellationToken = default)
         {
             TCopyRes output = default;
             try
@@ -160,7 +160,7 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public TModifyFieldRes ModifyField(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default)
+        public virtual TModifyFieldRes ModifyField(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default)
         {
             TModifyFieldRes output = default;
             try
@@ -182,7 +182,7 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public async ValueTask<TModifyFieldRes> ModifyFieldAsync(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TModifyFieldRes> ModifyFieldAsync(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default)
         {
             TModifyFieldRes output = default;
             try
@@ -204,7 +204,7 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public TRemoveRes Remove(TRemoveReq removeItem, CancellationToken cancellationToken = default)
+        public virtual TRemoveRes Remove(TRemoveReq removeItem, CancellationToken cancellationToken = default)
         {
             TRemoveRes output = default;
             try
@@ -226,7 +226,7 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public async ValueTask<TRemoveRes> RemoveAsync(TRemoveReq removeItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TRemoveRes> RemoveAsync(TRemoveReq removeItem, CancellationToken cancellationToken = default)
         {
             TRemoveRes output = default;
             try

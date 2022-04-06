@@ -28,9 +28,9 @@ public class CommandAsync<
     where TRemoveReq : class, IRequest, new()
     where TRemoveRes : class, IResponse, new()
 {
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly IComponentContext _componentContext;
-    private readonly ICommandHandlerAsync _commandHandlerAsync;
+    protected readonly ILoggerFactory LoggerFactory;
+    protected readonly IComponentContext ComponentContext;
+    protected readonly ICommandHandlerAsync CommandHandlerAsync;
 
     public CommandAsync(
         ILoggerFactory loggerFactory,
@@ -38,43 +38,35 @@ public class CommandAsync<
         ICommandHandlerAsync commandHandlerAsync
     )
     {
-        _loggerFactory = loggerFactory;
-        _componentContext = componentContext;
-        _commandHandlerAsync = commandHandlerAsync;
+        LoggerFactory = loggerFactory;
+        ComponentContext = componentContext;
+        CommandHandlerAsync = commandHandlerAsync;
     }
 
     public virtual async ValueTask<TAddRes> AddAsync(TAddReq request, CallContext context = default)
     {
-        return await _commandHandlerAsync.ExecuteWithResponseAsync<TAddReq, TAddRes>(_loggerFactory, _componentContext, request, context.CancellationToken);
+        return await CommandHandlerAsync
+            .ExecuteWithResponseAsync<TAddReq, TAddRes>(LoggerFactory, ComponentContext, request,
+                context.CancellationToken).ConfigureAwait(false);
     }
 
     public virtual async ValueTask<TUpdateRes> UpdateAsync(TUpdateReq request, CallContext context = default)
     {
-        return await _commandHandlerAsync.ExecuteWithResponseAsync<TUpdateReq, TUpdateRes>(_loggerFactory, _componentContext, request, context.CancellationToken);
+        return await CommandHandlerAsync.ExecuteWithResponseAsync<TUpdateReq, TUpdateRes>(LoggerFactory, ComponentContext, request, context.CancellationToken).ConfigureAwait(false);
     }
 
     public virtual async ValueTask<TCopyRes> CopyAsync(TCopyReq request, CallContext context = default)
     {
-        return await _commandHandlerAsync.ExecuteWithResponseAsync<TCopyReq, TCopyRes>(_loggerFactory, _componentContext, request, context.CancellationToken);
+        return await CommandHandlerAsync.ExecuteWithResponseAsync<TCopyReq, TCopyRes>(LoggerFactory, ComponentContext, request, context.CancellationToken).ConfigureAwait(false);
     }
-
-    //public async ValueTask<App.Dto.Res.Export.Common.Tag> ExportTagAsync(App.Dto.Req.Export.Common.Tag request, CallContext context = default)
-    //{
-    //    return await _commandHandlerAsync.ExecuteWithResponseAsync<App.Dto.Req.Export.Common.Tag, App.Dto.Res.Export.Common.Tag>(_loggerFactory, _componentContext, request, context.CancellationToken);
-    //}
-
-    //public async ValueTask<App.Dto.Res.Import.Common.Tag> ImportTagAsync(App.Dto.Req.Import.Common.Tag request, CallContext context = default)
-    //{
-    //    return await _commandHandlerAsync.ExecuteWithResponseAsync<App.Dto.Req.Import.Common.Tag, App.Dto.Res.Import.Common.Tag>(_loggerFactory, _componentContext, request, context.CancellationToken);
-    //}
 
     public virtual async ValueTask<TModifyFieldRes> ModifyFieldAsync(TModifyFieldReq request, CallContext context = default)
     {
-        return await _commandHandlerAsync.ExecuteWithResponseAsync<TModifyFieldReq, TModifyFieldRes>(_loggerFactory, _componentContext, request, context.CancellationToken);
+        return await CommandHandlerAsync.ExecuteWithResponseAsync<TModifyFieldReq, TModifyFieldRes>(LoggerFactory, ComponentContext, request, context.CancellationToken).ConfigureAwait(false);
     }
 
     public virtual async ValueTask<TRemoveRes> RemoveAsync(TRemoveReq request, CallContext context = default)
     {
-        return await _commandHandlerAsync.ExecuteWithResponseAsync<TRemoveReq, TRemoveRes>(_loggerFactory, _componentContext, request, context.CancellationToken);
+        return await CommandHandlerAsync.ExecuteWithResponseAsync<TRemoveReq, TRemoveRes>(LoggerFactory, ComponentContext, request, context.CancellationToken).ConfigureAwait(false);
     }
 }
