@@ -27,9 +27,9 @@ public class Command<
     where TRemoveReq : class, IRequest, new()
     where TRemoveRes : class, IResponse, new()
 {
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly IComponentContext _componentContext;
-    private readonly ICommandHandler _commandHandler;
+    protected readonly ILoggerFactory LoggerFactory;
+    protected readonly IComponentContext ComponentContext;
+    protected readonly ICommandHandler CommandHandler;
 
     public Command(
         ILoggerFactory loggerFactory,
@@ -37,43 +37,33 @@ public class Command<
         ICommandHandler commandHandler
     )
     {
-        _loggerFactory = loggerFactory;
-        _componentContext = componentContext;
-        _commandHandler = commandHandler;
+        LoggerFactory = loggerFactory;
+        ComponentContext = componentContext;
+        CommandHandler = commandHandler;
     }
 
     public virtual TAddRes Add(TAddReq request, CallContext context = default)
     {
-        return _commandHandler.ExecuteWithResponse<TAddReq, TAddRes>(_loggerFactory, _componentContext, request);
+        return CommandHandler.ExecuteWithResponse<TAddReq, TAddRes>(LoggerFactory, ComponentContext, request);
     }
 
     public virtual TUpdateRes Update(TUpdateReq request, CallContext context = default)
     {
-        return _commandHandler.ExecuteWithResponse<TUpdateReq, TUpdateRes>(_loggerFactory, _componentContext, request);
+        return CommandHandler.ExecuteWithResponse<TUpdateReq, TUpdateRes>(LoggerFactory, ComponentContext, request);
     }
 
     public virtual TCopyRes Copy(TCopyReq request, CallContext context = default)
     {
-        return _commandHandler.ExecuteWithResponse<TCopyReq, TCopyRes>(_loggerFactory, _componentContext, request);
+        return CommandHandler.ExecuteWithResponse<TCopyReq, TCopyRes>(LoggerFactory, ComponentContext, request);
     }
-
-    //public App.Dto.Res.Export.Common.Tag Export(App.Dto.Req.Export.Common.Tag request, CallContext context = default)
-    //{
-    //    return _commandHandler.ExecuteWithResponse<App.Dto.Req.Export.Common.Tag, App.Dto.Res.Export.Common.Tag>(_loggerFactory, _componentContext, request);
-    //}
-
-    //public App.Dto.Res.Import.Common.Tag Import(App.Dto.Req.Import.Common.Tag request, CallContext context = default)
-    //{
-    //    return _commandHandler.ExecuteWithResponse<App.Dto.Req.Import.Common.Tag, App.Dto.Res.Import.Common.Tag>(_loggerFactory, _componentContext, request);
-    //}
 
     public virtual TModifyFieldRes ModifyField(TModifyFieldReq request, CallContext context = default)
     {
-        return _commandHandler.ExecuteWithResponse<TModifyFieldReq, TModifyFieldRes>(_loggerFactory, _componentContext, request);
+        return CommandHandler.ExecuteWithResponse<TModifyFieldReq, TModifyFieldRes>(LoggerFactory, ComponentContext, request);
     }
 
     public virtual TRemoveRes Remove(TRemoveReq request, CallContext context = default)
     {
-        return _commandHandler.ExecuteWithResponse<TRemoveReq, TRemoveRes>(_loggerFactory, _componentContext, request);
+        return CommandHandler.ExecuteWithResponse<TRemoveReq, TRemoveRes>(LoggerFactory, ComponentContext, request);
     }
 }
