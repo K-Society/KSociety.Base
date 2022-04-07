@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 namespace KSociety.Base.Srv.Agent;
 public class AgentCommandImportExport<
     TCommand, TCommandAsync,
-    TImport, TImportAsync,
-    TExport, TExportAsync,
     TAddReq, TAddRes,
     TUpdateReq, TUpdateRes,
     TCopyReq, TCopyRes,
@@ -25,12 +23,8 @@ public class AgentCommandImportExport<
     TRemoveReq, TRemoveRes,
     TImportReq, TImportRes,
     TExportReq, TExportRes>
-    where TCommand : class, ICommand<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>
-    where TCommandAsync : class, ICommandAsync<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>
-    where TImport : class, IImport<TImportReq, TImportRes>
-    where TImportAsync : class, IImportAsync<TImportReq, TImportRes>
-    where TExport : class, IExport<TExportReq, TExportRes>
-    where TExportAsync : class, IExportAsync<TExportReq, TExportRes>
+    where TCommand : class, ICommandImportExport<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes, TImportReq, TImportRes, TExportReq, TExportRes>
+    where TCommandAsync : class, ICommandImportExportAsync<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes, TImportReq, TImportRes, TExportReq, TExportRes>
     where TAddReq : class
     where TAddRes : class
     where TUpdateReq : class
@@ -59,7 +53,7 @@ public class AgentCommandImportExport<
         {
             using (Channel)
             {
-                var client = Channel.CreateGrpcService<TImport>();
+                var client = Channel.CreateGrpcService<TCommand>();
 
                 var result = client.ImportData(request, ConnectionOptions(cancellationToken));
 
@@ -80,7 +74,7 @@ public class AgentCommandImportExport<
         {
             using (Channel)
             {
-                var client = Channel.CreateGrpcService<TImportAsync>();
+                var client = Channel.CreateGrpcService<TCommandAsync>();
 
                 var result = await client.ImportDataAsync(request, ConnectionOptions(cancellationToken));
 
@@ -101,7 +95,7 @@ public class AgentCommandImportExport<
         {
             using (Channel)
             {
-                var client = Channel.CreateGrpcService<TExport>();
+                var client = Channel.CreateGrpcService<TCommand>();
 
                 var result = client.ExportData(request, ConnectionOptions(cancellationToken));
 
@@ -122,7 +116,7 @@ public class AgentCommandImportExport<
         {
             using (Channel)
             {
-                var client = Channel.CreateGrpcService<TExportAsync>();
+                var client = Channel.CreateGrpcService<TCommandAsync>();
 
                 var result = await client.ExportDataAsync(request, ConnectionOptions(cancellationToken));
 
