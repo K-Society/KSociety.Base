@@ -25,8 +25,8 @@ public class Export<TExportReq, TExportRes> : IExport<TExportReq, TExportRes>
         CommandHandler = commandHandler;
     }
 
-    public virtual TExportRes ExportData(TExportReq importReq, CallContext context = default)
+    public virtual TExportRes ExportData(TExportReq exportReq, CallContext context = default)
     {
-        return CommandHandler.ExecuteWithResponse<TExportReq, TExportRes>(LoggerFactory, ComponentContext, importReq);
+        return CommandHandler.ExecuteWithResponse<TExportReq, TExportRes>(LoggerFactory, ComponentContext, exportReq);
     }
 }

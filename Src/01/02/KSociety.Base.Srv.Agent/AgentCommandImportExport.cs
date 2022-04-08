@@ -1,7 +1,5 @@
 ﻿using KSociety.Base.Srv.Contract;
 using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc.Client;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,93 +44,34 @@ public class AgentCommandImportExport<
     where TExportReq : class
     where TExportRes : class
 {
+
+    private readonly IAgentImport<TImportReq, TImportRes> _agentImport;
+    private readonly IAgentExport<TExportReq, TExportRes> _agentExport;
+
     public AgentCommandImportExport(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
         : base(agentConfiguration, loggerFactory)
     {
-
+        _agentImport = new AgentImport<TImport, TImportAsync, TImportReq, TImportRes>(agentConfiguration, loggerFactory);
+        _agentExport = new AgentExport<TExport, TExportAsync, TExportReq, TExportRes>(agentConfiguration, loggerFactory);
     }
 
     public virtual TImportRes ImportData(TImportReq request, CancellationToken cancellationToken = default)
     {
-        TImportRes output = default;
-        try
-        {
-            using (Channel)
-            {
-                var client = Channel.CreateGrpcService<TImport>();
-
-                var result = client.ImportData(request, ConnectionOptions(cancellationToken));
-
-                output = result;
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
-        }
-        return output;
+        return _agentImport.ImportData(request, cancellationToken);
     }
 
     public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq request, CancellationToken cancellationToken = default)
     {
-        TImportRes output = default;
-        try
-        {
-            using (Channel)
-            {
-                var client = Channel.CreateGrpcService<TImportAsync>();
-
-                var result = await client.ImportDataAsync(request, ConnectionOptions(cancellationToken));
-
-                output = result;
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
-        }
-        return output;
+        return await _agentImport.ImportDataAsync(request, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual TExportRes ExportData(TExportReq request, CancellationToken cancellationToken = default)
     {
-        TExportRes output = default;
-        try
-        {
-            using (Channel)
-            {
-                var client = Channel.CreateGrpcService<TExport>();
-
-                var result = client.ExportData(request, ConnectionOptions(cancellationToken));
-
-                output = result;
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
-        }
-        return output;
+        return _agentExport.ExportData(request, cancellationToken);
     }
 
     public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq request, CancellationToken cancellationToken = default)
     {
-        TExportRes output = default;
-        try
-        {
-            using (Channel)
-            {
-                var client = Channel.CreateGrpcService<TExportAsync>();
-
-                var result = await client.ExportDataAsync(request, ConnectionOptions(cancellationToken));
-
-                output = result;
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
-        }
-        return output;
+        return await _agentExport.ExportDataAsync(request, cancellationToken).ConfigureAwait(false);
     }
 }

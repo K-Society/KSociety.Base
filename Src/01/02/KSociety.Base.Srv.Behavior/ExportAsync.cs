@@ -26,10 +26,10 @@ public class ExportAsync<TExportReq, TExportRes> : IExportAsync<TExportReq, TExp
         CommandHandlerAsync = commandHandlerAsync;
     }
 
-    public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq importReq, CallContext context = default)
+    public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq exportReq, CallContext context = default)
     {
         return await CommandHandlerAsync
-            .ExecuteWithResponseAsync<TExportReq, TExportRes>(LoggerFactory, ComponentContext, importReq, context.CancellationToken)
+            .ExecuteWithResponseAsync<TExportReq, TExportRes>(LoggerFactory, ComponentContext, exportReq, context.CancellationToken)
             .ConfigureAwait(false);
     }
 }

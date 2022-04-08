@@ -9,5 +9,5 @@ public interface IExport<in TExportReq, out TExportRes>
     where TExportRes : class
 {
     [Operation]
-    TExportRes ExportData(TExportReq importReq, CallContext context = default);
+    TExportRes ExportData(TExportReq exportReq, CallContext context = default);
 }
