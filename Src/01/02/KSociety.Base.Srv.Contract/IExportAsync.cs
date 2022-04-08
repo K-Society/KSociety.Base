@@ -10,5 +10,5 @@ public interface IExportAsync<in TExportReq, TExportRes>
     where TExportRes : class
 {
     [Operation]
-    ValueTask<TExportRes> ExportDataAsync(TExportReq importReq, CallContext context = default);
+    ValueTask<TExportRes> ExportDataAsync(TExportReq exportReq, CallContext context = default);
 }

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using KSociety.Base.App.Shared;
+using KSociety.Base.Srv.Contract;
 using KSociety.Base.Srv.Shared.Interface;
 using Microsoft.Extensions.Logging;
 using ProtoBuf.Grpc;
@@ -36,27 +37,32 @@ public class CommandImportExport<
     where TModifyFieldRes : class, IResponse, new ()
     where TRemoveReq : class, IRequest, new ()
     where TRemoveRes : class, IResponse, new ()
-    where TImportReq : class, IRequest, new()
-    where TImportRes : class, IResponse, new()
-    where TExportReq : class, IRequest, new()
-    where TExportRes : class, IResponse, new()
+    where TImportReq : class, IRequest, new ()
+    where TImportRes : class, IResponse, new ()
+    where TExportReq : class, IRequest, new ()
+    where TExportRes : class, IResponse, new ()
 {
+
+    private readonly IImport<TImportReq, TImportRes> _import;
+    private readonly IExport<TExportReq, TExportRes> _export;
+
     public CommandImportExport(
         ILoggerFactory loggerFactory,
         IComponentContext componentContext,
         ICommandHandler commandHandler
     ) : base (loggerFactory, componentContext, commandHandler)
     {
-
+        _import = new Import<TImportReq, TImportRes>(loggerFactory, componentContext, commandHandler);
+        _export = new Export<TExportReq, TExportRes>(loggerFactory, componentContext, commandHandler);
     }
 
     public virtual TImportRes ImportData(TImportReq importReq, CallContext context = default)
     {
-        return CommandHandler.ExecuteWithResponse<TImportReq, TImportRes>(LoggerFactory, ComponentContext, importReq);
+        return _import.ImportData(importReq, context); 
     }
 
-    public virtual TExportRes ExportData(TExportReq importReq, CallContext context = default)
+    public virtual TExportRes ExportData(TExportReq exportReq, CallContext context = default)
     {
-        return CommandHandler.ExecuteWithResponse<TExportReq, TExportRes>(LoggerFactory, ComponentContext, importReq);
+        return _export.ExportData(exportReq, context);
     }
 }

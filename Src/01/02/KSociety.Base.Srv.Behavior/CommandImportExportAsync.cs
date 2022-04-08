@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using KSociety.Base.App.Shared;
+using KSociety.Base.Srv.Contract;
 using KSociety.Base.Srv.Shared.Interface;
 using Microsoft.Extensions.Logging;
 using ProtoBuf.Grpc;
@@ -42,26 +43,25 @@ public class CommandImportExportAsync<
     where TExportReq : class, IRequest, new()
     where TExportRes : class, IResponse, new()
 {
+    private readonly IImportAsync<TImportReq, TImportRes> _importAsync;
+    private readonly IExportAsync<TExportReq, TExportRes> _exportAsync;
     public CommandImportExportAsync(
         ILoggerFactory loggerFactory,
         IComponentContext componentContext,
         ICommandHandlerAsync commandHandlerAsync
     ) : base(loggerFactory, componentContext, commandHandlerAsync)
     {
-
+        _importAsync = new ImportAsync<TImportReq, TImportRes>(loggerFactory, componentContext, commandHandlerAsync);
+        _exportAsync = new ExportAsync<TExportReq, TExportRes>(loggerFactory, componentContext, commandHandlerAsync);
     }
 
     public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq importReq, CallContext context = default)
     {
-        return await CommandHandlerAsync
-            .ExecuteWithResponseAsync<TImportReq, TImportRes>(LoggerFactory, ComponentContext, importReq, context.CancellationToken)
-            .ConfigureAwait(false);
+        return await _importAsync.ImportDataAsync(importReq, context).ConfigureAwait(false);
     }
 
-    public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq importReq, CallContext context = default)
+    public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq exportReq, CallContext context = default)
     {
-        return await CommandHandlerAsync
-            .ExecuteWithResponseAsync<TExportReq, TExportRes>(LoggerFactory, ComponentContext, importReq, context.CancellationToken)
-            .ConfigureAwait(false);
+        return await _exportAsync.ExportDataAsync(exportReq, context).ConfigureAwait(false);
     }
 }
