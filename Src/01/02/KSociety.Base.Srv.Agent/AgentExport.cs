@@ -35,7 +35,7 @@ public class AgentExport<TExport, TExportAsync, TExportReq, TExportRes> : Connec
         }
         catch (Exception ex)
         {
-            Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+            Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
         }
         return output;
     }
@@ -56,7 +56,7 @@ public class AgentExport<TExport, TExportAsync, TExportReq, TExportRes> : Connec
         }
         catch (Exception ex)
         {
-            Logger.LogError(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + " - " + ex.Source + " " + ex.Message + " " + ex.StackTrace);
+            Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
         }
         return output;
     }
