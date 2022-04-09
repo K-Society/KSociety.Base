@@ -5,16 +5,14 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Srv.Agent;
 public class AgentCommandImportExport<
-    TCommand, TCommandAsync,
-    TImport, TImportAsync,
-    TExport, TExportAsync,
+    TCommandImportExport, TCommandImportExportAsync,
     TAddReq, TAddRes,
     TUpdateReq, TUpdateRes,
     TCopyReq, TCopyRes,
     TModifyFieldReq, TModifyFieldRes,
     TRemoveReq, TRemoveRes,
     TImportReq, TImportRes,
-    TExportReq, TExportRes> : AgentCommand<TCommand, TCommandAsync, TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>, 
+    TExportReq, TExportRes> : AgentCommand<TCommandImportExport, TCommandImportExportAsync, TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>, 
     IAgentCommandImportExport<
     TAddReq, TAddRes,
     TUpdateReq, TUpdateRes,
@@ -23,12 +21,8 @@ public class AgentCommandImportExport<
     TRemoveReq, TRemoveRes,
     TImportReq, TImportRes,
     TExportReq, TExportRes>
-    where TCommand : class, ICommand<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>
-    where TCommandAsync : class, ICommandAsync<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>
-    where TImport : class, IImport<TImportReq, TImportRes>
-    where TImportAsync : class, IImportAsync<TImportReq, TImportRes>
-    where TExport : class, IExport<TExportReq, TExportRes>
-    where TExportAsync : class, IExportAsync<TExportReq, TExportRes>
+    where TCommandImportExport : class, ICommandImportExport<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes, TImportReq, TImportRes, TExportReq, TExportRes>
+    where TCommandImportExportAsync : class, ICommandImportExportAsync<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes, TImportReq, TImportRes, TExportReq, TExportRes>
     where TAddReq : class
     where TAddRes : class
     where TUpdateReq : class
@@ -51,8 +45,8 @@ public class AgentCommandImportExport<
     public AgentCommandImportExport(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
         : base(agentConfiguration, loggerFactory)
     {
-        _agentImport = new AgentImport<TImport, TImportAsync, TImportReq, TImportRes>(agentConfiguration, loggerFactory);
-        _agentExport = new AgentExport<TExport, TExportAsync, TExportReq, TExportRes>(agentConfiguration, loggerFactory);
+        _agentImport = new AgentImport<TCommandImportExport, TCommandImportExportAsync, TImportReq, TImportRes>(agentConfiguration, loggerFactory);
+        _agentExport = new AgentExport<TCommandImportExport, TCommandImportExportAsync, TExportReq, TExportRes>(agentConfiguration, loggerFactory);
     }
 
     public virtual TImportRes ImportData(TImportReq request, CancellationToken cancellationToken = default)
