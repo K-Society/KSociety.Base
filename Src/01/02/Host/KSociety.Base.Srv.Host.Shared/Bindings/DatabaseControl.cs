@@ -32,9 +32,6 @@ public class DatabaseControl<TContext> : Module where TContext : DatabaseContext
             .Named<IRequestHandler>("MigrationReqHdlr")
             .Named<IRequestHandlerAsync>("MigrationReqHdlr");
 
-        //builder.RegisterType<DatabaseFactory<ILoggerFactory, Infra.Shared.Class.DatabaseConfiguration, TContext>>()
-        //    .As<IDatabaseFactory<TContext>>().InstancePerLifetimeScope();
-
         builder.RegisterType<DatabaseFactory<ILoggerFactory, IDatabaseConfiguration, TContext>>()
             .As<IDatabaseFactory<TContext>>().InstancePerLifetimeScope();
     }
