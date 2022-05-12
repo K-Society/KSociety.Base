@@ -6,5 +6,7 @@ public enum CodeDomType
     Namespace,
     Using,
     ClassName,
+    Field,
     Property
+    
 }

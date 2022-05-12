@@ -30,17 +30,49 @@ public class CodeDomService
         _usingNamespace.Imports.Add(CodeDomHelper.GetUsing(namespaceToImport));
     }
 
-    public void AddBaseClass(string[] components)
+    //public void AddBaseClass(string[] components)
+    //{
+    //    try
+    //    {
+
+    //        _class = CodeDomHelper.GetClass(components[0]);
+    //        _class.IsClass = true;
+    //        _class.IsPartial = false;
+    //        _class.Comments.AddRange(
+    //            CodeDomHelper.GetSummaryComments(
+    //                components[1]));
+    //        _class.Attributes = MemberAttributes.Public;
+    //        //this.mClass.BaseTypes.Add(new CodeTypeReference("NomeClassePadre"));
+    //        //this.mClass.BaseTypes.Add(new CodeTypeReference("InterfacciaImplementata"));
+    //        _class.BaseTypes.Add(new CodeTypeReference("IRequest"));
+
+    //        if (_codeNamespace != null)
+    //        {
+    //            _codeNamespace.Types.Add(_class);
+    //            //_class.Members.Add(CodeDomHelper.GetMClassName());
+    //            _constructor = CodeDomHelper.GetConstructorBase(MemberAttributes.Public, components[1]);
+
+    //            _class.Members.Add(_constructor);
+    //        }
+
+    //    }
+    //    catch (Exception ex)
+    //    {
+
+    //    }
+
+    //}
+
+    public void AddBaseClass(string className, string description)
     {
         try
         {
 
-            _class = CodeDomHelper.GetClass(components[0]);
+            _class = CodeDomHelper.GetClass(className);
             _class.IsClass = true;
             _class.IsPartial = false;
             _class.Comments.AddRange(
-                CodeDomHelper.GetSummaryComments(
-                    components[1]));
+                CodeDomHelper.GetSummaryComments(description));
             _class.Attributes = MemberAttributes.Public;
             //this.mClass.BaseTypes.Add(new CodeTypeReference("NomeClassePadre"));
             //this.mClass.BaseTypes.Add(new CodeTypeReference("InterfacciaImplementata"));
@@ -50,7 +82,7 @@ public class CodeDomService
             {
                 _codeNamespace.Types.Add(_class);
                 //_class.Members.Add(CodeDomHelper.GetMClassName());
-                _constructor = CodeDomHelper.GetConstructorBase(MemberAttributes.Public, components[1]);
+                _constructor = CodeDomHelper.GetConstructorBase(MemberAttributes.Public, description);
 
                 _class.Members.Add(_constructor);
             }
@@ -58,19 +90,53 @@ public class CodeDomService
         }
         catch (Exception ex)
         {
-            
+
         }
 
     }
 
-    public void AddProperty(string[] components)
-    {
-        
-        Type tipo = Type.GetType(components[2]);
+    //public void AddField(string[] components)
+    //{
 
-        _class.Members.Add(CodeDomHelper.GetProperty(
-            components[0], components[1], tipo, components[3], true, true));
+    //}
+
+    public void AddField(string fieldName, Type dataType, string description)
+    {
+        //_class.Members.Add(CodeDomHelper.GetF(propertyName, propertyField, dataType, description, true, true));
+
+        CodeExpression val = CodeDomHelper.GetPlainCode(dataType.FullName);
+        //if (components[1].ToLower().Contains("string"))
+        //{
+        //    val = CodeDomHelper.GetPlainCode("string.empty");
+        //}
+        //if (components[1].ToLower().Contains("datetime"))
+        //{
+        //    val = CodeDomHelper.GetPlainCode("DateTime.Now");
+        //}
+
+        _class.Members.Add(CodeDomHelper.GetFieldVariable(fieldName,
+            dataType.FullName, MemberAttributes.Private,
+            description, null));
+
+        _constructor.Statements.Add(CodeDomHelper.GetFieldVariableAssignment(
+            fieldName, val));
     }
+
+    //public void AddProperty(string[] components)
+    //{
+
+    //    Type tipo = Type.GetType(components[2]);
+
+    //    _class.Members.Add(CodeDomHelper.GetProperty(
+    //        components[0], components[2], tipo, components[3], true, true));
+    //}
+
+    public void AddProperty(string propertyName, string propertyField, Type dataType, string description)
+    {
+        _class.Members.Add(CodeDomHelper.GetProperty(propertyName, propertyField, dataType, description, true, true));
+    }
+
+
 
     public void Generator(IEnumerable<ClassGenerator> classGeneratorItems)
     {
@@ -87,12 +153,15 @@ public class CodeDomService
                     break;
 
                 case CodeDomType.ClassName:
-                    AddBaseClass(new[] { item.Value, item.Value });
+                    AddBaseClass(item.Value, item.Description);
+                    break;
+
+                case CodeDomType.Field:
+                    AddField(item.Value, item.DataType, item.Description);
                     break;
 
                 case CodeDomType.Property:
-                    //Property=Name;mName;System.String;Nome della persona
-                    AddProperty(new[] { item.Value, item.Value, "System.Int32", "Test" });
+                    AddProperty(item.Value, item.Parameters, item.DataType, item.Description);
                     break;
 
                 default:

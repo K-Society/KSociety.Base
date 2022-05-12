@@ -166,6 +166,28 @@ public static class CodeDomHelper
     }
 
     /// <summary>
+    /// Genera un campo in una classe
+    /// </summary>
+    /// <param name="pName">Nome del campo</param>
+    /// <param name="pTypeName">Nome del tipo di campo (full namespace)</param>
+    /// <param name="pAccessLevel">Livello di accesso</param>
+    /// <param name="pDescription">Descrizione</param>
+    /// <returns>Elemento CodeDom per la Definizione di un Campo in una classe</returns>
+    public static CodeMemberField GetFieldVariable(string pName, string pTypeName
+        , MemberAttributes pAccessLevel, string pDescription,
+        CodeExpression pInitExpression)
+    {
+        CodeMemberField fld = new CodeMemberField(pTypeName, pName);
+        fld.Attributes = pAccessLevel;
+        if (pInitExpression != null)
+        {
+            fld.InitExpression = pInitExpression;
+        } // if
+        fld.Comments.AddRange(GetSummaryComments(pDescription));
+        return fld;
+    }
+
+    /// <summary>
     /// Genera una property base
     /// </summary>
     /// <param name="pName">Nome della Property</param>

@@ -17,6 +17,8 @@ public sealed class ClassGenerator : ClassMap<KSociety.Base.InfraSub.Shared.Clas
         //.TypeConverter<CodeDomTypeEnumConverter<KSociety.Base.InfraSub.Shared.Class.CodeDom.CodeDomType>>();
         Map(map => map.CodeDomType);
         Map(map => map.Value);
+        Map(map => map.DataType).TypeConverter<DataTypeConverter>();
         Map(map => map.Parameters);
+        Map(map => map.Description);
     }
 }

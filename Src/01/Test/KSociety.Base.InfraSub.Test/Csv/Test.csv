@@ -1,6 +1,7 @@
-﻿CodeDomType;Value;Parameters
-Using;KSociety.Base.App.Shared;
-Using;ProtoBuf;
-Namespace;KSociety.Com.App.Dto.Req.Add.Common;
-ClassName;Connection;
-Property;AutomationTypeId;
+﻿CodeDomType;Value;DataType;Parameters;Description
+Using;KSociety.Base.App.Shared;;;
+Using;ProtoBuf;;;
+Namespace;KSociety.Com.App.Dto.Req.Add.Common;;;
+ClassName;Connection;;;Connection
+Field;_automationTypeId;System.Int32;;
+Property;AutomationTypeId;System.Int32;_automationTypeId;
