@@ -63,7 +63,7 @@ public class CodeDomService
 
     //}
 
-    public void AddBaseClass(string className, string description)
+    public void AddBaseClass(string className, string description, Type decoration)
     {
         try
         {
@@ -78,14 +78,14 @@ public class CodeDomService
             //this.mClass.BaseTypes.Add(new CodeTypeReference("InterfacciaImplementata"));
             _class.BaseTypes.Add(new CodeTypeReference("IRequest"));
 
-            if (_codeNamespace != null)
-            {
-                _codeNamespace.Types.Add(_class);
-                //_class.Members.Add(CodeDomHelper.GetMClassName());
-                _constructor = CodeDomHelper.GetConstructorBase(MemberAttributes.Public, description);
+            var attr = new CodeAttributeDeclaration(new CodeTypeReference(decoration));
+            //var attr = new CodeAttributeDeclaration();
+            _class.CustomAttributes.Add(attr);
+            _codeNamespace?.Types.Add(_class);
+            //_class.Members.Add(CodeDomHelper.GetMClassName());
+            //_constructor = CodeDomHelper.GetConstructorBase(MemberAttributes.Public, description);
 
-                _class.Members.Add(_constructor);
-            }
+            //_class.Members.Add(_constructor);
 
         }
         catch (Exception ex)
@@ -93,6 +93,25 @@ public class CodeDomService
 
         }
 
+    }
+
+    public void AddConstructor(string description, Dictionary<string, Type> parameters = null)
+    {
+        if (_codeNamespace != null)
+        {
+            _constructor = CodeDomHelper.GetConstructorBase(MemberAttributes.Public, description);
+
+            if (parameters is not null)
+            {
+                foreach (var parameter in parameters)
+                {
+                    _constructor.Parameters.Add(new CodeParameterDeclarationExpression(parameter.Value, parameter.Key));
+                    CodeExpression val = CodeDomHelper.GetPlainCode(parameter.Key);
+                    _constructor.Statements.Add(CodeDomHelper.GetFieldVariableAssignment("_"+ parameter.Key, val));
+                }
+            }
+            _class.Members.Add(_constructor);
+        }
     }
 
     //public void AddField(string[] components)
@@ -104,7 +123,7 @@ public class CodeDomService
     {
         //_class.Members.Add(CodeDomHelper.GetF(propertyName, propertyField, dataType, description, true, true));
 
-        CodeExpression val = CodeDomHelper.GetPlainCode(dataType.FullName);
+        //CodeExpression val = CodeDomHelper.GetPlainCode(dataType.FullName);
         //if (components[1].ToLower().Contains("string"))
         //{
         //    val = CodeDomHelper.GetPlainCode("string.empty");
@@ -118,8 +137,8 @@ public class CodeDomService
             dataType.FullName, MemberAttributes.Private,
             description, null));
 
-        _constructor.Statements.Add(CodeDomHelper.GetFieldVariableAssignment(
-            fieldName, val));
+        //_constructor.Statements.Add(CodeDomHelper.GetFieldVariableAssignment(
+        //    fieldName, val));
     }
 
     //public void AddProperty(string[] components)
@@ -131,9 +150,9 @@ public class CodeDomService
     //        components[0], components[2], tipo, components[3], true, true));
     //}
 
-    public void AddProperty(string propertyName, string propertyField, Type dataType, string description)
+    public void AddProperty(string propertyName, string propertyField, Type dataType, string description, Type decoration, int tag)
     {
-        _class.Members.Add(CodeDomHelper.GetProperty(propertyName, propertyField, dataType, description, true, true));
+        _class.Members.Add(CodeDomHelper.GetProperty(propertyName, propertyField, dataType, description, true, true, decoration, tag));
     }
 
 
@@ -153,7 +172,11 @@ public class CodeDomService
                     break;
 
                 case CodeDomType.ClassName:
-                    AddBaseClass(item.Value, item.Description);
+                    AddBaseClass(item.Value, item.Description, item.Decoration);
+                    break;
+
+                case CodeDomType.Constructor:
+                    AddConstructor(item.Description, item.Parameters);
                     break;
 
                 case CodeDomType.Field:
@@ -161,7 +184,7 @@ public class CodeDomService
                     break;
 
                 case CodeDomType.Property:
-                    AddProperty(item.Value, item.Parameters, item.DataType, item.Description);
+                    AddProperty(item.Value, item.Parameter, item.DataType, item.Description, item.Decoration, item.Tag);
                     break;
 
                 default:

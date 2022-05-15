@@ -218,6 +218,48 @@ public static class CodeDomHelper
                 GetFieldVariableAssignment(
                     pField, GetPlainCode("value")));
         } // if
+
+        return prop;
+
+    }
+
+    /// <summary>
+    /// Genera una property base
+    /// </summary>
+    /// <param name="pName">Nome della Property</param>
+    /// <param name="pField">Nome del campo</param>
+    /// <param name="pType">Tipo della property</param>
+    /// <param name="pDescription">Descrizione per il commento</param>
+    /// <returns></returns>
+    public static CodeMemberProperty GetProperty(string pName, string pField, Type pType, string pDescription,
+        bool pHasGet, bool pHasSet, Type decoration, int tag)
+    {
+        CodeMemberProperty prop = new CodeMemberProperty();
+        prop.Name = pName;
+        prop.Comments.AddRange(GetSummaryComments(pDescription));
+        prop.Attributes = MemberAttributes.Public;
+        prop.Type = new CodeTypeReference(pType);
+        prop.HasGet = pHasGet;
+        prop.HasSet = pHasSet;
+
+        if (pHasGet)
+        {
+            prop.GetStatements.Add(
+                new CodeMethodReturnStatement(
+                    new CodeArgumentReferenceExpression(pField)));
+        } // if
+        if (pHasSet)
+        {
+            prop.SetStatements.Add(
+                GetFieldVariableAssignment(
+                    pField, GetPlainCode("value")));
+        } // if
+
+
+        var attr = new CodeAttributeDeclaration(new CodeTypeReference(decoration));
+        attr.Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(tag)));
+        prop.CustomAttributes.Add(attr);
+
         return prop;
 
     }
