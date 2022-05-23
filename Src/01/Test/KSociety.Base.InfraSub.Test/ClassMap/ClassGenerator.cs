@@ -9,15 +9,6 @@ public sealed class ClassGenerator : ClassMap<KSociety.Base.InfraSub.Shared.Clas
 {
     public ClassGenerator()
     {
-        //var converter = new EnumConverter(typeof(KSociety.Base.InfraSub.Shared.Class.CodeDom.CodeDomType));
-
-        //var propertyMapData = new MemberMapData(null)
-        //{
-        //    TypeConverterOptions = { EnumIgnoreCase = true },
-        //};
-
-        //Map(map => converter.ConvertFromString(map.CodeDomType.ToString(), null, propertyMapData)); //.TypeConverter<KSociety.Base.InfraSub.Shared.Class.CodeDom.CodeDomType>().Convert()
-        //.TypeConverter<CodeDomTypeEnumConverter<KSociety.Base.InfraSub.Shared.Class.CodeDom.CodeDomType>>();
         Map(map => map.CodeDomType);
         Map(map => map.Value);
         Map(map => map.DataType).TypeConverter<DataTypeConverter>();
@@ -34,6 +25,7 @@ public sealed class ClassGenerator : ClassMap<KSociety.Base.InfraSub.Shared.Clas
                 var list = columnValue?.Split(',').ToList() ?? new List<string>();
                 foreach (var parameter in list)
                 {
+                    
                     var parameterArray = parameter.Split(' ');
                     if (parameterArray.Length == 2)
                     {
@@ -41,8 +33,6 @@ public sealed class ClassGenerator : ClassMap<KSociety.Base.InfraSub.Shared.Clas
                     }
 
                 }
-
-                //return dictionary;
             }
             catch (Exception ex)
             {

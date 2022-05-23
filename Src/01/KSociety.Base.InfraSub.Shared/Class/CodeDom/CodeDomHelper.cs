@@ -3,6 +3,7 @@ using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
+using System.Threading;
 
 namespace KSociety.Base.InfraSub.Shared.Class.CodeDom;
 public static class CodeDomHelper
@@ -259,6 +260,37 @@ public static class CodeDomHelper
         var attr = new CodeAttributeDeclaration(new CodeTypeReference(decoration));
         attr.Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(tag)));
         prop.CustomAttributes.Add(attr);
+
+        try
+        {
+
+
+            if (pType == typeof(Guid))
+            {
+                //attr.Arguments.Add(new CodeAttributeArgument(typeof(ProtoBuf.CompatibilityLevelAttribute)));
+                //attr.Arguments.Add(new CodeAttributeArgument(new CodeTypeOfExpression(typeof(ProtoBuf.CompatibilityLevelAttribute))));
+
+                var attrGuid =
+                    new CodeAttributeDeclaration(new CodeTypeReference(typeof(ProtoBuf.CompatibilityLevelAttribute)));
+                //attrGuid.Arguments.Add(new CodeAttributeArgument(new CodeVariableReferenceExpression(ProtoBuf.CompatibilityLevel.Level200.ToString())));
+                //attrGuid.Arguments.Add(
+                //    new CodeAttributeArgument(new CodeObjectCreateExpression(ProtoBuf.CompatibilityLevel, new CodeExpression(ProtoBuf.CompatibilityLevel.Level200))));
+
+                //attrGuid.Arguments.Add(
+                //    new CodeAttributeArgument(new CodeObjectCreateExpression(new CodeTypeReference(typeof(ProtoBuf.CompatibilityLevel)), new CodeParameterDeclarationExpression())));
+
+
+                //attr.Arguments.Add(new CodeAttributeArgument(new CodeTypeOfExpression(typeof(ProtoBuf.CompatibilityLevelAttribute))));
+                //attr.Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(ProtoBuf.CompatibilityLevel.Level200)));
+                prop.CustomAttributes.Add(attrGuid);
+            }
+        }
+        catch (Exception ex)
+        {
+            ;
+        }
+
+        //prop.CustomAttributes.Add(attr);
 
         return prop;
 

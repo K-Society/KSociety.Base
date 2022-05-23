@@ -18,6 +18,10 @@ public class ProtoBufTypeConverter : DefaultTypeConverter
             case "ProtoBuf.ProtoMemberAttribute":
                 output = typeof(ProtoBuf.ProtoMemberAttribute);
                 break;
+
+            case "ProtoBuf.CompatibilityLevelAttribute":
+                output = typeof(ProtoBuf.CompatibilityLevelAttribute);
+                break;
         }
 
         return output;
