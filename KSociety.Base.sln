@@ -82,6 +82,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Form.View
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Form.Presenter", "Src\01\01\Form\KSociety.Base.Pre.Form.Presenter\KSociety.Base.Pre.Form.Presenter.csproj", "{93E7C6B0-64E4-4912-93C1-CB6C0A56981F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{14967EA3-A0F5-42A4-A339-1E6D675EB3A9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.InfraSub.Test", "Src\01\Test\KSociety.Base.InfraSub.Test\KSociety.Base.InfraSub.Test.csproj", "{E7CD8182-9A33-4D20-ADA4-B4D81C50B736}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -162,6 +166,10 @@ Global
 		{93E7C6B0-64E4-4912-93C1-CB6C0A56981F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93E7C6B0-64E4-4912-93C1-CB6C0A56981F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93E7C6B0-64E4-4912-93C1-CB6C0A56981F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7CD8182-9A33-4D20-ADA4-B4D81C50B736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7CD8182-9A33-4D20-ADA4-B4D81C50B736}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7CD8182-9A33-4D20-ADA4-B4D81C50B736}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7CD8182-9A33-4D20-ADA4-B4D81C50B736}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -199,6 +207,8 @@ Global
 		{E38CEC04-C916-49D8-AF53-EA1E6F950039} = {577755C6-6D08-4D83-8580-3FDCA28DCDB6}
 		{7ACB47E1-6E93-4B31-9D94-A30392A28F0E} = {E38CEC04-C916-49D8-AF53-EA1E6F950039}
 		{93E7C6B0-64E4-4912-93C1-CB6C0A56981F} = {E38CEC04-C916-49D8-AF53-EA1E6F950039}
+		{14967EA3-A0F5-42A4-A339-1E6D675EB3A9} = {FF8D64B5-39E0-4AC2-BBDC-EC5E9F765828}
+		{E7CD8182-9A33-4D20-ADA4-B4D81C50B736} = {14967EA3-A0F5-42A4-A339-1E6D675EB3A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {99171B9C-B7B3-4746-8EE3-E488C03B00D9}

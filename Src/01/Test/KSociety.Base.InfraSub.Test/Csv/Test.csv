@@ -1,0 +1,13 @@
+﻿CodeDomType;Value;DataType;Parameter;Description;Decoration;Tag;Parameters
+Using;KSociety.Base.App.Shared;;;;;;
+Using;ProtoBuf;;;;;;
+Namespace;KSociety.Com.App.Dto.Req.Add.Common;;;;;;
+ClassName;Test;;;Test;ProtoBuf.ProtoContractAttribute;;
+Constructor;Test;;;Test;;;
+Constructor;Test;;;Test;;;"System.Guid id,System.Int32 automationTypeId,System.Int32 automationTypeId1"
+Field;_id;System.Guid;;;;;
+Field;_automationTypeId;System.Int32;;;;;
+Field;_automationTypeId1;System.Int32;;;;;
+Property;Id;System.Guid;_id;;ProtoBuf.ProtoMemberAttribute;1;
+Property;AutomationTypeId;System.Int32;_automationTypeId;;ProtoBuf.ProtoMemberAttribute;2;
+Property;AutomationTypeId;System.Int32;_automationTypeId1;;ProtoBuf.ProtoMemberAttribute;3;
