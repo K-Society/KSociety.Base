@@ -6,6 +6,7 @@ public static class Converter
 {
     public static byte[] StringToByteArray(string bytes)
     {
+        if (string.IsNullOrEmpty(bytes)) return Array.Empty<byte>();
         string[] splitResult = bytes.Split('-');
 
         byte[] pathArray = new byte[splitResult.Length];
