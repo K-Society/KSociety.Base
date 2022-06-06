@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:52490",
-      "sslPort": 0
+      "applicationUrl": "http://localhost:38121/",
+      "sslPort": 44320
     }
   },
   "profiles": {
@@ -17,12 +17,12 @@
     },
     "KSociety.Base.Pre.Web.AppTest": {
       "commandName": "Project",
-      "dotnetRunMessages": "true",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "http://localhost:5000",
+      "dotnetRunMessages": "true"
     }
   }
 }
