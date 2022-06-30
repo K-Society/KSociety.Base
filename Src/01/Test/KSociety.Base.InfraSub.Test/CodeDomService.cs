@@ -1,7 +1,6 @@
 ﻿using KSociety.Base.InfraSub.Shared.Class.CodeDom;
-using KSociety.Base.InfraSub.Test.Class;
+using KSociety.Base.InfraSub.Shared.Class.Csv;
 using Microsoft.Extensions.Logging;
-using System.IO;
 using Xunit;
 
 namespace KSociety.Base.InfraSub.Test
