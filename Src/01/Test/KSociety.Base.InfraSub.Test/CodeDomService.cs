@@ -1,7 +1,6 @@
 ﻿using KSociety.Base.InfraSub.Shared.Class.CodeDom;
-using KSociety.Base.InfraSub.Test.Class;
+using KSociety.Base.InfraSub.Shared.Class.Csv;
 using Microsoft.Extensions.Logging;
-using System.IO;
 using Xunit;
 
 namespace KSociety.Base.InfraSub.Test
@@ -23,7 +22,7 @@ namespace KSociety.Base.InfraSub.Test
 
             _codeDomService = new KSociety.Base.InfraSub.Shared.Class.CodeDom.CodeDomService();
 
-            _classGenerators = ReadCsvClassMap<KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassGenerator, ClassMap.ClassGenerator>.Read(_loggerFactory, "Test");
+            _classGenerators = ReadCsvClassMap<KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassGenerator, KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassMap.ClassGenerator>.Read(_loggerFactory, "TestDto");
             ;
         }
 

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Infra.Shared.Csv;
+namespace KSociety.Base.InfraSub.Shared.Class.Csv;
 
 public class WriteCsv<TEntity>
     where TEntity : class

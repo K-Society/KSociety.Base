@@ -3,7 +3,7 @@ using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using System;
 
-namespace KSociety.Base.InfraSub.Test.ClassMap;
+namespace KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassMap;
 public class DataTypeConverter : DefaultTypeConverter
 {
     public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
