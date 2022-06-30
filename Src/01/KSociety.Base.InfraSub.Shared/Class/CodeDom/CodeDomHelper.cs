@@ -272,6 +272,22 @@ public static class CodeDomHelper
 
                 var attrGuid =
                     new CodeAttributeDeclaration(new CodeTypeReference(typeof(ProtoBuf.CompatibilityLevelAttribute)));
+
+                //var uu = new CodeObjectCreateExpression(typeof(ProtoBuf.CompatibilityLevelAttribute), new );
+
+                attrGuid.Arguments.Add(new CodeAttributeArgument
+                {
+                    Value = new CodeFieldReferenceExpression(
+                        new CodeTypeReferenceExpression(typeof(ProtoBuf.CompatibilityLevel)), "Level200")
+                });
+
+                //        new CodeAttributeArgument(new CodeObjectCreateExpression(,)));
+                //new CodeAttributeArgument(new CodePrimitiveExpression(ProtoBuf.CompatibilityLevel.Level200)));
+
+                //var attrGuid =
+                //    new CodeAttributeDeclaration(new CodeObjectCreateExpression(typeof(ProtoBuf.CompatibilityLevelAttribute), ProtoBuf.CompatibilityLevel.Level200);
+                //new CodeAttributeArgument(new CodePrimitiveExpression(ProtoBuf.CompatibilityLevel.Level200)));
+
                 //attrGuid.Arguments.Add(new CodeAttributeArgument(new CodeVariableReferenceExpression(ProtoBuf.CompatibilityLevel.Level200.ToString())));
                 //attrGuid.Arguments.Add(
                 //    new CodeAttributeArgument(new CodeObjectCreateExpression(ProtoBuf.CompatibilityLevel, new CodeExpression(ProtoBuf.CompatibilityLevel.Level200))));

@@ -18,7 +18,15 @@ public class ClassGenerator
 
     }
 
-    public ClassGenerator(CodeDomType codeDomType, string value, Type dataType, string parameter, string description, Type decoration, int tag, Dictionary<string, Type> parameters)
+    public ClassGenerator(
+        CodeDomType codeDomType, 
+        string value, 
+        Type dataType, 
+        string parameter, 
+        string description, 
+        Type decoration, 
+        int tag,
+        Dictionary<string, Type> parameters)
     {
         CodeDomType = codeDomType;
         Value = value;
