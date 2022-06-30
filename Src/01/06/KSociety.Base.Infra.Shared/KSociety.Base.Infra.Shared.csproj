@@ -8,7 +8,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="27.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
@@ -28,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\05\KSociety.Base.Domain.Shared\KSociety.Base.Domain.Shared.csproj" />
-    <ProjectReference Include="..\..\KSociety.Base.InfraSub.Shared\KSociety.Base.InfraSub.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

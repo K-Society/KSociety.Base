@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Infra.Shared.Csv;
+namespace KSociety.Base.InfraSub.Shared.Class.Csv;
 
 public static class WriteCsvClassMap<TEntity, TClassMap>
     where TEntity :class

@@ -31,11 +31,11 @@ public static class CodeDomHelper
             BlankLinesBetweenMembers = true
         };
 
-        FileInfo fInfo = new(fileName);
-        DirectoryInfo dInfo = new(fInfo.DirectoryName);
-        if (!dInfo.Exists)
+        FileInfo fileInfo = new(fileName);
+        DirectoryInfo directoryInfo = new(fileInfo.DirectoryName);
+        if (!directoryInfo.Exists)
         {
-            dInfo.Create();
+            directoryInfo.Create();
         }
 
         //Genera il codedom container
@@ -231,27 +231,30 @@ public static class CodeDomHelper
     /// <param name="pField">Nome del campo</param>
     /// <param name="pType">Tipo della property</param>
     /// <param name="pDescription">Descrizione per il commento</param>
+    /// <param name="pHasGet"></param>
+    /// <param name="pHasSet"></param>
+    /// <param name="decoration"></param>
+    /// <param name="tag"></param>
     /// <returns></returns>
     public static CodeMemberProperty GetProperty(string pName, string pField, Type pType, string pDescription,
         bool pHasGet, bool pHasSet, Type decoration, int tag)
     {
-        CodeMemberProperty prop = new CodeMemberProperty();
-        prop.Name = pName;
-        prop.Comments.AddRange(GetSummaryComments(pDescription));
-        prop.Attributes = MemberAttributes.Public;
-        prop.Type = new CodeTypeReference(pType);
-        prop.HasGet = pHasGet;
-        prop.HasSet = pHasSet;
+        CodeMemberProperty property = new() {Name = pName};
+        property.Comments.AddRange(GetSummaryComments(pDescription));
+        property.Attributes = MemberAttributes.Final | MemberAttributes.Public;
+        property.Type = new CodeTypeReference(pType);
+        property.HasGet = pHasGet;
+        property.HasSet = pHasSet;
 
         if (pHasGet)
         {
-            prop.GetStatements.Add(
+            property.GetStatements.Add(
                 new CodeMethodReturnStatement(
                     new CodeArgumentReferenceExpression(pField)));
         } // if
         if (pHasSet)
         {
-            prop.SetStatements.Add(
+            property.SetStatements.Add(
                 GetFieldVariableAssignment(
                     pField, GetPlainCode("value")));
         } // if
@@ -259,21 +262,16 @@ public static class CodeDomHelper
 
         var attr = new CodeAttributeDeclaration(new CodeTypeReference(decoration));
         attr.Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(tag)));
-        prop.CustomAttributes.Add(attr);
+        property.CustomAttributes.Add(attr);
 
         try
         {
 
 
-            if (pType == typeof(Guid))
+            if (pType == typeof(Guid) || pType == typeof(DateTime) || pType == typeof(TimeSpan) || pType == typeof(Decimal))
             {
-                //attr.Arguments.Add(new CodeAttributeArgument(typeof(ProtoBuf.CompatibilityLevelAttribute)));
-                //attr.Arguments.Add(new CodeAttributeArgument(new CodeTypeOfExpression(typeof(ProtoBuf.CompatibilityLevelAttribute))));
-
                 var attrGuid =
                     new CodeAttributeDeclaration(new CodeTypeReference(typeof(ProtoBuf.CompatibilityLevelAttribute)));
-
-                //var uu = new CodeObjectCreateExpression(typeof(ProtoBuf.CompatibilityLevelAttribute), new );
 
                 attrGuid.Arguments.Add(new CodeAttributeArgument
                 {
@@ -281,24 +279,7 @@ public static class CodeDomHelper
                         new CodeTypeReferenceExpression(typeof(ProtoBuf.CompatibilityLevel)), "Level200")
                 });
 
-                //        new CodeAttributeArgument(new CodeObjectCreateExpression(,)));
-                //new CodeAttributeArgument(new CodePrimitiveExpression(ProtoBuf.CompatibilityLevel.Level200)));
-
-                //var attrGuid =
-                //    new CodeAttributeDeclaration(new CodeObjectCreateExpression(typeof(ProtoBuf.CompatibilityLevelAttribute), ProtoBuf.CompatibilityLevel.Level200);
-                //new CodeAttributeArgument(new CodePrimitiveExpression(ProtoBuf.CompatibilityLevel.Level200)));
-
-                //attrGuid.Arguments.Add(new CodeAttributeArgument(new CodeVariableReferenceExpression(ProtoBuf.CompatibilityLevel.Level200.ToString())));
-                //attrGuid.Arguments.Add(
-                //    new CodeAttributeArgument(new CodeObjectCreateExpression(ProtoBuf.CompatibilityLevel, new CodeExpression(ProtoBuf.CompatibilityLevel.Level200))));
-
-                //attrGuid.Arguments.Add(
-                //    new CodeAttributeArgument(new CodeObjectCreateExpression(new CodeTypeReference(typeof(ProtoBuf.CompatibilityLevel)), new CodeParameterDeclarationExpression())));
-
-
-                //attr.Arguments.Add(new CodeAttributeArgument(new CodeTypeOfExpression(typeof(ProtoBuf.CompatibilityLevelAttribute))));
-                //attr.Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(ProtoBuf.CompatibilityLevel.Level200)));
-                prop.CustomAttributes.Add(attrGuid);
+                property.CustomAttributes.Add(attrGuid);
             }
         }
         catch (Exception ex)
@@ -306,9 +287,7 @@ public static class CodeDomHelper
             ;
         }
 
-        //prop.CustomAttributes.Add(attr);
-
-        return prop;
+        return property;
 
     }
 

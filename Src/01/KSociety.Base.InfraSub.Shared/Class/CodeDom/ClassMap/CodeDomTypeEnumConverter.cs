@@ -1,9 +1,9 @@
 ﻿using CsvHelper;
+using System;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
-using System;
 
-namespace KSociety.Base.InfraSub.Test.ClassMap;
+namespace KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassMap;
 public class CodeDomTypeEnumConverter<T> : DefaultTypeConverter where T : struct
 {
     public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
@@ -14,6 +14,6 @@ public class CodeDomTypeEnumConverter<T> : DefaultTypeConverter where T : struct
             return Convert.ToInt32(result).ToString();
         }
 
-        throw new InvalidCastException(String.Format("Invalid value to EnumConverter. Type: {0} Value: {1}", typeof(T), value));
+        throw new InvalidCastException($"Invalid value to EnumConverter. Type: {typeof(T)} Value: {value}");
     }
 }

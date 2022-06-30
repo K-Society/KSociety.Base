@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Csv\Test.csv" />
+    <None Remove="Csv\TestDto.csv" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Csv\Test.csv" />
+    <EmbeddedResource Include="Csv\TestDto.csv" />
   </ItemGroup>
 
   <ItemGroup>

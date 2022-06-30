@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KSociety.Base.InfraSub.Test.ClassMap;
+namespace KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassMap;
 
 public sealed class ClassGenerator : ClassMap<KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassGenerator>
 {

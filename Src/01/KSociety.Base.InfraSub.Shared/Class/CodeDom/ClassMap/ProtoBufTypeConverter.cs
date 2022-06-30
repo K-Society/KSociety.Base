@@ -3,7 +3,7 @@ using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using System;
 
-namespace KSociety.Base.InfraSub.Test.ClassMap;
+namespace KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassMap;
 public class ProtoBufTypeConverter : DefaultTypeConverter
 {
     public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
@@ -25,13 +25,10 @@ public class ProtoBufTypeConverter : DefaultTypeConverter
         }
 
         return output;
-
-        //return Assembly.GetType(text, );
     }
 
     public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
     {
-        //var test = (typeof(value)).FullName;
         return ((Type)value).FullName;
     }
 }
