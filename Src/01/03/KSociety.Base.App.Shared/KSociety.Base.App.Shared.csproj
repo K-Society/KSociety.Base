@@ -2,11 +2,13 @@
 <!-- Copyright (c) K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information. -->
 
 <Project Sdk="Microsoft.NET.Sdk">
+  <!--<UsingTask TaskName="KSociety.Base.InfraSub.Shared.Class.CodeDom.MSBuild.TestBuild" AssemblyFile="$(OutputPath)\KSociety.Base.InfraSub.Shared.dll">
 
+  </UsingTask>-->
   <PropertyGroup>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
@@ -19,7 +21,17 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\06\KSociety.Base.Infra.Shared\KSociety.Base.Infra.Shared.csproj" />
-    <ProjectReference Include="..\..\KSociety.Base.InfraSub.Shared\KSociety.Base.InfraSub.Shared.csproj" />
   </ItemGroup>
+
+  <!--<Target Name="TestTarget" AfterTargets="Build">
+    <Message Importance="High" Text="This is a test" />
+  </Target>-->
+  
+  <!--<Target Name="Addition" AfterTargets="Build">
+    <TestBuild Number1="10" Number2="12">
+      <Output TaskParameter="Sum" PropertyName="CalculatedSum" />
+    </TestBuild>
+    <Message Importance="High" Text="10 + 12 = $(CalculatedSum)" />
+  </Target>-->
 
 </Project>

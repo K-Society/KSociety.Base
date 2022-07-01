@@ -9,6 +9,8 @@
 
   <ItemGroup>   
     <PackageReference Include="CsvHelper" Version="27.2.1" />   
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.2.0" />   
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />   
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,6 +20,14 @@
     <PackageReference Include="protobuf-net" Version="3.1.17" />
     <PackageReference Include="Quartz" Version="3.4.0" />
     <PackageReference Include="System.CodeDom" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- These lines pack the build props/targets files to the `build` folder in the generated package.
+         By convention, the .NET SDK will look for build\<Package Id>.props and build\<Package Id>.targets
+         for automatic inclusion in the build. -->
+    <Content Include="Build\KSociety.Base.InfraSub.Shared.props" PackagePath="build\" />
+    <Content Include="Build\KSociety.Base.InfraSub.Shared.targets" PackagePath="build\" />
   </ItemGroup>
 
 </Project>
