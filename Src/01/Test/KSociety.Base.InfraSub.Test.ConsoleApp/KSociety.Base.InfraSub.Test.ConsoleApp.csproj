@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
 
   </PropertyGroup>
@@ -17,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="KSociety.Base.InfraSub.Shared" Version="1.0.147" />
+    <PackageReference Include="KSociety.Base.InfraSub.Shared" Version="1.0.148" PrivateAssets="All"/>
   </ItemGroup>
 
   <PropertyGroup>

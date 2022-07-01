@@ -10,6 +10,11 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <None Remove="BuildMultiTargeting\KSociety.Base.InfraSub.Shared.props" />
+	  <None Remove="BuildMultiTargeting\KSociety.Base.InfraSub.Shared.targets" />
+	</ItemGroup>
+
   <ItemGroup>   
     <PackageReference Include="CsvHelper" Version="27.2.1" />   
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.2.0" />   
@@ -31,6 +36,8 @@
          for automatic inclusion in the build. -->
     <Content Include="Build\KSociety.Base.InfraSub.Shared.props" PackagePath="build\" />
     <Content Include="Build\KSociety.Base.InfraSub.Shared.targets" PackagePath="build\" />
+    <Content Include="BuildMultiTargeting\KSociety.Base.InfraSub.Shared.props" PackagePath="buildMultiTargeting\" />
+    <Content Include="BuildMultiTargeting\KSociety.Base.InfraSub.Shared.targets" PackagePath="buildMultiTargeting\" />
   </ItemGroup>
 
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
@@ -38,7 +45,7 @@
       <!-- The dependencies of your MSBuild task must be packaged inside the package, they cannot be expressed as normal PackageReferences -->
 
       <!--example: <BuildOutputInPackage Include="$(PkgFParsec)/lib/netstandard2.0/FParsecCS.dll" />-->
-      <BuildOutputInPackage Include="$(OutputPath)protobuf-net.dll" />
+      <!--<BuildOutputInPackage Include="$(OutputPath)protobuf-net.dll" />
       <BuildOutputInPackage Include="$(OutputPath)protobuf-net.Core.dll" />
       <BuildOutputInPackage Include="$(OutputPath)Microsoft.Build.Tasks.Core.dll" />
       <BuildOutputInPackage Include="$(OutputPath)Microsoft.Build.Utilities.Core.dll" />
@@ -71,24 +78,24 @@
       <BuildOutputInPackage Include="$(OutputPath)System.Resources.Extensions.dll" />
       <BuildOutputInPackage Include="$(OutputPath)System.Drawing.Common.dll" />
       <BuildOutputInPackage Include="$(OutputPath)KSociety.Base.InfraSub.Shared.deps.json" />
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll" >
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll">
         <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
       </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll" >
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll">
         <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
       </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Security.Cryptography.Pkcs.dll" >
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Security.Cryptography.Pkcs.dll">
         <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
       </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll" >
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll">
         <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
       </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netstandard2.0\*.dll" >
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netstandard2.0\*.dll">
         <TargetPath>runtimes\win\lib\netstandard2.0</TargetPath>
       </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\unix\lib\netcoreapp3.0\*.dll" >
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\unix\lib\netcoreapp3.0\*.dll">
         <TargetPath>runtimes\unix\lib\netcoreapp3.0</TargetPath>
-      </BuildOutputInPackage>
+      </BuildOutputInPackage>-->
     </ItemGroup>
   </Target>
 
