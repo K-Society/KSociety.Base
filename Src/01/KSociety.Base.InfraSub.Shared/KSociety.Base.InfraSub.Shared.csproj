@@ -70,6 +70,25 @@
       <BuildOutputInPackage Include="$(OutputPath)Microsoft.Win32.SystemEvents.dll" />
       <BuildOutputInPackage Include="$(OutputPath)System.Resources.Extensions.dll" />
       <BuildOutputInPackage Include="$(OutputPath)System.Drawing.Common.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)KSociety.Base.InfraSub.Shared.deps.json" />
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll" >
+        <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
+      </BuildOutputInPackage>
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll" >
+        <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
+      </BuildOutputInPackage>
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Security.Cryptography.Pkcs.dll" >
+        <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
+      </BuildOutputInPackage>
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll" >
+        <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
+      </BuildOutputInPackage>
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netstandard2.0\*.dll" >
+        <TargetPath>runtimes\win\lib\netstandard2.0</TargetPath>
+      </BuildOutputInPackage>
+      <BuildOutputInPackage Include="$(OutputPath)runtimes\unix\lib\netcoreapp3.0\*.dll" >
+        <TargetPath>runtimes\unix\lib\netcoreapp3.0</TargetPath>
+      </BuildOutputInPackage>
     </ItemGroup>
   </Target>
 
