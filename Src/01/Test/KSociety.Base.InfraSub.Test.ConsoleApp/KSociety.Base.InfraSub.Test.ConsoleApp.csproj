@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="TestDto.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TestDto.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="KSociety.Base.InfraSub.Shared" Version="1.0.143" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <SettingNamespace>KSociety.Base.InfraSub.Test.ConsoleApp</SettingNamespace>
+  </PropertyGroup>
+
+</Project>

@@ -22,6 +22,7 @@
     <RootFolder Condition="'$(RootFolder)' == ''">$(MSBuildProjectDirectory)</RootFolder>
     <SettingClass Condition="'$(SettingClass)' == ''">MySetting</SettingClass>
     <SettingNamespace Condition="'$(SettingNamespace)' == ''">Example</SettingNamespace>
-    <SettingExtensionFile Condition="'$(SettingExtensionFile)' == ''">mysettings</SettingExtensionFile>
+    <SettingExtensionFile Condition="'$(SettingExtensionFile)' == ''">csv</SettingExtensionFile>
   </PropertyGroup>
+
 </Project>
