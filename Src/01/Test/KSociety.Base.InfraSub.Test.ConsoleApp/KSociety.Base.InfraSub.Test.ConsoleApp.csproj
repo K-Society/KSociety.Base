@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="KSociety.Base.InfraSub.Shared" Version="1.0.144" />
+    <PackageReference Include="KSociety.Base.InfraSub.Shared" Version="1.0.147" />
   </ItemGroup>
 
   <PropertyGroup>
