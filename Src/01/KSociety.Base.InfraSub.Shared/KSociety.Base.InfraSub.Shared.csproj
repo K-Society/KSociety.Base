@@ -4,7 +4,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!-- we need the assemblies bundled, so set this so we don't expose any dependencies to the outside world -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
   <ItemGroup>   
@@ -29,5 +32,45 @@
     <Content Include="Build\KSociety.Base.InfraSub.Shared.props" PackagePath="build\" />
     <Content Include="Build\KSociety.Base.InfraSub.Shared.targets" PackagePath="build\" />
   </ItemGroup>
+
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <!-- The dependencies of your MSBuild task must be packaged inside the package, they cannot be expressed as normal PackageReferences -->
+
+      <!--example: <BuildOutputInPackage Include="$(PkgFParsec)/lib/netstandard2.0/FParsecCS.dll" />-->
+      <BuildOutputInPackage Include="$(OutputPath)/protobuf-net.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/protobuf-net.Core.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Build.Tasks.Core.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Build.Utilities.Core.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Build.Framework.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Quartz.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/MediatR.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/MediatR.Contracts.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/CsvHelper.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.Logging.Console.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.Logging.Abstractions.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.Primitives.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.Logging.Configuration.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.Logging.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.Options.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.Configuration.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.DependencyInjection.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.Configuration.Binder.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Extensions.Configuration.Abstractions.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/System.CodeDom.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.NET.StringTools.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/System.Windows.Extensions.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/System.Security.Cryptography.Pkcs.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/System.Security.Permissions.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/System.Security.Cryptography.Xml.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/System.Security.Cryptography.ProtectedData.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/System.Configuration.ConfigurationManager.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/Microsoft.Win32.SystemEvents.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/System.Resources.Extensions.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)/System.Drawing.Common.dlll" />
+    </ItemGroup>
+  </Target>
 
 </Project>
