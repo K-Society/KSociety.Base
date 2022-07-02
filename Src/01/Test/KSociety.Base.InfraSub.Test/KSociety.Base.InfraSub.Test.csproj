@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\KSociety.Base.InfraSub.Shared\KSociety.Base.InfraSub.Shared.csproj" />
+    <ProjectReference Include="..\..\KSociety.Base.Utility\KSociety.Base.Utility.csproj" />
   </ItemGroup>
 
 </Project>
