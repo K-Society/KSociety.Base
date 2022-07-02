@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="KSociety.Base.InfraSub.Shared" Version="1.0.148" PrivateAssets="All"/>
+    <PackageReference Include="KSociety.Base.InfraSub.Shared" Version="1.0.149" />
   </ItemGroup>
 
   <PropertyGroup>

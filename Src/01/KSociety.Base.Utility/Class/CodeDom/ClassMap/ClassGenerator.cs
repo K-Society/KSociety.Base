@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassMap
+namespace KSociety.Base.Utility.Class.CodeDom.ClassMap
 {
 
-    public sealed class ClassGenerator : ClassMap<KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassGenerator>
+    public sealed class ClassGenerator : ClassMap<CodeDom.ClassGenerator>
     {
         public ClassGenerator()
         {

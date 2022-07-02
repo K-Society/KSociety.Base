@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KSociety.Base.InfraSub.Shared.Class.CodeDom
+namespace KSociety.Base.Utility.Class.CodeDom
 {
     public class ClassGenerator
     {
