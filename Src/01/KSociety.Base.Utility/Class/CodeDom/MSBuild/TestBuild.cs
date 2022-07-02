@@ -9,7 +9,7 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
     public class TestBuild : Task
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<TestBuild> _logger;
+        //private readonly ILogger<TestBuild> _logger;
         private readonly CodeDomService _codeDomService;
         private ClassGenerator[] _classGenerators;
 
@@ -64,15 +64,16 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
                 builder.SetMinimumLevel(LogLevel.Trace);
             });
 
-            _logger = loggerFactory.CreateLogger<TestBuild>();
+            //_logger = loggerFactory.CreateLogger<TestBuild>();
 
             _codeDomService = new CodeDomService();
-
+            Log.LogMessageFromText("TestBuild", MessageImportance.High);
             //_classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
         }
 
         public override bool Execute()
         {
+            Log.LogMessageFromText("Execute", MessageImportance.High);
             //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
             //{
             //    builder.AddConsole();
@@ -92,7 +93,8 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
             }
             catch (ArithmeticException e)
             {
-                _logger.LogError(e, "Execute: ");
+                //_logger.LogError(e, "Execute: ");
+                Log.LogErrorFromException(e, true);
                 return false;
             }
             return true;

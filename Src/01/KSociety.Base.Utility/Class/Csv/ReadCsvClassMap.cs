@@ -9,9 +9,6 @@ using System.Reflection;
 
 namespace KSociety.Base.Utility.Class.Csv
 {
-
-
-
     public static class ReadCsvClassMap<TEntity, TClassMap>
         where TEntity : class
         where TClassMap : ClassMap<TEntity>
