@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace KSociety.Base.InfraSub.Shared.Class.Csv
+namespace KSociety.Base.Utility.Class.Csv
 {
 
     public static class Configuration

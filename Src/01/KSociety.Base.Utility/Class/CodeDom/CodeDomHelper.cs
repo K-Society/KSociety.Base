@@ -3,9 +3,8 @@ using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
-using System.Threading;
 
-namespace KSociety.Base.InfraSub.Shared.Class.CodeDom
+namespace KSociety.Base.Utility.Class.CodeDom
 {
     public static class CodeDomHelper
     {

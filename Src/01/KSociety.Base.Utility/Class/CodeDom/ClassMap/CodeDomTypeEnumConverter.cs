@@ -1,9 +1,9 @@
 ﻿using CsvHelper;
-using System;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+using System;
 
-namespace KSociety.Base.InfraSub.Shared.Class.CodeDom.ClassMap
+namespace KSociety.Base.Utility.Class.CodeDom.ClassMap
 {
     public class CodeDomTypeEnumConverter<T> : DefaultTypeConverter where T : struct
     {
