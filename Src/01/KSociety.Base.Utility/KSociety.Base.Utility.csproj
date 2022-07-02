@@ -18,15 +18,6 @@
     <Content Include="Build\KSociety.Base.Utility.targets" PackagePath="build\" />
   </ItemGroup>
 
-  <ItemDefinitionGroup>
-    <PackageReference>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <ProjectReference>
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
-  </ItemDefinitionGroup>
-
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.2.1" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.2.0" />
@@ -51,5 +42,14 @@
       <BuildOutputInPackage Include="$(OutputPath)$(MSBuildThisFileName).deps.json" />
     </ItemGroup>
   </Target>
+
+  <ItemDefinitionGroup>
+    <!--<PackageReference>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>-->
+    <ProjectReference>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+  </ItemDefinitionGroup>
 
 </Project>
