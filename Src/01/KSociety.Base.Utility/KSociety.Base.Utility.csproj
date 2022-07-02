@@ -47,9 +47,9 @@
     <!--<PackageReference>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>-->
-    <ProjectReference>
+    <!--<ProjectReference>
       <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
+    </ProjectReference>-->
   </ItemDefinitionGroup>
 
 </Project>
