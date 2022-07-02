@@ -8,8 +8,9 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 {
     public class TestBuild : Task
     {
-        private ILogger<TestBuild> _logger;
-        private CodeDomService _codeDomService;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger<TestBuild> _logger;
+        private readonly CodeDomService _codeDomService;
         private ClassGenerator[] _classGenerators;
 
         //The name of the class which is going to be generated
@@ -55,22 +56,7 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
         //    set { sum = value; }
         //}
 
-        //public TestBuild()
-        //{
-        //    ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-        //    {
-        //        builder.AddConsole();
-        //        builder.SetMinimumLevel(LogLevel.Trace);
-        //    });
-
-        //    _logger = loggerFactory.CreateLogger<TestBuild>();
-
-        //    _codeDomService = new CodeDomService();
-
-        //    _classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
-        //}
-
-        public override bool Execute()
+        public TestBuild()
         {
             ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
             {
@@ -82,7 +68,22 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 
             _codeDomService = new CodeDomService();
 
-            _classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
+            //_classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
+        }
+
+        public override bool Execute()
+        {
+            //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            //{
+            //    builder.AddConsole();
+            //    builder.SetMinimumLevel(LogLevel.Trace);
+            //});
+
+            //_logger = loggerFactory.CreateLogger<TestBuild>();
+
+            //_codeDomService = new CodeDomService();
+
+            _classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(_loggerFactory, "TestDto");
 
             try
             {

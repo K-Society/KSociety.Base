@@ -4,7 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
     <!-- we need the assemblies bundled, so set this so we don't expose any dependencies to the outside world -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
@@ -18,6 +17,15 @@
     <Content Include="Build\KSociety.Base.Utility.props" PackagePath="build\" />
     <Content Include="Build\KSociety.Base.Utility.targets" PackagePath="build\" />
   </ItemGroup>
+
+  <ItemDefinitionGroup>
+    <PackageReference>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <ProjectReference>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+  </ItemDefinitionGroup>
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.2.1" />
@@ -41,56 +49,6 @@
       <!--example: <BuildOutputInPackage Include="$(PkgFParsec)/lib/netstandard2.0/FParsecCS.dll" />-->
       <BuildOutputInPackage Include="$(OutputPath)*.dll" />
       <BuildOutputInPackage Include="$(OutputPath)$(MSBuildThisFileName).deps.json" />
-      <!--<BuildOutputInPackage Include="$(OutputPath)protobuf-net.Core.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Build.Tasks.Core.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Build.Utilities.Core.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Build.Framework.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Quartz.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)MediatR.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)MediatR.Contracts.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)CsvHelper.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.Logging.Console.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.Logging.Abstractions.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.Primitives.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.Logging.Configuration.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.Logging.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.Options.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.Configuration.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.DependencyInjection.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.Configuration.Binder.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Extensions.Configuration.Abstractions.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)System.CodeDom.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.NET.StringTools.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)System.Windows.Extensions.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)System.Security.Cryptography.Pkcs.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)System.Security.Permissions.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)System.Security.Cryptography.Xml.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)System.Security.Cryptography.ProtectedData.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)System.Configuration.ConfigurationManager.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)Microsoft.Win32.SystemEvents.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)System.Resources.Extensions.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)System.Drawing.Common.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)KSociety.Base.InfraSub.Shared.deps.json" />
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll">
-        <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
-      </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll">
-        <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
-      </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Security.Cryptography.Pkcs.dll">
-        <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
-      </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll">
-        <TargetPath>runtimes\win\lib\netcoreapp3.0</TargetPath>
-      </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\win\lib\netstandard2.0\*.dll">
-        <TargetPath>runtimes\win\lib\netstandard2.0</TargetPath>
-      </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)runtimes\unix\lib\netcoreapp3.0\*.dll">
-        <TargetPath>runtimes\unix\lib\netcoreapp3.0</TargetPath>
-      </BuildOutputInPackage>-->
     </ItemGroup>
   </Target>
 
