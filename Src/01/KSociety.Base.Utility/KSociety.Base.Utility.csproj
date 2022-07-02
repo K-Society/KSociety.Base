@@ -38,8 +38,9 @@
       <!-- The dependencies of your MSBuild task must be packaged inside the package, they cannot be expressed as normal PackageReferences -->
 
       <!--example: <BuildOutputInPackage Include="$(PkgFParsec)/lib/netstandard2.0/FParsecCS.dll" />-->
-      <!--<BuildOutputInPackage Include="$(OutputPath)protobuf-net.dll" />
-      <BuildOutputInPackage Include="$(OutputPath)protobuf-net.Core.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)*.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)$(MSBuildThisFileName).deps.json" />
+      <!--<BuildOutputInPackage Include="$(OutputPath)protobuf-net.Core.dll" />
       <BuildOutputInPackage Include="$(OutputPath)Microsoft.Build.Tasks.Core.dll" />
       <BuildOutputInPackage Include="$(OutputPath)Microsoft.Build.Utilities.Core.dll" />
       <BuildOutputInPackage Include="$(OutputPath)Microsoft.Build.Framework.dll" />
