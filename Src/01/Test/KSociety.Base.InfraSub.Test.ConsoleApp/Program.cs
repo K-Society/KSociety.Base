@@ -1,4 +1,6 @@
-﻿namespace KSociety.Base.InfraSub.Test.ConsoleApp
+﻿using System;
+
+namespace KSociety.Base.InfraSub.Test.ConsoleApp
 {
     internal class Program
     {
