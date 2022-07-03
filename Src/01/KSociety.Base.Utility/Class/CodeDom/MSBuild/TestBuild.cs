@@ -8,7 +8,7 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 {
     public class TestBuild : Task
     {
-        //private readonly ILoggerFactory _loggerFactory;
+        private readonly TaskLoggingHelper _loggingHelper;
         //private readonly ILogger<TestBuild> _logger;
         private readonly CodeDomService _codeDomService;
         private ClassGenerator[] _classGenerators;
@@ -56,8 +56,9 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
         //    set { sum = value; }
         //}
 
-        public TestBuild()
+        public TestBuild() : base()
         {
+            _loggingHelper = new TaskLoggingHelper(this);
             //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
             //{
             //    builder.AddConsole();
@@ -67,13 +68,13 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
             //_logger = loggerFactory.CreateLogger<TestBuild>();
 
             _codeDomService = new CodeDomService();
-            //Log.LogMessageFromText("TestBuild", MessageImportance.High);
+            _loggingHelper.LogMessageFromText("TestBuild", MessageImportance.High);
             //_classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
         }
 
         public override bool Execute()
         {
-            Log.LogMessageFromText("Execute", MessageImportance.High);
+            _loggingHelper.LogMessageFromText("Execute", MessageImportance.High);
             //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
             //{
             //    builder.AddConsole();
@@ -84,13 +85,18 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 
             //_codeDomService = new CodeDomService();
 
+            if (Log == null)
+            {
+                Console.WriteLine("Log is null!");
+                _loggingHelper.LogMessageFromText("Log is null!", MessageImportance.High);
+            }
 
             try
             {
                 if (SettingFiles.Any())
                 {
                     _classGenerators =
-                        ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(Log, SettingFiles[0]);
+                        ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(_loggingHelper, SettingFiles[0]);
                     _codeDomService.Generator(_classGenerators);
                     _codeDomService.GenerateClass("Test.cs");
                 }
