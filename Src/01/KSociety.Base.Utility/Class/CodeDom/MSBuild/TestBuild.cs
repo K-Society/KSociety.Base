@@ -8,9 +8,7 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 {
     public class TestBuild : Task
     {
-        private TaskLoggingHelper _loggingHelper;
-        //private readonly ILogger<TestBuild> _logger;
-        private CodeDomService _codeDomService;
+        private readonly CodeDomService _codeDomService;
         private ClassGenerator[] _classGenerators;
 
         //The name of the class which is going to be generated
@@ -29,107 +27,40 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
         [Output]
         public string ClassNameFile { get; set; }
 
-        //private int number1;
-
-        //[Required]
-        //public int Number1
-        //{
-        //    get { return number1; }
-        //    set { number1 = value; }
-        //}
-
-        //private int number2;
-
-        //[Required]
-        //public int Number2
-        //{
-        //    get { return number2; }
-        //    set { number2 = value; }
-        //}
-
-        //private int sum;
-
-        //[Output]
-        //public int Sum
-        //{
-        //    get { return sum; }
-        //    set { sum = value; }
-        //}
-
-        //public TestBuild()
-        //{
-            
-        //    //_classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
-        //}
+        public TestBuild()
+        {
+            _codeDomService = new CodeDomService();
+            //_classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
+            Log.LogMessage(MessageImportance.High, "TestBuild");
+        }
 
         public override bool Execute()
         {
-            Log.LogMessage(MessageImportance.Low, "Execute");
-            Log.LogMessage(MessageImportance.Normal, "Execute");
-            Log.LogMessage(MessageImportance.High, "Execute");
-            //_loggingHelper = new TaskLoggingHelper(this);
-
-            //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            //{
-            //    builder.AddConsole();
-            //    builder.SetMinimumLevel(LogLevel.Trace);
-            //});
-
-            //_logger = loggerFactory.CreateLogger<TestBuild>();
-
-            _codeDomService = new CodeDomService();
-            //_loggingHelper.LogMessageFromText("TestBuild", MessageImportance.High);
-            LogFormat("TestBuild", MessageImportance.High);
-
-            //_loggingHelper.LogMessageFromText("Execute", MessageImportance.High);
-            LogFormat("Execute", MessageImportance.High);
-            //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            //{
-            //    builder.AddConsole();
-            //    builder.SetMinimumLevel(LogLevel.Trace);
-            //});
-
-            //_logger = loggerFactory.CreateLogger<TestBuild>();
-
-            //_codeDomService = new CodeDomService();
-
-            if (Log == null)
-            {
-                Console.WriteLine("Log is null!");
-                LogFormat("Log is null!", MessageImportance.High);
-                //_loggingHelper.LogMessageFromText("Log is null!", MessageImportance.High);
-            }
- 
-            if (this.BuildEngine == null)
-            {
-                Console.WriteLine("BuildEngine is null!");
-                LogFormat("BuildEngine is null!", MessageImportance.High);
-            }
+            Log.LogMessage(MessageImportance.High, "TestBuild Execute...");
 
             try
             {
                 if (SettingFiles.Any())
                 {
                     _classGenerators =
-                        ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(_loggingHelper, SettingFiles[0]);
+                        ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(Log, SettingFiles[0]);
                     if (_classGenerators.Any())
                     {
                         _codeDomService.Generator(_classGenerators);
                         _codeDomService.GenerateClass("Test.cs");
                     }
-                    
+                }
+                else
+                {
+                    Log?.LogMessage(MessageImportance.High, "No file.");
                 }
             }
             catch (Exception ex)
             {
-                LogFormat(ex.Message, MessageImportance.High);
-
-
-                //_loggingHelper.LogErrorFromException(e, true);
-                //Log?.LogErrorFromException(e, true);
+                Log?.LogErrorFromException(ex, true);
                 return false;
             }
-            return true;
+            return !Log.HasLoggedErrors;
         }
 
         //public override bool Execute()
@@ -185,18 +116,18 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
         //    return (true, values);
         //}
 
-        private void LogFormat(string message, params object[] args)
-        {
-            if (this.BuildEngine != null)
-            {
-                this.Log.LogMessage(message, args);
-            }
-            else
-            {
-                Console.WriteLine(message);
-                string[] lines = { message };
-                System.IO.File.WriteAllLines(@"C:\JOB\ListView.txt", lines);
-            }
-        }
+        //private void LogFormat(string message, params object[] args)
+        //{
+        //    if (this.BuildEngine != null)
+        //    {
+        //        this.Log.LogMessage(message, args);
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine(message);
+        //        string[] lines = { message };
+        //        System.IO.File.WriteAllLines(@"C:\JOB\ListView.txt", lines);
+        //    }
+        //}
     }
 }
