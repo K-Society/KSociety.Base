@@ -96,10 +96,11 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
                 LogFormat("Log is null!", MessageImportance.High);
                 //_loggingHelper.LogMessageFromText("Log is null!", MessageImportance.High);
             }
-
+ 
             if (this.BuildEngine == null)
             {
                 Console.WriteLine("BuildEngine is null!");
+                LogFormat("BuildEngine is null!", MessageImportance.High);
             }
 
             try
@@ -108,13 +109,19 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
                 {
                     _classGenerators =
                         ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(_loggingHelper, SettingFiles[0]);
-                    _codeDomService.Generator(_classGenerators);
-                    _codeDomService.GenerateClass("Test.cs");
+                    if (_classGenerators.Any())
+                    {
+                        _codeDomService.Generator(_classGenerators);
+                        _codeDomService.GenerateClass("Test.cs");
+                    }
+                    
                 }
             }
             catch (Exception ex)
             {
                 LogFormat(ex.Message, MessageImportance.High);
+
+
                 //_loggingHelper.LogErrorFromException(e, true);
                 //Log?.LogErrorFromException(e, true);
                 return false;
@@ -183,7 +190,9 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
             }
             else
             {
-                Console.WriteLine(message, args);
+                Console.WriteLine(message);
+                string[] lines = { message };
+                System.IO.File.WriteAllLines(@"C:\JOB\ListView.txt", lines);
             }
         }
     }
