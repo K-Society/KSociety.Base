@@ -8,9 +8,9 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 {
     public class TestBuild : Task
     {
-        private readonly TaskLoggingHelper _loggingHelper;
+        private TaskLoggingHelper _loggingHelper;
         //private readonly ILogger<TestBuild> _logger;
-        private readonly CodeDomService _codeDomService;
+        private CodeDomService _codeDomService;
         private ClassGenerator[] _classGenerators;
 
         //The name of the class which is going to be generated
@@ -56,7 +56,13 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
         //    set { sum = value; }
         //}
 
-        public TestBuild() : base()
+        //public TestBuild()
+        //{
+            
+        //    //_classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
+        //}
+
+        public override bool Execute()
         {
             _loggingHelper = new TaskLoggingHelper(this);
             //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
@@ -69,11 +75,7 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 
             _codeDomService = new CodeDomService();
             _loggingHelper.LogMessageFromText("TestBuild", MessageImportance.High);
-            //_classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
-        }
 
-        public override bool Execute()
-        {
             _loggingHelper.LogMessageFromText("Execute", MessageImportance.High);
             //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
             //{
@@ -103,8 +105,8 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
             }
             catch (ArithmeticException e)
             {
-                //_logger.LogError(e, "Execute: ");
-                Log.LogErrorFromException(e, true);
+                _loggingHelper.LogErrorFromException(e, true);
+                Log?.LogErrorFromException(e, true);
                 return false;
             }
             return true;
