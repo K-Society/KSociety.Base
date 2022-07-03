@@ -30,7 +30,6 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
         public TestBuild()
         {
             _codeDomService = new CodeDomService();
-            //_classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
             //Log.LogMessage(MessageImportance.High, "TestBuild");
         }
 
