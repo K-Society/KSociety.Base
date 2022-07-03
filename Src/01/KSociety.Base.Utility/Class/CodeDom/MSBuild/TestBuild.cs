@@ -1,14 +1,14 @@
 ﻿using KSociety.Base.Utility.Class.Csv;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 
 namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 {
     public class TestBuild : Task
     {
-        private readonly ILoggerFactory _loggerFactory;
+        //private readonly ILoggerFactory _loggerFactory;
         //private readonly ILogger<TestBuild> _logger;
         private readonly CodeDomService _codeDomService;
         private ClassGenerator[] _classGenerators;
@@ -58,16 +58,16 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 
         public TestBuild()
         {
-            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddConsole();
-                builder.SetMinimumLevel(LogLevel.Trace);
-            });
+            //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            //{
+            //    builder.AddConsole();
+            //    builder.SetMinimumLevel(LogLevel.Trace);
+            //});
 
             //_logger = loggerFactory.CreateLogger<TestBuild>();
 
             _codeDomService = new CodeDomService();
-            Log.LogMessageFromText("TestBuild", MessageImportance.High);
+            //Log.LogMessageFromText("TestBuild", MessageImportance.High);
             //_classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
         }
 
@@ -84,12 +84,16 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 
             //_codeDomService = new CodeDomService();
 
-            _classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(_loggerFactory, "TestDto");
 
             try
             {
-                _codeDomService.Generator(_classGenerators);
-                _codeDomService.GenerateClass("Test.cs");
+                if (SettingFiles.Any())
+                {
+                    _classGenerators =
+                        ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(Log, SettingFiles[0]);
+                    _codeDomService.Generator(_classGenerators);
+                    _codeDomService.GenerateClass("Test.cs");
+                }
             }
             catch (ArithmeticException e)
             {
@@ -117,40 +121,40 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 
         //private (bool, IDictionary<string, object>) ReadProjectSettingFiles()
         //{
-        //var values = new Dictionary<string, object>();
-        //foreach (var item in SettingFiles)
-        //{
-        //    int lineNumber = 0;
-
-        //    var settingFile = item.GetMetadata("FullPath");
-        //    foreach (string line in File.ReadLines(settingFile))
+        //    var values = new Dictionary<string, object>();
+        //    foreach (var item in SettingFiles)
         //    {
-        //        lineNumber++;
+        //        int lineNumber = 0;
 
-        //        var lineParse = line.Split(':');
-        //        if (lineParse.Length != 3)
+        //        var settingFile = item.GetMetadata("FullPath");
+        //        foreach (string line in File.ReadLines(settingFile))
         //        {
-        //            Log.LogError(subcategory: null,
-        //                errorCode: "APPS0001",
-        //                helpKeyword: null,
-        //                file: settingFile,
-        //                lineNumber: lineNumber,
-        //                columnNumber: 0,
-        //                endLineNumber: 0,
-        //                endColumnNumber: 0,
-        //                message: "Incorrect line format. Valid format prop:type:defaultvalue");
-        //            return (false, null);
-        //        }
-        //        var value = GetValue(lineParse[1], lineParse[2]);
-        //        if (!value.Item1)
-        //        {
-        //            return (value.Item1, null);
-        //        }
+        //            lineNumber++;
 
-        //        values[lineParse[0]] = value.Item2;
+        //            var lineParse = line.Split(':');
+        //            if (lineParse.Length != 3)
+        //            {
+        //                Log.LogError(subcategory: null,
+        //                    errorCode: "APPS0001",
+        //                    helpKeyword: null,
+        //                    file: settingFile,
+        //                    lineNumber: lineNumber,
+        //                    columnNumber: 0,
+        //                    endLineNumber: 0,
+        //                    endColumnNumber: 0,
+        //                    message: "Incorrect line format. Valid format prop:type:defaultvalue");
+        //                return (false, null);
+        //            }
+        //            var value = GetValue(lineParse[1], lineParse[2]);
+        //            if (!value.Item1)
+        //            {
+        //                return (value.Item1, null);
+        //            }
+
+        //            values[lineParse[0]] = value.Item2;
+        //        }
         //    }
-        //}
-        //return (true, values);
+        //    return (true, values);
         //}
     }
 }
