@@ -55,7 +55,7 @@ namespace KSociety.Base.Utility.Class.Csv
             //logger?.LogTrace("ReadCsv resourceName: {0}", resourceName);
 
             var settingFile = file.GetMetadata("FullPath");
-            logger.LogMessageFromText("Read: " + settingFile, MessageImportance.High);
+            //logger.LogMessageFromText("Read: " + settingFile, MessageImportance.High);
 
             try
             {
@@ -72,7 +72,7 @@ namespace KSociety.Base.Utility.Class.Csv
             {
                 //logger?.LogError(ex, "Error ReadCsv: ");
 
-                logger.LogErrorFromException(ex, true);
+                //logger.LogErrorFromException(ex, true);
             }
 
             return null;
