@@ -64,6 +64,9 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 
         public override bool Execute()
         {
+            Log.LogMessage(MessageImportance.Low, "Execute");
+            Log.LogMessage(MessageImportance.Normal, "Execute");
+            Log.LogMessage(MessageImportance.High, "Execute");
             //_loggingHelper = new TaskLoggingHelper(this);
 
             //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
