@@ -64,7 +64,8 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
 
         public override bool Execute()
         {
-            _loggingHelper = new TaskLoggingHelper(this);
+            //_loggingHelper = new TaskLoggingHelper(this);
+
             //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
             //{
             //    builder.AddConsole();
@@ -74,9 +75,11 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
             //_logger = loggerFactory.CreateLogger<TestBuild>();
 
             _codeDomService = new CodeDomService();
-            _loggingHelper.LogMessageFromText("TestBuild", MessageImportance.High);
+            //_loggingHelper.LogMessageFromText("TestBuild", MessageImportance.High);
+            LogFormat("TestBuild", MessageImportance.High);
 
-            _loggingHelper.LogMessageFromText("Execute", MessageImportance.High);
+            //_loggingHelper.LogMessageFromText("Execute", MessageImportance.High);
+            LogFormat("Execute", MessageImportance.High);
             //ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
             //{
             //    builder.AddConsole();
@@ -90,7 +93,13 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
             if (Log == null)
             {
                 Console.WriteLine("Log is null!");
-                _loggingHelper.LogMessageFromText("Log is null!", MessageImportance.High);
+                LogFormat("Log is null!", MessageImportance.High);
+                //_loggingHelper.LogMessageFromText("Log is null!", MessageImportance.High);
+            }
+
+            if (this.BuildEngine == null)
+            {
+                Console.WriteLine("BuildEngine is null!");
             }
 
             try
@@ -103,10 +112,11 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
                     _codeDomService.GenerateClass("Test.cs");
                 }
             }
-            catch (ArithmeticException e)
+            catch (Exception ex)
             {
-                _loggingHelper.LogErrorFromException(e, true);
-                Log?.LogErrorFromException(e, true);
+                LogFormat(ex.Message, MessageImportance.High);
+                //_loggingHelper.LogErrorFromException(e, true);
+                //Log?.LogErrorFromException(e, true);
                 return false;
             }
             return true;
@@ -164,5 +174,17 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
         //    }
         //    return (true, values);
         //}
+
+        private void LogFormat(string message, params object[] args)
+        {
+            if (this.BuildEngine != null)
+            {
+                this.Log.LogMessage(message, args);
+            }
+            else
+            {
+                Console.WriteLine(message, args);
+            }
+        }
     }
 }
