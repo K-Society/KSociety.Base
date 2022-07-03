@@ -54,13 +54,13 @@ namespace KSociety.Base.Utility.Class.Csv
             //var resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(csvFileName));
             //logger?.LogTrace("ReadCsv resourceName: {0}", resourceName);
 
-            var settingFile = file.GetMetadata("FullPath");
-            //logger.LogMessageFromText("Read: " + settingFile, MessageImportance.High);
+            var csvFile = file.GetMetadata("FullPath");
+            logger.LogMessage(MessageImportance.High, "Read: " + csvFile);
 
             try
             {
 
-                using (var streamReader = new StreamReader(settingFile))
+                using (var streamReader = new StreamReader(csvFile))
                 {
                     var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
                     reader.Context.RegisterClassMap<TClassMap>();
@@ -73,6 +73,7 @@ namespace KSociety.Base.Utility.Class.Csv
                 //logger?.LogError(ex, "Error ReadCsv: ");
 
                 //logger.LogErrorFromException(ex, true);
+                logger.LogErrorFromException(ex);
             }
 
             return null;
