@@ -14,6 +14,10 @@
     <EmbeddedResource Include="TestDto.csv" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="KSociety.Base.Utility" Version="1.0.162" />
+  </ItemGroup>
+
   <PropertyGroup>
     <SettingNamespace>KSociety.Base.InfraSub.Test.ConsoleApp</SettingNamespace>
   </PropertyGroup>
