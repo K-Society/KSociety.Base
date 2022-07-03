@@ -30,8 +30,7 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
         public TestBuild()
         {
             _codeDomService = new CodeDomService();
-            //_classGenerators = ReadCsvClassMap<ClassGenerator, ClassMap.ClassGenerator>.Read(loggerFactory, "TestDto");
-            Log.LogMessage(MessageImportance.High, "TestBuild");
+            //Log.LogMessage(MessageImportance.High, "TestBuild");
         }
 
         public override bool Execute()
@@ -62,72 +61,5 @@ namespace KSociety.Base.Utility.Class.CodeDom.MSBuild
             }
             return !Log.HasLoggedErrors;
         }
-
-        //public override bool Execute()
-        //{
-        //    //Read the input files and return a IDictionary<string, object> with the properties to be created.
-        //    //Any format error it will return not succeed and Log.LogError properly
-        //    var (success, settings) = ReadProjectSettingFiles();
-        //    if (!success)
-        //    {
-        //        return !Log.HasLoggedErrors;
-        //    }
-        //    //Create the class based on the Dictionary
-        //    success = CreateSettingClass(settings);
-
-        //    return !Log.HasLoggedErrors;
-        //}
-
-        //private (bool, IDictionary<string, object>) ReadProjectSettingFiles()
-        //{
-        //    var values = new Dictionary<string, object>();
-        //    foreach (var item in SettingFiles)
-        //    {
-        //        int lineNumber = 0;
-
-        //        var settingFile = item.GetMetadata("FullPath");
-        //        foreach (string line in File.ReadLines(settingFile))
-        //        {
-        //            lineNumber++;
-
-        //            var lineParse = line.Split(':');
-        //            if (lineParse.Length != 3)
-        //            {
-        //                Log.LogError(subcategory: null,
-        //                    errorCode: "APPS0001",
-        //                    helpKeyword: null,
-        //                    file: settingFile,
-        //                    lineNumber: lineNumber,
-        //                    columnNumber: 0,
-        //                    endLineNumber: 0,
-        //                    endColumnNumber: 0,
-        //                    message: "Incorrect line format. Valid format prop:type:defaultvalue");
-        //                return (false, null);
-        //            }
-        //            var value = GetValue(lineParse[1], lineParse[2]);
-        //            if (!value.Item1)
-        //            {
-        //                return (value.Item1, null);
-        //            }
-
-        //            values[lineParse[0]] = value.Item2;
-        //        }
-        //    }
-        //    return (true, values);
-        //}
-
-        //private void LogFormat(string message, params object[] args)
-        //{
-        //    if (this.BuildEngine != null)
-        //    {
-        //        this.Log.LogMessage(message, args);
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine(message);
-        //        string[] lines = { message };
-        //        System.IO.File.WriteAllLines(@"C:\JOB\ListView.txt", lines);
-        //    }
-        //}
     }
 }
