@@ -15,7 +15,7 @@ public class NpgsqlGenerator : NpgsqlMigrationsSqlGenerator
     public NpgsqlGenerator(
         ILoggerFactory loggerFactory,
         MigrationsSqlGeneratorDependencies dependencies,
-        INpgsqlOptions migrationsAnnotations)
+        INpgsqlSingletonOptions migrationsAnnotations)
         : base(dependencies, migrationsAnnotations)
     {
         _logger = loggerFactory.CreateLogger<SqliteGenerator>();

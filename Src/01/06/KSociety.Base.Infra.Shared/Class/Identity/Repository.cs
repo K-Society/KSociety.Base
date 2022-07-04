@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration;
-using KSociety.Base.Infra.Shared.Csv;
 using KSociety.Base.Infra.Shared.Interface;
 using KSociety.Base.Infra.Shared.Interface.Identity;
+using KSociety.Base.InfraSub.Shared.Class.Csv;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;

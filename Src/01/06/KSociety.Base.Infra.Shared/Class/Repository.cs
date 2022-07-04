@@ -1,6 +1,6 @@
 ﻿using CsvHelper.Configuration;
-using KSociety.Base.Infra.Shared.Csv;
 using KSociety.Base.Infra.Shared.Interface;
+using KSociety.Base.InfraSub.Shared.Class.Csv;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;

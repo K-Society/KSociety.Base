@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Infra.Shared.Csv;
+namespace KSociety.Base.InfraSub.Shared.Class.Csv;
 
 public static class ReadCsvClassMap<TEntity, TClassMap>
     where TEntity : class

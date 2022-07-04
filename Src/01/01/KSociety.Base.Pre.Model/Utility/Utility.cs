@@ -11,8 +11,8 @@ public static class Utility
         // current one, if any; or null if the current process
         // is unique.
     {
-        var curr = Process.GetCurrentProcess();
-        var procs = Process.GetProcessesByName(curr.ProcessName);
-        return procs.FirstOrDefault(p => curr.MainModule != null && p.MainModule != null && p.Id != curr.Id && p.MainModule.FileName == curr.MainModule.FileName);
+        var currentProcess = Process.GetCurrentProcess();
+        var processes = Process.GetProcessesByName(currentProcess.ProcessName);
+        return processes.FirstOrDefault(p => currentProcess.MainModule != null && p.MainModule != null && p.Id != currentProcess.Id && p.MainModule.FileName == currentProcess.MainModule.FileName);
     }
 }
