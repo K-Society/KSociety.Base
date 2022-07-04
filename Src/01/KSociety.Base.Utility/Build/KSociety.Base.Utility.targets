@@ -23,7 +23,7 @@
 
   <!--The generated file is deleted after a general clean. It will force the regeneration on rebuild-->
   <Target Name="AfterClean">
-    <Delete Files="$(RootFolder)\$(SettingClass).generated.cs" />
+    <Delete Files="$(RootFolder)\$(SettingClass).cs" />
   </Target>
 
 </Project>
