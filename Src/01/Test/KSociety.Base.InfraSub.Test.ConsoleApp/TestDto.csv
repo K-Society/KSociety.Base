@@ -10,4 +10,4 @@ Field;_automationTypeId;System.Int32;;;;;
 Field;_automationTypeId1;System.Int32;;;;;
 Property;Id;System.Guid;_id;;ProtoBuf.ProtoMemberAttribute;1;
 Property;AutomationTypeId;System.Int32;_automationTypeId;;ProtoBuf.ProtoMemberAttribute;2;
-Property;AutomationTypeId;System.Int32;_automationTypeId1;;ProtoBuf.ProtoMemberAttribute;3;
+Property;AutomationTypeId1;System.Int32;_automationTypeId1;;ProtoBuf.ProtoMemberAttribute;3;

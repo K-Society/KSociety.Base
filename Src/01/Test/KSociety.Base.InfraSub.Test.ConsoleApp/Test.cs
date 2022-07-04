@@ -92,7 +92,7 @@ namespace KSociety.Com.App.Dto.Req.Add.Common
 		/// 
 		/// </summary>
 		[ProtoBuf.ProtoMemberAttribute(3)]
-		public int AutomationTypeId
+		public int AutomationTypeId1
 		{
 			get
 			{
