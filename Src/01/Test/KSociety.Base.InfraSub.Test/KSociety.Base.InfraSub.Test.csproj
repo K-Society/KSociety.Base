@@ -31,8 +31,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\KSociety.Base.Utility\KSociety.Base.Utility.csproj" />
-  </ItemGroup>
-
 </Project>
