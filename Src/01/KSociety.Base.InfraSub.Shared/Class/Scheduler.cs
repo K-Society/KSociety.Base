@@ -5,6 +5,9 @@ using Quartz.Impl;
 
 namespace KSociety.Base.InfraSub.Shared.Class;
 
+/// <summary>
+/// Scheduler
+/// </summary>
 public class Scheduler
 {
     public enum TimeType { ms, s, min, h };
