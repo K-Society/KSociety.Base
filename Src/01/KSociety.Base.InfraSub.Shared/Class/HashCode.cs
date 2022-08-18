@@ -1,5 +1,8 @@
 ﻿namespace KSociety.Base.InfraSub.Shared.Class;
 
+/// <summary>
+/// HashCode
+/// </summary>
 public static class HashCode
 {
     public static int GetDeterministicAbsHashCode(string str)
