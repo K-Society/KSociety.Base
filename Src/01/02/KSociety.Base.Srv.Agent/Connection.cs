@@ -30,7 +30,7 @@ public class Connection
                 {
                     MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB
                     MaxSendMessageSize = null // 2 * 1024 * 1024 // 2 MB
-                       
+
                 });
             }
             catch (RpcException rex)
