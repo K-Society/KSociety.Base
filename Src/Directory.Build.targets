@@ -36,7 +36,6 @@
         <!-- Remove the package references that are now referenced as projects -->
         <PackageReference Remove="@(PackageInSolution->'%(PackageName)' )"/>
       </ItemGroup>
-
     </When>
   </Choose>
 </Project>

@@ -114,6 +114,6 @@ List of technologies, frameworks and libraries used for implementation:
 - [MediatR](https://github.com/jbogard/MediatR) (mediator implementation)
 - [Polly](https://github.com/App-vNext/Polly) (Resilience and transient-fault-handling library)
 - [protobuf-net](https://github.com/protobuf-net/protobuf-net) (protobuf-net is a contract based serializer for .NET code)
-- [Quartz.NET](https://www.quartz-scheduler.net/) (background processing)
+- [Quartz.NET](https://www.quartz-scheduler.net/) (Quartz Scheduling Framework for .NET)
 - [RabbitMQ.Client](https://www.rabbitmq.com/dotnet.html) (The RabbitMQ .NET client is an implementation of an AMQP 0-9-1 client library for C#)
 - [Serilog](https://serilog.net/) (structured logging)
