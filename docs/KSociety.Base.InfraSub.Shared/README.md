@@ -2,13 +2,13 @@
 
 # KSociety.Base.InfraSub.Shared
 
-KSociety.Base.InfraSub.Shared is a library for framework for .NET 6 application, ideal for implementing microservices.
+KSociety.Base.InfraSub.Shared is a library shared among other stack libraries.
 
 ## Introduction
 
-KSociety.Base.InfraSub.Shared is a library
+KSociety.Base.InfraSub.Shared is a library shared among other stack libraries.
 
-### InfrastructureSub (KSociety.Base.InfraSub.)
+### KSociety.Base.InfraSub.InfrastructureSub
 The generic shared library.
 
 | GitHub Repository | NuGet | Download |
