@@ -12,8 +12,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>  
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.109" PrivateAssets="All" />  
-    <PackageReference Include="Grpc.Net.Client" Version="2.48.0" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.113" PrivateAssets="All" />  
+    <PackageReference Include="Grpc.Net.Client" Version="2.49.0" />
   </ItemGroup>
 
   <ItemGroup>
