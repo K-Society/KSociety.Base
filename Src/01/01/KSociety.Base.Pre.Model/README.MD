@@ -1,1 +1,0 @@
-# KSociety.Base.Pre.Model
