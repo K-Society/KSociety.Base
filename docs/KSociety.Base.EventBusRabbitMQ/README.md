@@ -26,7 +26,7 @@ List of technologies, frameworks and libraries used for implementation:
 
 - [.NET 6](https://dotnet.microsoft.com/download/dotnet/6.0) (platform). Note for Visual Studio users: **VS 2022** is required.
 - [Microsoft.CSharp](Microsoft.CSharp) (Autofac is an IoC container for Microsoft .NET.)
-- [Microsoft.Extensions.Logging](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/) (Logging abstractions for Microsoft.Extensions.Logging.)
+- [Microsoft.Extensions.Logging.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/) (Logging abstractions for Microsoft.Extensions.Logging.)
 - [protobuf-net](https://github.com/protobuf-net/protobuf-net) (Provides simple access to fast and efficient "Protocol Buffers" serialization from .NET applications)
 - [System.Threading.Tasks.Dataflow](https://www.nuget.org/packages/System.Threading.Tasks.Dataflow) ()
 - [System.Threading.Tasks.Dataflow](https://www.nuget.org/packages/System.Threading.Tasks.Dataflow) ()

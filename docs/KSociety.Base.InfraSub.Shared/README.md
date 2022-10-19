@@ -26,7 +26,6 @@ List of technologies, frameworks and libraries used for implementation:
 
 - [.NET 6](https://dotnet.microsoft.com/download/dotnet/6.0) (platform). Note for Visual Studio users: **VS 2022** is required.
 - [CsvHelper](https://joshclose.github.io/CsvHelper/) (A .NET library for reading and writing CSV files)
-- [Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Console/) (Console logger provider implementation for Microsoft.Extensions.Logging.)
 - [MediatR](https://github.com/jbogard/MediatR) (Simple, unambitious mediator implementation in .NET)
 - [protobuf-net](https://github.com/protobuf-net/protobuf-net) (Provides simple access to fast and efficient "Protocol Buffers" serialization from .NET applications)
 - [Quartz.NET](https://www.quartz-scheduler.net/) (Quartz Scheduling Framework for .NET)
