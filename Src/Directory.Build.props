@@ -29,7 +29,7 @@
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
 	<IncludeSymbols>true</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<PackageTags>KSociety;K-Society</PackageTags>
+	<PackageTags>ksociety;k-society;microservices;fullstack;framework</PackageTags>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(APPVEYOR)' == 'True'">
