@@ -10,12 +10,12 @@ KSociety.Base.InfraSub.Shared is a library shared among other stack libraries.
 
 KSociety.Base.InfraSub.Shared is a library shared among other stack libraries.
 
-### KSociety.Base.InfraSub.InfrastructureSub
+### KSociety.Base.InfraSub.InfrastructureSub.Shared
 The generic shared library.
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
-| [Shared](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/KSociety.Base.InfraSub.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InfraSub.Shared)](https://www.nuget.org/packages/KSociety.Base.InfraSub.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InfraSub.Shared) |
+| [KSociety.Base.InfraSub.InfrastructureSub.Shared](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/KSociety.Base.InfraSub.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InfraSub.Shared)](https://www.nuget.org/packages/KSociety.Base.InfraSub.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InfraSub.Shared) |
 
 ## License
 The project is under Microsoft Reciprocal License [(MS-RL)](http://www.opensource.org/licenses/MS-RL)
