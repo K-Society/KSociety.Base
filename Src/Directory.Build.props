@@ -25,6 +25,7 @@
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageProjectUrl>https://github.com/K-Society/KSociety.Base</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/K-Society/KSociety.Base</RepositoryUrl>
+	<PackageReleaseNotes>https://k-society.github.io/KSociety.Base/$(AssemblyName)/change-log</PackageReleaseNotes>
 	<RepositoryType>git</RepositoryType>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
 	<IncludeSymbols>true</IncludeSymbols>
