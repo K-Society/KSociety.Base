@@ -14,19 +14,32 @@
     <BaseIntermediateOutputPath>$(BaseOutputPath)obj\</BaseIntermediateOutputPath>
     <OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
 
+    <Title>$(AssemblyName)</Title>
+	
     <Authors>K-Society</Authors>
     <Company>K-Society</Company>
-    <Copyright>Copyright (c) K-Society and contributors. All rights reserved.</Copyright>
+    <Copyright>Copyright © K-Society and contributors 2022. All rights reserved.</Copyright>
 	<PackageLicenseExpression>MS-RL</PackageLicenseExpression>
+	<Description>K-Society Base is a full stack framework for .NET 6 application https://github.com/K-Society/KSociety.Base</Description>
     <Product>K-Society Base</Product>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageProjectUrl>https://github.com/K-Society/KSociety.Base</PackageProjectUrl>
-	<RepositoryUrl>https://github.com/K-Society/KSociety.Base</RepositoryUrl>
+	<RepositoryUrl>https://github.com/K-Society/KSociety.Base</RepositoryUrl>	
+	<PackageReleaseNotes>https:%2F%2Fk-society.github.io%2FKSociety.Base%2F$(ProjectName)%2Fchange-log</PackageReleaseNotes>
 	<RepositoryType>git</RepositoryType>
+	<EmbedUntrackedSources>true</EmbedUntrackedSources>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<PackageTags>ksociety;k-society;microservices;fullstack;framework</PackageTags>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(APPVEYOR)' == 'True'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <Import Project="Icon.Build.props" Condition=" '$(MSBuildProjectExtension)'=='.csproj' and Exists('Icon.Build.props') " />
   <Import Project="CSharp.Build.props" Condition=" '$(MSBuildProjectExtension)'=='.csproj' and Exists('CSharp.Build.props') " />
+  <Import Project="Readme.Build.props" Condition=" '$(MSBuildProjectExtension)'=='.csproj' and Exists('Readme.Build.props') " />
   <Import Project="Custom.Build.props" Condition=" Exists('Custom.Build.props') " />
 </Project>
