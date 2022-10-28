@@ -44,17 +44,15 @@ public interface IUnitOfWork : IDisposable
     /// <summary>
     /// EnsureDeletedAsync
     /// </summary>
-    void Migrate();
-
+    /// <param name="targetMigration"></param>
     void Migrate(string targetMigration = null);
 
     /// <summary>
     /// MigrateAsync
     /// </summary>
+    /// <param name="targetMigration"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    ValueTask MigrateAsync(CancellationToken cancellationToken = default);
-
     ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default);
 
     string CreateScript();
