@@ -133,6 +133,6 @@ public class ContextFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole,
 
         output = (TContext)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
 
-        return output; //new TContext(optionBuilder.Options);
+        return output;
     }
 }

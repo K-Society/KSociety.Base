@@ -123,6 +123,6 @@ public class ContextFactory<TContext> : IContextFactory<TContext> where TContext
 
         output = (TContext)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
 
-        return output; //new TContext(optionBuilder.Options);
+        return output;
     }
 }
