@@ -26,18 +26,17 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
     public EventBusRabbitMqRpcServer(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
-        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName, cancel)
+        string queueName = null)
+        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
     {
 
     }
 
     #endregion
 
-    protected async override ValueTask InitializeAsync(CancellationToken cancel = default)
+    public override void Initialize(CancellationToken cancel = default)
     {
-        Logger.LogTrace("EventBusRabbitMqRpcServer InitializeAsync.");
+        Logger.LogTrace("EventBusRabbitMqRpcServer Initialize.");
         SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
         ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
         _queueNameReply = QueueName + "_Reply";
@@ -50,7 +49,7 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
         where T : IIntegrationEventRpc
         where TR : IIntegrationEventReply
     {
-        if (EventHandler is not null && EventHandler is IIntegrationRpcServerHandler<T, TR> queue)
+        if (EventHandler is IIntegrationRpcServerHandler<T, TR> queue)
         {
             return queue;
         }
@@ -190,10 +189,8 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
 
                 return true;
             }
-            else
-            {
-                Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
-            }
+
+            Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
         }
         catch (Exception ex)
         {

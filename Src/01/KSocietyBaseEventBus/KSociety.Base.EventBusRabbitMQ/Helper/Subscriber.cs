@@ -31,8 +31,7 @@ public class Subscriber
         TIntegrationEvent, TIntegrationEventReply>(
         string eventBusName, string queueName,
         string routingKey, string replyRoutingKey,
-        TIntegrationRpcClientHandler integrationRpcClientHandler, TIntegrationRpcServerHandler integrationRpcServerHandler,
-        CancellationToken cancellationToken = default
+        TIntegrationRpcClientHandler integrationRpcClientHandler, TIntegrationRpcServerHandler integrationRpcServerHandler
     )
         where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
@@ -41,35 +40,22 @@ public class Subscriber
     {
         SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
             eventBusName, queueName,
-            replyRoutingKey, integrationRpcClientHandler,
-            cancellationToken);
+            replyRoutingKey, integrationRpcClientHandler);
 
         SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
             eventBusName, queueName,
-            routingKey, integrationRpcServerHandler,
-            cancellationToken);
+            routingKey, integrationRpcServerHandler);
     }
-
-    //public void Subscribe<TIntegrationRpcHandler, TIntegrationEvent, TIntegrationEventReply>(
-    //    string eventBusName, string queueName,
-    //    string replyRoutingKey, TIntegrationRpcHandler integrationRpcHandler, CancellationToken cancellationToken = default)
-    //    where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
-    //    where TIntegrationEvent : IIntegrationEvent
-    //    where TIntegrationEventReply : IIntegrationEventReply
-    //{
-
-    //}
 
     public void SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
         string eventBusName, string queueName,
-        string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler, 
-        CancellationToken cancellationToken = default)
+        string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler)
         where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         where TIntegrationEventReply : IIntegrationEventReply
     {
         EventBus.Add(eventBusName + "_Client",
             new EventBusRabbitMqRpcClient(PersistentConnection, _loggerFactory, integrationRpcClientHandler,
-                null, _eventBusParameters, queueName, cancellationToken));
+                null, _eventBusParameters, queueName));
 
         ((IEventBusRpcClient)EventBus[eventBusName + "_Client"])
             .SubscribeRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(replyRoutingKey);
@@ -77,15 +63,14 @@ public class Subscriber
 
     public void SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
         string eventBusName, string queueName,
-        string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler,
-        CancellationToken cancellationToken = default)
+        string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler)
         where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
         where TIntegrationEvent : IIntegrationEventRpc
         where TIntegrationEventReply : IIntegrationEventReply
     {
         EventBus.Add(eventBusName + "_Server",
             new EventBusRabbitMqRpcServer(PersistentConnection, _loggerFactory, integrationRpcServerHandler,
-                null, _eventBusParameters, queueName, CancellationToken.None));
+                null, _eventBusParameters, queueName));
 
         ((IEventBusRpcServer)EventBus[eventBusName + "_Server"])
             .SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcServerHandler>(routingKey);

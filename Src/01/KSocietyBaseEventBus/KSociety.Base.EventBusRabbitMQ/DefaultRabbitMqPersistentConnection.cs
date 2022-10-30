@@ -31,7 +31,7 @@ public class DefaultRabbitMqPersistentConnection
         _closeToken = _closeTokenSource.Token;
     }
 
-    public bool IsConnected => _connection != null && _connection.IsOpen && !Disposed;
+    public bool IsConnected => _connection is {IsOpen: true} && !Disposed;
 
     public IModel CreateModel()
     {
@@ -51,56 +51,9 @@ public class DefaultRabbitMqPersistentConnection
         }
         catch (IOException ex)
         {
-            _logger.LogCritical(ex.ToString());
+            _logger.LogError(ex, "DisposeManagedResources: ");
         }
     }
-
-    //public bool TryConnect()
-    //{
-    //    _logger.LogInformation("RabbitMQ Client is trying to connect");
-    //    try
-    //    {
-    //        lock (_syncRoot)
-    //        {
-    //            var policy = Policy.Handle<SocketException>()
-    //                .Or<BrokerUnreachableException>()
-    //                .Or<Exception>()
-    //                .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-    //                    (ex, time) =>
-    //                            {
-    //                                _logger.LogWarning(ex.Message + " - " + ex.StackTrace);
-    //                            }
-    //                );
-
-    //            policy.Execute(() =>
-    //            {
-    //                _logger.LogInformation("RabbitMQ CreateConnection");
-    //                _connection = _connectionFactory
-    //                    .CreateConnection(); //ToDo
-    //            });
-
-    //            if (IsConnected)
-    //            {
-    //                _connection.ConnectionShutdown += OnConnectionShutdown;
-    //                _connection.CallbackException += OnCallbackException;
-    //                _connection.ConnectionBlocked += OnConnectionBlocked;
-
-    //                _logger.LogInformation(
-    //                    $"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
-    //                return true;
-    //            }
-
-    //            _logger.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
-
-    //            return false;
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError("TryConnect: " + ex.Message + " - " + ex.StackTrace);
-    //        return false;
-    //    }
-    //}
 
     public async ValueTask<bool> TryConnectAsync()
     {
@@ -155,30 +108,6 @@ public class DefaultRabbitMqPersistentConnection
 
         return output;
     }
-
-    //private void OnConnectionBlocked(object sender, ConnectionBlockedEventArgs e)
-    //{
-    //    if (Disposed) return;
-
-    //    _logger.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
-    //    TryConnect();
-    //}
-
-    //private void OnCallbackException(object sender, CallbackExceptionEventArgs e)
-    //{
-    //    if (Disposed) return;
-
-    //    _logger.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
-    //    TryConnect();
-    //}
-
-    //private void OnConnectionShutdown(object sender, ShutdownEventArgs reason)
-    //{
-    //    if (Disposed) return;
-
-    //    _logger.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
-    //    TryConnect();
-    //}
 
     private async void OnConnectionBlockedAsync(object sender, ConnectionBlockedEventArgs e)
     {

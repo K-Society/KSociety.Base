@@ -19,9 +19,8 @@ public sealed class EventBusRabbitMqDynamic : EventBusRabbitMq, IEventBusDynamic
     public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
-        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName, cancel)
+        string queueName = null)
+        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
     {
         _autofac = autofac;
     }

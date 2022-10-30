@@ -261,7 +261,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
     {
         Logger.LogTrace("Migrate {0}", targetMigration);
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
-        migrator.Migrate(targetMigration);
+        migrator?.Migrate(targetMigration);
     }
 
     public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)
@@ -274,7 +274,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
     public string CreateScript()
     {
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
-        return migrator.GenerateScript();
+        return migrator?.GenerateScript();
     }
 
     public virtual void BeginTransaction()
