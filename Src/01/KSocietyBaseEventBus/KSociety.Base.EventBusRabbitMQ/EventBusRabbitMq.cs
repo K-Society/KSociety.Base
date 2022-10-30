@@ -35,44 +35,42 @@ public class EventBusRabbitMq : DisposableObject, IEventBus
     protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
+        string queueName = null)
     {
         Debug = eventBusParameters.Debug;
         EventBusParameters = eventBusParameters;
         PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
-        Logger = loggerFactory.CreateLogger<EventBusRabbitMq>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+        Logger = loggerFactory.CreateLogger<EventBusRabbitMq>();
         SubsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
         QueueName = queueName;
         EventHandler = eventHandler;
         SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
 
-        InitializeAsync(cancel);
+        //InitializeAsync(cancel);
     }
 
     protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
+        string queueName = null)
     {
         Debug = eventBusParameters.Debug;
         EventBusParameters = eventBusParameters;
         PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
-        Logger = loggerFactory.CreateLogger<EventBusRabbitMq>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+        Logger = loggerFactory.CreateLogger<EventBusRabbitMq>();
         SubsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
         QueueName = queueName;
         EventHandler = null;
         SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
 
-        InitializeAsync(cancel);
+        //InitializeAsync(cancel);
     }
 
     #endregion
 
-    protected async virtual ValueTask InitializeAsync(CancellationToken cancel = default)
+    public virtual void Initialize(CancellationToken cancel = default)
     {
-        Logger.LogTrace("EventBusRabbitMq InitializeAsync.");
+        Logger.LogTrace("EventBusRabbitMq Initialize.");
         ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
     }
 

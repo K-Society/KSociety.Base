@@ -23,9 +23,8 @@ public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
     public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
-        :base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName, cancel)
+        string queueName = null)
+        :base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
     {
 
     }
@@ -36,7 +35,7 @@ public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
         where T : IIntegrationEvent
         where TH : IIntegrationQueueHandler<T>
     {
-        if (EventHandler is not null && EventHandler is IIntegrationQueueHandler<T> queue)
+        if (EventHandler is IIntegrationQueueHandler<T> queue)
         {
             return queue;
         }

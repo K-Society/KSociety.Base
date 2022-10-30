@@ -13,9 +13,7 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Class;
 
-/// <summary>
-/// 
-/// </summary>
+///<inheritdoc cref="KSociety.Base.Infra.Shared.Interface.IDatabaseUnitOfWork"/>
 public class DatabaseContext : DbContext, IDatabaseUnitOfWork
 {
     public const string DefaultSchema = "ksociety";
@@ -259,23 +257,11 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
         return output;
     }
 
-    public void Migrate()
-    {
-        Database.Migrate();
-    }
-
     public void Migrate(string targetMigration = null)
     {
         Logger.LogTrace("Migrate {0}", targetMigration);
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
-        migrator.Migrate(targetMigration);
-    }
-
-    public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
-    {
-        Logger.LogTrace("MigrateAsync");
-
-        await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+        migrator?.Migrate(targetMigration);
     }
 
     public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)
@@ -288,7 +274,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
     public string CreateScript()
     {
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
-        return migrator.GenerateScript();
+        return migrator?.GenerateScript();
     }
 
     public virtual void BeginTransaction()

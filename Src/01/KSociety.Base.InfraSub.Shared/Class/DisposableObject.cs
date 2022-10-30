@@ -2,9 +2,7 @@
 
 namespace KSociety.Base.InfraSub.Shared.Class;
 
-/// <summary>
-/// DisposableObject
-/// </summary>
+
 public abstract class DisposableObject : IDisposable
 {
     protected bool Disposed { get; private set; }

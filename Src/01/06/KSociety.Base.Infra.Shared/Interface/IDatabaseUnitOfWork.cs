@@ -3,9 +3,7 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Interface;
 
-/// <summary>
-/// The DatabaseUnitOfWork class.
-/// </summary>
+///<inheritdoc/>
 public interface IDatabaseUnitOfWork : IUnitOfWork
 {
     /// <summary>

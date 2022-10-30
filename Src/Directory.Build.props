@@ -4,6 +4,7 @@
 <Project>
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+	<!--TargetFrameworks>net6.0;net7.0</TargetFrameworks-->
 	
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <!--MSBuildErrorsAsMessages>NU1202</MSBuildErrorsAsMessages-->
@@ -24,8 +25,8 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageProjectUrl>https://github.com/K-Society/KSociety.Base</PackageProjectUrl>
-	<RepositoryUrl>https://github.com/K-Society/KSociety.Base</RepositoryUrl>
-	<PackageReleaseNotes>https://k-society.github.io/KSociety.Base/$(AssemblyName)/change-log</PackageReleaseNotes>
+	<RepositoryUrl>https://github.com/K-Society/KSociety.Base</RepositoryUrl>	
+	<PackageReleaseNotes>https:%2F%2Fk-society.github.io%2FKSociety.Base%2F$(ProjectName)%2Fchange-log</PackageReleaseNotes>
 	<RepositoryType>git</RepositoryType>
 	<EmbedUntrackedSources>true</EmbedUntrackedSources>
 	<IncludeSymbols>true</IncludeSymbols>

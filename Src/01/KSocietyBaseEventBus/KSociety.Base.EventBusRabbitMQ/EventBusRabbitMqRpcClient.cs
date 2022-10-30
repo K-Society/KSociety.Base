@@ -31,18 +31,17 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
     public EventBusRabbitMqRpcClient(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
-        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName, cancel)
+        string queueName = null)
+        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
     {
 
     }
 
     #endregion
 
-    protected async override ValueTask InitializeAsync(CancellationToken cancel = default)
+    public override void Initialize(CancellationToken cancel = default)
     {
-        Logger.LogTrace("EventBusRabbitMqRpcClient InitializeAsync.");
+        Logger.LogTrace("EventBusRabbitMqRpcClient Initialize.");
         _queueNameReply = QueueName + "_Reply";
         SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
         ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
@@ -51,7 +50,7 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
     public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
         where TIntegrationEventReply : IIntegrationEventReply
     {
-        if (EventHandler is not null && EventHandler is IIntegrationRpcClientHandler<TIntegrationEventReply> queue)
+        if (EventHandler is IIntegrationRpcClientHandler<TIntegrationEventReply> queue)
         {
             return queue;
         }
