@@ -55,7 +55,7 @@ public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
             .Or<Exception>()
             .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
             {
-                Logger.LogWarning(ex.ToString());
+                Logger.LogWarning(ex, "Publish: ");
             });
 
         using var channel = PersistentConnection.CreateModel();
@@ -78,14 +78,14 @@ public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
 
     #region [Subscribe]
 
-    public void SubscribeQueue<T, TH>(string routingKey)
+    public async void SubscribeQueue<T, TH>(string routingKey)
         where T : IIntegrationEvent
         where TH : IIntegrationQueueHandler<T>
     {
         var eventName = SubsManager.GetEventKey<T>();
-        DoInternalSubscription(eventName + "." + routingKey);
+        await DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
         SubsManager.AddSubscriptionQueue<T, TH>(eventName + "." + routingKey);
-        StartBasicConsume();
+        await StartBasicConsume().ConfigureAwait(false);
     }
         
     #endregion

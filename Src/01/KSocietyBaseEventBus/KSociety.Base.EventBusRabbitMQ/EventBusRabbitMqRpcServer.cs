@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -38,11 +39,11 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
     {
         Logger.LogTrace("EventBusRabbitMqRpcServer Initialize.");
         SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-        ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
+        ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         _queueNameReply = QueueName + "_Reply";
 
         _consumerChannelReply =
-            new AsyncLazy<IModel>(async () => await CreateConsumerChannelReplyAsync(cancel));
+            new AsyncLazy<IModel>(async () => await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
     }
 
     public IIntegrationRpcServerHandler<T, TR> GetIntegrationRpcServerHandler<T, TR>()
@@ -90,6 +91,11 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
             channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName, EventBusParameters.ExchangeDeclareParameters.ExchangeType,
                 EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
+            //var args = new Dictionary<string, object>
+            //{
+            //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
+            //};
+
             channel.QueueDeclare(_queueNameReply, EventBusParameters.QueueDeclareParameters.QueueDurable,
                 EventBusParameters.QueueDeclareParameters.QueueExclusive, EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
         }
@@ -105,7 +111,7 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
 
     #region [Subscribe]
 
-    public void SubscribeRpcServer<T, TR, TH>(string routingKey)
+    public async void SubscribeRpcServer<T, TR, TH>(string routingKey)
         where T : IIntegrationEventRpc
         where TR : IIntegrationEventReply
         where TH : IIntegrationRpcServerHandler<T, TR>
@@ -113,12 +119,12 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
         var eventName = SubsManager.GetEventKey<T>();
         var eventNameResult = SubsManager.GetEventReplyKey<TR>();
         Logger.LogTrace("SubscribeRpcServer routing key: {0}, event name: {1}, event name result: {2}", routingKey, eventName, eventNameResult);
-        DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey);
+        await DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey).ConfigureAwait(false);
         SubsManager.AddSubscriptionRpcServer<T, TR, TH>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
-        StartBasicConsume();
+        await StartBasicConsume().ConfigureAwait(false);
     }
 
-    private async void DoInternalSubscriptionRpc(string eventName, string eventNameResult)
+    private async ValueTask DoInternalSubscriptionRpc(string eventName, string eventNameResult)
     {
         try
         {
@@ -324,7 +330,7 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
             Logger.LogError(ea.Exception, "CallbackException: ");
             ConsumerChannel?.Value.Dispose();
             ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
-            await StartBasicConsume();
+            await StartBasicConsume().ConfigureAwait(false);
         };
 
         return channel;
