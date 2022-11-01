@@ -33,16 +33,16 @@ public sealed class EventBusRabbitMqTyped : EventBusRabbitMq, IEventBusTyped
 
     #region [Subscribe]
 
-    public void Subscribe<T, TH>(string routingKey)
+    public async void Subscribe<T, TH>(string routingKey)
         where T : IIntegrationEvent
         where TH : IIntegrationEventHandler<T>
     {
 
         var eventName = SubsManager.GetEventKey<T>();
         Logger.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
-        DoInternalSubscription(eventName + "." + routingKey);
+        await DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
         SubsManager.AddSubscription<T, TH>(eventName + "." + routingKey);
-        StartBasicConsume();
+        await StartBasicConsume().ConfigureAwait(false);
     }
 
     #endregion

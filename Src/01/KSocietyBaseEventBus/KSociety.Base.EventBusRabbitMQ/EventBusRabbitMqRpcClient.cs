@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -44,7 +45,7 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
         Logger.LogTrace("EventBusRabbitMqRpcClient Initialize.");
         _queueNameReply = QueueName + "_Reply";
         SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-        ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
+        ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
     }
 
     public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
@@ -91,7 +92,7 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
             .Or<Exception>()
             .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
             {
-                Logger.LogWarning(ex.ToString());
+                Logger.LogWarning(ex, "Publish: ");
             });
         var correlationId = Guid.NewGuid().ToString();
 
@@ -137,7 +138,7 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
                 .Or<Exception>()
                 .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
                 {
-                    Logger.LogWarning(ex.ToString());
+                    Logger.LogWarning(ex, "CallAsync: ");
                 });
 
             var correlationId = Guid.NewGuid().ToString();
@@ -193,11 +194,16 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
                 EventBusParameters.ExchangeDeclareParameters.ExchangeType,
                 EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
+            var args = new Dictionary<string, object>
+            {
+                { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
+            };
+
             channel.QueueDeclare(QueueName, EventBusParameters.QueueDeclareParameters.QueueDurable,
-                EventBusParameters.QueueDeclareParameters.QueueExclusive, EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
+                EventBusParameters.QueueDeclareParameters.QueueExclusive, EventBusParameters.QueueDeclareParameters.QueueAutoDelete, args);
             //ToDo
             channel.QueueDeclare(_queueNameReply, EventBusParameters.QueueDeclareParameters.QueueDurable,
-                EventBusParameters.QueueDeclareParameters.QueueExclusive, EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
+                EventBusParameters.QueueDeclareParameters.QueueExclusive, EventBusParameters.QueueDeclareParameters.QueueAutoDelete, args);
         }
         catch(RabbitMQClientException rex)
         {
@@ -211,7 +217,7 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
 
     #region [Subscribe]
 
-    public void SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
+    public async void SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
         where TIntegrationEventReply : IIntegrationEventReply
         where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>
     {          
@@ -219,7 +225,7 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
         Logger.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
         DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey);
         SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(eventNameResult + "." + replyRoutingKey);
-        StartBasicConsume();
+        await StartBasicConsume().ConfigureAwait(false);
     }
 
     private async void DoInternalSubscriptionRpc(string eventNameResult)
@@ -461,7 +467,7 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
                 Logger.LogError(ea.Exception, "CallbackException: ");
                 ConsumerChannel?.Value.Dispose();
                 ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
-                await StartBasicConsume();
+                await StartBasicConsume().ConfigureAwait(false);
             };
 
             return channel;

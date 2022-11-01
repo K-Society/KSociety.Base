@@ -29,12 +29,12 @@ public sealed class EventBusRabbitMqDynamic : EventBusRabbitMq, IEventBusDynamic
 
     #region [Subscribe]
 
-    public void SubscribeDynamic<TH>(string eventName)
+    public async void SubscribeDynamic<TH>(string eventName)
         where TH : IDynamicIntegrationEventHandler
     {
-        DoInternalSubscription(eventName);
+        await DoInternalSubscription(eventName).ConfigureAwait(false);
         SubsManager.AddDynamicSubscription<TH>(eventName);
-        StartBasicConsume();
+        await StartBasicConsume().ConfigureAwait(false);
     }
 
     #endregion
