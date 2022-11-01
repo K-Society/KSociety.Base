@@ -141,13 +141,14 @@ public class EventBusRabbitMq : DisposableObject, IEventBus
                 EventBusParameters.ExchangeDeclareParameters.ExchangeType,
                 EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
                 EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
-            var args = new Dictionary<string, object>
-            {
-                { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
-            };
+            //var args = new Dictionary<string, object>
+            //{
+            //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
+            //    //{"x-dead-letter-routing-key", "some-routing-key" }
+            //};
             channel.QueueDeclare(QueueName, EventBusParameters.QueueDeclareParameters.QueueDurable,
                 EventBusParameters.QueueDeclareParameters.QueueExclusive,
-                EventBusParameters.QueueDeclareParameters.QueueAutoDelete, args);
+                EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
         }
         catch (RabbitMQClientException rex)
         {
