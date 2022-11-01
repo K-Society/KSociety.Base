@@ -1,5 +1,6 @@
 ﻿using KSociety.Base.EventBus.Abstractions.Handler;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBus.Abstractions.EventBus;
 
@@ -9,7 +10,7 @@ public interface IEventBusBase
 
     void Initialize(CancellationToken cancel = default);
 
-    void Subscribe<T, TH>()
+    ValueTask Subscribe<T, TH>()
         where T : IIntegrationEvent
         where TH : IIntegrationEventHandler<T>;
 

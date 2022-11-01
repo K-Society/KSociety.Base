@@ -162,7 +162,7 @@ public class EventBusRabbitMq : DisposableObject, IEventBus
 
     #region [Subscribe]
 
-    public async void Subscribe<T, TH>()
+    public async ValueTask Subscribe<T, TH>()
         where T : IIntegrationEvent
         where TH : IIntegrationEventHandler<T>
     {

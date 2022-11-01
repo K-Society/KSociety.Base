@@ -78,7 +78,7 @@ public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
 
     #region [Subscribe]
 
-    public async void SubscribeQueue<T, TH>(string routingKey)
+    public async ValueTask SubscribeQueue<T, TH>(string routingKey)
         where T : IIntegrationEvent
         where TH : IIntegrationQueueHandler<T>
     {

@@ -29,7 +29,7 @@ public sealed class EventBusRabbitMqDynamic : EventBusRabbitMq, IEventBusDynamic
 
     #region [Subscribe]
 
-    public async void SubscribeDynamic<TH>(string eventName)
+    public async ValueTask SubscribeDynamic<TH>(string eventName)
         where TH : IDynamicIntegrationEventHandler
     {
         await DoInternalSubscription(eventName).ConfigureAwait(false);

@@ -217,18 +217,18 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
 
     #region [Subscribe]
 
-    public async void SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
+    public async ValueTask SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
         where TIntegrationEventReply : IIntegrationEventReply
         where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>
     {          
         var eventNameResult = SubsManager.GetEventReplyKey<TIntegrationEventReply>();
         Logger.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
-        DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey);
+        await DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey);
         SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(eventNameResult + "." + replyRoutingKey);
         await StartBasicConsume().ConfigureAwait(false);
     }
 
-    private async void DoInternalSubscriptionRpc(string eventNameResult)
+    private async ValueTask DoInternalSubscriptionRpc(string eventNameResult)
     {
         try
         {
