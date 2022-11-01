@@ -12,7 +12,7 @@ public interface IEventBusRpcClient : IEventBus
     IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
         where TIntegrationEventReply : IIntegrationEventReply;
 
-    void SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
+    ValueTask SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
         where TIntegrationEventReply : IIntegrationEventReply
         where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.EventBus;
+﻿using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
@@ -14,6 +8,11 @@ using ProtoBuf;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
 
@@ -111,7 +110,7 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
 
     #region [Subscribe]
 
-    public async void SubscribeRpcServer<T, TR, TH>(string routingKey)
+    public async ValueTask SubscribeRpcServer<T, TR, TH>(string routingKey)
         where T : IIntegrationEventRpc
         where TR : IIntegrationEventReply
         where TH : IIntegrationRpcServerHandler<T, TR>

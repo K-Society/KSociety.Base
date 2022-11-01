@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.EventBus;
+﻿using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
@@ -16,6 +9,12 @@ using ProtoBuf;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using System;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
 
@@ -144,7 +143,7 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
 
     #region [Subscribe]
 
-    public async void SubscribeRpc<T, TR, TH>(string routingKey)
+    public async ValueTask SubscribeRpc<T, TR, TH>(string routingKey)
         where T : IIntegrationEvent
         where TR : IIntegrationEventReply
         where TH : IIntegrationRpcHandler<T, TR>
@@ -152,13 +151,13 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
         var eventName = SubsManager.GetEventKey<T>();
         var eventNameResult = SubsManager.GetEventReplyKey<TR>();
         Logger.LogDebug("SubscribeRpc: eventName: {0}.{1} eventNameResult: {2}.{3}", eventName, routingKey, eventNameResult, routingKey);
-        DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey);
+        await DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey);
         SubsManager.AddSubscriptionRpc<T, TR, TH>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
         await StartBasicConsume().ConfigureAwait(false);
         await StartBasicConsumeReply().ConfigureAwait(false);
     }
 
-    private async void DoInternalSubscriptionRpc(string eventName, string eventNameResult)
+    private async ValueTask DoInternalSubscriptionRpc(string eventName, string eventNameResult)
     {
         var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
         if (containsKey) return;
@@ -341,31 +340,6 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
         }
     }
 
-    //protected override IModel CreateConsumerChannel(CancellationToken cancel = default)
-    //{
-    //    if (!PersistentConnection.IsConnected)
-    //    {
-    //        PersistentConnection.TryConnect();
-    //    }
-
-    //    var channel = PersistentConnection.CreateModel();
-
-    //    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-    //    channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-    //    channel.BasicQos(0, 1, false);
-
-    //    channel.CallbackException += (sender, ea) =>
-    //    {
-    //        Logger.LogError("CallbackException: " + ea.Exception.Message);
-    //        ConsumerChannel.Dispose();
-    //        ConsumerChannel = CreateConsumerChannel(cancel);
-    //        StartBasicConsume();
-    //    };
-
-    //    return channel;
-    //}
-
     protected async override ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
     {
         if (!PersistentConnection.IsConnected)
@@ -388,31 +362,6 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
 
         return channel;
     }
-
-    //private IModel CreateConsumerChannelReply(CancellationToken cancel = default)
-    //{
-    //    if (!PersistentConnection.IsConnected)
-    //    {
-    //        PersistentConnection.TryConnect();
-    //    }
-
-    //    var channel = PersistentConnection.CreateModel();
-
-    //    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-    //    channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-    //    channel.BasicQos(0, 1, false);
-
-    //    channel.CallbackException += (sender, ea) =>
-    //    {
-    //        Logger.LogError("CallbackException Rpc: " + ea.Exception.Message);
-    //        _consumerChannelReply.Dispose();
-    //        _consumerChannelReply = CreateConsumerChannelReply(cancel);
-    //        StartBasicConsumeReply();
-    //    };
-
-    //    return channel;
-    //}
 
     private async ValueTask<IModel> CreateConsumerChannelReplyAsync(CancellationToken cancel = default)
     {

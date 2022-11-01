@@ -4,6 +4,7 @@ using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
 
@@ -33,7 +34,7 @@ public sealed class EventBusRabbitMqTyped : EventBusRabbitMq, IEventBusTyped
 
     #region [Subscribe]
 
-    public async void Subscribe<T, TH>(string routingKey)
+    public async ValueTask Subscribe<T, TH>(string routingKey)
         where T : IIntegrationEvent
         where TH : IIntegrationEventHandler<T>
     {
