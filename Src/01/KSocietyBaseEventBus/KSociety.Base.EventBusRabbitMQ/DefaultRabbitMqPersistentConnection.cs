@@ -1,14 +1,14 @@
-﻿using System;
-using System.IO;
-using System.Net.Sockets;
-using KSociety.Base.InfraSub.Shared.Class;
+﻿using KSociety.Base.InfraSub.Shared.Class;
 using Microsoft.Extensions.Logging;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
-using System.Threading.Tasks;
+using System;
+using System.IO;
+using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
 

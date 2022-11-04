@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.EventBus;
+﻿using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
@@ -17,6 +9,13 @@ using ProtoBuf;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
 
@@ -149,7 +148,7 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
             using (var channel = PersistentConnection.CreateModel())
             {
                 var routingKey = @event.RoutingKey;
-                //channel.ContinuationTimeout = TimeSpan.FromSeconds(continuationTimeout);
+
                 channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                     EventBusParameters.ExchangeDeclareParameters.ExchangeType,
                     EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
@@ -162,10 +161,9 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
                 policy.Execute(() =>
                 {
                     var properties = channel.CreateBasicProperties();
-                    //properties.ContentType = "application/protobuf";
+
                     properties.DeliveryMode = 1; //2 = persistent, write on disk
                     properties.CorrelationId = correlationId;
-                    //properties.ReplyTo = QueueName;
                     properties.ReplyTo = _queueNameReply; //ToDo
 
                     channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey, true, properties,
@@ -371,83 +369,6 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
         // For more information see: https://www.rabbitmq.com/dlx.html
         //ConsumerChannel?.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
     }
-
-    //protected override IModel CreateConsumerChannel(CancellationToken cancel = default)
-    //{
-    //    try
-    //    {
-    //        if (!PersistentConnection.IsConnected)
-    //        {
-    //            PersistentConnection.TryConnect();
-    //        }
-
-    //        var channel = PersistentConnection.CreateModel();
-
-    //        channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType,
-    //            ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-    //        channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-    //        //ToDo
-    //        channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
-    //            QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-    //        //channel.BasicQos(0, 1, false);
-
-    //        channel.CallbackException += (sender, ea) =>
-    //        {
-    //            Logger.LogError("CallbackException: " + ea.Exception.Message);
-    //            ConsumerChannel?.Dispose();
-    //            ConsumerChannel = CreateConsumerChannel(cancel);
-    //            StartBasicConsume();
-    //        };
-
-    //        return channel;
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Logger.LogError("CreateConsumerChannel: " + ex.Message + " - " + ex.StackTrace);
-    //    }
-
-    //    return null;
-    //}
-
-    //protected override IModel CreateConsumerChannel(CancellationToken cancel = default)
-    //{
-    //    try
-    //    {
-    //        if (!PersistentConnection.IsConnected)
-    //        {
-    //            PersistentConnection.TryConnect();
-    //        }
-
-    //        var channel = PersistentConnection.CreateModel();
-
-    //        channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType,
-    //            ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-    //        channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-    //        //ToDo
-    //        channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable,
-    //            QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-    //        //channel.BasicQos(0, 1, false);
-
-    //        channel.CallbackException += (sender, ea) =>
-    //        {
-    //            Logger.LogError("CallbackException: " + ea.Exception.Message);
-    //            ConsumerChannel?.Dispose();
-    //            ConsumerChannel = CreateConsumerChannel(cancel);
-    //            StartBasicConsume();
-    //        };
-
-    //        return channel;
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Logger.LogError("CreateConsumerChannel: " + ex.Message + " - " + ex.StackTrace);
-    //    }
-
-    //    return null;
-    //}
-
     protected async override ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
     {
         Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", QueueName, _queueNameReply);
@@ -631,7 +552,7 @@ public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcCl
         }
         else
         {
-            Logger.LogError("ProcessEventReplyClient HasSubscriptionsForEventReply {0} No Subscriptions!");
+            Logger.LogError("ProcessEventReplyClient HasSubscriptionsForEventReply {0} No Subscriptions!", routingKey);
         }
     }
 }

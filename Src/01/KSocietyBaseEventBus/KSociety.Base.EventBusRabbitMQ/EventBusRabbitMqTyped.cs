@@ -3,7 +3,6 @@ using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
