@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\KSocietyBaseEventBus\KSociety.Base.EventBus\KSociety.Base.EventBus.csproj" />
+    <ProjectReference Include="..\..\..\KSocietyBaseEventBus\KSociety.Base.EventBusRabbitMQ\KSociety.Base.EventBusRabbitMQ.csproj" />
     <ProjectReference Include="..\..\KSociety.Base.Srv.Shared\KSociety.Base.Srv.Shared.csproj" />
   </ItemGroup>
 

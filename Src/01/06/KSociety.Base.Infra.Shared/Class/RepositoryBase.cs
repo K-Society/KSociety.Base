@@ -392,11 +392,6 @@ public abstract class RepositoryBase<TContext, TEntity> : IRepositoryBase<TEntit
         return null;
     }
 
-    //public void Test(Expression<Func<TEntity, TProperty>> navigationPropertyPath)
-    //{
-    //    DataBaseSet.Include(navigationPropertyPath);
-    //}
-
     public void Dispose()
     {
         DataContext.Dispose();
