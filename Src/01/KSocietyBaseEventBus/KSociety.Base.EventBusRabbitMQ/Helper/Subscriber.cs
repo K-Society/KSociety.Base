@@ -25,6 +25,18 @@ public class Subscriber
 
         PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, _loggerFactory);
     }
+
+    public Subscriber(
+        ILoggerFactory loggerFactory,
+        IRabbitMqPersistentConnection persistentConnection,
+        IEventBusParameters eventBusParameters)
+    {
+        _loggerFactory = loggerFactory;
+        _eventBusParameters = eventBusParameters;
+
+        PersistentConnection = persistentConnection;
+    }
+
     public void SubscribeClientServer<
         TIntegrationRpcClientHandler, TIntegrationRpcServerHandler,
         TIntegrationEvent, TIntegrationEventReply>(
