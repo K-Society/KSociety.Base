@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using KSociety.Base.EventBus;
+using KSociety.Base.EventBusRabbitMQ;
 using RabbitMQ.Client;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings;
@@ -117,5 +118,6 @@ public class MessageBroker<
         builder.RegisterInstance(queueDeclareParameters).As<TQueueDeclareParameters>().SingleInstance();
         builder.RegisterInstance(eventBusParameters).As<TEventBusParameters>().SingleInstance();
         builder.RegisterInstance(rabbitMqConnectionFactory).As<TConnectionFactory>().SingleInstance();
+        builder.RegisterType<DefaultRabbitMqPersistentConnection>().As<IRabbitMqPersistentConnection>().SingleInstance();
     }
 }
