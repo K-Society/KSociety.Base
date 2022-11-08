@@ -18,7 +18,7 @@ environment:
   NUGET_XMLDOC_MODE: skip
   
 install:
-#  - ps: .\dotnet-install.ps1 -Version '7.0.100'
+  - ps: .\dotnet-install.ps1 -Version '7.0.100'
 
 before_build:
   - ps: dotnet --info
