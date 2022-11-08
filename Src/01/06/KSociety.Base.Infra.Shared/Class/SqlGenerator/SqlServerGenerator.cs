@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.EntityFrameworkCore.Update;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -12,11 +13,21 @@ public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
     private readonly ILogger<SqlServerGenerator> _logger;
 
     //It must be public.
+    //public SqlServerGenerator(
+    //    ILoggerFactory loggerFactory,
+    //    MigrationsSqlGeneratorDependencies dependencies,
+    //    IRelationalAnnotationProvider migrationsAnnotations)
+    //    : base(dependencies, migrationsAnnotations)
+    //{
+    //    _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
+    //    _logger.LogTrace("SqlServerGenerator");
+    //}
+
     public SqlServerGenerator(
         ILoggerFactory loggerFactory,
         MigrationsSqlGeneratorDependencies dependencies,
-        IRelationalAnnotationProvider migrationsAnnotations)
-        : base(dependencies, migrationsAnnotations)
+        ICommandBatchPreparer commandBatchPreparer)
+        : base(dependencies, commandBatchPreparer)
     {
         _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
         _logger.LogTrace("SqlServerGenerator");

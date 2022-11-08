@@ -109,12 +109,12 @@ public class ContextFactory<TContext> : IContextFactory<TContext> where TContext
                 break;
 
             case DatabaseEngine.Mysql:
-                optionBuilder
-                    .EnableDetailedErrors()
-                    .EnableSensitiveDataLogging()
-                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), sql => sql.MigrationsAssembly(migrationsAssembly));
+                //optionBuilder
+                //    .EnableDetailedErrors()
+                //    .EnableSensitiveDataLogging()
+                //    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), sql => sql.MigrationsAssembly(migrationsAssembly));
 
-                optionBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
+                //optionBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
                 break;
 
             default:
