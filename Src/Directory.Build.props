@@ -3,7 +3,7 @@
 
 <Project>
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+	<TargetFramework>net6.0</TargetFramework>
 	<!--TargetFrameworks>net6.0;net7.0</TargetFrameworks-->
 	
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -20,7 +20,7 @@
     <Company>K-Society</Company>
     <Copyright>Copyright © K-Society and contributors 2022. All rights reserved.</Copyright>
 	<PackageLicenseExpression>MS-RL</PackageLicenseExpression>
-	<Description>K-Society Base is a full stack framework for .NET 6 application https://github.com/K-Society/KSociety.Base</Description>
+	<Description>K-Society Base is a full stack framework for .NET 6 and .NET 7 application https://github.com/K-Society/KSociety.Base</Description>
     <Product>K-Society Base</Product>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>

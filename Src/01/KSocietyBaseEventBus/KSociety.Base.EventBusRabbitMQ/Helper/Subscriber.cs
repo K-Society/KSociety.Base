@@ -2,6 +2,7 @@
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
+using KSociety.Base.EventBus.Handlers;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System.Collections.Generic;
@@ -117,5 +118,21 @@ public class Subscriber
 
         await ((IEventBusTyped)EventBus[eventBusName])
         .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey);
+    }
+
+    public async ValueTask SubscribeQueue<TIntegrationQueueHandler, TIntegrationEvent>(
+        string eventBusName, string queueName,
+        string routingKey, TIntegrationQueueHandler integrationEventHandler
+        )
+        where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>
+        where TIntegrationEvent : IIntegrationEvent
+    {
+        if (EventBus.ContainsKey(eventBusName)) return;
+
+        EventBus.Add(eventBusName,
+            new EventBusRabbitMqQueue(PersistentConnection, _loggerFactory, integrationEventHandler,
+                null, _eventBusParameters, queueName));
+
+        ((IEventBusQueue)EventBus[eventBusName]).Initialize();
     }
 }
