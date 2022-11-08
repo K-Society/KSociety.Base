@@ -2,7 +2,6 @@
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
-using KSociety.Base.EventBus.Handlers;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System.Collections.Generic;
@@ -120,11 +119,11 @@ public class Subscriber
         .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey);
     }
 
-    public async ValueTask SubscribeQueue<TIntegrationQueueHandler, TIntegrationEvent>(
+    public async ValueTask SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
         string eventBusName, string queueName,
-        string routingKey, TIntegrationQueueHandler integrationEventHandler
+        TIntegrationEventHandler integrationEventHandler
         )
-        where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>
+        where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         where TIntegrationEvent : IIntegrationEvent
     {
         if (EventBus.ContainsKey(eventBusName)) return;
