@@ -16,6 +16,16 @@
     <PackageReference Include="protobuf-net.Grpc" Version="1.0.177" />
   </ItemGroup>
 
+  <!-- .NET 6.0 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+
+  </ItemGroup>
+
+  <!-- .NET 7.0 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\03\KSociety.Base.App.Shared\KSociety.Base.App.Shared.csproj" />
   </ItemGroup>

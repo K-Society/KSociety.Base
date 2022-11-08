@@ -118,4 +118,20 @@ public class Subscriber
         await ((IEventBusTyped)EventBus[eventBusName])
         .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey);
     }
+
+    public async ValueTask SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
+        string eventBusName, string queueName,
+        TIntegrationEventHandler integrationEventHandler
+        )
+        where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
+        where TIntegrationEvent : IIntegrationEvent
+    {
+        if (EventBus.ContainsKey(eventBusName)) return;
+
+        EventBus.Add(eventBusName,
+            new EventBusRabbitMqQueue(PersistentConnection, _loggerFactory, integrationEventHandler,
+                null, _eventBusParameters, queueName));
+
+        ((IEventBusQueue)EventBus[eventBusName]).Initialize();
+    }
 }

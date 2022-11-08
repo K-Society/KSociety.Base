@@ -15,11 +15,20 @@
     <PackageReference Include="Blazorise.Bootstrap" Version="0.9.2.5" />
     <PackageReference Include="Blazorise.DataGrid" Version="0.9.2.5" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.2.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.10" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <!-- .NET 6.0 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.10" />
+  </ItemGroup>
+
+  <!-- .NET 7.0 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+
   </ItemGroup>
 
   <ItemGroup>
