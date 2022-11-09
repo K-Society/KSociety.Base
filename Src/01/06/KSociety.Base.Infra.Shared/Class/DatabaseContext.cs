@@ -153,20 +153,27 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
                     break;
 
                 case DatabaseEngine.Mysql:
+#if NET6_0
                     if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
                     {
-                        //optionsBuilder.UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString));
+                        optionsBuilder.UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString));
                     }
                     else
                     {
-                        //optionsBuilder
-                        //    .UseLazyLoadingProxies(_configuration.LazyLoading)
-                        //    .UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString),
-                        //        sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+                        optionsBuilder
+                            .UseLazyLoadingProxies(_configuration.LazyLoading)
+                            .UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString),
+                                sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
 
-                        //optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
+                        optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
                     }
                     break;
+#endif
+
+#if NET7_0
+                    throw new NotImplementedException("Not ready for .Net 7!");
+#endif
+                    
 
                 default:
                     break;
