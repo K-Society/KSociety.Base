@@ -3,7 +3,7 @@
 
 <Project>
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows;net7.0-windows</TargetFramework>
 	<UseWindowsForms>true</UseWindowsForms>
 	
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
