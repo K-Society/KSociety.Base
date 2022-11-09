@@ -119,6 +119,7 @@ public class ContextFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole,
                 break;
 
             case DatabaseEngine.Mysql:
+#if NET6_0
                 //optionBuilder
                 //    .EnableDetailedErrors()
                 //    .EnableSensitiveDataLogging()
@@ -126,6 +127,11 @@ public class ContextFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole,
 
                 //optionBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
                 break;
+#endif
+
+#if NET7_0
+                throw new NotImplementedException("Not ready for .Net 7!");
+#endif
 
             default:
                 throw new ArgumentOutOfRangeException();

@@ -109,14 +109,20 @@ public class ContextFactory<TContext> : IContextFactory<TContext> where TContext
                 break;
 
             case DatabaseEngine.Mysql:
-                //optionBuilder
-                //    .EnableDetailedErrors()
-                //    .EnableSensitiveDataLogging()
-                //    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), sql => sql.MigrationsAssembly(migrationsAssembly));
+#if NET6_0
+                optionBuilder
+                    .EnableDetailedErrors()
+                    .EnableSensitiveDataLogging()
+                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), sql => sql.MigrationsAssembly(migrationsAssembly));
 
-                //optionBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
+                optionBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
                 break;
+#endif
 
+#if NET7_0
+                throw new NotImplementedException("Not ready for .Net 7!");
+#endif
+            
             default:
                 throw new ArgumentOutOfRangeException();
         }
