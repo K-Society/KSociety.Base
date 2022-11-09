@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.EventBus;
+﻿using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
@@ -15,6 +9,12 @@ using ProtoBuf;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using System;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
 
@@ -30,30 +30,29 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
     public EventBusRabbitMqRpc(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
-        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName, cancel)
+        string queueName = null)
+        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
     {
         _correlationId = Guid.NewGuid().ToString();
     }
 
     #endregion
 
-    protected async override ValueTask InitializeAsync(CancellationToken cancel = default)
+    public override void Initialize(CancellationToken cancel = default)
     {
-        Logger.LogTrace("EventBusRabbitMqRpc InitializeAsync.");
+        Logger.LogTrace("EventBusRabbitMqRpc Initialize.");
         SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-        ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
+        ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         _queueNameReply = QueueName + "_Reply";
         _consumerChannelReply =
-            new AsyncLazy<IModel>(async () => await CreateConsumerChannelReplyAsync(cancel));
+            new AsyncLazy<IModel>(async () => await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
     }
 
     public IIntegrationRpcHandler<T, TR> GetIntegrationRpcHandler<T, TR>()
         where T : IIntegrationEvent
         where TR : IIntegrationEventReply
     {
-        if (EventHandler is not null && EventHandler is IIntegrationRpcHandler<T, TR> queue)
+        if (EventHandler is IIntegrationRpcHandler<T, TR> queue)
         {
             return queue;
         }
@@ -91,7 +90,7 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
             .Or<Exception>()
             .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
             {
-                Logger.LogWarning(ex.ToString());
+                Logger.LogWarning(ex, "Publish:");
             });
 
         using var channel = PersistentConnection.CreateModel();
@@ -123,6 +122,11 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
                 EventBusParameters.ExchangeDeclareParameters.ExchangeName, EventBusParameters.ExchangeDeclareParameters.ExchangeType, 
                 EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
+            //var args = new Dictionary<string, object>
+            //{
+            //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
+            //};
+
             channel.QueueDeclare(
                 QueueName, EventBusParameters.QueueDeclareParameters.QueueDurable,
                 EventBusParameters.QueueDeclareParameters.QueueExclusive, EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
@@ -139,7 +143,7 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
 
     #region [Subscribe]
 
-    public void SubscribeRpc<T, TR, TH>(string routingKey)
+    public async ValueTask SubscribeRpc<T, TR, TH>(string routingKey)
         where T : IIntegrationEvent
         where TR : IIntegrationEventReply
         where TH : IIntegrationRpcHandler<T, TR>
@@ -147,13 +151,13 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
         var eventName = SubsManager.GetEventKey<T>();
         var eventNameResult = SubsManager.GetEventReplyKey<TR>();
         Logger.LogDebug("SubscribeRpc: eventName: {0}.{1} eventNameResult: {2}.{3}", eventName, routingKey, eventNameResult, routingKey);
-        DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey);
+        await DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey);
         SubsManager.AddSubscriptionRpc<T, TR, TH>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
-        StartBasicConsume();
-        StartBasicConsumeReply();
+        await StartBasicConsume().ConfigureAwait(false);
+        await StartBasicConsumeReply().ConfigureAwait(false);
     }
 
-    private async void DoInternalSubscriptionRpc(string eventName, string eventNameResult)
+    private async ValueTask DoInternalSubscriptionRpc(string eventName, string eventNameResult)
     {
         var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
         if (containsKey) return;
@@ -336,31 +340,6 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
         }
     }
 
-    //protected override IModel CreateConsumerChannel(CancellationToken cancel = default)
-    //{
-    //    if (!PersistentConnection.IsConnected)
-    //    {
-    //        PersistentConnection.TryConnect();
-    //    }
-
-    //    var channel = PersistentConnection.CreateModel();
-
-    //    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-    //    channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-    //    channel.BasicQos(0, 1, false);
-
-    //    channel.CallbackException += (sender, ea) =>
-    //    {
-    //        Logger.LogError("CallbackException: " + ea.Exception.Message);
-    //        ConsumerChannel.Dispose();
-    //        ConsumerChannel = CreateConsumerChannel(cancel);
-    //        StartBasicConsume();
-    //    };
-
-    //    return channel;
-    //}
-
     protected async override ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
     {
         if (!PersistentConnection.IsConnected)
@@ -378,36 +357,11 @@ public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
             Logger.LogError(ea.Exception, "CallbackException: ");
             ConsumerChannel?.Value.Dispose();
             ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
-            await StartBasicConsume();
+            await StartBasicConsume().ConfigureAwait(false);
         };
 
         return channel;
     }
-
-    //private IModel CreateConsumerChannelReply(CancellationToken cancel = default)
-    //{
-    //    if (!PersistentConnection.IsConnected)
-    //    {
-    //        PersistentConnection.TryConnect();
-    //    }
-
-    //    var channel = PersistentConnection.CreateModel();
-
-    //    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-    //    channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-    //    channel.BasicQos(0, 1, false);
-
-    //    channel.CallbackException += (sender, ea) =>
-    //    {
-    //        Logger.LogError("CallbackException Rpc: " + ea.Exception.Message);
-    //        _consumerChannelReply.Dispose();
-    //        _consumerChannelReply = CreateConsumerChannelReply(cancel);
-    //        StartBasicConsumeReply();
-    //    };
-
-    //    return channel;
-    //}
 
     private async ValueTask<IModel> CreateConsumerChannelReplyAsync(CancellationToken cancel = default)
     {

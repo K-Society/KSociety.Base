@@ -5,7 +5,7 @@ using KSociety.Base.InfraSub.Shared.Class;
 
 namespace KSociety.Base.Infra.Shared.Class;
 
-///<inheritdoc/>
+///<inheritdoc cref="KSociety.Base.Infra.Shared.Interface.IDatabaseUnitOfWork"/>
 public class UnitOfWork<TContext> : DisposableObject, IDatabaseUnitOfWork
     where TContext : DatabaseContext
 {
@@ -62,20 +62,10 @@ public class UnitOfWork<TContext> : DisposableObject, IDatabaseUnitOfWork
         return await Context.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    public void Migrate()
-    {
-        Context.Migrate();
-    }
-
     ///<inheritdoc/>
     public void Migrate(string targetMigration = null)
     {
         Context.Migrate(targetMigration);
-    }
-
-    public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
-    {
-        await Context.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 
     ///<inheritdoc/>

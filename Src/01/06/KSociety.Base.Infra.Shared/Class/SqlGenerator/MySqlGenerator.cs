@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿#if NET6_0
+
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.Extensions.Logging;
@@ -47,3 +49,5 @@ public class MySqlGenerator : MySqlMigrationsSqlGenerator
         }
     }
 }
+
+#endif

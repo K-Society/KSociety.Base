@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.EventBus;
+﻿using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
@@ -14,6 +9,11 @@ using ProtoBuf;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using System;
+using System.IO;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
 
@@ -35,45 +35,41 @@ public class EventBusRabbitMq : DisposableObject, IEventBus
     protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
+        string queueName = null)
     {
         Debug = eventBusParameters.Debug;
         EventBusParameters = eventBusParameters;
         PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
-        Logger = loggerFactory.CreateLogger<EventBusRabbitMq>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+        Logger = loggerFactory.CreateLogger<EventBusRabbitMq>();
         SubsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
         QueueName = queueName;
         EventHandler = eventHandler;
         SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
 
-        InitializeAsync(cancel);
     }
 
     protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
+        string queueName = null)
     {
         Debug = eventBusParameters.Debug;
         EventBusParameters = eventBusParameters;
         PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
-        Logger = loggerFactory.CreateLogger<EventBusRabbitMq>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+        Logger = loggerFactory.CreateLogger<EventBusRabbitMq>();
         SubsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
         QueueName = queueName;
         EventHandler = null;
         SubsManager.OnEventRemoved += SubsManager_OnEventRemoved;
 
-        InitializeAsync(cancel);
     }
 
     #endregion
 
-    protected async virtual ValueTask InitializeAsync(CancellationToken cancel = default)
+    public virtual void Initialize(CancellationToken cancel = default)
     {
-        Logger.LogTrace("EventBusRabbitMq InitializeAsync.");
-        ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
+        Logger.LogTrace("EventBusRabbitMq Initialize.");
+        ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
     }
 
     private async void SubsManager_OnEventRemoved(object sender, string eventName)
@@ -105,7 +101,7 @@ public class EventBusRabbitMq : DisposableObject, IEventBus
                 .Or<Exception>()
                 .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
                 {
-                    Logger.LogWarning(ex.ToString());
+                    Logger.LogWarning(ex, "Publish: ");
                 });
 
             using var channel = PersistentConnection.CreateModel();
@@ -142,7 +138,11 @@ public class EventBusRabbitMq : DisposableObject, IEventBus
                 EventBusParameters.ExchangeDeclareParameters.ExchangeType,
                 EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
                 EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
-
+            //var args = new Dictionary<string, object>
+            //{
+            //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
+            //    //{"x-dead-letter-routing-key", "some-routing-key" }
+            //};
             channel.QueueDeclare(QueueName, EventBusParameters.QueueDeclareParameters.QueueDurable,
                 EventBusParameters.QueueDeclareParameters.QueueExclusive,
                 EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
@@ -159,18 +159,18 @@ public class EventBusRabbitMq : DisposableObject, IEventBus
 
     #region [Subscribe]
 
-    public void Subscribe<T, TH>()
+    public async ValueTask Subscribe<T, TH>()
         where T : IIntegrationEvent
         where TH : IIntegrationEventHandler<T>
     {
 
         var eventName = SubsManager.GetEventKey<T>();
-        DoInternalSubscription(eventName);
+        await DoInternalSubscription(eventName).ConfigureAwait(false);
         SubsManager.AddSubscription<T, TH>();
-        StartBasicConsume();
+        await StartBasicConsume().ConfigureAwait(false);
     }
 
-    protected async void DoInternalSubscription(string eventName)
+    protected async ValueTask DoInternalSubscription(string eventName)
     {
         var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
         if (containsKey) return;
@@ -295,36 +295,6 @@ public class EventBusRabbitMq : DisposableObject, IEventBus
         }
     }
 
-    //protected virtual IModel CreateConsumerChannel(CancellationToken cancel = default)
-    //{
-    //    if (!PersistentConnection.IsConnected)
-    //    {
-    //        PersistentConnection.TryConnect();
-    //    }
-
-    //    var channel = PersistentConnection.CreateModel();
-
-    //    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, 
-    //        ExchangeDeclareParameters.ExchangeType, 
-    //        ExchangeDeclareParameters.ExchangeDurable, 
-    //        ExchangeDeclareParameters.ExchangeAutoDelete);
-
-    //    channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, 
-    //        QueueDeclareParameters.QueueExclusive, 
-    //        QueueDeclareParameters.QueueAutoDelete, null);
-    //    channel.BasicQos(0, 1, false);
-
-    //    channel.CallbackException += (sender, ea) =>
-    //    {
-    //        Logger.LogError("CallbackException: " + ExchangeDeclareParameters.ExchangeName + " " + QueueName + " " + ea.Exception.Message + " - " + ea.Exception.StackTrace);
-    //        ConsumerChannel.Dispose();
-    //        ConsumerChannel = CreateConsumerChannel(cancel);
-    //        StartBasicConsume();
-    //    };
-
-    //    return channel;
-    //}
-
     protected async virtual ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
     {
         Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", QueueName);
@@ -344,8 +314,8 @@ public class EventBusRabbitMq : DisposableObject, IEventBus
         {
             Logger.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}", EventBusParameters.ExchangeDeclareParameters.ExchangeName, QueueName);
             ConsumerChannel?.Value.Dispose();
-            ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
-            await StartBasicConsume();
+            ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+            await StartBasicConsume().ConfigureAwait(false);
         };
 
         return channel;

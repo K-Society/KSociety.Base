@@ -1,4 +1,5 @@
 ﻿using KSociety.Base.EventBus.Abstractions.Handler;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBus.Abstractions.EventBus;
 
@@ -8,7 +9,7 @@ public interface IEventBusRpcServer : IEventBusBase
         where T : IIntegrationEventRpc
         where TR : IIntegrationEventReply;
 
-    void SubscribeRpcServer<T, TR, TH>(string routingKey)
+    ValueTask SubscribeRpcServer<T, TR, TH>(string routingKey)
         where T : IIntegrationEventRpc
         where TR : IIntegrationEventReply
         where TH : IIntegrationRpcServerHandler<T, TR>;

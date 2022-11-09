@@ -22,14 +22,10 @@ public class Scheduler
 
     public Scheduler(string schedulerName, int interval, TimeType tType)
     {
-        //Quartz.Logging.Logger.
-        //Quartz.ser
+
         var properties = new System.Collections.Specialized.NameValueCollection
         {
-            //["quartz.jobStore.type"] = "Quartz.Impl.AdoJobStore.JobStoreTX, Quartz",
-            // "binary" is alias for "Quartz.Simpl.BinaryObjectSerializer, Quartz" 
             ["quartz.serializer.type"] = "binary"
-            //["quartz.serializer.type"] = "binary"
         };
 
         _schedulerFactJob = new StdSchedulerFactory(properties);
@@ -51,9 +47,6 @@ public class Scheduler
                 _timeInterval = TimeSpan.FromHours(interval);
                 break;
         }
-        //timeIntervalMS = _interval;
-        //Task<IScheduler> t = schedFact_Job.GetScheduler();
-        //sched_Job = await t; //schedFact_Job.GetScheduler(); //Default!
 
         GetSchedulerJobAsync(_schedulerFactJob);
     }
@@ -62,9 +55,6 @@ public class Scheduler
     {
         Task<IScheduler> t = isf.GetScheduler();
         _schedulerJob = await t.ConfigureAwait(false);
-
-        //_schedJob
-
     }
 
     public void Start<T>() where T : IJob
@@ -95,17 +85,12 @@ public class Scheduler
     private async void StartJob<T>() where T : IJob
     {
         _startTimeJob = new DateTimeOffset(2008, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
-        // construct a scheduler factory
 
-
-        // get a scheduler
-        //sched_Job = schedFact_Job.GetScheduler();
         await _schedulerJob.Start().ConfigureAwait(false);
 
         // define the job and tie it to our Job class
         IJobDetail job = JobBuilder.Create<T>()
             .WithIdentity("myJob_" + Name, "group1_" + Name)
-            //.UsingJobData("opcServer", )
             .Build();
 
         // Trigger the job to run now, and then every 5 seconds
@@ -130,14 +115,12 @@ public class Scheduler
 
         _schedulerJob.Context.Put(name, jobData);
         // get a scheduler
-        //sched_Job = schedFact_Job.GetScheduler();
         await _schedulerJob.Start().ConfigureAwait(false);
 
         // define the job and tie it to our Job class
         /*IJobDetail*/
         _job = JobBuilder.Create<T>()
             .WithIdentity("myJob_" + Name, "group1_" + Name)
-            //.UsingJobData("opcServer", )
             .Build();
 
         // Trigger the job to run now, and then every 5 seconds

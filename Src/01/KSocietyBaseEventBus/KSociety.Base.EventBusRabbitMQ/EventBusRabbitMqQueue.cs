@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.EventBus;
+﻿using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
@@ -12,6 +7,11 @@ using Polly;
 using ProtoBuf;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
+using System;
+using System.IO;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
 
@@ -23,9 +23,8 @@ public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
     public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
-        :base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName, cancel)
+        string queueName = null)
+        :base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
     {
 
     }
@@ -36,7 +35,7 @@ public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
         where T : IIntegrationEvent
         where TH : IIntegrationQueueHandler<T>
     {
-        if (EventHandler is not null && EventHandler is IIntegrationQueueHandler<T> queue)
+        if (EventHandler is IIntegrationQueueHandler<T> queue)
         {
             return queue;
         }
@@ -56,7 +55,7 @@ public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
             .Or<Exception>()
             .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
             {
-                Logger.LogWarning(ex.ToString());
+                Logger.LogWarning(ex, "Publish: ");
             });
 
         using var channel = PersistentConnection.CreateModel();
@@ -79,14 +78,14 @@ public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
 
     #region [Subscribe]
 
-    public void SubscribeQueue<T, TH>(string routingKey)
+    public async ValueTask SubscribeQueue<T, TH>(string routingKey)
         where T : IIntegrationEvent
         where TH : IIntegrationQueueHandler<T>
     {
         var eventName = SubsManager.GetEventKey<T>();
-        DoInternalSubscription(eventName + "." + routingKey);
+        await DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
         SubsManager.AddSubscriptionQueue<T, TH>(eventName + "." + routingKey);
-        StartBasicConsume();
+        await StartBasicConsume().ConfigureAwait(false);
     }
         
     #endregion

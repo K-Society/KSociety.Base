@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.EntityFrameworkCore.Update;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -12,6 +13,8 @@ public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
     private readonly ILogger<SqlServerGenerator> _logger;
 
     //It must be public.
+
+#if NET6_0
     public SqlServerGenerator(
         ILoggerFactory loggerFactory,
         MigrationsSqlGeneratorDependencies dependencies,
@@ -21,6 +24,19 @@ public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
         _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
         _logger.LogTrace("SqlServerGenerator");
     }
+#endif
+
+#if NET7_0
+    public SqlServerGenerator(
+        ILoggerFactory loggerFactory,
+        MigrationsSqlGeneratorDependencies dependencies,
+        ICommandBatchPreparer commandBatchPreparer)
+        : base(dependencies, commandBatchPreparer)
+    {
+        _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
+        _logger.LogTrace("SqlServerGenerator");
+    }
+#endif
 
     protected override void Generate(
         MigrationOperation operation,

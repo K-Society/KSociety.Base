@@ -14,6 +14,16 @@
     </PackageReference>
   </ItemGroup>
 
+  <!-- .NET 6.0 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+
+  </ItemGroup>
+
+  <!-- .NET 7.0 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\KSociety.Base.Pre.Web.Shared\KSociety.Base.Pre.Web.Shared.csproj" />
   </ItemGroup>

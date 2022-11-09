@@ -19,9 +19,8 @@ public sealed class EventBusRabbitMqDynamic : EventBusRabbitMq, IEventBusDynamic
     public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
-        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName, cancel)
+        string queueName = null)
+        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
     {
         _autofac = autofac;
     }
@@ -30,12 +29,12 @@ public sealed class EventBusRabbitMqDynamic : EventBusRabbitMq, IEventBusDynamic
 
     #region [Subscribe]
 
-    public void SubscribeDynamic<TH>(string eventName)
+    public async ValueTask SubscribeDynamic<TH>(string eventName)
         where TH : IDynamicIntegrationEventHandler
     {
-        DoInternalSubscription(eventName);
+        await DoInternalSubscription(eventName).ConfigureAwait(false);
         SubsManager.AddDynamicSubscription<TH>(eventName);
-        StartBasicConsume();
+        await StartBasicConsume().ConfigureAwait(false);
     }
 
     #endregion

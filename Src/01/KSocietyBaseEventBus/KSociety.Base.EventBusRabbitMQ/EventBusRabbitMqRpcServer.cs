@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.EventBus;
+﻿using KSociety.Base.EventBus;
 using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
@@ -13,6 +8,11 @@ using ProtoBuf;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
 
@@ -26,31 +26,30 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
     public EventBusRabbitMqRpcServer(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
-        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName, cancel)
+        string queueName = null)
+        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
     {
 
     }
 
     #endregion
 
-    protected async override ValueTask InitializeAsync(CancellationToken cancel = default)
+    public override void Initialize(CancellationToken cancel = default)
     {
-        Logger.LogTrace("EventBusRabbitMqRpcServer InitializeAsync.");
+        Logger.LogTrace("EventBusRabbitMqRpcServer Initialize.");
         SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-        ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
+        ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         _queueNameReply = QueueName + "_Reply";
 
         _consumerChannelReply =
-            new AsyncLazy<IModel>(async () => await CreateConsumerChannelReplyAsync(cancel));
+            new AsyncLazy<IModel>(async () => await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
     }
 
     public IIntegrationRpcServerHandler<T, TR> GetIntegrationRpcServerHandler<T, TR>()
         where T : IIntegrationEventRpc
         where TR : IIntegrationEventReply
     {
-        if (EventHandler is not null && EventHandler is IIntegrationRpcServerHandler<T, TR> queue)
+        if (EventHandler is IIntegrationRpcServerHandler<T, TR> queue)
         {
             return queue;
         }
@@ -91,6 +90,11 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
             channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName, EventBusParameters.ExchangeDeclareParameters.ExchangeType,
                 EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
+            //var args = new Dictionary<string, object>
+            //{
+            //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
+            //};
+
             channel.QueueDeclare(_queueNameReply, EventBusParameters.QueueDeclareParameters.QueueDurable,
                 EventBusParameters.QueueDeclareParameters.QueueExclusive, EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
         }
@@ -106,7 +110,7 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
 
     #region [Subscribe]
 
-    public void SubscribeRpcServer<T, TR, TH>(string routingKey)
+    public async ValueTask SubscribeRpcServer<T, TR, TH>(string routingKey)
         where T : IIntegrationEventRpc
         where TR : IIntegrationEventReply
         where TH : IIntegrationRpcServerHandler<T, TR>
@@ -114,12 +118,12 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
         var eventName = SubsManager.GetEventKey<T>();
         var eventNameResult = SubsManager.GetEventReplyKey<TR>();
         Logger.LogTrace("SubscribeRpcServer routing key: {0}, event name: {1}, event name result: {2}", routingKey, eventName, eventNameResult);
-        DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey);
+        await DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey).ConfigureAwait(false);
         SubsManager.AddSubscriptionRpcServer<T, TR, TH>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
-        StartBasicConsume();
+        await StartBasicConsume().ConfigureAwait(false);
     }
 
-    private async void DoInternalSubscriptionRpc(string eventName, string eventNameResult)
+    private async ValueTask DoInternalSubscriptionRpc(string eventName, string eventNameResult)
     {
         try
         {
@@ -190,10 +194,8 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
 
                 return true;
             }
-            else
-            {
-                Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
-            }
+
+            Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
         }
         catch (Exception ex)
         {
@@ -277,31 +279,6 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
         }
     }
 
-    //protected override IModel CreateConsumerChannel(CancellationToken cancel = default)
-    //{
-    //    if (!PersistentConnection.IsConnected)
-    //    {
-    //        PersistentConnection.TryConnect();
-    //    }
-
-    //    var channel = PersistentConnection.CreateModel();
-
-    //    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-    //    channel.QueueDeclare(QueueName, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-    //    channel.BasicQos(0, 1, false);
-
-    //    channel.CallbackException += (sender, ea) =>
-    //    {
-    //        Logger.LogError("CallbackException: " + ea.Exception.Message);
-    //        ConsumerChannel.Dispose();
-    //        ConsumerChannel = CreateConsumerChannel(cancel);
-    //        StartBasicConsume();
-    //    };
-
-    //    return channel;
-    //}
-
     protected async override ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
     {
         Logger.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", QueueName);
@@ -327,36 +304,11 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
             Logger.LogError(ea.Exception, "CallbackException: ");
             ConsumerChannel?.Value.Dispose();
             ConsumerChannel = new AsyncLazy<IModel>(async () => await CreateConsumerChannelAsync(cancel));
-            await StartBasicConsume();
+            await StartBasicConsume().ConfigureAwait(false);
         };
 
         return channel;
     }
-
-    //private IModel CreateConsumerChannelReply(CancellationToken cancel = default)
-    //{
-    //    if (!PersistentConnection.IsConnected)
-    //    {
-    //        PersistentConnection.TryConnect();
-    //    }
-
-    //    var channel = PersistentConnection.CreateModel();
-
-    //    channel.ExchangeDeclare(ExchangeDeclareParameters.ExchangeName, ExchangeDeclareParameters.ExchangeType, ExchangeDeclareParameters.ExchangeDurable, ExchangeDeclareParameters.ExchangeAutoDelete);
-
-    //    channel.QueueDeclare(_queueNameReply, QueueDeclareParameters.QueueDurable, QueueDeclareParameters.QueueExclusive, QueueDeclareParameters.QueueAutoDelete, null);
-    //    channel.BasicQos(0, 1, false);
-
-    //    channel.CallbackException += (sender, ea) =>
-    //    {
-    //        Logger.LogError("CallbackException Rpc: " + ea.Exception.Message);
-    //        _consumerChannelReply.Dispose();
-    //        _consumerChannelReply = CreateConsumerChannelReply(cancel);
-    //        //StartBasicConsumeReply();
-    //    };
-
-    //    return channel;
-    //}
 
     private async ValueTask<IModel> CreateConsumerChannelReplyAsync(CancellationToken cancel = default)
     {
@@ -383,7 +335,6 @@ public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcSe
             Logger.LogError(ea.Exception, "CallbackException Rpc: ");
             _consumerChannelReply?.Value.Dispose();
             _consumerChannelReply = new AsyncLazy<IModel>(async () => await CreateConsumerChannelReplyAsync(cancel));
-            //StartBasicConsumeReply();
         };
 
         return channel;

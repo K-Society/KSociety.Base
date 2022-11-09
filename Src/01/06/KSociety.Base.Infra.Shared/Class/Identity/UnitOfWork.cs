@@ -68,19 +68,9 @@ public class UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUs
         return await Context.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    public void Migrate()
-    {
-        Context.Migrate();
-    }
-
     public void Migrate(string targetMigration = null)
     {
         Context.Migrate(targetMigration);
-    }
-
-    public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
-    {
-        await Context.MigrateAsync(cancellationToken).ConfigureAwait(false);
     }
 
     public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)

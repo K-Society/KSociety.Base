@@ -13,9 +13,7 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Class;
 
-/// <summary>
-/// 
-/// </summary>
+///<inheritdoc cref="KSociety.Base.Infra.Shared.Interface.IDatabaseUnitOfWork"/>
 public class DatabaseContext : DbContext, IDatabaseUnitOfWork
 {
     public const string DefaultSchema = "ksociety";
@@ -155,6 +153,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
                     break;
 
                 case DatabaseEngine.Mysql:
+#if NET6_0
                     if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
                     {
                         optionsBuilder.UseMySql(_configuration.ConnectionString, ServerVersion.AutoDetect(_configuration.ConnectionString));
@@ -169,6 +168,12 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
                         optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
                     }
                     break;
+#endif
+
+#if NET7_0
+                    throw new NotImplementedException("Not ready for .Net 7!");
+#endif
+                    
 
                 default:
                     break;
@@ -259,23 +264,11 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
         return output;
     }
 
-    public void Migrate()
-    {
-        Database.Migrate();
-    }
-
     public void Migrate(string targetMigration = null)
     {
         Logger.LogTrace("Migrate {0}", targetMigration);
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
-        migrator.Migrate(targetMigration);
-    }
-
-    public async ValueTask MigrateAsync(CancellationToken cancellationToken = default)
-    {
-        Logger.LogTrace("MigrateAsync");
-
-        await Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+        migrator?.Migrate(targetMigration);
     }
 
     public async ValueTask MigrateAsync(string targetMigration = null, CancellationToken cancellationToken = default)
@@ -288,7 +281,7 @@ public class DatabaseContext : DbContext, IDatabaseUnitOfWork
     public string CreateScript()
     {
         var migrator = Database.GetInfrastructure().GetService<IMigrator>();
-        return migrator.GenerateScript();
+        return migrator?.GenerateScript();
     }
 
     public virtual void BeginTransaction()

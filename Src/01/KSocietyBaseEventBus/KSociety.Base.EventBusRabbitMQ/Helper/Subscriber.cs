@@ -5,7 +5,7 @@ using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System.Collections.Generic;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ.Helper;
 
@@ -15,6 +15,8 @@ public class Subscriber
     private readonly IEventBusParameters _eventBusParameters;
     public IRabbitMqPersistentConnection PersistentConnection { get; }
     public Dictionary<string, IEventBus> EventBus { get; } = new();
+
+    #region [Constructor]
 
     public Subscriber(
         ILoggerFactory loggerFactory,
@@ -26,68 +28,110 @@ public class Subscriber
 
         PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, _loggerFactory);
     }
-    public void SubscribeClientServer<
+
+    public Subscriber(
+        ILoggerFactory loggerFactory,
+        IRabbitMqPersistentConnection persistentConnection,
+        IEventBusParameters eventBusParameters)
+    {
+        _loggerFactory = loggerFactory;
+        _eventBusParameters = eventBusParameters;
+
+        PersistentConnection = persistentConnection;
+    }
+
+    #endregion
+
+    public async ValueTask SubscribeClientServer<
         TIntegrationRpcClientHandler, TIntegrationRpcServerHandler,
         TIntegrationEvent, TIntegrationEventReply>(
         string eventBusName, string queueName,
         string routingKey, string replyRoutingKey,
-        TIntegrationRpcClientHandler integrationRpcClientHandler, TIntegrationRpcServerHandler integrationRpcServerHandler,
-        CancellationToken cancellationToken = default
+        TIntegrationRpcClientHandler integrationRpcClientHandler, TIntegrationRpcServerHandler integrationRpcServerHandler
     )
         where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
         where TIntegrationEvent : IIntegrationEventRpc
         where TIntegrationEventReply : IIntegrationEventReply
     {
-        SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
+        await SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
             eventBusName, queueName,
-            replyRoutingKey, integrationRpcClientHandler,
-            cancellationToken);
+            replyRoutingKey, integrationRpcClientHandler);
 
-        SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
+        await SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
             eventBusName, queueName,
-            routingKey, integrationRpcServerHandler,
-            cancellationToken);
+            routingKey, integrationRpcServerHandler);
     }
 
-    //public void Subscribe<TIntegrationRpcHandler, TIntegrationEvent, TIntegrationEventReply>(
-    //    string eventBusName, string queueName,
-    //    string replyRoutingKey, TIntegrationRpcHandler integrationRpcHandler, CancellationToken cancellationToken = default)
-    //    where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
-    //    where TIntegrationEvent : IIntegrationEvent
-    //    where TIntegrationEventReply : IIntegrationEventReply
-    //{
-
-    //}
-
-    public void SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
+    public async ValueTask SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
         string eventBusName, string queueName,
-        string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler, 
-        CancellationToken cancellationToken = default)
+        string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler)
         where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         where TIntegrationEventReply : IIntegrationEventReply
     {
+        if (EventBus.ContainsKey(eventBusName + "_Client")) return;
+
         EventBus.Add(eventBusName + "_Client",
             new EventBusRabbitMqRpcClient(PersistentConnection, _loggerFactory, integrationRpcClientHandler,
-                null, _eventBusParameters, queueName, cancellationToken));
+                null, _eventBusParameters, queueName));
 
-        ((IEventBusRpcClient)EventBus[eventBusName + "_Client"])
+        ((IEventBusRpcClient)EventBus[eventBusName + "_Client"]).Initialize();
+
+        await ((IEventBusRpcClient)EventBus[eventBusName + "_Client"])
             .SubscribeRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(replyRoutingKey);
     }
 
-    public void SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
+    public async ValueTask SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
         string eventBusName, string queueName,
-        string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler,
-        CancellationToken cancellationToken = default)
+        string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler)
         where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
         where TIntegrationEvent : IIntegrationEventRpc
         where TIntegrationEventReply : IIntegrationEventReply
     {
+        if (EventBus.ContainsKey(eventBusName + "_Server")) return;
+        
         EventBus.Add(eventBusName + "_Server",
             new EventBusRabbitMqRpcServer(PersistentConnection, _loggerFactory, integrationRpcServerHandler,
-                null, _eventBusParameters, queueName, CancellationToken.None));
+                null, _eventBusParameters, queueName));
 
-        ((IEventBusRpcServer)EventBus[eventBusName + "_Server"])
-            .SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcServerHandler>(routingKey);
+        ((IEventBusRpcServer)EventBus[eventBusName + "_Server"]).Initialize();
+
+        await ((IEventBusRpcServer)EventBus[eventBusName + "_Server"])
+            .SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply,
+                TIntegrationRpcServerHandler>(routingKey);
+    }
+
+    public async ValueTask SubscribeTyped<TIntegrationEventHandler, TIntegrationEvent>(
+        string eventBusName, string queueName,
+        string routingKey, TIntegrationEventHandler integrationEventHandler)
+        where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
+        where TIntegrationEvent : IIntegrationEvent
+    {
+        if (EventBus.ContainsKey(eventBusName)) return;
+
+        EventBus.Add(eventBusName,
+            new EventBusRabbitMqTyped(PersistentConnection, _loggerFactory, integrationEventHandler,
+                null, _eventBusParameters, queueName));
+
+        ((IEventBusTyped)EventBus[eventBusName]).Initialize();
+
+        await ((IEventBusTyped)EventBus[eventBusName])
+        .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey);
+    }
+
+    public async ValueTask SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
+        string eventBusName, string queueName,
+        TIntegrationEventHandler integrationEventHandler
+        )
+        where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
+        where TIntegrationEvent : IIntegrationEvent
+    {
+        if (EventBus.ContainsKey(eventBusName)) return;
+
+        EventBus.Add(eventBusName,
+            new EventBusRabbitMqQueue(PersistentConnection, _loggerFactory, integrationEventHandler,
+                null, _eventBusParameters, queueName));
+
+        ((IEventBusQueue)EventBus[eventBusName]).Initialize();
     }
 }

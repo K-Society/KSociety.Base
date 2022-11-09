@@ -3,7 +3,7 @@ using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ;
 
@@ -14,9 +14,8 @@ public sealed class EventBusRabbitMqTyped : EventBusRabbitMq, IEventBusTyped
     public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
-        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName, cancel)
+        string queueName = null)
+        : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
     {
 
     }
@@ -24,9 +23,8 @@ public sealed class EventBusRabbitMqTyped : EventBusRabbitMq, IEventBusTyped
     public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
         IEventBusSubscriptionsManager subsManager,
         IEventBusParameters eventBusParameters,
-        string queueName = null,
-        CancellationToken cancel = default)
-        : base(persistentConnection, loggerFactory, subsManager, eventBusParameters, queueName, cancel)
+        string queueName = null)
+        : base(persistentConnection, loggerFactory, subsManager, eventBusParameters, queueName)
     {
 
     }
@@ -35,16 +33,16 @@ public sealed class EventBusRabbitMqTyped : EventBusRabbitMq, IEventBusTyped
 
     #region [Subscribe]
 
-    public void Subscribe<T, TH>(string routingKey)
+    public async ValueTask Subscribe<T, TH>(string routingKey)
         where T : IIntegrationEvent
         where TH : IIntegrationEventHandler<T>
     {
 
         var eventName = SubsManager.GetEventKey<T>();
         Logger.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
-        DoInternalSubscription(eventName + "." + routingKey);
+        await DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
         SubsManager.AddSubscription<T, TH>(eventName + "." + routingKey);
-        StartBasicConsume();
+        await StartBasicConsume().ConfigureAwait(false);
     }
 
     #endregion
