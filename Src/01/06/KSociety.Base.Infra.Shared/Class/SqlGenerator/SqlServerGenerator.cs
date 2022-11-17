@@ -13,20 +13,6 @@ public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
     private readonly ILogger<SqlServerGenerator> _logger;
 
     //It must be public.
-
-#if NET6_0
-    public SqlServerGenerator(
-        ILoggerFactory loggerFactory,
-        MigrationsSqlGeneratorDependencies dependencies,
-        IRelationalAnnotationProvider migrationsAnnotations)
-        : base(dependencies, migrationsAnnotations)
-    {
-        _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
-        _logger.LogTrace("SqlServerGenerator");
-    }
-#endif
-
-#if NET7_0
     public SqlServerGenerator(
         ILoggerFactory loggerFactory,
         MigrationsSqlGeneratorDependencies dependencies,
@@ -36,7 +22,7 @@ public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
         _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
         _logger.LogTrace("SqlServerGenerator");
     }
-#endif
+
 
     protected override void Generate(
         MigrationOperation operation,
