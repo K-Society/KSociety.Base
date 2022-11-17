@@ -1,8 +1,7 @@
-﻿#if NET6_0
-
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.EntityFrameworkCore.Update;
 using Microsoft.Extensions.Logging;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
 using Pomelo.EntityFrameworkCore.MySql.Migrations;
@@ -18,9 +17,9 @@ public class MySqlGenerator : MySqlMigrationsSqlGenerator
     public MySqlGenerator(
         ILoggerFactory loggerFactory,
         MigrationsSqlGeneratorDependencies dependencies,
-        IRelationalAnnotationProvider migrationsAnnotations,
+        ICommandBatchPreparer commandBatchPreparer,
         IMySqlOptions options)
-        : base(dependencies, migrationsAnnotations, options)
+        : base(dependencies, commandBatchPreparer, options)
     {
         _logger = loggerFactory.CreateLogger<MySqlGenerator>();
         _logger.LogTrace("MySqlGenerator");
@@ -49,5 +48,3 @@ public class MySqlGenerator : MySqlMigrationsSqlGenerator
         }
     }
 }
-
-#endif
