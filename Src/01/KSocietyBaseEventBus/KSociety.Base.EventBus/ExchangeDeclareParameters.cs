@@ -1,36 +1,38 @@
-﻿namespace KSociety.Base.EventBus;
-
-///<inheritdoc/>
-public class ExchangeDeclareParameters : IExchangeDeclareParameters
+﻿namespace KSociety.Base.EventBus
 {
     ///<inheritdoc/>
-    public string BrokerName { get; set; }
-
-    ///<inheritdoc/>
-    public string ExchangeType { get; set; }
-
-    ///<inheritdoc/>
-    public string ExchangeName
+    public class ExchangeDeclareParameters : IExchangeDeclareParameters
     {
-        get
+        ///<inheritdoc/>
+        public string BrokerName { get; set; }
+
+        ///<inheritdoc/>
+        public string ExchangeType { get; set; }
+
+        ///<inheritdoc/>
+        public string ExchangeName
         {
-            return BrokerName + "_" + ExchangeType;
+            get
+            {
+                return BrokerName + "_" + ExchangeType;
+            }
         }
-    }
 
-    ///<inheritdoc/>
-    public bool ExchangeDurable { get; set; }
+        ///<inheritdoc/>
+        public bool ExchangeDurable { get; set; }
 
-    ///<inheritdoc/>
-    public bool ExchangeAutoDelete { get; set; }
+        ///<inheritdoc/>
+        public bool ExchangeAutoDelete { get; set; }
 
-    public ExchangeDeclareParameters(){}
+        public ExchangeDeclareParameters() { }
 
-    public ExchangeDeclareParameters(string brokerName, ExchangeType exchangeType,  bool exchangeDurable = false, bool exchangeAutoDelete = false)
-    {
-        BrokerName = brokerName;
-        ExchangeType = exchangeType.ToString().ToLower();
-        ExchangeDurable = exchangeDurable;
-        ExchangeAutoDelete = exchangeAutoDelete;
+        public ExchangeDeclareParameters(string brokerName, ExchangeType exchangeType, bool exchangeDurable = false,
+            bool exchangeAutoDelete = false)
+        {
+            BrokerName = brokerName;
+            ExchangeType = exchangeType.ToString().ToLower();
+            ExchangeDurable = exchangeDurable;
+            ExchangeAutoDelete = exchangeAutoDelete;
+        }
     }
 }

@@ -1,24 +1,25 @@
-﻿namespace KSociety.Base.EventBus;
-
-///<inheritdoc/>
-public class EventBusParameters : IEventBusParameters
+﻿namespace KSociety.Base.EventBus
 {
     ///<inheritdoc/>
-    public bool Debug { get; set; }
-
-    ///<inheritdoc/>
-    public IExchangeDeclareParameters ExchangeDeclareParameters { get; set; }
-
-    ///<inheritdoc/>
-    public IQueueDeclareParameters QueueDeclareParameters { get; set; }
-
-    public EventBusParameters(){}
-
-    public EventBusParameters(IExchangeDeclareParameters exchangeDeclareParameters,
-        IQueueDeclareParameters queueDeclareParameters, bool debug = false)
+    public class EventBusParameters : IEventBusParameters
     {
-        Debug = debug;
-        ExchangeDeclareParameters = exchangeDeclareParameters;
-        QueueDeclareParameters = queueDeclareParameters;
+        ///<inheritdoc/>
+        public bool Debug { get; set; }
+
+        ///<inheritdoc/>
+        public IExchangeDeclareParameters ExchangeDeclareParameters { get; set; }
+
+        ///<inheritdoc/>
+        public IQueueDeclareParameters QueueDeclareParameters { get; set; }
+
+        public EventBusParameters() { }
+
+        public EventBusParameters(IExchangeDeclareParameters exchangeDeclareParameters,
+            IQueueDeclareParameters queueDeclareParameters, bool debug = false)
+        {
+            Debug = debug;
+            ExchangeDeclareParameters = exchangeDeclareParameters;
+            QueueDeclareParameters = queueDeclareParameters;
+        }
     }
 }

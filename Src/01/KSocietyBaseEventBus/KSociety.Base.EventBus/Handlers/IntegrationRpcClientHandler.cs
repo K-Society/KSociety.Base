@@ -5,27 +5,32 @@ using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
 
-namespace KSociety.Base.EventBus.Handlers;
-
-public class IntegrationRpcClientHandler<TIntegrationEventReply>
-    : IntegrationGeneralHandler, IIntegrationRpcClientHandler<TIntegrationEventReply>
-    where TIntegrationEventReply : IIntegrationEventReply
+namespace KSociety.Base.EventBus.Handlers
 {
-    protected readonly ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>> Logger;
-
-    public IntegrationRpcClientHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
-        : base(loggerFactory, componentContext)
+    public class IntegrationRpcClientHandler<TIntegrationEventReply>
+        : IntegrationGeneralHandler, IIntegrationRpcClientHandler<TIntegrationEventReply>
+        where TIntegrationEventReply : IIntegrationEventReply
     {
-        Logger = LoggerFactory.CreateLogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>();
-    }
+        protected readonly ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>> Logger;
 
-    public virtual void HandleReply(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default)
-    {
-        Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}",  "NotImplemented!", @integrationEventReply.RoutingKey);
-    }
+        public IntegrationRpcClientHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
+            : base(loggerFactory, componentContext)
+        {
+            Logger = LoggerFactory.CreateLogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>();
+        }
 
-    public virtual async ValueTask HandleReplyAsync(TIntegrationEventReply @integrationEventReply, CancellationToken cancel = default)
-    {
-        Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}", "NotImplemented!", @integrationEventReply.RoutingKey);
+        public virtual void HandleReply(TIntegrationEventReply @integrationEventReply,
+            CancellationToken cancel = default)
+        {
+            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}", "NotImplemented!",
+                @integrationEventReply.RoutingKey);
+        }
+
+        public virtual async ValueTask HandleReplyAsync(TIntegrationEventReply @integrationEventReply,
+            CancellationToken cancel = default)
+        {
+            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}", "NotImplemented!",
+                @integrationEventReply.RoutingKey);
+        }
     }
 }

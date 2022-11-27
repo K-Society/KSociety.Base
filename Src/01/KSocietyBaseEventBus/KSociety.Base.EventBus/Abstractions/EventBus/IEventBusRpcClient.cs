@@ -2,21 +2,23 @@
 using System.Threading.Tasks;
 using KSociety.Base.EventBus.Abstractions.Handler;
 
-namespace KSociety.Base.EventBus.Abstractions.EventBus;
-
-public interface IEventBusRpcClient : IEventBus
+namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
-    Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event, CancellationToken cancellationToken = default)
-        where TIntegrationEventReply : IIntegrationEventReply;
+    public interface IEventBusRpcClient : IEventBus
+    {
+        Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event,
+            CancellationToken cancellationToken = default)
+            where TIntegrationEventReply : IIntegrationEventReply;
 
-    IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
-        where TIntegrationEventReply : IIntegrationEventReply;
+        IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
+            where TIntegrationEventReply : IIntegrationEventReply;
 
-    ValueTask SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
-        where TIntegrationEventReply : IIntegrationEventReply
-        where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
+        ValueTask SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
+            where TIntegrationEventReply : IIntegrationEventReply
+            where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
 
-    void UnsubscribeRpcClient<TIntegrationEventReply, TH>(string routingKey)
-        where TIntegrationEventReply : IIntegrationEventReply
-        where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
+        void UnsubscribeRpcClient<TIntegrationEventReply, TH>(string routingKey)
+            where TIntegrationEventReply : IIntegrationEventReply
+            where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
+    }
 }

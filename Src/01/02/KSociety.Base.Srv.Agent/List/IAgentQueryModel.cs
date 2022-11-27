@@ -2,13 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Srv.Agent.List;
-
-public interface IAgentQueryModel<T, TList>
-    where T : IObject
-    where TList : IList<T>
+namespace KSociety.Base.Srv.Agent.List
 {
-    TList LoadAllRecords(CancellationToken cancellationToken = default);
+    public interface IAgentQueryModel<T, TList>
+        where T : IObject
+        where TList : IList<T>
+    {
+        TList LoadAllRecords(CancellationToken cancellationToken = default);
 
-    ValueTask<TList> LoadAllRecordsAsync(CancellationToken cancellationToken = default);
+        ValueTask<TList> LoadAllRecordsAsync(CancellationToken cancellationToken = default);
+    }
 }

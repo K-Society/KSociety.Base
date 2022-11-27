@@ -5,28 +5,31 @@ using KSociety.Base.Srv.Shared.Interface;
 using Microsoft.Extensions.Logging;
 using ProtoBuf.Grpc;
 
-namespace KSociety.Base.Srv.Behavior;
-public class Export<TExportReq, TExportRes> : IExport<TExportReq, TExportRes>
-    where TExportReq : class, IRequest, new()
-    where TExportRes : class, IResponse, new()
+namespace KSociety.Base.Srv.Behavior
 {
-    protected readonly ILoggerFactory LoggerFactory;
-    protected readonly IComponentContext ComponentContext;
-    protected readonly ICommandHandler CommandHandler;
-
-    public Export(
-        ILoggerFactory loggerFactory,
-        IComponentContext componentContext,
-        ICommandHandler commandHandler
-    )
+    public class Export<TExportReq, TExportRes> : IExport<TExportReq, TExportRes>
+        where TExportReq : class, IRequest, new()
+        where TExportRes : class, IResponse, new()
     {
-        LoggerFactory = loggerFactory;
-        ComponentContext = componentContext;
-        CommandHandler = commandHandler;
-    }
+        protected readonly ILoggerFactory LoggerFactory;
+        protected readonly IComponentContext ComponentContext;
+        protected readonly ICommandHandler CommandHandler;
 
-    public virtual TExportRes ExportData(TExportReq exportReq, CallContext context = default)
-    {
-        return CommandHandler.ExecuteWithResponse<TExportReq, TExportRes>(LoggerFactory, ComponentContext, exportReq);
+        public Export(
+            ILoggerFactory loggerFactory,
+            IComponentContext componentContext,
+            ICommandHandler commandHandler
+        )
+        {
+            LoggerFactory = loggerFactory;
+            ComponentContext = componentContext;
+            CommandHandler = commandHandler;
+        }
+
+        public virtual TExportRes ExportData(TExportReq exportReq, CallContext context = default)
+        {
+            return CommandHandler.ExecuteWithResponse<TExportReq, TExportRes>(LoggerFactory, ComponentContext,
+                exportReq);
+        }
     }
 }

@@ -3,26 +3,27 @@ using System.Threading.Tasks;
 using KSociety.Base.Infra.Shared.Interface;
 using Microsoft.Extensions.Logging;
 
-namespace KSociety.Base.App.Shared.ReqHdlr;
-
-public class MigrationReqHdlr : IRequestHandler, IRequestHandlerAsync
+namespace KSociety.Base.App.Shared.ReqHdlr
 {
-    private readonly ILogger<MigrationReqHdlr> _logger;
-    private readonly IDatabaseUnitOfWork _unitOfWork;
-
-    public MigrationReqHdlr(ILogger<MigrationReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
+    public class MigrationReqHdlr : IRequestHandler, IRequestHandlerAsync
     {
-        _logger = logger;
-        _unitOfWork = unitOfWork;
-    }
+        private readonly ILogger<MigrationReqHdlr> _logger;
+        private readonly IDatabaseUnitOfWork _unitOfWork;
 
-    public void Execute()
-    {
-        _unitOfWork.Migrate();
-    }
+        public MigrationReqHdlr(ILogger<MigrationReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
+        {
+            _logger = logger;
+            _unitOfWork = unitOfWork;
+        }
 
-    public async ValueTask ExecuteAsync(CancellationToken cancellationToken = default)
-    {
-        await _unitOfWork.MigrateAsync(null, cancellationToken).ConfigureAwait(false);
+        public void Execute()
+        {
+            _unitOfWork.Migrate();
+        }
+
+        public async ValueTask ExecuteAsync(CancellationToken cancellationToken = default)
+        {
+            await _unitOfWork.MigrateAsync(null, cancellationToken).ConfigureAwait(false);
+        }
     }
 }

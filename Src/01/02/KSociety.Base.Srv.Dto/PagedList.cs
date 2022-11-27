@@ -2,50 +2,47 @@
 using ProtoBuf;
 using System;
 
-namespace KSociety.Base.Srv.Dto;
-
-[ProtoContract]
-public class PagedList<T>
-    : ObjectList<T> where T : IObject
+namespace KSociety.Base.Srv.Dto
 {
-    [ProtoMember(1)]
-    public int TotalRows { get; set; }
-
-    [ProtoMember(2)]
-    public int PageNumber { get; set; }
-
-    [ProtoMember(3)]
-    public int PageSize { get; set; }
-
-    [ProtoMember(4)]
-    public int TotalPages { get; set; }
-
-    public bool PreviousPage
+    [ProtoContract]
+    public class PagedList<T>
+        : ObjectList<T> where T : IObject
     {
-        get
+        [ProtoMember(1)] public int TotalRows { get; set; }
+
+        [ProtoMember(2)] public int PageNumber { get; set; }
+
+        [ProtoMember(3)] public int PageSize { get; set; }
+
+        [ProtoMember(4)] public int TotalPages { get; set; }
+
+        public bool PreviousPage
         {
-            return PageNumber > 1;
+            get
+            {
+                return PageNumber > 1;
+            }
         }
-    }
 
-    public bool NextPage
-    {
-        get
+        public bool NextPage
         {
-            return PageNumber < TotalPages;
+            get
+            {
+                return PageNumber < TotalPages;
+            }
         }
-    }
 
-    public PagedList()
-    {
+        public PagedList()
+        {
 
-    }
+        }
 
-    public PagedList(int totalRows, int pageNumber, int pageSize)
-    {
-        TotalRows = totalRows;
-        PageNumber = pageNumber;
-        PageSize = pageSize;
-        TotalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+        public PagedList(int totalRows, int pageNumber, int pageSize)
+        {
+            TotalRows = totalRows;
+            PageNumber = pageNumber;
+            PageSize = pageSize;
+            TotalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+        }
     }
 }

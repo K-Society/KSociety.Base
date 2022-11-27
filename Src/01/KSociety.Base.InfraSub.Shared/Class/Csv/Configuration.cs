@@ -5,46 +5,43 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace KSociety.Base.InfraSub.Shared.Class.Csv;
-
-public static class Configuration
+namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
-    public static CsvConfiguration CsvConfiguration => new CsvConfiguration(CultureInfo.InvariantCulture)
+    public static class Configuration
     {
-        Delimiter = ";",
-        PrepareHeaderForMatch = header => header.Header.ToLower(),
-
-        GetConstructor = GetConstructor
-    };
-
-    public static CsvConfiguration CsvConfigurationWrite => new CsvConfiguration(CultureInfo.InvariantCulture)
-    {
-        Delimiter = ";",
-
-        PrepareHeaderForMatch = (header) => header.Header.ToLower(),
-
-        GetConstructor = GetConstructor
-
-    };
-
-    private static bool ShouldUseConstructorParameters(Type type)
-    {
-        return true;
-    }
-
-    private static ConstructorInfo GetConstructor(GetConstructorArgs args)
-    {
-        try
+        public static CsvConfiguration CsvConfiguration => new CsvConfiguration(CultureInfo.InvariantCulture)
         {
-            var result = args.ClassType.GetConstructors().FirstOrDefault();
+            Delimiter = ";",
+            PrepareHeaderForMatch = header => header.Header.ToLower(),
+            GetConstructor = GetConstructor
+        };
 
-            return result;
-        }
-        catch (Exception)
+        public static CsvConfiguration CsvConfigurationWrite => new CsvConfiguration(CultureInfo.InvariantCulture)
         {
-            ;
+            Delimiter = ";",
+            PrepareHeaderForMatch = (header) => header.Header.ToLower(),
+            GetConstructor = GetConstructor
+        };
+
+        private static bool ShouldUseConstructorParameters(Type type)
+        {
+            return true;
         }
 
-        return null;
+        private static ConstructorInfo GetConstructor(GetConstructorArgs args)
+        {
+            try
+            {
+                var result = args.ClassType.GetConstructors().FirstOrDefault();
+
+                return result;
+            }
+            catch (Exception)
+            {
+                ;
+            }
+
+            return null;
+        }
     }
 }

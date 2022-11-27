@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 
-namespace KSociety.Base.EventBus.Abstractions.EventBus;
-
-public interface IEventBus : IEventBusBase
+namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
-    ValueTask Publish(IIntegrationEvent @event);
+    public interface IEventBus : IEventBusBase
+    {
+        ValueTask Publish(IIntegrationEvent @event);
+    }
 }

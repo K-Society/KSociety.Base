@@ -4,48 +4,51 @@ using System.Threading.Tasks;
 using KSociety.Base.Domain.Shared.Class;
 using MediatR;
 
-namespace KSociety.Base.Infra.Shared.Class;
-
-public static class MediatorExtension
+namespace KSociety.Base.Infra.Shared.Class
 {
-    public static void DispatchDomainEvents(this IMediator mediator, DatabaseContext ctx)
+    public static class MediatorExtension
     {
-        var domainEntities = ctx.ChangeTracker
-            .Entries<BaseEntity>()
-            .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
-
-        var domainEvents = domainEntities
-            .SelectMany(x => x.Entity.DomainEvents)
-            .ToList();
-
-        domainEntities.ToList()
-            .ForEach(entity => entity.Entity.ClearDomainEvents());
-
-
-        foreach (var domainEvent in domainEvents)
+        public static void DispatchDomainEvents(this IMediator mediator, DatabaseContext ctx)
         {
-            mediator.Publish(domainEvent);//.Wait();
+            var domainEntities = ctx.ChangeTracker
+                .Entries<BaseEntity>()
+                .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
+
+            var domainEvents = domainEntities
+                .SelectMany(x => x.Entity.DomainEvents)
+                .ToList();
+
+            domainEntities.ToList()
+                .ForEach(entity => entity.Entity.ClearDomainEvents());
+
+
+            foreach (var domainEvent in domainEvents)
+            {
+                mediator.Publish(domainEvent); //.Wait();
+            }
         }
-    }
 
-    public static async Task DispatchDomainEventsAsync(this IMediator mediator, DatabaseContext ctx, CancellationToken cancellationToken = default)
-    {
-        var domainEntities = ctx.ChangeTracker
-            .Entries<BaseEntity>()
-            .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
+        public static async Task DispatchDomainEventsAsync(this IMediator mediator, DatabaseContext ctx,
+            CancellationToken cancellationToken = default)
+        {
+            var domainEntities = ctx.ChangeTracker
+                .Entries<BaseEntity>()
+                .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
 
-        var domainEvents = domainEntities
-            .SelectMany(x => x.Entity.DomainEvents)
-            .ToList();
+            var domainEvents = domainEntities
+                .SelectMany(x => x.Entity.DomainEvents)
+                .ToList();
 
-        domainEntities.ToList()
-            .ForEach(entity => entity.Entity.ClearDomainEvents());
+            domainEntities.ToList()
+                .ForEach(entity => entity.Entity.ClearDomainEvents());
 
-        var tasks = domainEvents
-            .Select(async (domainEvent) => {
-                await mediator.Publish(domainEvent, cancellationToken).ConfigureAwait(false);
-            });
+            var tasks = domainEvents
+                .Select(async (domainEvent) =>
+                {
+                    await mediator.Publish(domainEvent, cancellationToken).ConfigureAwait(false);
+                });
 
-        await Task.WhenAll(tasks).ConfigureAwait(false);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+        }
     }
 }

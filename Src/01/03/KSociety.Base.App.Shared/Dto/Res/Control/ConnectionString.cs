@@ -1,17 +1,17 @@
 ﻿using ProtoBuf;
 
-namespace KSociety.Base.App.Shared.Dto.Res.Control;
-
-[ProtoContract]
-public class ConnectionString : IResponse
+namespace KSociety.Base.App.Shared.Dto.Res.Control
 {
-    [ProtoMember(1)]
-    public string Result { get; set; }
-
-    public ConnectionString() { }
-
-    public ConnectionString(string result)
+    [ProtoContract]
+    public class ConnectionString : IResponse
     {
-        Result = result;
+        [ProtoMember(1)] public string Result { get; set; }
+
+        public ConnectionString() { }
+
+        public ConnectionString(string result)
+        {
+            Result = result;
+        }
     }
 }

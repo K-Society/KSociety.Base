@@ -10,106 +10,112 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.InfraSub.Shared.Class.Csv;
-
-public static class ReadCsvClassMap<TEntity, TClassMap>
-    where TEntity : class
-    where TClassMap : ClassMap<TEntity>
+namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
-
-    public static TEntity[] Read(ILoggerFactory loggerFactory, string fileName)
+    public static class ReadCsvClassMap<TEntity, TClassMap>
+        where TEntity : class
+        where TClassMap : ClassMap<TEntity>
     {
-        var logger = loggerFactory?.CreateLogger("ReadCsv");
-        var csvFileName = @"." + fileName + @".csv";
-        logger?.LogTrace("ReadCsv csvFileName: {0}", csvFileName);
 
-        var assembly = Assembly.GetCallingAssembly();
-        var resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(csvFileName));
-        logger?.LogTrace("ReadCsv resourceName: {0}", resourceName);
-
-        try
+        public static TEntity[] Read(ILoggerFactory loggerFactory, string fileName)
         {
-            using var stream = assembly.GetManifestResourceStream(resourceName);
-            using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
-            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-            reader.Context.RegisterClassMap<TClassMap>();
-            return reader.GetRecords<TEntity>().ToArray();
+            var logger = loggerFactory?.CreateLogger("ReadCsv");
+            var csvFileName = @"." + fileName + @".csv";
+            logger?.LogTrace("ReadCsv csvFileName: {0}", csvFileName);
+
+            var assembly = Assembly.GetCallingAssembly();
+            var resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(csvFileName));
+            logger?.LogTrace("ReadCsv resourceName: {0}", resourceName);
+
+            try
+            {
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+                reader.Context.RegisterClassMap<TClassMap>();
+                return reader.GetRecords<TEntity>().ToArray();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "Error ReadCsv: ");
+            }
+
+            return null;
         }
-        catch (Exception ex)
+
+        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, string fileName)
         {
-            logger?.LogError(ex, "Error ReadCsv: ");
+            var logger = loggerFactory?.CreateLogger("ImportCsv");
+
+            try
+            {
+                using var streamReader = new StreamReader(fileName);
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+                reader.Context.RegisterClassMap<TClassMap>();
+
+                return reader.GetRecords<TEntity>().ToArray();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "ReadCsv: ");
+            }
+
+            return null;
         }
-        return null;
-    }
 
-    public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, string fileName)
-    {
-        var logger = loggerFactory?.CreateLogger("ImportCsv");
-
-        try
+        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, byte[] byteArray)
         {
-            using var streamReader = new StreamReader(fileName);
-            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-            reader.Context.RegisterClassMap<TClassMap>();
+            var logger = loggerFactory?.CreateLogger("ImportCsv");
 
-            return reader.GetRecords<TEntity>().ToArray();
+            try
+            {
+                using var streamReader = new StreamReader(new MemoryStream(byteArray));
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+                reader.Context.RegisterClassMap<TClassMap>();
+                return reader.GetRecords<TEntity>().ToArray();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "ReadCsv: ");
+            }
+
+            return null;
         }
-        catch (Exception ex)
+
+        public static IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
-            logger?.LogError(ex, "ReadCsv: ");
+            var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+            IAsyncEnumerable<TEntity> output = null;
+
+            try
+            {
+                using var streamReader = new StreamReader(fileName);
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+                reader.Context.RegisterClassMap<TClassMap>();
+                output = reader.GetRecordsAsync<TEntity>();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "ReadCsv.ImportAsync: ");
+            }
+
+            return output;
         }
-        return null;
-    }
 
-    public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, byte[] byteArray)
-    {
-        var logger = loggerFactory?.CreateLogger("ImportCsv");
-
-        try
+        public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
+            var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+
             using var streamReader = new StreamReader(new MemoryStream(byteArray));
             var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
             reader.Context.RegisterClassMap<TClassMap>();
-            return reader.GetRecords<TEntity>().ToArray();
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex, "ReadCsv: ");
-        }
-        return null;
-    }
+            var result = reader.GetRecordsAsync<TEntity>(cancellationToken);
 
-    public static IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, string fileName)
-    {
-        var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-        IAsyncEnumerable<TEntity> output = null;
-
-        try
-        {
-            using var streamReader = new StreamReader(fileName);
-            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-            reader.Context.RegisterClassMap<TClassMap>();
-            output = reader.GetRecordsAsync<TEntity>();
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex, "ReadCsv.ImportAsync: ");
-        }
-        return output;
-    }
-
-    public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-
-        using var streamReader = new StreamReader(new MemoryStream(byteArray));
-        var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-        reader.Context.RegisterClassMap<TClassMap>();
-        var result = reader.GetRecordsAsync<TEntity>(cancellationToken);
-
-        await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
-        {
-            yield return item;
+            await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+            {
+                yield return item;
+            }
         }
     }
 }

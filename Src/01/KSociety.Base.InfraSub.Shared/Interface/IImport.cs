@@ -1,6 +1,7 @@
-﻿namespace KSociety.Base.InfraSub.Shared.Interface;
-
-public interface IImport
+﻿namespace KSociety.Base.InfraSub.Shared.Interface
 {
-    string FileName { get; set; }
+    public interface IImport
+    {
+        string FileName { get; set; }
+    }
 }

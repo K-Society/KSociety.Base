@@ -5,59 +5,66 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Srv.Agent;
-
-public class AgentExport<TExport, TExportAsync, TExportReq, TExportRes> : Connection, IAgentExport<TExportReq, TExportRes>
-    where TExport : class, IExport<TExportReq, TExportRes>
-    where TExportAsync : class, IExportAsync<TExportReq, TExportRes>
-    where TExportReq : class
-    where TExportRes : class
+namespace KSociety.Base.Srv.Agent
 {
-    public AgentExport(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
-        : base(agentConfiguration, loggerFactory)
+    public class AgentExport<TExport, TExportAsync, TExportReq, TExportRes> : Connection,
+        IAgentExport<TExportReq, TExportRes>
+        where TExport : class, IExport<TExportReq, TExportRes>
+        where TExportAsync : class, IExportAsync<TExportReq, TExportRes>
+        where TExportReq : class
+        where TExportRes : class
     {
-
-    }
-
-    public virtual TExportRes ExportData(TExportReq request, CancellationToken cancellationToken = default)
-    {
-        TExportRes output = default;
-        try
+        public AgentExport(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
+            : base(agentConfiguration, loggerFactory)
         {
-            using (Channel)
+
+        }
+
+        public virtual TExportRes ExportData(TExportReq request, CancellationToken cancellationToken = default)
+        {
+            TExportRes output = default;
+            try
             {
-                var client = Channel.CreateGrpcService<TExport>();
+                using (Channel)
+                {
+                    var client = Channel.CreateGrpcService<TExport>();
 
-                var result = client.ExportData(request, ConnectionOptions(cancellationToken));
+                    var result = client.ExportData(request, ConnectionOptions(cancellationToken));
 
-                output = result;
+                    output = result;
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        }
-        return output;
-    }
-
-    public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq request, CancellationToken cancellationToken = default)
-    {
-        TExportRes output = default;
-        try
-        {
-            using (Channel)
+            catch (Exception ex)
             {
-                var client = Channel.CreateGrpcService<TExportAsync>();
-
-                var result = await client.ExportDataAsync(request, ConnectionOptions(cancellationToken));
-
-                output = result;
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
+
+            return output;
         }
-        catch (Exception ex)
+
+        public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq request,
+            CancellationToken cancellationToken = default)
         {
-            Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            TExportRes output = default;
+            try
+            {
+                using (Channel)
+                {
+                    var client = Channel.CreateGrpcService<TExportAsync>();
+
+                    var result = await client.ExportDataAsync(request, ConnectionOptions(cancellationToken));
+
+                    output = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            }
+
+            return output;
         }
-        return output;
     }
 }

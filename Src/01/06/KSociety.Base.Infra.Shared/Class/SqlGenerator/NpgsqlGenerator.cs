@@ -5,37 +5,51 @@ using Microsoft.Extensions.Logging;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations;
 
-namespace KSociety.Base.Infra.Shared.Class.SqlGenerator;
-
-//No Abstract.
-public class NpgsqlGenerator : NpgsqlMigrationsSqlGenerator
+namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
-    private readonly ILogger<SqliteGenerator> _logger;
-    //It must be public.
-    public NpgsqlGenerator(
-        ILoggerFactory loggerFactory,
-        MigrationsSqlGeneratorDependencies dependencies,
-        INpgsqlSingletonOptions migrationsAnnotations)
-        : base(dependencies, migrationsAnnotations)
+    //No Abstract.
+    public class NpgsqlGenerator : NpgsqlMigrationsSqlGenerator
     {
-        _logger = loggerFactory.CreateLogger<SqliteGenerator>();
-        _logger.LogTrace("NpgsqlGenerator");
-    }
+        private readonly ILogger<NpgsqlGenerator> _logger;
 
-    //[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "Just because")]
-    protected override void Generate(
-        MigrationOperation operation,
-        IModel model,
-        MigrationCommandListBuilder builder)
-    {
-        if (operation is CreateViewOperation createViewOperation)
+        //It must be public.
+#if NET5_0
+        public NpgsqlGenerator(
+            ILoggerFactory loggerFactory,
+            MigrationsSqlGeneratorDependencies dependencies,
+            INpgsqlOptions migrationsAnnotations)
+            : base(dependencies, migrationsAnnotations)
         {
-            //Generate(createViewOperation, builder);
-            SqlGeneratorHelper.Generate(_logger, createViewOperation, builder, Dependencies.SqlGenerationHelper);
+            _logger = loggerFactory.CreateLogger<NpgsqlGenerator>();
+            _logger.LogTrace("NpgsqlGenerator");
         }
-        else
+#elif NET6_0_OR_GREATER
+        public NpgsqlGenerator(
+            ILoggerFactory loggerFactory,
+            MigrationsSqlGeneratorDependencies dependencies,
+            INpgsqlSingletonOptions migrationsAnnotations)
+            : base(dependencies, migrationsAnnotations)
         {
-            base.Generate(operation, model, builder);
+            _logger = loggerFactory.CreateLogger<NpgsqlGenerator>();
+            _logger.LogTrace("NpgsqlGenerator");
+        }
+#endif
+
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "Just because")]
+        protected override void Generate(
+            MigrationOperation operation,
+            IModel model,
+            MigrationCommandListBuilder builder)
+        {
+            if (operation is CreateViewOperation createViewOperation)
+            {
+                //Generate(createViewOperation, builder);
+                SqlGeneratorHelper.Generate(_logger, createViewOperation, builder, Dependencies.SqlGenerationHelper);
+            }
+            else
+            {
+                base.Generate(operation, model, builder);
+            }
         }
     }
 }
