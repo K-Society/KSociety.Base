@@ -7,75 +7,78 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.InfraSub.Shared.Class.Csv;
-
-public class WriteCsv<TEntity>
-    where TEntity : class
+namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
-
-    public static TEntity[] Write(ILoggerFactory loggerFactory, string fileName)
+    public class WriteCsv<TEntity>
+        where TEntity : class
     {
-        var logger = loggerFactory.CreateLogger("WriteCsv");
 
-        var csvFileName = @"." + fileName + @".csv";
-        logger.LogTrace("WriteCsv csvFileName: {0}", csvFileName);
-        var assembly = Assembly.GetCallingAssembly();
-        var resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(csvFileName));
-        logger.LogTrace("WriteCsv resourceName: {0}", resourceName);
-
-        try
+        public static TEntity[] Write(ILoggerFactory loggerFactory, string fileName)
         {
-            using var stream = assembly.GetManifestResourceStream(resourceName);
-            using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
-            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+            var logger = loggerFactory.CreateLogger("WriteCsv");
 
-            return reader.GetRecords<TEntity>().ToArray();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "WriteCsv: ");
-        }
-        return null;
-    }
+            var csvFileName = @"." + fileName + @".csv";
+            logger.LogTrace("WriteCsv csvFileName: {0}", csvFileName);
+            var assembly = Assembly.GetCallingAssembly();
+            var resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(csvFileName));
+            logger.LogTrace("WriteCsv resourceName: {0}", resourceName);
 
-    public static bool Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
-    {
-        var logger = loggerFactory.CreateLogger("ExportCsv");
+            try
+            {
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
-        try
-        {
-            using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-            var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
+                return reader.GetRecords<TEntity>().ToArray();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "WriteCsv: ");
+            }
 
-            writer.WriteRecords(records);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            logger?.LogError(ex, "WriteCsv: ");
+            return null;
         }
 
-        return false;
-    }
-
-    public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
-    {
-        var logger = loggerFactory.CreateLogger("ExportAsyncCsv");
-
-        try
+        public static bool Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
         {
-            await using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-            var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
+            var logger = loggerFactory.CreateLogger("ExportCsv");
 
-            await writer.WriteRecordsAsync(records).ConfigureAwait(false);
+            try
+            {
+                using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
+                var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
 
-            return true;
+                writer.WriteRecords(records);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "WriteCsv: ");
+            }
+
+            return false;
         }
-        catch (Exception ex)
+
+        public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName,
+            IEnumerable<TEntity> records)
         {
-            logger?.LogError(ex, "WriteCsv: ");
-        }
+            var logger = loggerFactory.CreateLogger("ExportAsyncCsv");
 
-        return false;
+            try
+            {
+                await using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
+                var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
+
+                await writer.WriteRecordsAsync(records).ConfigureAwait(false);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "WriteCsv: ");
+            }
+
+            return false;
+        }
     }
 }

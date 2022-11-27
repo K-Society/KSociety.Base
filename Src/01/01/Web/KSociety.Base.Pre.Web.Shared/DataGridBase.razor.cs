@@ -9,183 +9,181 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Pre.Web.Shared;
-
-public partial class DataGridBase<T, TList, TGridView> 
-    where T : IObject
-    where TList : InfraSub.Shared.Interface.IList<T>
-    where TGridView : IAgentQueryModel<T, TList>
+namespace KSociety.Base.Pre.Web.Shared
 {
-    [Parameter]
-    public int CurrentPageNumber { get; set; } = 1;
-
-    [Parameter]
-    public List<T> DataItems { get; set; }
-
-    [Parameter]
-    public List<ColumnDefinition> Columns { get; set; }
-
-    //[Parameter]
-    //public PagingConfig Paging { get; set; }
-
-    [Parameter]
-    public RenderFragment CustomPager { get; set; }
-
-    //[Parameter]
-    //public TList QueryListGridView { get; set; }
-
-    [Parameter]
-    public TGridView QueryListGridView { get; set; }
-
-    public Dictionary<string, string> SelectColumns { get; set; } = new();
-
-    protected override void OnInitialized()
+    public partial class DataGridBase<T, TList, TGridView>
+        where T : IObject
+        where TList : InfraSub.Shared.Interface.IList<T>
+        where TGridView : IAgentQueryModel<T, TList>
     {
-        //_queryListGridView = await QueryListGridView.LoadAllRecordsAsync();
-        CreateSelectColumns();
-        CreateColumns();
-        DataItems = QueryListGridView.LoadAllRecords().List;
+        [Parameter] public int CurrentPageNumber { get; set; } = 1;
 
-    }
+        [Parameter] public List<T> DataItems { get; set; }
 
-    //public void GoToPreviousPage()
-    //{
-    //    CurrentPageNumber = Paging.PreviousPageNumber(CurrentPageNumber);
-    //}
+        [Parameter] public List<ColumnDefinition> Columns { get; set; }
 
-    //public void GoToNextPage()
-    //{
-    //    CurrentPageNumber = Paging.NextPageNumber(CurrentPageNumber, QueryListGridView.List.Count);
-    //}
+        //[Parameter]
+        //public PagingConfig Paging { get; set; }
 
-    //private void OnModifyItem(ModifyItemEventArgs args)
-    //{
-    //    ;
-    //    //Value = (string)args.Value;
-    //    //await ValueChanged.InvokeAsync(Value);
-    //}
+        [Parameter] public RenderFragment CustomPager { get; set; }
 
-    public async Task OnSaveClicked()
-    {
-        ;
-    }
+        //[Parameter]
+        //public TList QueryListGridView { get; set; }
 
-    protected async Task OnRowRemovedAsync(T item)
-    {
-        //TAgentCommand.Remove()
-        ;
-    }
+        [Parameter] public TGridView QueryListGridView { get; set; }
 
-    protected void CreateSelectColumns()
-    {
-        foreach (var propertyInfo in typeof(TList).GetProperties())
+        public Dictionary<string, string> SelectColumns { get; set; } = new();
+
+        protected override void OnInitialized()
         {
-            if (propertyInfo.Name.Equals("List")) continue;
+            //_queryListGridView = await QueryListGridView.LoadAllRecordsAsync();
+            CreateSelectColumns();
+            CreateColumns();
+            DataItems = QueryListGridView.LoadAllRecords().List;
 
-            SelectColumns.Add(propertyInfo.Name, propertyInfo.Name);
         }
-    }
 
-    protected void CreateColumns()
-    {
-        Columns ??= new List<ColumnDefinition>();
-        try
+        //public void GoToPreviousPage()
+        //{
+        //    CurrentPageNumber = Paging.PreviousPageNumber(CurrentPageNumber);
+        //}
+
+        //public void GoToNextPage()
+        //{
+        //    CurrentPageNumber = Paging.NextPageNumber(CurrentPageNumber, QueryListGridView.List.Count);
+        //}
+
+        //private void OnModifyItem(ModifyItemEventArgs args)
+        //{
+        //    ;
+        //    //Value = (string)args.Value;
+        //    //await ValueChanged.InvokeAsync(Value);
+        //}
+
+        public async Task OnSaveClicked()
         {
-            foreach (var propertyInfo in typeof(T).GetProperties())
+            ;
+        }
+
+        protected async Task OnRowRemovedAsync(T item)
+        {
+            //TAgentCommand.Remove()
+            ;
+        }
+
+        protected void CreateSelectColumns()
+        {
+            foreach (var propertyInfo in typeof(TList).GetProperties())
             {
-                if (!IsBrowsable(propertyInfo)) continue;
+                if (propertyInfo.Name.Equals("List")) continue;
 
-                //DataGridViewColumn dataGridViewColumn;
-                ColumnDefinition dataGridViewColumn = new ColumnDefinition();
+                SelectColumns.Add(propertyInfo.Name, propertyInfo.Name);
+            }
+        }
 
-                //if (BindingSourcesComboBox.ContainsKey(propertyInfo.Name))
-                //{
-                //    dataGridViewColumn = new StdDataGridViewComboBoxColumn
-                //    {
-                //        ValueMember = "Key",
-                //        DisplayMember = "Value"
-
-                //        //DisplayIndex = 0
-                //    };
-                //}
-                //else
-                //{
-
-                if (SelectColumns.ContainsKey(propertyInfo.Name))
+        protected void CreateColumns()
+        {
+            Columns ??= new List<ColumnDefinition>();
+            try
+            {
+                foreach (var propertyInfo in typeof(T).GetProperties())
                 {
-                    dataGridViewColumn.ColumnType = DataGridColumnType.Text;
-                    dataGridViewColumn.ColumnType = DataGridColumnType.Select;
-                    //SelectColumns[propertyInfo.Name] = typeof(TList).GetProperty(propertyInfo.Name).GetValue(null);
-                }
-                else
-                {
+                    if (!IsBrowsable(propertyInfo)) continue;
 
-                    if (propertyInfo.PropertyType == typeof(bool))
+                    //DataGridViewColumn dataGridViewColumn;
+                    ColumnDefinition dataGridViewColumn = new ColumnDefinition();
+
+                    //if (BindingSourcesComboBox.ContainsKey(propertyInfo.Name))
+                    //{
+                    //    dataGridViewColumn = new StdDataGridViewComboBoxColumn
+                    //    {
+                    //        ValueMember = "Key",
+                    //        DisplayMember = "Value"
+
+                    //        //DisplayIndex = 0
+                    //    };
+                    //}
+                    //else
+                    //{
+
+                    if (SelectColumns.ContainsKey(propertyInfo.Name))
                     {
-                        //dataGridViewColumn = new DataGridViewCheckBoxColumn();
-                        ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
-                        dataGridViewColumn.DataType = DataType.Boolean;
-                        dataGridViewColumn.ColumnType = DataGridColumnType.Check;
-                    }
-                    else if (propertyInfo.PropertyType == typeof(byte[]))
-                    {
-                        //dataGridViewColumn = new StdDataGridViewByteArrayColumn();
-                        ////dataGridViewColumn.ValueType = typeof(string); //propertyInfo.PropertyType;
-                        dataGridViewColumn.DataType = DataType.String;
                         dataGridViewColumn.ColumnType = DataGridColumnType.Text;
-                    }
-                    else if (propertyInfo.PropertyType == typeof(int))
-                    {
-                        //dataGridViewColumn = new DataGridViewTextBoxColumn();
-                        ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
-                        dataGridViewColumn.DataType = DataType.Number; //propertyInfo.PropertyType.ToString();
-                        dataGridViewColumn.ColumnType = DataGridColumnType.Numeric;
+                        dataGridViewColumn.ColumnType = DataGridColumnType.Select;
+                        //SelectColumns[propertyInfo.Name] = typeof(TList).GetProperty(propertyInfo.Name).GetValue(null);
                     }
                     else
                     {
-                        dataGridViewColumn.DataType = DataType.String;
-                        dataGridViewColumn.ColumnType = DataGridColumnType.Text;
+
+                        if (propertyInfo.PropertyType == typeof(bool))
+                        {
+                            //dataGridViewColumn = new DataGridViewCheckBoxColumn();
+                            ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                            dataGridViewColumn.DataType = DataType.Boolean;
+                            dataGridViewColumn.ColumnType = DataGridColumnType.Check;
+                        }
+                        else if (propertyInfo.PropertyType == typeof(byte[]))
+                        {
+                            //dataGridViewColumn = new StdDataGridViewByteArrayColumn();
+                            ////dataGridViewColumn.ValueType = typeof(string); //propertyInfo.PropertyType;
+                            dataGridViewColumn.DataType = DataType.String;
+                            dataGridViewColumn.ColumnType = DataGridColumnType.Text;
+                        }
+                        else if (propertyInfo.PropertyType == typeof(int))
+                        {
+                            //dataGridViewColumn = new DataGridViewTextBoxColumn();
+                            ////dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                            dataGridViewColumn.DataType = DataType.Number; //propertyInfo.PropertyType.ToString();
+                            dataGridViewColumn.ColumnType = DataGridColumnType.Numeric;
+                        }
+                        else
+                        {
+                            dataGridViewColumn.DataType = DataType.String;
+                            dataGridViewColumn.ColumnType = DataGridColumnType.Text;
+                        }
+                    }
+
+
+                    //dataGridViewColumn.ValueType = propertyInfo.PropertyType;
+                    //propertyInfo.PropertyType;
+                    //}
+
+                    //dataGridViewColumn.Name = propertyInfo.Name;
+                    //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
+
+                    dataGridViewColumn.Caption = propertyInfo.Name;
+                    dataGridViewColumn.DataField = propertyInfo.Name;
+                    //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
+
+
+
+                    Columns.Add(dataGridViewColumn);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex.Message + " - " + ex.StackTrace);
+            }
+        }
+
+        private static bool IsBrowsable(PropertyInfo propertyInfo)
+        {
+            var attributes = propertyInfo.GetCustomAttributes(false);
+
+            if (attributes.Any())
+            {
+                foreach (var attribute in attributes)
+                {
+                    if (attribute is BrowsableAttribute browsableAttribute)
+                    {
+                        return browsableAttribute.Browsable;
                     }
                 }
 
-
-                //dataGridViewColumn.ValueType = propertyInfo.PropertyType;
-                //propertyInfo.PropertyType;
-                //}
-
-                //dataGridViewColumn.Name = propertyInfo.Name;
-                //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
-
-                dataGridViewColumn.Caption = propertyInfo.Name;
-                dataGridViewColumn.DataField = propertyInfo.Name;
-                //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
-
-
-
-                Columns.Add(dataGridViewColumn);
+                return true;
             }
-        }
-        catch (Exception ex)
-        {
-            System.Console.WriteLine(ex.Message + " - " + ex.StackTrace);
-        }
-    }
 
-    private static bool IsBrowsable(PropertyInfo propertyInfo)
-    {
-        var attributes = propertyInfo.GetCustomAttributes(false);
-
-        if (attributes.Any())
-        {
-            foreach (var attribute in attributes)
-            {
-                if (attribute is BrowsableAttribute browsableAttribute)
-                {
-                    return browsableAttribute.Browsable;
-                }
-            }
             return true;
         }
-        return true;
     }
 }

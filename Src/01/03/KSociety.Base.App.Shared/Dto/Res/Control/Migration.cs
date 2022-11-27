@@ -1,17 +1,17 @@
 ﻿using ProtoBuf;
 
-namespace KSociety.Base.App.Shared.Dto.Res.Control;
-
-[ProtoContract]
-public class Migration : IResponse
+namespace KSociety.Base.App.Shared.Dto.Res.Control
 {
-    [ProtoMember(1)]
-    public bool Result { get; set; }
-
-    public Migration() { }
-
-    public Migration(bool result)
+    [ProtoContract]
+    public class Migration : IResponse
     {
-        Result = result;
+        [ProtoMember(1)] public bool Result { get; set; }
+
+        public Migration() { }
+
+        public Migration(bool result)
+        {
+            Result = result;
+        }
     }
 }

@@ -5,58 +5,57 @@ using Microsoft.EntityFrameworkCore.Update;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace KSociety.Base.Infra.Shared.Class.SqlGenerator;
-
-//No Abstract.
-public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
+namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
-    private readonly ILogger<SqlServerGenerator> _logger;
-
-    //It must be public.
-
-#if NET6_0
-    public SqlServerGenerator(
-        ILoggerFactory loggerFactory,
-        MigrationsSqlGeneratorDependencies dependencies,
-        IRelationalAnnotationProvider migrationsAnnotations)
-        : base(dependencies, migrationsAnnotations)
+    //No Abstract.
+    public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
     {
-        _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
-        _logger.LogTrace("SqlServerGenerator");
-    }
-#endif
-
-#if NET7_0
-    public SqlServerGenerator(
-        ILoggerFactory loggerFactory,
-        MigrationsSqlGeneratorDependencies dependencies,
-        ICommandBatchPreparer commandBatchPreparer)
-        : base(dependencies, commandBatchPreparer)
-    {
-        _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
-        _logger.LogTrace("SqlServerGenerator");
-    }
-#endif
-
-    protected override void Generate(
-        MigrationOperation operation,
-        IModel model,
-        MigrationCommandListBuilder builder)
-    {
-        try
+        private readonly ILogger<SqlServerGenerator> _logger;
+        //It must be public.
+#if NET5_0
+        public SqlServerGenerator(
+            ILoggerFactory loggerFactory,
+            MigrationsSqlGeneratorDependencies dependencies,
+            IRelationalAnnotationProvider relationalAnnotationProvider)
+            : base(dependencies, relationalAnnotationProvider)
         {
-            if (operation is CreateViewOperation createViewOperation)
-            {
-                SqlGeneratorHelper.Generate(_logger, createViewOperation, builder, Dependencies.SqlGenerationHelper);
-            }
-            else
-            {
-                base.Generate(operation, model, builder);
-            }
+            _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
+            _logger.LogTrace("SqlServerGenerator");
         }
-        catch (Exception ex)
+#elif NET6_0_OR_GREATER
+        public SqlServerGenerator(
+            ILoggerFactory loggerFactory,
+            MigrationsSqlGeneratorDependencies dependencies,
+            ICommandBatchPreparer commandBatchPreparer)
+            : base(dependencies, commandBatchPreparer)
         {
-            _logger.LogError(ex, "Generate: ");
+            _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
+            _logger.LogTrace("SqlServerGenerator");
+        }
+#endif
+
+
+        protected override void Generate(
+            MigrationOperation operation,
+            IModel model,
+            MigrationCommandListBuilder builder)
+        {
+            try
+            {
+                if (operation is CreateViewOperation createViewOperation)
+                {
+                    SqlGeneratorHelper.Generate(_logger, createViewOperation, builder,
+                        Dependencies.SqlGenerationHelper);
+                }
+                else
+                {
+                    base.Generate(operation, model, builder);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Generate: ");
+            }
         }
     }
 }

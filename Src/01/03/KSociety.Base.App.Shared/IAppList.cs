@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace KSociety.Base.App.Shared;
-
-/// <summary>
-/// The IAppList interface.
-/// </summary>
-/// <typeparam name="T">A type that inherits from the <see cref="IRequest"/> interface.</typeparam>
-public interface IAppList<T> where T : IRequest
+namespace KSociety.Base.App.Shared
 {
-    /// <value>Gets or sets the list of the <see cref="IRequest"/>.</value>
-    List<T> List { get; set; }
+    /// <summary>
+    /// The IAppList interface.
+    /// </summary>
+    /// <typeparam name="T">A type that inherits from the <see cref="IRequest"/> interface.</typeparam>
+    public interface IAppList<T> where T : IRequest
+    {
+        /// <value>Gets or sets the list of the <see cref="IRequest"/>.</value>
+        List<T> List { get; set; }
+    }
 }

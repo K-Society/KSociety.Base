@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 using ProtoBuf;
 
-namespace KSociety.Base.App.Shared;
-
-/// <inheritdoc/>
-[ProtoContract]
-public class AppList<T> : IAppList<T> where T : IRequest
+namespace KSociety.Base.App.Shared
 {
     /// <inheritdoc/>
-    [ProtoMember(1)]
-    public List<T> List
+    [ProtoContract]
+    public class AppList<T> : IAppList<T> where T : IRequest
     {
-        get; set;
+        /// <inheritdoc/>
+        [ProtoMember(1)]
+        public List<T> List
+        {
+            get;
+            set;
+        }
     }
 }

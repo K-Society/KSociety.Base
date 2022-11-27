@@ -6,30 +6,33 @@ using Microsoft.Extensions.Logging;
 using ProtoBuf.Grpc;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Srv.Behavior;
-public class ExportAsync<TExportReq, TExportRes> : IExportAsync<TExportReq, TExportRes>
-    where TExportReq : class, IRequest, new()
-    where TExportRes : class, IResponse, new()
+namespace KSociety.Base.Srv.Behavior
 {
-    protected readonly ILoggerFactory LoggerFactory;
-    protected readonly IComponentContext ComponentContext;
-    protected readonly ICommandHandlerAsync CommandHandlerAsync;
-
-    public ExportAsync(
-        ILoggerFactory loggerFactory,
-        IComponentContext componentContext,
-        ICommandHandlerAsync commandHandlerAsync
-    )
+    public class ExportAsync<TExportReq, TExportRes> : IExportAsync<TExportReq, TExportRes>
+        where TExportReq : class, IRequest, new()
+        where TExportRes : class, IResponse, new()
     {
-        LoggerFactory = loggerFactory;
-        ComponentContext = componentContext;
-        CommandHandlerAsync = commandHandlerAsync;
-    }
+        protected readonly ILoggerFactory LoggerFactory;
+        protected readonly IComponentContext ComponentContext;
+        protected readonly ICommandHandlerAsync CommandHandlerAsync;
 
-    public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq exportReq, CallContext context = default)
-    {
-        return await CommandHandlerAsync
-            .ExecuteWithResponseAsync<TExportReq, TExportRes>(LoggerFactory, ComponentContext, exportReq, context.CancellationToken)
-            .ConfigureAwait(false);
+        public ExportAsync(
+            ILoggerFactory loggerFactory,
+            IComponentContext componentContext,
+            ICommandHandlerAsync commandHandlerAsync
+        )
+        {
+            LoggerFactory = loggerFactory;
+            ComponentContext = componentContext;
+            CommandHandlerAsync = commandHandlerAsync;
+        }
+
+        public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq exportReq, CallContext context = default)
+        {
+            return await CommandHandlerAsync
+                .ExecuteWithResponseAsync<TExportReq, TExportRes>(LoggerFactory, ComponentContext, exportReq,
+                    context.CancellationToken)
+                .ConfigureAwait(false);
+        }
     }
 }
