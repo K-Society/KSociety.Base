@@ -1,34 +1,35 @@
 ﻿using Autofac;
 using MediatR;
 
-namespace KSociety.Base.Srv.Host.Shared.Bindings;
-
-/// <summary>
-/// 
-/// </summary>
-public class Mediatr : Module
+namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
-    protected override void Load(ContainerBuilder builder)
+    /// <summary>
+    /// 
+    /// </summary>
+    public class Mediatr : Module
     {
-        //builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
-
-        //builder.Register<ServiceFactory>(ctx =>
-        //{
-        //    var c = ctx.Resolve<IComponentContext>();
-        //    return t => c.Resolve(t);
-        //});
-
-        // Mediator itself
-        builder
-            .RegisterType<Mediator>()
-            .As<IMediator>()
-            .InstancePerLifetimeScope();
-
-        // request & notification handlers
-        builder.Register<ServiceFactory>(context =>
+        protected override void Load(ContainerBuilder builder)
         {
-            var c = context.Resolve<IComponentContext>();
-            return t => c.Resolve(t);
-        });
+            //builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
+
+            //builder.Register<ServiceFactory>(ctx =>
+            //{
+            //    var c = ctx.Resolve<IComponentContext>();
+            //    return t => c.Resolve(t);
+            //});
+
+            // Mediator itself
+            builder
+                .RegisterType<Mediator>()
+                .As<IMediator>()
+                .InstancePerLifetimeScope();
+
+            // request & notification handlers
+            builder.Register<ServiceFactory>(context =>
+            {
+                var c = context.Resolve<IComponentContext>();
+                return t => c.Resolve(t);
+            });
+        }
     }
 }

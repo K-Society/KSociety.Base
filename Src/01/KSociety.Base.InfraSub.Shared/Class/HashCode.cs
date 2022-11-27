@@ -1,31 +1,32 @@
-﻿namespace KSociety.Base.InfraSub.Shared.Class;
-
-/// <summary>
-/// HashCode
-/// </summary>
-public static class HashCode
+﻿namespace KSociety.Base.InfraSub.Shared.Class
 {
-    public static int GetDeterministicAbsHashCode(string str)
+    /// <summary>
+    /// HashCode
+    /// </summary>
+    public static class HashCode
     {
-        return System.Math.Abs(GetDeterministicHashCode(str));
-    }
-
-    public static int GetDeterministicHashCode(string str)
-    {
-        unchecked
+        public static int GetDeterministicAbsHashCode(string str)
         {
-            int hash1 = (5381 << 16) + 5381;
-            int hash2 = hash1;
+            return System.Math.Abs(GetDeterministicHashCode(str));
+        }
 
-            for (int i = 0; i < str.Length; i += 2)
+        public static int GetDeterministicHashCode(string str)
+        {
+            unchecked
             {
-                hash1 = ((hash1 << 5) + hash1) ^ str[i];
-                if (i == str.Length - 1)
-                    break;
-                hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
-            }
+                int hash1 = (5381 << 16) + 5381;
+                int hash2 = hash1;
 
-            return hash1 + (hash2 * 1566083941);
+                for (int i = 0; i < str.Length; i += 2)
+                {
+                    hash1 = ((hash1 << 5) + hash1) ^ str[i];
+                    if (i == str.Length - 1)
+                        break;
+                    hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
+                }
+
+                return hash1 + (hash2 * 1566083941);
+            }
         }
     }
 }

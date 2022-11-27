@@ -2,17 +2,20 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.InfraSub.Shared.Class;
-
-public class AsyncLazy<T> : Lazy<Task<T>>
+namespace KSociety.Base.InfraSub.Shared.Class
 {
-    public AsyncLazy(Func<T> valueFactory) :
-        base(() => Task.Factory.StartNew(valueFactory))
-    { }
+    public class AsyncLazy<T> : Lazy<Task<T>>
+    {
+        public AsyncLazy(Func<T> valueFactory) :
+            base(() => Task.Factory.StartNew(valueFactory))
+        {
+        }
 
-    public AsyncLazy(Func<Task<T>> taskFactory) :
-        base(() => Task.Factory.StartNew(() => taskFactory()).Unwrap())
-    { }
+        public AsyncLazy(Func<Task<T>> taskFactory) :
+            base(() => Task.Factory.StartNew(() => taskFactory()).Unwrap())
+        {
+        }
 
-    public TaskAwaiter<T> GetAwaiter() { return Value.GetAwaiter(); }
+        public TaskAwaiter<T> GetAwaiter() { return Value.GetAwaiter(); }
+    }
 }

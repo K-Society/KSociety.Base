@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 
-namespace KSociety.Base.EventBus.Abstractions.Handler;
-
-public interface IDynamicIntegrationEventHandler
+namespace KSociety.Base.EventBus.Abstractions.Handler
 {
-    ValueTask Handle(dynamic eventData);
+    public interface IDynamicIntegrationEventHandler
+    {
+        ValueTask Handle(dynamic eventData);
+    }
 }

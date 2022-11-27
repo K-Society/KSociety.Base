@@ -6,96 +6,99 @@ using ProtoBuf.Grpc.Client;
 using System;
 using System.Threading;
 
-namespace KSociety.Base.Srv.Agent;
-
-public class AuthenticatedConnection
+namespace KSociety.Base.Srv.Agent
 {
-    protected readonly ILogger<Connection> Logger;
-
-    public GrpcChannel Channel
+    public class AuthenticatedConnection
     {
-        get
+        protected readonly ILogger<Connection> Logger;
+
+        public GrpcChannel Channel
         {
-            try
+            get
             {
-                var credentials = CallCredentials.FromInterceptor((context, metadata) =>
+                try
                 {
-                    if (!string.IsNullOrEmpty(_agentConfiguration.Token))
+                    var credentials = CallCredentials.FromInterceptor((context, metadata) =>
                     {
-                        metadata.Add("Authorization", $"Bearer {_agentConfiguration.Token}");
-                    }
-                    return null;
-                });
+                        if (!string.IsNullOrEmpty(_agentConfiguration.Token))
+                        {
+                            metadata.Add("Authorization", $"Bearer {_agentConfiguration.Token}");
+                        }
 
-                GrpcClientFactory.AllowUnencryptedHttp2 = true;
-                //AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-                //var httpClientHandler = new HttpClientHandler
-                //{
-                //    ServerCertificateCustomValidationCallback =
-                //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                //};
-                //var httpClient = new HttpClient(httpClientHandler);
-                return GrpcChannel.ForAddress(_agentConfiguration.ConnectionUrl, new GrpcChannelOptions
+                        return null;
+                    });
+
+                    GrpcClientFactory.AllowUnencryptedHttp2 = true;
+                    //AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+                    //var httpClientHandler = new HttpClientHandler
+                    //{
+                    //    ServerCertificateCustomValidationCallback =
+                    //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    //};
+                    //var httpClient = new HttpClient(httpClientHandler);
+                    return GrpcChannel.ForAddress(_agentConfiguration.ConnectionUrl, new GrpcChannelOptions
+                    {
+                        MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB
+                        MaxSendMessageSize = null, // 2 * 1024 * 1024 // 2 MB
+
+                        Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+                    });
+                }
+                catch (RpcException rex)
                 {
-                    MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB
-                    MaxSendMessageSize = null, // 2 * 1024 * 1024 // 2 MB
+                    Logger.LogError(rex, "Channel: ");
+                }
 
-                    Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
-
-                });
+                return null;
             }
-            catch (RpcException rex)
-            {
-                Logger.LogError(rex, "Channel: ");
-            }
-
-            return null;
         }
-    }
 
-    public bool DebugFlag { get; }
+        public bool DebugFlag { get; }
 
-    private readonly IAgentConfiguration _agentConfiguration;
+        private readonly IAgentConfiguration _agentConfiguration;
 
-    protected AuthenticatedConnection(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
-    {
-        Logger = loggerFactory.CreateLogger<Connection>();
-        _agentConfiguration = agentConfiguration;
-
-        DebugFlag = agentConfiguration.DebugFlag;
-
-        if (DebugFlag)
+        protected AuthenticatedConnection(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
         {
-            Logger.LogTrace(@"Grpc Agent Connection for: {0}", _agentConfiguration.ConnectionUrl);
+            Logger = loggerFactory.CreateLogger<Connection>();
+            _agentConfiguration = agentConfiguration;
+
+            DebugFlag = agentConfiguration.DebugFlag;
+
+            if (DebugFlag)
+            {
+                Logger.LogTrace(@"Grpc Agent Connection for: {0}", _agentConfiguration.ConnectionUrl);
+            }
         }
-    }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    protected virtual CallContext ConnectionOptions(CancellationToken cancellationToken = default)
-    {
-        var callOptions = new CallOptions().WithCancellationToken(cancellationToken);
-        return new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected virtual CallContext ConnectionOptions(CancellationToken cancellationToken = default)
+        {
+            var callOptions = new CallOptions().WithCancellationToken(cancellationToken);
+            return new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
+        }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="headers"></param>
-    /// <param name="deadline"></param>
-    /// <param name="cancellationToken"></param>
-    /// <param name="writeOptions"></param>
-    /// <param name="propagationToken"></param>
-    /// <param name="credentials"></param>
-    /// <returns></returns>
-    protected virtual CallContext ConnectionOptions(Metadata headers = null,
-        DateTime? deadline = null, CancellationToken cancellationToken = default,
-        WriteOptions writeOptions = null, ContextPropagationToken propagationToken = null, CallCredentials credentials = null)
-    {
-        var callOptions = new CallOptions(headers, deadline, cancellationToken, writeOptions, propagationToken, credentials);
-        return new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="headers"></param>
+        /// <param name="deadline"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="writeOptions"></param>
+        /// <param name="propagationToken"></param>
+        /// <param name="credentials"></param>
+        /// <returns></returns>
+        protected virtual CallContext ConnectionOptions(Metadata headers = null,
+            DateTime? deadline = null, CancellationToken cancellationToken = default,
+            WriteOptions writeOptions = null, ContextPropagationToken propagationToken = null,
+            CallCredentials credentials = null)
+        {
+            var callOptions = new CallOptions(headers, deadline, cancellationToken, writeOptions, propagationToken,
+                credentials);
+            return new CallContext(callOptions, CallContextFlags.IgnoreStreamTermination);
+        }
     }
 }

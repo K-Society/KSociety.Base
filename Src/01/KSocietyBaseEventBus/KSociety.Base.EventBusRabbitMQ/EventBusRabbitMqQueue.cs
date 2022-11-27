@@ -13,141 +13,148 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.EventBusRabbitMQ;
-
-public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
+namespace KSociety.Base.EventBusRabbitMQ
 {
-
-    #region [Constructor]
-
-    public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-        IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
-        IEventBusParameters eventBusParameters,
-        string queueName = null)
-        :base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
+    public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
     {
 
-    }
+        #region [Constructor]
 
-    #endregion
-
-    public IIntegrationQueueHandler<T> GetIntegrationQueueHandler<T, TH>()
-        where T : IIntegrationEvent
-        where TH : IIntegrationQueueHandler<T>
-    {
-        if (EventHandler is IIntegrationQueueHandler<T> queue)
+        public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IEventBusParameters eventBusParameters,
+            string queueName = null)
+            : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
-            return queue;
+
         }
 
-        return null;
-    }
+        #endregion
 
-    public override async ValueTask Publish(IIntegrationEvent @event)
-    {
-        if (!PersistentConnection.IsConnected)
+        public IIntegrationQueueHandler<T> GetIntegrationQueueHandler<T, TH>()
+            where T : IIntegrationEvent
+            where TH : IIntegrationQueueHandler<T>
         {
-            await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-        }
-
-        var policy = Policy.Handle<BrokerUnreachableException>()
-            .Or<SocketException>()
-            .Or<Exception>()
-            .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
+            if (EventHandler is IIntegrationQueueHandler<T> queue)
             {
-                Logger.LogWarning(ex, "Publish: ");
+                return queue;
+            }
+
+            return null;
+        }
+
+        public override async ValueTask Publish(IIntegrationEvent @event)
+        {
+            if (!PersistentConnection.IsConnected)
+            {
+                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+            }
+
+            var policy = Policy.Handle<BrokerUnreachableException>()
+                .Or<SocketException>()
+                .Or<Exception>()
+                .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
+                {
+                    Logger.LogWarning(ex, "Publish: ");
+                });
+
+            using var channel = PersistentConnection.CreateModel();
+            var routingKey = @event.RoutingKey;
+
+            channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+
+            await using var ms = new MemoryStream();
+            Serializer.Serialize(ms, @event);
+            var body = ms.ToArray();
+
+            policy.Execute(() =>
+            {
+                var properties = channel.CreateBasicProperties();
+                properties.DeliveryMode = 1; //2 = persistent, write on disk
+
+                channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey, true,
+                    properties, body);
             });
+        }
 
-        using var channel = PersistentConnection.CreateModel();
-        var routingKey = @event.RoutingKey;
+        #region [Subscribe]
 
-        channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName, EventBusParameters.ExchangeDeclareParameters.ExchangeType, EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
-
-        await using var ms = new MemoryStream();
-        Serializer.Serialize(ms, @event);
-        var body = ms.ToArray();
-
-        policy.Execute(() =>
+        public async ValueTask SubscribeQueue<T, TH>(string routingKey)
+            where T : IIntegrationEvent
+            where TH : IIntegrationQueueHandler<T>
         {
-            var properties = channel.CreateBasicProperties();
-            properties.DeliveryMode = 1; //2 = persistent, write on disk
+            var eventName = SubsManager.GetEventKey<T>();
+            await DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
+            SubsManager.AddSubscriptionQueue<T, TH>(eventName + "." + routingKey);
+            await StartBasicConsume().ConfigureAwait(false);
+        }
 
-            channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey, true, properties, body);
-        });
-    }
+        #endregion
 
-    #region [Subscribe]
+        #region [Unsubscribe]
 
-    public async ValueTask SubscribeQueue<T, TH>(string routingKey)
-        where T : IIntegrationEvent
-        where TH : IIntegrationQueueHandler<T>
-    {
-        var eventName = SubsManager.GetEventKey<T>();
-        await DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
-        SubsManager.AddSubscriptionQueue<T, TH>(eventName + "." + routingKey);
-        await StartBasicConsume().ConfigureAwait(false);
-    }
-        
-    #endregion
-
-    #region [Unsubscribe]
-
-    public void UnsubscribeQueue<T, TH>(string routingKey)
-        where T : IIntegrationEvent
-        where TH : IIntegrationQueueHandler<T>
-    {
-        SubsManager.RemoveSubscriptionQueue<T, TH>(routingKey);
-    }
-
-    #endregion
-
-    protected override async ValueTask ProcessEvent(string routingKey, string eventName, ReadOnlyMemory<byte> message, CancellationToken cancel = default)
-    {
-        if (SubsManager.HasSubscriptionsForEvent(routingKey))
+        public void UnsubscribeQueue<T, TH>(string routingKey)
+            where T : IIntegrationEvent
+            where TH : IIntegrationQueueHandler<T>
         {
-                
-            var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
-            foreach (var subscription in subscriptions)
+            SubsManager.RemoveSubscriptionQueue<T, TH>(routingKey);
+        }
+
+        #endregion
+
+        protected override async ValueTask ProcessEvent(string routingKey, string eventName,
+            ReadOnlyMemory<byte> message, CancellationToken cancel = default)
+        {
+            if (SubsManager.HasSubscriptionsForEvent(routingKey))
             {
 
-                switch (subscription.SubscriptionManagerType)
+                var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
+                foreach (var subscription in subscriptions)
                 {
 
+                    switch (subscription.SubscriptionManagerType)
+                    {
 
-                    case SubscriptionManagerType.Queue:
-                        try
-                        {
-                            if (EventHandler is null)
+
+                        case SubscriptionManagerType.Queue:
+                            try
                             {
+                                if (EventHandler is null)
+                                {
 
+                                }
+                                else
+                                {
+                                    var eventType = SubsManager.GetEventTypeByName(routingKey);
+                                    await using var ms = new MemoryStream(message.ToArray());
+                                    var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                    var concreteType = typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
+                                    await ((ValueTask<bool>)concreteType.GetMethod("Enqueue")
+                                        .Invoke(EventHandler, new[] {integrationEvent, cancel})).ConfigureAwait(false);
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                var eventType = SubsManager.GetEventTypeByName(routingKey);
-                                await using var ms = new MemoryStream(message.ToArray());
-                                var integrationEvent = Serializer.Deserialize(eventType, ms);
-                                var concreteType = typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
-                                await ((ValueTask<bool>)concreteType.GetMethod("Enqueue")
-                                    .Invoke(EventHandler, new[] { integrationEvent, cancel })).ConfigureAwait(false);
+                                Logger.LogError(ex, "ProcessQueue: ");
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.LogError(ex, "ProcessQueue: ");
-                        }
-                        break;
+
+                            break;
 
 
-                    case SubscriptionManagerType.Dynamic:
-                        break;
-                    case SubscriptionManagerType.Typed:
-                        break;
-                    case SubscriptionManagerType.Rpc:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                        case SubscriptionManagerType.Dynamic:
+                            break;
+                        case SubscriptionManagerType.Typed:
+                            break;
+                        case SubscriptionManagerType.Rpc:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
             }
-        }
-    }//ProcessEvent.
+        } //ProcessEvent.
+    }
 }

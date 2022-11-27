@@ -5,48 +5,49 @@ using KSociety.Base.Srv.Shared.Interface;
 using Microsoft.Extensions.Logging;
 using ProtoBuf.Grpc;
 
-namespace KSociety.Base.Srv.Behavior.Control;
-
-public class DatabaseControl : IDatabaseControl
+namespace KSociety.Base.Srv.Behavior.Control
 {
-    private readonly ILogger<DatabaseControl> _logger;
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly IComponentContext _componentContext;
-    private readonly ICommandHandler _commandHandler;
-
-    public DatabaseControl(
-        ILoggerFactory loggerFactory,
-        IComponentContext componentContext,
-        ICommandHandler commandHandler
-    )
+    public class DatabaseControl : IDatabaseControl
     {
-        _loggerFactory = loggerFactory;
-        _componentContext = componentContext;
-        _commandHandler = commandHandler;
-        _logger = _loggerFactory.CreateLogger<DatabaseControl>();
-    }
+        private readonly ILogger<DatabaseControl> _logger;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly IComponentContext _componentContext;
+        private readonly ICommandHandler _commandHandler;
 
-    public EnsureCreated EnsureCreated(CallContext context = default)
-    {
-        _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        return _commandHandler.ExecuteWithResponse<EnsureCreated>(_loggerFactory, _componentContext);
-    }
+        public DatabaseControl(
+            ILoggerFactory loggerFactory,
+            IComponentContext componentContext,
+            ICommandHandler commandHandler
+        )
+        {
+            _loggerFactory = loggerFactory;
+            _componentContext = componentContext;
+            _commandHandler = commandHandler;
+            _logger = _loggerFactory.CreateLogger<DatabaseControl>();
+        }
 
-    public EnsureDeleted EnsureDeleted(CallContext context = default)
-    {
-        _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        return _commandHandler.ExecuteWithResponse<EnsureDeleted>(_loggerFactory, _componentContext);
-    }
+        public EnsureCreated EnsureCreated(CallContext context = default)
+        {
+            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return _commandHandler.ExecuteWithResponse<EnsureCreated>(_loggerFactory, _componentContext);
+        }
 
-    public void Migration(CallContext context = default)
-    {
-        _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        _commandHandler.Execute(_loggerFactory, _componentContext, "MigrationReqHdlr");
-    }
+        public EnsureDeleted EnsureDeleted(CallContext context = default)
+        {
+            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return _commandHandler.ExecuteWithResponse<EnsureDeleted>(_loggerFactory, _componentContext);
+        }
 
-    public ConnectionString GetConnectionString(CallContext context = default)
-    {
-        _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        return _commandHandler.ExecuteWithResponse<ConnectionString>(_loggerFactory, _componentContext);
+        public void Migration(CallContext context = default)
+        {
+            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            _commandHandler.Execute(_loggerFactory, _componentContext, "MigrationReqHdlr");
+        }
+
+        public ConnectionString GetConnectionString(CallContext context = default)
+        {
+            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return _commandHandler.ExecuteWithResponse<ConnectionString>(_loggerFactory, _componentContext);
+        }
     }
 }

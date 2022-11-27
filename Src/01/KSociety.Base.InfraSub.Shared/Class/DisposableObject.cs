@@ -1,42 +1,42 @@
 ﻿using System;
 
-namespace KSociety.Base.InfraSub.Shared.Class;
-
-
-public abstract class DisposableObject : IDisposable
+namespace KSociety.Base.InfraSub.Shared.Class
 {
-    protected bool Disposed { get; private set; }
-
-    public void Dispose()
+    public abstract class DisposableObject : IDisposable
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
+        protected bool Disposed { get; private set; }
 
-    ~DisposableObject()
-    {
-        Dispose(false);
-    }
-
-    private void Dispose(bool disposing)
-    {
-        if (Disposed) return;
-        if (disposing)
+        public void Dispose()
         {
-            DisposeManagedResources();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        DisposeUnmanagedResources();
-        Disposed = true;
+        ~DisposableObject()
+        {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (Disposed) return;
+            if (disposing)
+            {
+                DisposeManagedResources();
+            }
+
+            DisposeUnmanagedResources();
+            Disposed = true;
+        }
+
+        /// <summary>
+        /// DisposeManagedResources
+        /// </summary>
+        protected virtual void DisposeManagedResources() { }
+
+        /// <summary>
+        /// DisposeUnmanagedResources
+        /// </summary>
+        protected virtual void DisposeUnmanagedResources() { }
     }
-
-    /// <summary>
-    /// DisposeManagedResources
-    /// </summary>
-    protected virtual void DisposeManagedResources() { }
-
-    /// <summary>
-    /// DisposeUnmanagedResources
-    /// </summary>
-    protected virtual void DisposeUnmanagedResources() { }
 }

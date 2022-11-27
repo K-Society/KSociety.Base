@@ -1,6 +1,7 @@
-﻿namespace KSociety.Base.EventBus.Abstractions;
-
-public interface IIntegrationEventRpc : IIntegrationEvent
+﻿namespace KSociety.Base.EventBus.Abstractions
 {
-    string ReplyRoutingKey { get; set; }
+    public interface IIntegrationEventRpc : IIntegrationEvent
+    {
+        string ReplyRoutingKey { get; set; }
+    }
 }

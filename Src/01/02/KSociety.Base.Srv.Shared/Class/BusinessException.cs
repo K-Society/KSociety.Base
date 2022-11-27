@@ -1,14 +1,15 @@
 ﻿using System;
 
-namespace KSociety.Base.Srv.Shared.Class;
-
-public abstract class BusinessException : Exception
+namespace KSociety.Base.Srv.Shared.Class
 {
-    public string ErrorCode { get; private set; }
-
-    protected BusinessException(string errorCode, string message)
-        : base(message)
+    public abstract class BusinessException : Exception
     {
-        ErrorCode = errorCode;
+        public string ErrorCode { get; private set; }
+
+        protected BusinessException(string errorCode, string message)
+            : base(message)
+        {
+            ErrorCode = errorCode;
+        }
     }
 }

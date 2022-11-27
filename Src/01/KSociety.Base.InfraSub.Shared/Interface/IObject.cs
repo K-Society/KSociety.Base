@@ -1,5 +1,6 @@
-﻿namespace KSociety.Base.InfraSub.Shared.Interface;
-
-public interface IObject
+﻿namespace KSociety.Base.InfraSub.Shared.Interface
 {
+    public interface IObject
+    {
+    }
 }

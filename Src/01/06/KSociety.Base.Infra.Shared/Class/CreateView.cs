@@ -1,24 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 
-namespace KSociety.Base.Infra.Shared.Class;
-
-public static class CreateView
+namespace KSociety.Base.Infra.Shared.Class
 {
-    public static OperationBuilder<CreateViewOperation> CreateViewFromSql(
-        this MigrationBuilder migrationBuilder,
-        string assemblyName,
-        string resourceSqlFileName)
+    public static class CreateView
     {
-
-        var operation = new CreateViewOperation
+        public static OperationBuilder<CreateViewOperation> CreateViewFromSql(
+            this MigrationBuilder migrationBuilder,
+            string assemblyName,
+            string resourceSqlFileName)
         {
-            AssemblyName = assemblyName,
-            ResourceSqlFileName = @"." + resourceSqlFileName + @".sql"
-        };
 
-        migrationBuilder.Operations.Add(operation);
+            var operation = new CreateViewOperation
+            {
+                AssemblyName = assemblyName, ResourceSqlFileName = @"." + resourceSqlFileName + @".sql"
+            };
 
-        return new OperationBuilder<CreateViewOperation>(operation);
+            migrationBuilder.Operations.Add(operation);
+
+            return new OperationBuilder<CreateViewOperation>(operation);
+        }
     }
 }

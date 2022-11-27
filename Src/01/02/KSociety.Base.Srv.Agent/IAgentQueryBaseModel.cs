@@ -2,12 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Srv.Agent;
-
-public interface IAgentQueryBaseModel<T>
-    where T : IObject
+namespace KSociety.Base.Srv.Agent
 {
-    T Find(CancellationToken cancellationToken = default);
+    public interface IAgentQueryBaseModel<T>
+        where T : IObject
+    {
+        T Find(CancellationToken cancellationToken = default);
 
-    ValueTask<T> FindAsync(CancellationToken cancellationToken = default);
+        ValueTask<T> FindAsync(CancellationToken cancellationToken = default);
+    }
 }

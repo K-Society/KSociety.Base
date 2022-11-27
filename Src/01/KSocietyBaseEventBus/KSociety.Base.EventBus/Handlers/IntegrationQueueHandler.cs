@@ -9,48 +9,51 @@ using KSociety.Base.EventBus.Abstractions;
 using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
 
-namespace KSociety.Base.EventBus.Handlers;
-
-public class IntegrationQueueHandler<TIntegrationEvent> : IntegrationGeneralHandler, IIntegrationQueueHandler<TIntegrationEvent>
-    where TIntegrationEvent : IIntegrationEvent
+namespace KSociety.Base.EventBus.Handlers
 {
-    protected readonly ILogger<IIntegrationQueueHandler<TIntegrationEvent>> Logger;
-        
-    public BufferBlock<TIntegrationEvent> Queue { get; }
-
-    public bool IsEmpty => Queue.Count == 0;
-
-    public IntegrationQueueHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
-        : base(loggerFactory, componentContext)
+    public class IntegrationQueueHandler<TIntegrationEvent> : IntegrationGeneralHandler,
+        IIntegrationQueueHandler<TIntegrationEvent>
+        where TIntegrationEvent : IIntegrationEvent
     {
-        Logger = LoggerFactory.CreateLogger<IIntegrationQueueHandler<TIntegrationEvent>>();
-        Queue = new BufferBlock<TIntegrationEvent>();
-    }
+        protected readonly ILogger<IIntegrationQueueHandler<TIntegrationEvent>> Logger;
 
-    public virtual async ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent, 
-        CancellationToken cancel = default)
-    {
-        return await Queue.SendAsync(@integrationEvent, cancel).ConfigureAwait(false);
-    }
+        public BufferBlock<TIntegrationEvent> Queue { get; }
 
+        public bool IsEmpty => Queue.Count == 0;
 
-    public virtual async IAsyncEnumerable<TIntegrationEvent> Dequeue([EnumeratorCancellation] CancellationToken cancel = default)
-    {
-        while (!cancel.IsCancellationRequested)
+        public IntegrationQueueHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
+            : base(loggerFactory, componentContext)
         {
-            var result = default(TIntegrationEvent);
-            try
-            {
-                result = await Queue.ReceiveAsync(cancel).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Dequeue: ");
-            }
+            Logger = LoggerFactory.CreateLogger<IIntegrationQueueHandler<TIntegrationEvent>>();
+            Queue = new BufferBlock<TIntegrationEvent>();
+        }
 
-            if (result != null)
+        public virtual async ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent,
+            CancellationToken cancel = default)
+        {
+            return await Queue.SendAsync(@integrationEvent, cancel).ConfigureAwait(false);
+        }
+
+
+        public virtual async IAsyncEnumerable<TIntegrationEvent> Dequeue(
+            [EnumeratorCancellation] CancellationToken cancel = default)
+        {
+            while (!cancel.IsCancellationRequested)
             {
-                yield return result;
+                var result = default(TIntegrationEvent);
+                try
+                {
+                    result = await Queue.ReceiveAsync(cancel).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Dequeue: ");
+                }
+
+                if (result != null)
+                {
+                    yield return result;
+                }
             }
         }
     }

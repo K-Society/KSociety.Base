@@ -5,58 +5,66 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.Srv.Agent;
-public class AgentImport<TImport, TImportAsync, TImportReq, TImportRes> : Connection, IAgentImport<TImportReq, TImportRes>
-    where TImport : class, IImport<TImportReq, TImportRes>
-    where TImportAsync : class, IImportAsync<TImportReq, TImportRes>
-    where TImportReq : class
-    where TImportRes : class
+namespace KSociety.Base.Srv.Agent
 {
-    public AgentImport(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
-        : base(agentConfiguration, loggerFactory)
+    public class AgentImport<TImport, TImportAsync, TImportReq, TImportRes> : Connection,
+        IAgentImport<TImportReq, TImportRes>
+        where TImport : class, IImport<TImportReq, TImportRes>
+        where TImportAsync : class, IImportAsync<TImportReq, TImportRes>
+        where TImportReq : class
+        where TImportRes : class
     {
-
-    }
-
-    public virtual TImportRes ImportData(TImportReq request, CancellationToken cancellationToken = default)
-    {
-        TImportRes output = default;
-        try
+        public AgentImport(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
+            : base(agentConfiguration, loggerFactory)
         {
-            using (Channel)
+
+        }
+
+        public virtual TImportRes ImportData(TImportReq request, CancellationToken cancellationToken = default)
+        {
+            TImportRes output = default;
+            try
             {
-                var client = Channel.CreateGrpcService<TImport>();
+                using (Channel)
+                {
+                    var client = Channel.CreateGrpcService<TImport>();
 
-                var result = client.ImportData(request, ConnectionOptions(cancellationToken));
+                    var result = client.ImportData(request, ConnectionOptions(cancellationToken));
 
-                output = result;
+                    output = result;
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        }
-        return output;
-    }
-
-    public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq request, CancellationToken cancellationToken = default)
-    {
-        TImportRes output = default;
-        try
-        {
-            using (Channel)
+            catch (Exception ex)
             {
-                var client = Channel.CreateGrpcService<TImportAsync>();
-
-                var result = await client.ImportDataAsync(request, ConnectionOptions(cancellationToken));
-
-                output = result;
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
+
+            return output;
         }
-        catch (Exception ex)
+
+        public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq request,
+            CancellationToken cancellationToken = default)
         {
-            Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            TImportRes output = default;
+            try
+            {
+                using (Channel)
+                {
+                    var client = Channel.CreateGrpcService<TImportAsync>();
+
+                    var result = await client.ImportDataAsync(request, ConnectionOptions(cancellationToken));
+
+                    output = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            }
+
+            return output;
         }
-        return output;
     }
 }

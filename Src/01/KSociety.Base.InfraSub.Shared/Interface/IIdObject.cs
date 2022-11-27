@@ -1,8 +1,9 @@
 ﻿using System;
 
-namespace KSociety.Base.InfraSub.Shared.Interface;
-
-public interface IIdObject
+namespace KSociety.Base.InfraSub.Shared.Interface
 {
-    Guid Id { get; set; }
+    public interface IIdObject
+    {
+        Guid Id { get; set; }
+    }
 }

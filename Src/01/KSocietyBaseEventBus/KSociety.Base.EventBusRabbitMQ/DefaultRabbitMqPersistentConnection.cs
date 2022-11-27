@@ -10,126 +10,128 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KSociety.Base.EventBusRabbitMQ;
-
-public class DefaultRabbitMqPersistentConnection
-    : DisposableObject, IRabbitMqPersistentConnection
+namespace KSociety.Base.EventBusRabbitMQ
 {
-    private readonly IConnectionFactory _connectionFactory;
-    private readonly ILogger<DefaultRabbitMqPersistentConnection> _logger;
-    private IConnection _connection;
-
-    private readonly SemaphoreSlim _connectionLock = new(1, 1);
-    private readonly CancellationTokenSource _closeTokenSource = new();
-    private readonly CancellationToken _closeToken;
-
-    public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILoggerFactory loggerFactory)
+    public class DefaultRabbitMqPersistentConnection
+        : DisposableObject, IRabbitMqPersistentConnection
     {
-        _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
-        _logger = loggerFactory.CreateLogger<DefaultRabbitMqPersistentConnection>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+        private readonly IConnectionFactory _connectionFactory;
+        private readonly ILogger<DefaultRabbitMqPersistentConnection> _logger;
+        private IConnection _connection;
 
-        _closeToken = _closeTokenSource.Token;
-    }
+        private readonly SemaphoreSlim _connectionLock = new(1, 1);
+        private readonly CancellationTokenSource _closeTokenSource = new();
+        private readonly CancellationToken _closeToken;
 
-    public bool IsConnected => _connection is {IsOpen: true} && !Disposed;
-
-    public IModel CreateModel()
-    {
-        if (!IsConnected)
+        public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILoggerFactory loggerFactory)
         {
-            throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
+            _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
+            _logger = loggerFactory.CreateLogger<DefaultRabbitMqPersistentConnection>() ??
+                      throw new ArgumentNullException(nameof(loggerFactory));
+
+            _closeToken = _closeTokenSource.Token;
         }
 
-        return _connection.CreateModel();
-    }
+        public bool IsConnected => _connection is {IsOpen: true} && !Disposed;
 
-    protected override void DisposeManagedResources()
-    {
-        try
+        public IModel CreateModel()
         {
-            _connection.Dispose();
-        }
-        catch (IOException ex)
-        {
-            _logger.LogError(ex, "DisposeManagedResources: ");
-        }
-    }
-
-    public async ValueTask<bool> TryConnectAsync()
-    {
-        bool output;
-        await _connectionLock.WaitAsync(_closeToken);
-
-        try
-        {
-            var policy = Policy.Handle<SocketException>()
-                .Or<BrokerUnreachableException>()
-                .Or<Exception>()
-                .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                    (ex, time) =>
-                    {
-                        _logger.LogWarning(ex, "TryConnectAsync: ");
-                    });
-
-
-            await policy.ExecuteAsync(async () =>
+            if (!IsConnected)
             {
-                await Task.Run(() =>
+                throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
+            }
+
+            return _connection.CreateModel();
+        }
+
+        protected override void DisposeManagedResources()
+        {
+            try
+            {
+                _connection.Dispose();
+            }
+            catch (IOException ex)
+            {
+                _logger.LogError(ex, "DisposeManagedResources: ");
+            }
+        }
+
+        public async ValueTask<bool> TryConnectAsync()
+        {
+            bool output;
+            await _connectionLock.WaitAsync(_closeToken);
+
+            try
+            {
+                var policy = Policy.Handle<SocketException>()
+                    .Or<BrokerUnreachableException>()
+                    .Or<Exception>()
+                    .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                        (ex, time) =>
+                        {
+                            _logger.LogWarning(ex, "TryConnectAsync: ");
+                        });
+
+
+                await policy.ExecuteAsync(async () =>
                 {
-                    _logger.LogInformation("RabbitMQ CreateConnection.");
-                    //_logger.LogTrace("RabbitMQ CreateConnection StackTrace: {0}", System.Environment.StackTrace);
-                    _connection = _connectionFactory
-                        .CreateConnection(); //ToDo
-                }, _closeToken);
-                    
-            });
+                    await Task.Run(() =>
+                    {
+                        _logger.LogInformation("RabbitMQ CreateConnection.");
+                        //_logger.LogTrace("RabbitMQ CreateConnection StackTrace: {0}", System.Environment.StackTrace);
+                        _connection = _connectionFactory
+                            .CreateConnection(); //ToDo
+                    }, _closeToken);
 
-            if (IsConnected)
-            {
-                _connection.ConnectionShutdown += OnConnectionShutdownAsync;
-                _connection.CallbackException += OnCallbackExceptionAsync;
-                _connection.ConnectionBlocked += OnConnectionBlockedAsync;
+                });
 
-                _logger.LogInformation(
-                    $"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
-                output = true;
+                if (IsConnected)
+                {
+                    _connection.ConnectionShutdown += OnConnectionShutdownAsync;
+                    _connection.CallbackException += OnCallbackExceptionAsync;
+                    _connection.ConnectionBlocked += OnConnectionBlockedAsync;
+
+                    _logger.LogInformation(
+                        $"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
+                    output = true;
+                }
+                else
+                {
+                    _logger.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
+
+                    output = false;
+                }
             }
-            else
+            finally
             {
-                _logger.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
-
-                output = false;
+                _connectionLock.Release();
             }
+
+            return output;
         }
-        finally
+
+        private async void OnConnectionBlockedAsync(object sender, ConnectionBlockedEventArgs e)
         {
-            _connectionLock.Release();
+            if (Disposed) return;
+
+            _logger.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
+            await TryConnectAsync().ConfigureAwait(false);
         }
 
-        return output;
-    }
+        private async void OnCallbackExceptionAsync(object sender, CallbackExceptionEventArgs e)
+        {
+            if (Disposed) return;
 
-    private async void OnConnectionBlockedAsync(object sender, ConnectionBlockedEventArgs e)
-    {
-        if (Disposed) return;
+            _logger.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
+            await TryConnectAsync().ConfigureAwait(false);
+        }
 
-        _logger.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
-        await TryConnectAsync().ConfigureAwait(false);
-    }
+        private async void OnConnectionShutdownAsync(object sender, ShutdownEventArgs reason)
+        {
+            if (Disposed) return;
 
-    private async void OnCallbackExceptionAsync(object sender, CallbackExceptionEventArgs e)
-    {
-        if (Disposed) return;
-
-        _logger.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
-        await TryConnectAsync().ConfigureAwait(false);
-    }
-
-    private async void OnConnectionShutdownAsync(object sender, ShutdownEventArgs reason)
-    {
-        if (Disposed) return;
-
-        _logger.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
-        await TryConnectAsync().ConfigureAwait(false);
+            _logger.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
+            await TryConnectAsync().ConfigureAwait(false);
+        }
     }
 }
