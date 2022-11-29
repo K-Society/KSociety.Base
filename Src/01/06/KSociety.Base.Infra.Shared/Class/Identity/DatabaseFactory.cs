@@ -35,7 +35,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public IUserStore<TUser> GetUserStore()
         {
-            if (_userStore is not null) return _userStore;
+            if (_userStore != null) return _userStore;
             _userStore = CreateUserStore();
 
             return _userStore;
@@ -43,7 +43,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public IRoleStore<TRole> GetRoleStore()
         {
-            if (_roleStore is not null) return _roleStore;
+            if (_roleStore != null) return _roleStore;
             _roleStore = CreateRoleStore();
 
             return _roleStore;

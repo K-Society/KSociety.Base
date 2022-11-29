@@ -27,11 +27,14 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
             try
             {
-                using var stream = assembly.GetManifestResourceStream(resourceName);
-                using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
-                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-
-                return reader.GetRecords<TClass>().ToArray();
+                using (var stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    using (var streamReader = new StreamReader(stream ?? throw new InvalidOperationException()))
+                    {
+                        var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+                        return reader.GetRecords<TClass>().ToArray();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -47,10 +50,12 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
             try
             {
-                using var streamReader = new StreamReader(fileName);
-                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+                using (var streamReader = new StreamReader(fileName))
+                {
+                    var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
-                return reader.GetRecords<TClass>().ToArray();
+                    return reader.GetRecords<TClass>().ToArray();
+                }
             }
             catch (Exception ex)
             {
@@ -66,10 +71,12 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
             try
             {
-                using var streamReader = new StreamReader(new MemoryStream(byteArray));
-                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+                using (var streamReader = new StreamReader(new MemoryStream(byteArray)))
+                {
+                    var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
-                return reader.GetRecords<TClass>().ToArray();
+                    return reader.GetRecords<TClass>().ToArray();
+                }
             }
             catch (Exception ex)
             {
@@ -84,14 +91,16 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
-            using var streamReader = new StreamReader(fileName);
-            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-
-            var result = reader.GetRecordsAsync<TClass>(cancellationToken);
-
-            await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+            using (var streamReader = new StreamReader(fileName))
             {
-                yield return item;
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+
+                var result = reader.GetRecordsAsync<TClass>(cancellationToken);
+
+                await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+                {
+                    yield return item;
+                }
             }
         }
 
@@ -100,16 +109,16 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
-            using var streamReader = new StreamReader(new MemoryStream(byteArray));
-            var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-
-            var result = reader.GetRecordsAsync<TClass>(cancellationToken);
-
-            await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+            using (var streamReader = new StreamReader(new MemoryStream(byteArray)))
             {
-                yield return item;
-            }
+                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+                var result = reader.GetRecordsAsync<TClass>(cancellationToken);
 
+                await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+                {
+                    yield return item;
+                }
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         private readonly ILoggerFactory _loggerFactory;
         private readonly IEventBusParameters _eventBusParameters;
         public IRabbitMqPersistentConnection PersistentConnection { get; }
-        public Dictionary<string, IEventBus> EventBus { get; } = new();
+        public Dictionary<string, IEventBus> EventBus { get; } = new Dictionary<string, IEventBus>();
 
         #region [Constructor]
 

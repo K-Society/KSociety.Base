@@ -25,11 +25,14 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
             try
             {
-                using var stream = assembly.GetManifestResourceStream(resourceName);
-                using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
-                var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-
-                return reader.GetRecords<TEntity>().ToArray();
+                using (var stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    using (var streamReader = new StreamReader(stream ?? throw new InvalidOperationException()))
+                    {
+                        var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+                        return reader.GetRecords<TEntity>().ToArray();
+                    }
+                }
             }
             catch (Exception ex)
             {

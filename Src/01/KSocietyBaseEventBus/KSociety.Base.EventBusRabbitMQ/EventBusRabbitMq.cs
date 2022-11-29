@@ -82,12 +82,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                 await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
-            using var channel = PersistentConnection.CreateModel();
-            channel.QueueUnbind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+            using (var channel = PersistentConnection.CreateModel())
+            {
+                channel.QueueUnbind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
 
-            if (!SubsManager.IsEmpty) return;
-            QueueName = string.Empty;
-            (await ConsumerChannel).Close();
+                if (!SubsManager.IsEmpty) return;
+                QueueName = string.Empty;
+                (await ConsumerChannel).Close();
+            }
         }
 
         public virtual async ValueTask Publish(IIntegrationEvent @event)
@@ -107,26 +109,32 @@ namespace KSociety.Base.EventBusRabbitMQ
                         Logger.LogWarning(ex, "Publish: ");
                     });
 
-                using var channel = PersistentConnection.CreateModel();
-                var routingKey = @event.RoutingKey;
-                channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                    EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                    EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
-                    EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
-
-                await using var ms = new MemoryStream();
-                Serializer.Serialize(ms, @event);
-                var body = ms.ToArray();
-
-                policy.Execute(() =>
+                using (var channel = PersistentConnection.CreateModel())
                 {
-                    var properties = channel.CreateBasicProperties();
-                    properties.DeliveryMode = 1; //2 = persistent, write on disk
 
-                    channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        routingKey, true, properties,
-                        body);
-                });
+
+                    var routingKey = @event.RoutingKey;
+                    channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                        EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                        EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                        EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+
+                    using (var ms = new MemoryStream())
+                    {
+                        Serializer.Serialize(ms, @event);
+                        var body = ms.ToArray();
+
+                        policy.Execute(() =>
+                        {
+                            var properties = channel.CreateBasicProperties();
+                            properties.DeliveryMode = 1; //2 = persistent, write on disk
+
+                            channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                routingKey, true, properties,
+                                body);
+                        });
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -183,11 +191,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                 await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
-            using var channel = PersistentConnection.CreateModel();
+            using (var channel = PersistentConnection.CreateModel())
+            {
+                QueueInitialize(channel);
 
-            QueueInitialize(channel);
-
-            channel.QueueBind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+                channel.QueueBind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+            }
         }
 
         #endregion
@@ -220,7 +229,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     return false;
                 }
 
-                if (ConsumerChannel?.Value is not null)
+                if (ConsumerChannel?.Value != null)
                 {
                     var consumer = new AsyncEventingBasicConsumer(await ConsumerChannel);
 
@@ -364,12 +373,15 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         return;
                                     }
 
-                                    await using var ms = new MemoryStream(message.ToArray());
-                                    var integrationEvent = Serializer.Deserialize(eventType, ms);
-                                    var concreteType =
-                                        typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
-                                    await ((ValueTask)concreteType.GetMethod("Handle")
-                                        .Invoke(EventHandler, new[] {integrationEvent, cancel})).ConfigureAwait(false);
+                                    using (var ms = new MemoryStream(message.ToArray()))
+                                    {
+                                        var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                        var concreteType =
+                                            typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+                                        await ((ValueTask)concreteType.GetMethod("Handle")
+                                                .Invoke(EventHandler, new[] {integrationEvent, cancel}))
+                                            .ConfigureAwait(false);
+                                    }
                                 }
                             }
                             catch (Exception ex)
@@ -395,12 +407,15 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         return;
                                     }
 
-                                    await using var ms = new MemoryStream(message.ToArray());
-                                    var integrationEvent = Serializer.Deserialize(eventType, ms);
-                                    var concreteType =
-                                        typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
-                                    await ((ValueTask<bool>)concreteType.GetMethod("Enqueue")
-                                        .Invoke(EventHandler, new[] {integrationEvent, cancel})).ConfigureAwait(false);
+                                    using (var ms = new MemoryStream(message.ToArray()))
+                                    {
+                                        var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                        var concreteType =
+                                            typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
+                                        await ((ValueTask<bool>)concreteType.GetMethod("Enqueue")
+                                                .Invoke(EventHandler, new[] {integrationEvent, cancel}))
+                                            .ConfigureAwait(false);
+                                    }
                                 }
                             }
                             catch (Exception ex)
@@ -433,13 +448,16 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         return;
                                     }
 
-                                    await using var ms = new MemoryStream(message.ToArray());
-                                    var integrationEvent = Serializer.Deserialize(eventResultType, ms);
-                                    var concreteType =
-                                        typeof(IIntegrationRpcHandler<,>).MakeGenericType(eventType,
-                                            eventResultType);
-                                    await ((ValueTask)concreteType.GetMethod("HandleReply")
-                                        .Invoke(EventHandler, new[] {integrationEvent, cancel})).ConfigureAwait(false);
+                                    using (var ms = new MemoryStream(message.ToArray()))
+                                    {
+                                        var integrationEvent = Serializer.Deserialize(eventResultType, ms);
+                                        var concreteType =
+                                            typeof(IIntegrationRpcHandler<,>).MakeGenericType(eventType,
+                                                eventResultType);
+                                        await ((ValueTask)concreteType.GetMethod("HandleReply")
+                                                .Invoke(EventHandler, new[] {integrationEvent, cancel}))
+                                            .ConfigureAwait(false);
+                                    }
                                 }
                             }
                             catch (Exception ex)

@@ -1,12 +1,13 @@
 ﻿using System.Windows.Forms;
 
-namespace KSociety.Base.Pre.Form.View.Forms;
-
-public partial class DataGridViewFunctionCell : DataGridViewButtonCell
+namespace KSociety.Base.Pre.Form.View.Forms
 {
-    public DataGridViewFunctionCell()
+    public partial class DataGridViewFunctionCell : DataGridViewButtonCell
     {
-        Value = "Remove";
+        public DataGridViewFunctionCell()
+        {
+            Value = "Remove";
 
+        }
     }
 }
