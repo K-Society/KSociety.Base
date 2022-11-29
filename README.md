@@ -2,11 +2,11 @@
 
 # KSociety.Base - Framework for microservices
 
-K-Society Base is a full stack framework for .NET 5, .NET 6 and .NET 7 application, ideal for implementing microservices.
+K-Society Base is a full stack framework for .NET Standard 2.1, .NET 5, .NET 6 and .NET 7 application, ideal for implementing microservices.
 
 ## Introduction
 
-KSociety.Base is a .NET 5.0, .NET 6.0 and .NET 7.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
+KSociety.Base is a .NET Standard 2.1, .NET 5.0, .NET 6.0 and .NET 7.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
 Its advanced features are ideal for Domain Driven Design (DDD), Command Query Responsibilty Segragation (CQRS) and Event Sourcing, is an open sourse 
 .NET framework and represents the basic infrastructure. The whole framework is divided into layers listed below.
 

@@ -1,5 +1,4 @@
-﻿
-using KSociety.Base.InfraSub.Shared.Interface;
+﻿using KSociety.Base.InfraSub.Shared.Interface;
 using KSociety.Base.Pre.Form.View.Abstractions;
 
 namespace KSociety.Base.Pre.Form.View.Forms
