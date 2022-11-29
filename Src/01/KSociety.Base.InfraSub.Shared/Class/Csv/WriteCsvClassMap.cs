@@ -18,11 +18,13 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
             try
             {
-                using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-                var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
-                writer.Context.RegisterClassMap<TClassMap>();
-                writer.WriteRecords(records);
-                return true;
+                using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
+                {
+                    var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
+                    writer.Context.RegisterClassMap<TClassMap>();
+                    writer.WriteRecords(records);
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -39,12 +41,14 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
             try
             {
-                await using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-                var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
-                writer.Context.RegisterClassMap<TClassMap>();
-                await writer.WriteRecordsAsync(records).ConfigureAwait(false);
+                using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
+                {
+                    var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
+                    writer.Context.RegisterClassMap<TClassMap>();
+                    await writer.WriteRecordsAsync(records).ConfigureAwait(false);
 
-                return true;
+                    return true;
+                }
             }
             catch (Exception ex)
             {

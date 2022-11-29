@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace KSociety.Base.Pre.Form.View.Abstractions;
-
-public interface IDataGridViewBase
+namespace KSociety.Base.Pre.Form.View.Abstractions
 {
-    DataGridView DataGridView { get; }
-    BindingSource BindingSource { get; }
+    public interface IDataGridViewBase
+    {
+        DataGridView DataGridView { get; }
+        BindingSource BindingSource { get; }
 
-    void ShowErrorMessage(string errorMessage);
+        void ShowErrorMessage(string errorMessage);
 
-    //void ShowProgress(int progressPercentage);
+        //void ShowProgress(int progressPercentage);
 
-    event EventHandler LoadData;
+        event EventHandler LoadData;
 
-    //event EventHandler ErrorMessage;
+        //event EventHandler ErrorMessage;
 
-    //event EventHandler Error;
+        //event EventHandler Error;
 
-    //ProgressBar ProgressBarLoadDataProperty { get; }
+        //ProgressBar ProgressBarLoadDataProperty { get; }
 
-    //event EventHandler DefaultValuesNeeded;
+        //event EventHandler DefaultValuesNeeded;
 
-    event EventHandler DataSourceChanged;
+        event EventHandler DataSourceChanged;
+    }
 }

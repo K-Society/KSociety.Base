@@ -14,7 +14,18 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
         private readonly ILogger<MySqlGenerator> _logger;
 
         //It must be public
-#if NET5_0
+#if NETSTANDARD2_1_OR_GREATER
+        public MySqlGenerator(
+            ILoggerFactory loggerFactory,
+            MigrationsSqlGeneratorDependencies dependencies,
+            IRelationalAnnotationProvider relationalAnnotationProvider,
+            IMySqlOptions options)
+            : base(dependencies, relationalAnnotationProvider, options)
+        {
+            _logger = loggerFactory.CreateLogger<MySqlGenerator>();
+            _logger.LogTrace("MySqlGenerator");
+        }
+#elif NET5_0
         public MySqlGenerator(
             ILoggerFactory loggerFactory,
             MigrationsSqlGeneratorDependencies dependencies,
