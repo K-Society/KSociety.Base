@@ -12,7 +12,17 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
     {
         private readonly ILogger<SqlServerGenerator> _logger;
         //It must be public.
-#if NET5_0
+#if NETSTANDARD2_1_OR_GREATER
+        public SqlServerGenerator(
+            ILoggerFactory loggerFactory,
+            MigrationsSqlGeneratorDependencies dependencies,
+            IRelationalAnnotationProvider relationalAnnotationProvider)
+            : base(dependencies, relationalAnnotationProvider)
+        {
+            _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
+            _logger.LogTrace("SqlServerGenerator");
+        }
+#elif NET5_0
         public SqlServerGenerator(
             ILoggerFactory loggerFactory,
             MigrationsSqlGeneratorDependencies dependencies,

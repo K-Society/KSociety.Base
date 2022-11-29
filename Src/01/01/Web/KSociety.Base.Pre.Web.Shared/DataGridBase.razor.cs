@@ -32,7 +32,7 @@ namespace KSociety.Base.Pre.Web.Shared
 
         [Parameter] public TGridView QueryListGridView { get; set; }
 
-        public Dictionary<string, string> SelectColumns { get; set; } = new();
+        public Dictionary<string, string> SelectColumns { get; set; } = new Dictionary<string, string>();
 
         protected override void OnInitialized()
         {

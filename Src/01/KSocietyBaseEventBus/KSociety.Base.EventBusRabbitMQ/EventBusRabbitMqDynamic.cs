@@ -56,66 +56,68 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (_autofac != null)
                 {
-                    await using var scope = _autofac.BeginLifetimeScope(AutofacScopeName);
-                    var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
-                    foreach (var subscription in subscriptions)
+                    using (var scope = _autofac.BeginLifetimeScope(AutofacScopeName))
                     {
-                        //if (subscription.IsDynamic)
-                        //{
-                        //    var handler =
-                        //        scope.ResolveOptional(subscription.HandlerType) as IDynamicIntegrationEventHandler;
-
-                        //    //ToDo
-                        //    //dynamic eventData = JObject.Parse(message);
-
-                        //    //await using var ms = new MemoryStream(message);
-                        //    //var integrationEvent = Serializer.Deserialize(eventType, ms);
-
-                        //    //await handler.Handle(eventData);
-                        //}
-                        //else
-                        //{
-                        //    var eventType = _subsManager.GetEventTypeByName(routingKey);
-                        //    //var integrationEvent = JsonConvert.DeserializeObject(message, eventType);
-
-                        //    await using var ms = new MemoryStream(message);
-                        //    var integrationEvent = Serializer.Deserialize(eventType, ms);
-
-                        //    var handler = scope.ResolveOptional(subscription.HandlerType);
-                        //    var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
-                        //    await (ValueTask) concreteType.GetMethod("Handle")
-                        //        .Invoke(handler, new[] {integrationEvent});
-                        //}
-
-                        switch (subscription.SubscriptionManagerType)
+                        var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
+                        foreach (var subscription in subscriptions)
                         {
-                            //case InMemoryEventBusSubscriptionsManager.SubscriptionManagerType.Dynamic:
+                            //if (subscription.IsDynamic)
+                            //{
                             //    var handler =
                             //        scope.ResolveOptional(subscription.HandlerType) as IDynamicIntegrationEventHandler;
 
                             //    //ToDo
                             //    //dynamic eventData = JObject.Parse(message);
 
+                            //    //await using var ms = new MemoryStream(message);
+                            //    //var integrationEvent = Serializer.Deserialize(eventType, ms);
+
+                            //    //await handler.Handle(eventData);
+                            //}
+                            //else
+                            //{
+                            //    var eventType = _subsManager.GetEventTypeByName(routingKey);
+                            //    //var integrationEvent = JsonConvert.DeserializeObject(message, eventType);
+
                             //    await using var ms = new MemoryStream(message);
                             //    var integrationEvent = Serializer.Deserialize(eventType, ms);
 
-                            //    await handler.Handle(eventData);
-                            //    break;
+                            //    var handler = scope.ResolveOptional(subscription.HandlerType);
+                            //    var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+                            //    await (ValueTask) concreteType.GetMethod("Handle")
+                            //        .Invoke(handler, new[] {integrationEvent});
+                            //}
 
-                            //default:
-                            //    {
-                            //        var eventType = _subsManager.GetEventTypeByName(routingKey);
-                            //        //var integrationEvent = JsonConvert.DeserializeObject(message, eventType);
+                            switch (subscription.SubscriptionManagerType)
+                            {
+                                //case InMemoryEventBusSubscriptionsManager.SubscriptionManagerType.Dynamic:
+                                //    var handler =
+                                //        scope.ResolveOptional(subscription.HandlerType) as IDynamicIntegrationEventHandler;
 
-                            //        await using var ms = new MemoryStream(message);
-                            //        var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                //    //ToDo
+                                //    //dynamic eventData = JObject.Parse(message);
 
-                            //        var handler = scope.ResolveOptional(subscription.HandlerType);
-                            //        var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
-                            //        await (ValueTask)concreteType.GetMethod("Handle")
-                            //            .Invoke(handler, new[] { integrationEvent, cancel });
-                            //        break;
-                            //    }
+                                //    await using var ms = new MemoryStream(message);
+                                //    var integrationEvent = Serializer.Deserialize(eventType, ms);
+
+                                //    await handler.Handle(eventData);
+                                //    break;
+
+                                //default:
+                                //    {
+                                //        var eventType = _subsManager.GetEventTypeByName(routingKey);
+                                //        //var integrationEvent = JsonConvert.DeserializeObject(message, eventType);
+
+                                //        await using var ms = new MemoryStream(message);
+                                //        var integrationEvent = Serializer.Deserialize(eventType, ms);
+
+                                //        var handler = scope.ResolveOptional(subscription.HandlerType);
+                                //        var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+                                //        await (ValueTask)concreteType.GetMethod("Handle")
+                                //            .Invoke(handler, new[] { integrationEvent, cancel });
+                                //        break;
+                                //    }
+                            }
                         }
                     }
                 }

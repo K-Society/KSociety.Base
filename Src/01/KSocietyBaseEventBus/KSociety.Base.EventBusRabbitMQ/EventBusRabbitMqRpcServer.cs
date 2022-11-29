@@ -143,13 +143,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                     var connection = await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
                 }
 
-                using var channel = PersistentConnection.CreateModel();
+                using (var channel = PersistentConnection.CreateModel())
+                {
+                    QueueInitialize(channel);
 
-                QueueInitialize(channel);
-
-                channel.QueueBind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
-                channel.QueueBind(_queueNameReply, EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                    eventNameResult);
+                    channel.QueueBind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+                    channel.QueueBind(_queueNameReply, EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                        eventNameResult);
+                }
             }
             catch (RabbitMQClientException rex)
             {
@@ -195,7 +196,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     return false;
                 }
 
-                if (ConsumerChannel?.Value is not null)
+                if (ConsumerChannel?.Value != null)
                 {
                     var consumer = new AsyncEventingBasicConsumer(await ConsumerChannel);
 
@@ -409,21 +410,23 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         return null;
                                     }
 
-                                    using var ms = new MemoryStream(message.ToArray());
-                                    var integrationEvent = Serializer.Deserialize(eventType, ms);
-                                    var concreteType =
-                                        typeof(IIntegrationRpcServerHandler<,>).MakeGenericType(eventType,
-                                            eventReplyType);
-
-                                    //output = (dynamic)concreteType.GetMethod("HandleRpc")
-                                    //    .Invoke(EventHandler, new[] { integrationEvent, cancel });
-
-                                    output = concreteType.GetMethod("HandleRpc")
-                                        .Invoke(EventHandler, new[] {integrationEvent, cancel});
-
-                                    if (output is null)
+                                    using (var ms = new MemoryStream(message.ToArray()))
                                     {
-                                        Logger.LogError("ProcessEventRpcServer output is null!");
+                                        var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                        var concreteType =
+                                            typeof(IIntegrationRpcServerHandler<,>).MakeGenericType(eventType,
+                                                eventReplyType);
+
+                                        //output = (dynamic)concreteType.GetMethod("HandleRpc")
+                                        //    .Invoke(EventHandler, new[] { integrationEvent, cancel });
+
+                                        output = concreteType.GetMethod("HandleRpc")
+                                            .Invoke(EventHandler, new[] {integrationEvent, cancel});
+
+                                        if (output is null)
+                                        {
+                                            Logger.LogError("ProcessEventRpcServer output is null!");
+                                        }
                                     }
                                 }
                             }
@@ -500,19 +503,22 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         return null;
                                     }
 
-                                    await using var ms = new MemoryStream(message.ToArray());
-                                    var integrationEvent = Serializer.Deserialize(eventType, ms);
-
-                                    var concreteType =
-                                        typeof(IIntegrationRpcServerHandler<,>).MakeGenericType(eventType,
-                                            eventReplyType);
-
-                                    output = await ((dynamic)concreteType.GetMethod("HandleRpcAsync")
-                                        .Invoke(EventHandler, new[] {integrationEvent, cancel})).ConfigureAwait(false);
-
-                                    if (output is null)
+                                    using (var ms = new MemoryStream(message.ToArray()))
                                     {
-                                        Logger.LogError("ProcessEventRpcServer output is null!");
+                                        var integrationEvent = Serializer.Deserialize(eventType, ms);
+
+                                        var concreteType =
+                                            typeof(IIntegrationRpcServerHandler<,>).MakeGenericType(eventType,
+                                                eventReplyType);
+
+                                        output = await ((dynamic)concreteType.GetMethod("HandleRpcAsync")
+                                                .Invoke(EventHandler, new[] {integrationEvent, cancel}))
+                                            .ConfigureAwait(false);
+
+                                        if (output is null)
+                                        {
+                                            Logger.LogError("ProcessEventRpcServer output is null!");
+                                        }
                                     }
                                 }
                             }

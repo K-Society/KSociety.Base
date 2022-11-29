@@ -22,7 +22,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
                     .Single(str => str.EndsWith(operation.ResourceSqlFileName));
 
                 using Stream stream = assembly.GetManifestResourceStream(resourceName);
-                using StreamReader reader = new(stream ?? throw new InvalidOperationException());
+                using StreamReader reader = new StreamReader(stream ?? throw new InvalidOperationException());
                 string result = reader.ReadToEnd();
 
                 logger.LogDebug(result);

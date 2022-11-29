@@ -58,26 +58,31 @@ namespace KSociety.Base.EventBusRabbitMQ
                     Logger.LogWarning(ex, "Publish: ");
                 });
 
-            using var channel = PersistentConnection.CreateModel();
-            var routingKey = @event.RoutingKey;
-
-            channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
-                EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
-
-            await using var ms = new MemoryStream();
-            Serializer.Serialize(ms, @event);
-            var body = ms.ToArray();
-
-            policy.Execute(() =>
+            using (var channel = PersistentConnection.CreateModel())
             {
-                var properties = channel.CreateBasicProperties();
-                properties.DeliveryMode = 1; //2 = persistent, write on disk
+                var routingKey = @event.RoutingKey;
 
-                channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey, true,
-                    properties, body);
-            });
+                channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                    EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                    EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                    EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+
+                using (var ms = new MemoryStream())
+                {
+                    Serializer.Serialize(ms, @event);
+                    var body = ms.ToArray();
+
+                    policy.Execute(() =>
+                    {
+                        var properties = channel.CreateBasicProperties();
+                        properties.DeliveryMode = 1; //2 = persistent, write on disk
+
+                        channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,
+                            true,
+                            properties, body);
+                    });
+                }
+            }
         }
 
         #region [Subscribe]
@@ -129,11 +134,15 @@ namespace KSociety.Base.EventBusRabbitMQ
                                 else
                                 {
                                     var eventType = SubsManager.GetEventTypeByName(routingKey);
-                                    await using var ms = new MemoryStream(message.ToArray());
-                                    var integrationEvent = Serializer.Deserialize(eventType, ms);
-                                    var concreteType = typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
-                                    await ((ValueTask<bool>)concreteType.GetMethod("Enqueue")
-                                        .Invoke(EventHandler, new[] {integrationEvent, cancel})).ConfigureAwait(false);
+                                    using (var ms = new MemoryStream(message.ToArray()))
+                                    {
+                                        var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                        var concreteType =
+                                            typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
+                                        await ((ValueTask<bool>)concreteType.GetMethod("Enqueue")
+                                                .Invoke(EventHandler, new[] {integrationEvent, cancel}))
+                                            .ConfigureAwait(false);
+                                    }
                                 }
                             }
                             catch (Exception ex)

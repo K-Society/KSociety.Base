@@ -83,13 +83,15 @@ namespace KSociety.Base.Pre.Model.Utility
             _sortProperty = prop;
             _sortDirection = direction;
 
-            if (Items is not List<T> list) return;
+            //if (Items is not List<T> list) return;
+            if (Items is List<T> list)
+            {
+                list.Sort(Compare);
 
-            list.Sort(Compare);
-
-            _isSorted = true;
-            //fire an event that the list has been changed.
-            OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
+                _isSorted = true;
+                //fire an event that the list has been changed.
+                OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
+            }
         }
 
 
