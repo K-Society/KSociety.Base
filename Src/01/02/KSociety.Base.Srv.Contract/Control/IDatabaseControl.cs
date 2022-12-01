@@ -1,4 +1,4 @@
-﻿using KSociety.Base.App.Shared.Dto.Res.Control;
+﻿using KSociety.Base.App.Utility.Dto.Res.Control;
 using ProtoBuf.Grpc;
 using ProtoBuf.Grpc.Configuration;
 

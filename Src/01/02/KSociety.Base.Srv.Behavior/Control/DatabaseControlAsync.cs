@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Autofac;
-using KSociety.Base.App.Shared.Dto.Res.Control;
+using KSociety.Base.App.Utility.Dto.Res.Control;
 using KSociety.Base.Srv.Contract.Control;
 using KSociety.Base.Srv.Shared.Interface;
 using Microsoft.Extensions.Logging;

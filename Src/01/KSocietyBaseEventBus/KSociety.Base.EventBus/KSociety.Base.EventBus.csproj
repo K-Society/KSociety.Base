@@ -4,7 +4,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   
   <ItemGroup>
@@ -17,16 +17,6 @@
     <PackageReference Include="protobuf-net" Version="3.1.25" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-  </ItemGroup>
-
-  <!-- .NET 6.0 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    
-  </ItemGroup>
-
-  <!-- .NET 7.0 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-
   </ItemGroup>
 
 </Project>

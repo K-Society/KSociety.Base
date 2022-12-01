@@ -1,4 +1,4 @@
-﻿namespace KSociety.Base.Infra.Shared.Class
+﻿namespace KSociety.Base.Infra.Abstraction.Class
 {
     public class DatabaseOptions
     {

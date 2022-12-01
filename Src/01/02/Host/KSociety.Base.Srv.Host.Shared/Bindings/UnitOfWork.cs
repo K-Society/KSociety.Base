@@ -1,6 +1,6 @@
 ﻿using Autofac;
+using KSociety.Base.Infra.Abstraction.Interface;
 using KSociety.Base.Infra.Shared.Class;
-using KSociety.Base.Infra.Shared.Interface;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {

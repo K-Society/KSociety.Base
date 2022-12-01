@@ -1,21 +1,21 @@
-﻿using KSociety.Base.InfraSub.Shared.Interface;
-using ProtoBuf;
+﻿//using KSociety.Base.InfraSub.Shared.Interface;
+//using ProtoBuf;
 
-namespace KSociety.Base.App.Shared.Dto.Req
-{
-    [ProtoContract]
-    public class ImportReq : IRequest, IImport
-    {
-        [ProtoMember(1)] public string FileName { get; set; }
+//namespace KSociety.Base.App.Shared.Dto.Req
+//{
+//    [ProtoContract]
+//    public class ImportReq : IRequest, IImport
+//    {
+//        [ProtoMember(1)] public string FileName { get; set; }
 
-        [ProtoMember(2)] public byte[] ByteArray { get; set; }
+//        [ProtoMember(2)] public byte[] ByteArray { get; set; }
 
-        public ImportReq() { }
+//        public ImportReq() { }
 
-        public ImportReq(string fileName, byte[] byteArray)
-        {
-            FileName = fileName;
-            ByteArray = byteArray;
-        }
-    }
-}
+//        public ImportReq(string fileName, byte[] byteArray)
+//        {
+//            FileName = fileName;
+//            ByteArray = byteArray;
+//        }
+//    }
+//}

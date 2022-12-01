@@ -4,7 +4,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
     
   <ItemGroup>
@@ -18,29 +18,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="7.0.0" />
   </ItemGroup>
-
-  <!-- .NETSTANDARD 2.1 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-
-  </ItemGroup>
-
-  <!-- .NET 5.0 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-
-  </ItemGroup>
-
-  <!-- .NET 6.0 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-
-  </ItemGroup>
-
-  <!-- .NET 7.0 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-
-  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\03\KSociety.Base.App.Shared\KSociety.Base.App.Shared.csproj" />
+    <ProjectReference Include="..\..\KSociety.Base.InfraSub.Shared\KSociety.Base.InfraSub.Shared.csproj" />
   </ItemGroup>
  
 

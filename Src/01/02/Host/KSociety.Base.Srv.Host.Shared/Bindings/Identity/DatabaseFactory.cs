@@ -1,6 +1,6 @@
 ﻿using Autofac;
+using KSociety.Base.Infra.Abstraction.Interface;
 using KSociety.Base.Infra.Shared.Class.Identity;
-using KSociety.Base.Infra.Shared.Interface;
 using KSociety.Base.Infra.Shared.Interface.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
