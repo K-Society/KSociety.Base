@@ -41,7 +41,7 @@ skip_branch_with_pr: true
 skip_tags: true
 
 artifacts:
-  - path: build\**\Release\*.nupkg
+  - path: build\**\Release\*.*nupkg
     name: NuGetPackage
 
 deploy:
