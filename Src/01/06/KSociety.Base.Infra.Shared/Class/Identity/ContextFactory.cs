@@ -1,4 +1,5 @@
-﻿using KSociety.Base.Infra.Shared.Class.SqlGenerator;
+﻿using KSociety.Base.Infra.Abstraction.Class;
+using KSociety.Base.Infra.Shared.Class.SqlGenerator;
 using KSociety.Base.Infra.Shared.Interface.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

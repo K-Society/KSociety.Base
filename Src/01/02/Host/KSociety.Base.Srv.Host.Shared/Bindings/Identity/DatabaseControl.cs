@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using KSociety.Base.App.Shared;
-using KSociety.Base.App.Shared.Dto.Res.Control;
-using KSociety.Base.App.Shared.ReqHdlr;
+using KSociety.Base.App.Utility.Dto.Res.Control;
+using KSociety.Base.App.Utility.ReqHdlr;
+using KSociety.Base.Infra.Abstraction.Interface;
 using KSociety.Base.Infra.Shared.Class.Identity;
-using KSociety.Base.Infra.Shared.Interface;
 using KSociety.Base.Infra.Shared.Interface.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;

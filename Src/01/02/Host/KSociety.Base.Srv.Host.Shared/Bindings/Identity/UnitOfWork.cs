@@ -1,7 +1,7 @@
 ﻿using System;
 using Autofac;
+using KSociety.Base.Infra.Abstraction.Interface;
 using KSociety.Base.Infra.Shared.Class.Identity;
-using KSociety.Base.Infra.Shared.Interface;
 using Microsoft.AspNetCore.Identity;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity

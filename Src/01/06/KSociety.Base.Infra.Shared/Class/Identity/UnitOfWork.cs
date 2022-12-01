@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.Infra.Shared.Interface;
+﻿using KSociety.Base.Infra.Abstraction.Interface;
 using KSociety.Base.Infra.Shared.Interface.Identity;
 using KSociety.Base.InfraSub.Shared.Class;
 using Microsoft.AspNetCore.Identity;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Class.Identity
 {

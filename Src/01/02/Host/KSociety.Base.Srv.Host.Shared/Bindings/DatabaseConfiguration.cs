@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using KSociety.Base.Infra.Shared.Class;
-using KSociety.Base.Infra.Shared.Interface;
+using KSociety.Base.Infra.Abstraction.Class;
+using KSociety.Base.Infra.Abstraction.Interface;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
@@ -36,7 +36,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
 
         protected override void Load(ContainerBuilder builder)
         {
-            var conf = new Infra.Shared.Class.DatabaseConfiguration(_databaseEngine, _masterString, _debugFlag,
+            var conf = new Infra.Abstraction.Class.DatabaseConfiguration(_databaseEngine, _masterString, _debugFlag,
                 _migrationsAssembly, _lazyLoading);
             builder.RegisterInstance<IDatabaseConfiguration>(conf).SingleInstance();
         }

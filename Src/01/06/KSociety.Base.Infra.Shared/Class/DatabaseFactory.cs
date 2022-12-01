@@ -1,4 +1,5 @@
-﻿using KSociety.Base.Infra.Shared.Interface;
+﻿using KSociety.Base.Infra.Abstraction.Interface;
+using KSociety.Base.Infra.Shared.Interface;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
