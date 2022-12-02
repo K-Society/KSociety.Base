@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using KSociety.Base.Infra.Abstraction.Interface;
 using KSociety.Base.Infra.Shared.Class;
 using KSociety.Base.Infra.Shared.Interface;
 using Microsoft.Extensions.Logging;

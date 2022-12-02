@@ -1,6 +1,6 @@
-﻿using KSociety.Base.Infra.Shared.Interface;
+﻿using KSociety.Base.Infra.Abstraction.Interface;
 
-namespace KSociety.Base.Infra.Shared.Class
+namespace KSociety.Base.Infra.Abstraction.Class
 {
     public class DatabaseConfiguration : IDatabaseConfiguration
     {

@@ -1,5 +1,6 @@
-﻿using KSociety.Base.Infra.Shared.Class.SqlGenerator;
-using KSociety.Base.Infra.Shared.Interface;
+﻿using KSociety.Base.Infra.Abstraction.Class;
+using KSociety.Base.Infra.Abstraction.Interface;
+using KSociety.Base.Infra.Shared.Class.SqlGenerator;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
-    ///<inheritdoc cref="KSociety.Base.Infra.Shared.Interface.IDatabaseUnitOfWork"/>
+    ///<inheritdoc cref="IDatabaseUnitOfWork"/>
     public class DatabaseContext : DbContext, IDatabaseUnitOfWork
     {
         public const string DefaultSchema = "ksociety";

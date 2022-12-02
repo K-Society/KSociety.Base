@@ -13,27 +13,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
         private readonly ILogger<NpgsqlGenerator> _logger;
 
         //It must be public.
-#if NETSTANDARD2_1_OR_GREATER
-        public NpgsqlGenerator(
-            ILoggerFactory loggerFactory,
-            MigrationsSqlGeneratorDependencies dependencies,
-            INpgsqlOptions migrationsAnnotations)
-            : base(dependencies, migrationsAnnotations)
-        {
-            _logger = loggerFactory.CreateLogger<NpgsqlGenerator>();
-            _logger.LogTrace("NpgsqlGenerator");
-        }
-#elif NET5_0
-        public NpgsqlGenerator(
-            ILoggerFactory loggerFactory,
-            MigrationsSqlGeneratorDependencies dependencies,
-            INpgsqlOptions migrationsAnnotations)
-            : base(dependencies, migrationsAnnotations)
-        {
-            _logger = loggerFactory.CreateLogger<NpgsqlGenerator>();
-            _logger.LogTrace("NpgsqlGenerator");
-        }
-#elif NET6_0_OR_GREATER
+#if NET6_0_OR_GREATER
         public NpgsqlGenerator(
             ILoggerFactory loggerFactory,
             MigrationsSqlGeneratorDependencies dependencies,

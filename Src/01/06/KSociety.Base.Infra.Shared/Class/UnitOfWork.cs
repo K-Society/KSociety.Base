@@ -1,11 +1,12 @@
-﻿using System.Threading;
+﻿using KSociety.Base.Infra.Abstraction.Interface;
+using System.Threading;
 using System.Threading.Tasks;
 using KSociety.Base.Infra.Shared.Interface;
 using KSociety.Base.InfraSub.Shared.Class;
 
 namespace KSociety.Base.Infra.Shared.Class
 {
-    ///<inheritdoc cref="KSociety.Base.Infra.Shared.Interface.IDatabaseUnitOfWork"/>
+    ///<inheritdoc cref="IDatabaseUnitOfWork"/>
     public class UnitOfWork<TContext> : DisposableObject, IDatabaseUnitOfWork
         where TContext : DatabaseContext
     {

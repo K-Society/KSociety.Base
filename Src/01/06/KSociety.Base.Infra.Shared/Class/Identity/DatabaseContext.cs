@@ -1,7 +1,5 @@
-﻿using KSociety.Base.Infra.Shared.Class.SqlGenerator;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using KSociety.Base.Infra.Abstraction.Interface;
+using KSociety.Base.Infra.Shared.Class.SqlGenerator;
 using KSociety.Base.Infra.Shared.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -9,8 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KSociety.Base.Infra.Shared.Class.Identity
 {
