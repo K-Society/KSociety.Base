@@ -59,8 +59,8 @@ deploy:
     server: 
     api_key:
       secure: U1qzBMTcpUuJ7GcLAiLJJkkQXQhqZcdnmYu7rTpxuidiMRCZtJ5Vr6DoTyx1wm3p
-    skip_symbols: true
-    symbol_server: 
-    artifact: /.*\.nupkg/
+    skip_symbols: false
+    symbol_server: https://api.nuget.org/v3/index.json
+    artifact: /.*(\.|\.s)nupkg/
     on:
       branch: master
