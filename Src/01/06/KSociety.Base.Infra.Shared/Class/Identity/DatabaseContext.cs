@@ -1,6 +1,5 @@
 ﻿using KSociety.Base.Infra.Abstraction.Interface;
 using KSociety.Base.Infra.Shared.Class.SqlGenerator;
-using KSociety.Base.Infra.Shared.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -101,7 +100,11 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
                             .UseLoggerFactory(LoggerFactory)
                             .EnableSensitiveDataLogging()
                             .UseSqlServer(_configuration.ConnectionString,
-                                sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+                                sql =>
+                                {
+                                    sql.MigrationsAssembly(_configuration.MigrationsAssembly);
+                                    sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                                });
                     }
                 }
                 else
@@ -115,7 +118,11 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
                     {
                         optionsBuilder
                             .UseSqlServer(_configuration.ConnectionString,
-                                sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+                                sql =>
+                                {
+                                    sql.MigrationsAssembly(_configuration.MigrationsAssembly);
+                                    sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                                });
                     }
                 }
             }
