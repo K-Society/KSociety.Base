@@ -56,11 +56,11 @@ deploy:
       branch: /^(master|develop)$/
       
   - provider: NuGet
-    server: 
+    server: https://api.nuget.org/v3/index.json
     api_key:
       secure: U1qzBMTcpUuJ7GcLAiLJJkkQXQhqZcdnmYu7rTpxuidiMRCZtJ5Vr6DoTyx1wm3p
     skip_symbols: false
-    symbol_server: https://www.nuget.org/api/v3/package/
+    symbol_server: https://api.nuget.org/v3/index.json
     artifact: /.*(\.|\.s)nupkg/
     on:
       branch: master
