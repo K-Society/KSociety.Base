@@ -4,7 +4,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -21,8 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\03\KSociety.Base.App.Utility\KSociety.Base.App.Utility.csproj" />
-    <ProjectReference Include="..\..\..\06\KSociety.Base.Infra.Shared\KSociety.Base.Infra.Shared.csproj" />
     <ProjectReference Include="..\..\..\KSocietyBaseEventBus\KSociety.Base.EventBusRabbitMQ\KSociety.Base.EventBusRabbitMQ.csproj" />
     <ProjectReference Include="..\..\KSociety.Base.Srv.Shared\KSociety.Base.Srv.Shared.csproj" />
   </ItemGroup>

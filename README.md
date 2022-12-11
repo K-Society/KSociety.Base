@@ -2,11 +2,11 @@
 
 # KSociety.Base - Framework for microservices
 
-K-Society Base is a full stack framework for .NET 6 and .NET 7 application, ideal for implementing microservices.
+K-Society Base is a full stack framework for .NET Standard 2.1 application, ideal for implementing microservices.
 
 ## Introduction
 
-KSociety.Base is a .NET 6.0 and .NET 7.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
+KSociety.Base is a .NET Standard 2.1 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
 Its advanced features are ideal for Domain Driven Design (DDD), Command Query Responsibilty Segragation (CQRS) and Event Sourcing, is an open sourse 
 .NET framework and represents the basic infrastructure. The whole framework is divided into layers listed below.
 
@@ -59,6 +59,7 @@ Contains the abstraction of the request handlers.
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.App.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/03/KSociety.Base.App.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.App.Shared)](https://www.nuget.org/packages/KSociety.Base.App.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.App.Shared) |
+| [KSociety.Base.App.Utility](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/03/KSociety.Base.App.Utility) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.App.Utility)](https://www.nuget.org/packages/KSociety.Base.App.Utility) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.App.Utility) |
 
 ### 4. Business
 | GitHub Repository | NuGet | Download |
@@ -82,6 +83,7 @@ Supported databases:
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
+| [KSociety.Base.Infra.Abstraction](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/06/KSociety.Base.Infra.Abstraction) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Infra.Abstraction)](https://www.nuget.org/packages/KSociety.Base.Infra.Abstraction) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Infra.Abstraction) |
 | [KSociety.Base.Infra.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/06/KSociety.Base.Infra.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Infra.Shared)](https://www.nuget.org/packages/KSociety.Base.Infra.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Infra.Shared) |
 
 ### EventBus (KSociety.Base.)

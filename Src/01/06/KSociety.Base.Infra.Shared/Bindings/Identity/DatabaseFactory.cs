@@ -1,7 +1,4 @@
 ﻿using Autofac;
-using KSociety.Base.App.Shared;
-using KSociety.Base.App.Utility.Dto.Res.Control;
-using KSociety.Base.App.Utility.ReqHdlr;
 using KSociety.Base.Infra.Abstraction.Interface;
 using KSociety.Base.Infra.Shared.Class.Identity;
 using KSociety.Base.Infra.Shared.Interface.Identity;
@@ -9,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity
+namespace KSociety.Base.Infra.Shared.Bindings.Identity
 {
-    public class DatabaseControl<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
+    public class DatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
         TUserToken> : Module
         where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TUser : IdentityUser<TKey>
@@ -25,15 +22,6 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings.Identity
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<GetConnectionStringReqHdlr>()
-                .As(typeof(IRequestHandlerWithResponse<ConnectionString>));
-            builder.RegisterType<EnsureCreatedReqHdlr>().As(typeof(IRequestHandlerWithResponse<EnsureCreated>)).As(
-                typeof(IRequestHandlerWithResponseAsync<EnsureCreated>));
-            builder.RegisterType<EnsureDeletedReqHdlr>().As(typeof(IRequestHandlerWithResponse<EnsureDeleted>)).As(
-                typeof(IRequestHandlerWithResponseAsync<EnsureDeleted>));
-            builder.RegisterType<MigrationReqHdlr>().Named<IRequestHandler>("MigrationReqHdlr")
-                .Named<IRequestHandlerAsync>("MigrationReqHdlr");
-
             builder
                 .RegisterType<DatabaseFactory<ILoggerFactory, IDatabaseConfiguration, TContext, TUser, TRole, TKey,
                     TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>()
