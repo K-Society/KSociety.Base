@@ -86,7 +86,11 @@ namespace KSociety.Base.Infra.Shared.Class
                     optionBuilder
                         .EnableDetailedErrors()
                         .EnableSensitiveDataLogging()
-                        .UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                        .UseSqlServer(connectionString, sql =>
+                        {
+                            sql.MigrationsAssembly(migrationsAssembly);
+                            sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                        });
 
                     optionBuilder.ReplaceService<IMigrationsSqlGenerator, SqlServerGenerator>();
                     break;
@@ -95,7 +99,10 @@ namespace KSociety.Base.Infra.Shared.Class
                     optionBuilder
                         .EnableDetailedErrors()
                         .EnableSensitiveDataLogging()
-                        .UseSqlite(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                        .UseSqlite(connectionString, sql =>
+                        {
+                            sql.MigrationsAssembly(migrationsAssembly);
+                        });
 
                     optionBuilder.ReplaceService<IMigrationsSqlGenerator, SqliteGenerator>();
                     break;
@@ -104,7 +111,11 @@ namespace KSociety.Base.Infra.Shared.Class
                     optionBuilder
                         .EnableDetailedErrors()
                         .EnableSensitiveDataLogging()
-                        .UseNpgsql(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
+                        .UseNpgsql(connectionString, sql =>
+                        {
+                            sql.MigrationsAssembly(migrationsAssembly);
+                            sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                        });
 
                     optionBuilder.ReplaceService<IMigrationsSqlGenerator, NpgsqlGenerator>();
                     break;
@@ -114,7 +125,11 @@ namespace KSociety.Base.Infra.Shared.Class
                         .EnableDetailedErrors()
                         .EnableSensitiveDataLogging()
                         .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
+                            sql =>
+                            {
+                                sql.MigrationsAssembly(migrationsAssembly);
+                                sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                            });
 
                     optionBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
                     break;

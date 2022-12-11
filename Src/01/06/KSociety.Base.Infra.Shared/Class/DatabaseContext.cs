@@ -113,7 +113,11 @@ namespace KSociety.Base.Infra.Shared.Class
                             optionsBuilder
                                 .UseLazyLoadingProxies(_configuration.LazyLoading)
                                 .UseSqlServer(_configuration.ConnectionString,
-                                    sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+                                    sql =>
+                                    {
+                                        sql.MigrationsAssembly(_configuration.MigrationsAssembly);
+                                        sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                                    });
 
                             optionsBuilder.ReplaceService<IMigrationsSqlGenerator, SqlServerGenerator>();
                         }
@@ -131,7 +135,10 @@ namespace KSociety.Base.Infra.Shared.Class
                             optionsBuilder
                                 .UseLazyLoadingProxies(_configuration.LazyLoading)
                                 .UseSqlite(_configuration.ConnectionString,
-                                    sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+                                    sql =>
+                                    {
+                                        sql.MigrationsAssembly(_configuration.MigrationsAssembly);
+                                    });
 
                             optionsBuilder.ReplaceService<IMigrationsSqlGenerator, SqliteGenerator>();
                         }
@@ -149,7 +156,11 @@ namespace KSociety.Base.Infra.Shared.Class
                             optionsBuilder
                                 .UseLazyLoadingProxies(_configuration.LazyLoading)
                                 .UseNpgsql(_configuration.ConnectionString,
-                                    sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+                                    sql =>
+                                    {
+                                        sql.MigrationsAssembly(_configuration.MigrationsAssembly);
+                                        sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                                    });
 
                             optionsBuilder.ReplaceService<IMigrationsSqlGenerator, NpgsqlGenerator>();
                         }
@@ -169,7 +180,11 @@ namespace KSociety.Base.Infra.Shared.Class
                                 .UseLazyLoadingProxies(_configuration.LazyLoading)
                                 .UseMySql(_configuration.ConnectionString,
                                     ServerVersion.AutoDetect(_configuration.ConnectionString),
-                                    sql => sql.MigrationsAssembly(_configuration.MigrationsAssembly));
+                                    sql =>
+                                    {
+                                        sql.MigrationsAssembly(_configuration.MigrationsAssembly);
+                                        sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                                    });
 
                             optionsBuilder.ReplaceService<IMigrationsSqlGenerator, MySqlGenerator>();
                         }
