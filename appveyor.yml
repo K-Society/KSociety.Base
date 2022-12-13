@@ -24,7 +24,7 @@ before_build:
   - ps: dotnet --info
 
 build:
-  verbosity: detailed # minimal
+  verbosity: minimal
 
 build_script:
   - appveyor.cmd
