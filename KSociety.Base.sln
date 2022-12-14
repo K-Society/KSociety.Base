@@ -90,7 +90,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.InfraSub.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.App.Utility", "Src\01\03\KSociety.Base.App.Utility\KSociety.Base.App.Utility.csproj", "{2D82959D-3C85-4C05-928E-0DC9E69E2D47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSociety.Base.Infra.Abstraction", "Src\01\06\KSociety.Base.Infra.Abstraction\KSociety.Base.Infra.Abstraction.csproj", "{D6B44BDD-05D8-4145-AC61-AECC0CEF26C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Infra.Abstraction", "Src\01\06\KSociety.Base.Infra.Abstraction\KSociety.Base.Infra.Abstraction.csproj", "{D6B44BDD-05D8-4145-AC61-AECC0CEF26C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

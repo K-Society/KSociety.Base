@@ -60,7 +60,7 @@ deploy:
     api_key:
       secure: U1qzBMTcpUuJ7GcLAiLJJkkQXQhqZcdnmYu7rTpxuidiMRCZtJ5Vr6DoTyx1wm3p
     skip_symbols: false
-    symbol_server: https://www.nuget.org/api/v2/package/
+    symbol_server: https://www.nuget.org/api/v2/symbolpackage
     artifact: /.*(\.|\.s)nupkg/
     on:
       branch: master
