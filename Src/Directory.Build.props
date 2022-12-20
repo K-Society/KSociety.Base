@@ -37,6 +37,10 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   
+  <ItemGroup>
+    <RuntimeHostConfigurationOption Include="System.Globalization.Invariant" Value="true" />
+  </ItemGroup>
+  
   <!--Target Name="PostBuild" BeforeTargets="PostBuildEvent">
     <Exec Command="echo OutputPath: $(OutputPath)&#xD;&#xA;echo BaseIntermediateOutputPath: $(BaseIntermediateOutputPath)&#xD;&#xA;" />
   </Target-->

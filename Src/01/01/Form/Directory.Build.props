@@ -37,6 +37,10 @@
   <PropertyGroup Condition="'$(APPVEYOR)' == 'True'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <RuntimeHostConfigurationOption Include="System.Globalization.Invariant" Value="true" />
+  </ItemGroup>
 
   <Import Project="Icon.Build.props" Condition=" '$(MSBuildProjectExtension)'=='.csproj' and Exists('Icon.Build.props') " />
   <Import Project="CSharp.Build.props" Condition=" '$(MSBuildProjectExtension)'=='.csproj' and Exists('CSharp.Build.props') " />
