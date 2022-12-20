@@ -32,6 +32,7 @@
 	<IncludeSymbols>true</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	<PackageTags>ksociety;k-society;microservices;fullstack;framework</PackageTags>
+	<PublishTrimmed>true</PublishTrimmed>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(APPVEYOR)' == 'True'">
