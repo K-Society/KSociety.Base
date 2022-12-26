@@ -7,7 +7,7 @@
 
 msbuild -t:restore -p:Configuration=%_C% || exit /b
 
-msbuild -p:Configuration=%_C% -p:TrimUnusedCode=true || exit /b
+msbuild -p:Configuration=%_C% || exit /b
 
 REM msbuild src\00\KSociety.Base.InstallAction\KSociety.Base.InstallAction.csproj -p:Configuration=%_C% -p:TargetFramework="net461" -p:OutputPath="%_P%\KSociety.Base.InstallAction\%_C%\net461" || exit /b
 
