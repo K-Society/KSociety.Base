@@ -3,23 +3,22 @@ using Microsoft.Extensions.Logging;
 using ProtoBuf.Grpc.Client;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace KSociety.Base.Srv.Agent
 {
-    public class AgentImportAsync<TImportAsync, TImportReq, TImportRes> : Connection,
-        IAgentImportAsync<TImportReq, TImportRes>
-        where TImportAsync : class, IImportAsync<TImportReq, TImportRes>
+    public class AgentImportBase<TImport, TImportReq, TImportRes> : Connection,
+        IAgentImportBase<TImportReq, TImportRes>
+        where TImport : class, IImport<TImportReq, TImportRes>
         where TImportReq : class
         where TImportRes : class
     {
-        public AgentImportAsync(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
+        public AgentImportBase(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
             : base(agentConfiguration, loggerFactory)
         {
 
         }
 
-        public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq request,
+        public virtual TImportRes ImportData(TImportReq request,
             CancellationToken cancellationToken = default)
         {
             TImportRes output = default;
@@ -27,10 +26,9 @@ namespace KSociety.Base.Srv.Agent
             {
                 using (Channel)
                 {
-                    var client = Channel.CreateGrpcService<TImportAsync>();
+                    var client = Channel.CreateGrpcService<TImport>();
 
-                    var result = await client.ImportDataAsync(request, ConnectionOptions(cancellationToken))
-                        .ConfigureAwait(false);
+                    var result = client.ImportData(request, ConnectionOptions(cancellationToken));
 
                     output = result;
                 }

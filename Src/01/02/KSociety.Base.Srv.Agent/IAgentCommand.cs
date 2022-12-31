@@ -1,13 +1,16 @@
-﻿using System.Threading;
-
-namespace KSociety.Base.Srv.Agent
+﻿namespace KSociety.Base.Srv.Agent
 {
     public interface IAgentCommand<
         in TAddReq, TAddRes,
         in TUpdateReq, TUpdateRes,
         in TCopyReq, TCopyRes,
         in TModifyFieldReq, TModifyFieldRes,
-        in TRemoveReq, TRemoveRes> : IAgentCommandAsync<
+        in TRemoveReq, TRemoveRes> : IAgentCommandBase<
+        TAddReq, TAddRes,
+        TUpdateReq, TUpdateRes,
+        TCopyReq, TCopyRes,
+        TModifyFieldReq, TModifyFieldRes,
+        TRemoveReq, TRemoveRes>, IAgentCommandAsync<
         TAddReq, TAddRes,
         TUpdateReq, TUpdateRes,
         TCopyReq, TCopyRes,
@@ -24,10 +27,6 @@ namespace KSociety.Base.Srv.Agent
         where TRemoveReq : class
         where TRemoveRes : class
     {
-        TAddRes Add(TAddReq addItem, CancellationToken cancellationToken = default);
-        TUpdateRes Update(TUpdateReq updateItem, CancellationToken cancellationToken = default);
-        TCopyRes Copy(TCopyReq copyItem, CancellationToken cancellationToken = default);
-        TModifyFieldRes ModifyField(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default);
-        TRemoveRes Remove(TRemoveReq removeItem, CancellationToken cancellationToken = default);
+
     }
 }
