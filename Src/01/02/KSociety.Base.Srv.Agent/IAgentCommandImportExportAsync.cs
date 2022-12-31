@@ -1,28 +1,16 @@
 ﻿namespace KSociety.Base.Srv.Agent
 {
-    public interface IAgentCommandImportExport<
+    public interface IAgentCommandImportExportAsync<
         in TAddReq, TAddRes,
         in TUpdateReq, TUpdateRes,
         in TCopyReq, TCopyRes,
         in TModifyFieldReq, TModifyFieldRes,
         in TRemoveReq, TRemoveRes,
         in TImportReq, TImportRes,
-        in TExportReq, TExportRes> : IAgentCommandImportExportBase<
-        TAddReq, TAddRes,
-        TUpdateReq, TUpdateRes,
-        TCopyReq, TCopyRes,
-        TModifyFieldReq, TModifyFieldRes,
-        TRemoveReq, TRemoveRes,
-        TImportReq, TImportRes,
-        TExportReq, TExportRes>,
-        IAgentCommandImportExportAsync<
-        TAddReq, TAddRes,
-        TUpdateReq, TUpdateRes,
-        TCopyReq, TCopyRes,
-        TModifyFieldReq, TModifyFieldRes,
-        TRemoveReq, TRemoveRes,
-        TImportReq, TImportRes,
-        TExportReq, TExportRes>
+        in TExportReq, TExportRes> : IAgentCommandAsync<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes,
+            TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>,
+        IAgentImportAsync<TImportReq, TImportRes>,
+        IAgentExportAsync<TExportReq, TExportRes>
         where TAddReq : class
         where TAddRes : class
         where TUpdateReq : class

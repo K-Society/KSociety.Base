@@ -3,23 +3,22 @@ using Microsoft.Extensions.Logging;
 using ProtoBuf.Grpc.Client;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace KSociety.Base.Srv.Agent
 {
-    public class AgentExportAsync<TExportAsync, TExportReq, TExportRes> : Connection,
-        IAgentExportAsync<TExportReq, TExportRes>
-        where TExportAsync : class, IExportAsync<TExportReq, TExportRes>
+    public class AgentExportBase<TExport, TExportReq, TExportRes> : Connection,
+        IAgentExportBase<TExportReq, TExportRes>
+        where TExport : class, IExport<TExportReq, TExportRes>
         where TExportReq : class
         where TExportRes : class
     {
-        public AgentExportAsync(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
+        public AgentExportBase(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
             : base(agentConfiguration, loggerFactory)
         {
 
         }
 
-        public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq request,
+        public virtual TExportRes ExportData(TExportReq request,
             CancellationToken cancellationToken = default)
         {
             TExportRes output = default;
@@ -27,10 +26,9 @@ namespace KSociety.Base.Srv.Agent
             {
                 using (Channel)
                 {
-                    var client = Channel.CreateGrpcService<TExportAsync>();
+                    var client = Channel.CreateGrpcService<TExport>();
 
-                    var result = await client.ExportDataAsync(request, ConnectionOptions(cancellationToken))
-                        .ConfigureAwait(false);
+                    var result = client.ExportData(request, ConnectionOptions(cancellationToken));
 
                     output = result;
                 }
