@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace KSociety.Base.Srv.Agent.ListKeyValue
 {
-    public interface IAgentQueryKeyValueModelAsync<TList, TKey, TValue>
+    public interface IAgentQueryKeyValueModelAsync<TKey, TValue, TList>
         where TList : ListKeyValuePair<TKey, TValue>
     {
         ValueTask<TList> LoadDataAsync(CancellationToken cancellationToken = default);
