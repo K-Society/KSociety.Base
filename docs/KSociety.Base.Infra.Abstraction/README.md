@@ -14,6 +14,10 @@ The infrastructure layer, data access layer (DAL).
 The infrastructure layer, data access layer (DAL).
 It also contains the implementation of the UnitOfWork.
 
+### Example of use
+Refer to the following [example repository](https://github.com/K-Society/KSociety.Example).
+Refer to the following [readme](https://github.com/K-Society/KSociety.Example/tree/master/docs/KSociety.Example.Infra.DataAccess).
+
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |

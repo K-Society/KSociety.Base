@@ -13,6 +13,9 @@ KSociety.Base.Pre.Form.View is a library shared among other stack libraries.
 ### KSociety.Base.Pre.Form.View
 The generic shared library.
 
+### Example of use
+Refer to the following [example repository](https://github.com/K-Society/KSociety.Example).
+
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.Pre.Form.View](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/KSociety.Base.Pre.Form.View) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Pre.Form.View)](https://www.nuget.org/packages/KSociety.Base.Pre.Form.View) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Pre.Form.View) |
