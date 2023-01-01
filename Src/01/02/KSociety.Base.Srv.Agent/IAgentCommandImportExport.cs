@@ -22,7 +22,11 @@
         TModifyFieldReq, TModifyFieldRes,
         TRemoveReq, TRemoveRes,
         TImportReq, TImportRes,
-        TExportReq, TExportRes>
+        TExportReq, TExportRes>, IAgentCommand<TAddReq, TAddRes,
+            TUpdateReq, TUpdateRes,
+            TCopyReq, TCopyRes,
+            TModifyFieldReq, TModifyFieldRes,
+            TRemoveReq, TRemoveRes>
         where TAddReq : class
         where TAddRes : class
         where TUpdateReq : class
