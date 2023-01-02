@@ -13,6 +13,10 @@ The domain layer.
 ### KSociety.Base.App.Shared
 The domain layer.
 
+### Example of use
+Refer to the following [example repository](https://github.com/K-Society/KSociety.Example).
+Refer to the following [readme](https://github.com/K-Society/KSociety.Example/tree/master/docs/KSociety.Example.Domain.Entity).
+
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.Domain.Shared](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/KSociety.Base.Domain.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Domain.Shared)](https://www.nuget.org/packages/KSociety.Base.Domain.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Domain.Shared) |

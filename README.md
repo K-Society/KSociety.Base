@@ -18,27 +18,27 @@ Its advanced features are ideal for Domain Driven Design (DDD), Command Query Re
 
 ![Image of Architecture](https://github.com/K-Society/KSociety.Base/blob/experimental/docs/Architecture_view_for_KSociety.Base.png)
 
-### 0. Install (KSociety.Base.)
+### 0. Install (KSociety.Base.*)
 The install utility library.
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.InstallAction](https://github.com/K-Society/KSociety.Base/tree/master/Src/00/KSociety.Base.InstallAction) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InstallAction)](https://www.nuget.org/packages/KSociety.Base.InstallAction) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InstallAction) |
 
-### 1. Presentation (KSociety.Base.Pre.)
+### 1. Presentation (KSociety.Base.Pre.*)
 The presentation layer.
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.Pre.Model](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/01/KSociety.Base.Pre.Model) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Pre.Model)](https://www.nuget.org/packages/KSociety.Base.Pre.Model) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Pre.Model) |
 
-### 1.1 Presentation - Form (KSociety.Base.Pre.Form.)
+### 1.1 Presentation - Form (KSociety.Base.Pre.Form.*)
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.Pre.Form.View](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/01/KSociety.Base.Pre.Form.View) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Pre.Form.View)](https://www.nuget.org/packages/KSociety.Base.Pre.Form.View) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Pre.Form.View) |
 | [KSociety.Base.Pre.Form.Presenter](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/01/KSociety.Base.Pre.Form.Presenter) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Pre.Form.Presenter)](https://www.nuget.org/packages/KSociety.Base.Pre.Form.Presenter) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Pre.Form.Presenter) |
 
-### 2. Service (KSociety.Base.Srv.)
+### 2. Service (KSociety.Base.Srv.*)
 The service layer.
 
 | GitHub Repository | NuGet | Download |
@@ -49,14 +49,14 @@ The service layer.
 | [KSociety.Base.Srv.Dto](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/02/KSociety.Base.Srv.Dto) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Dto)](https://www.nuget.org/packages/KSociety.Base.Srv.Dto) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Dto) |
 | [KSociety.Base.Srv.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/02/KSociety.Base.Srv.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Shared)](https://www.nuget.org/packages/KSociety.Base.Srv.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Shared) |
 
-### 2.1 Service - Host (KSociety.Base.Srv.Host.)
+### 2.1 Service - Host (KSociety.Base.Srv.Host.*)
 Contains the autofac modules.
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.Srv.Host.Shared](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/02/Host/KSociety.Base.Srv.Host.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Host.Shared)](https://www.nuget.org/packages/KSociety.Base.Srv.Host.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Host.Shared) |
 
-### 3. Application (KSociety.Base.App.)
+### 3. Application (KSociety.Base.App.*)
 The application layer, abstraction on the command handler library.
 Contains the abstraction of the request handlers.
 
@@ -69,14 +69,14 @@ Contains the abstraction of the request handlers.
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 
-### 5. Domain (KSociety.Base.Domain.)
+### 5. Domain (KSociety.Base.Domain.*)
 The domain layer.
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.Domain.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/05/KSociety.Base.Domain.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Domain.Shared)](https://www.nuget.org/packages/KSociety.Base.Domain.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Domain.Shared) |
 
-### 6. Infrastructure (KSociety.Base.Infra.)
+### 6. Infrastructure (KSociety.Base.Infra.*)
 The infrastructure layer, data access layer (DAL).
 It also contains the implementation of the UnitOfWork.
 Supported databases:
@@ -90,7 +90,7 @@ Supported databases:
 | [KSociety.Base.Infra.Abstraction](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/06/KSociety.Base.Infra.Abstraction) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Infra.Abstraction)](https://www.nuget.org/packages/KSociety.Base.Infra.Abstraction) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Infra.Abstraction) |
 | [KSociety.Base.Infra.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/06/KSociety.Base.Infra.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Infra.Shared)](https://www.nuget.org/packages/KSociety.Base.Infra.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Infra.Shared) |
 
-### EventBus (KSociety.Base.)
+### EventBus (KSociety.Base.*)
 The event bus abstraction and [RbbitMQ](https://www.rabbitmq.com/) implementation.
 
 | GitHub Repository | NuGet | Download |
@@ -98,7 +98,7 @@ The event bus abstraction and [RbbitMQ](https://www.rabbitmq.com/) implementatio
 | [KSociety.Base.EventBus](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/KSocietyBaseEventBus/KSociety.Base.EventBus) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.EventBus)](https://www.nuget.org/packages/KSociety.Base.EventBus) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.EventBus) |
 | [KSociety.Base.EventBusRabbitMQ](https://github.com/K-Society/KSociety.Base/tree/develop/Src/01/KSocietyBaseEventBus/KSociety.Base.EventBusRabbitMQ) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.EventBusRabbitMQ)](https://www.nuget.org/packages/KSociety.Base.EventBusRabbitMQ) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.EventBusRabbitMQ) |
 
-### InfrastructureSub (KSociety.Base.InfraSub.)
+### InfrastructureSub (KSociety.Base.InfraSub.*)
 The generic shared library.
 
 | GitHub Repository | NuGet | Download |
