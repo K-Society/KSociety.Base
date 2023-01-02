@@ -13,6 +13,11 @@ The application layer, abstraction on the command handler library. Contains the 
 ### KSociety.Base.App.Utility
 The application layer, abstraction on the command handler library. Contains the abstraction of the request handlers.
 
+### Example of use
+Refer to the following [example repository](https://github.com/K-Society/KSociety.Example).
+Refer to the following [readme](https://github.com/K-Society/KSociety.Example/tree/master/docs/KSociety.Example.App.Dto).
+Refer to the following [readme](https://github.com/K-Society/KSociety.Example/tree/master/docs/KSociety.Example.App.ReqHdlr).
+
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.App.Utility](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/KSociety.Base.App.Utility) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.App.Utility)](https://www.nuget.org/packages/KSociety.Base.App.Utility) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.App.Utility) |

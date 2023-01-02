@@ -13,6 +13,10 @@ KSociety.Base.Srv.Host.Shared is a library shared among other stack libraries.
 ### KSociety.Base.Srv.Host.Shared
 The generic shared library.
 
+### Example of use
+Refer to the following [example repository](https://github.com/K-Society/KSociety.Example).
+Refer to the following [readme](https://github.com/K-Society/KSociety.Example/tree/master/docs/KSociety.Example.Srv.Host).
+
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
 | [KSociety.Base.Srv.Host.Shared](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/KSociety.Base.Srv.Host.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Host.Shared)](https://www.nuget.org/packages/KSociety.Base.Srv.Host.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Host.Shared) |

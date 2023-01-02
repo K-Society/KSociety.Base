@@ -1,15 +1,13 @@
 ﻿using KSociety.Base.InfraSub.Shared.Interface;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace KSociety.Base.Srv.Agent
 {
-    public interface IAgentQueryModel<T, in TObject>
-        where T : IObject
+    public interface IAgentQueryModel<in TObject, T> : 
+        IAgentQueryModelBase<TObject, T>, 
+        IAgentQueryModelAsync<TObject, T>
         where TObject : IIdObject
+        where T : IObject
     {
-        T Find(TObject idObject, CancellationToken cancellationToken = default);
 
-        ValueTask<T> FindAsync(TObject idObject, CancellationToken cancellationToken = default);
     }
 }

@@ -1,14 +1,10 @@
 ﻿using KSociety.Base.Srv.Dto;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace KSociety.Base.Srv.Agent.ListKeyValue
 {
-    public interface IAgentQueryKeyValueModel<TList, TKey, TValue>
+    public interface IAgentQueryKeyValueModel<TKey, TValue, TList> : IAgentQueryKeyValueModelBase<TKey, TValue, TList>, IAgentQueryKeyValueModelAsync<TKey, TValue, TList>
         where TList : ListKeyValuePair<TKey, TValue>
     {
-        TList LoadData(CancellationToken cancellationToken = default);
 
-        ValueTask<TList> LoadDataAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -7,10 +7,26 @@
         in TModifyFieldReq, TModifyFieldRes,
         in TRemoveReq, TRemoveRes,
         in TImportReq, TImportRes,
-        in TExportReq, TExportRes> : IAgentCommand<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes,
-            TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>,
-        IAgentImport<TImportReq, TImportRes>,
-        IAgentExport<TExportReq, TExportRes>
+        in TExportReq, TExportRes> : IAgentCommandImportExportBase<
+        TAddReq, TAddRes,
+        TUpdateReq, TUpdateRes,
+        TCopyReq, TCopyRes,
+        TModifyFieldReq, TModifyFieldRes,
+        TRemoveReq, TRemoveRes,
+        TImportReq, TImportRes,
+        TExportReq, TExportRes>,
+        IAgentCommandImportExportAsync<
+        TAddReq, TAddRes,
+        TUpdateReq, TUpdateRes,
+        TCopyReq, TCopyRes,
+        TModifyFieldReq, TModifyFieldRes,
+        TRemoveReq, TRemoveRes,
+        TImportReq, TImportRes,
+        TExportReq, TExportRes>, IAgentCommand<TAddReq, TAddRes,
+            TUpdateReq, TUpdateRes,
+            TCopyReq, TCopyRes,
+            TModifyFieldReq, TModifyFieldRes,
+            TRemoveReq, TRemoveRes>
         where TAddReq : class
         where TAddRes : class
         where TUpdateReq : class
