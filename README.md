@@ -1,3 +1,5 @@
+![Logo](https://github.com/K-Society/KSociety.Base/blob/experimental/docs/K-Society__Logo_vs-negative.png)
+
 [![Build status](https://ci.appveyor.com/api/projects/status/svxutqmffkucfp0r?svg=true)](https://ci.appveyor.com/project/maniglia/ksociety-base)
 
 # KSociety.Base - Framework for microservices
