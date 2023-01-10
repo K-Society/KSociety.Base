@@ -27,7 +27,7 @@
 
   <!-- .NET 6.0 -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.13" />
   </ItemGroup>
 
   <!-- .NET 7.0 -->
