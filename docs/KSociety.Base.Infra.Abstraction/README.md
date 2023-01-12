@@ -1,6 +1,6 @@
-![Logo](https://github.com/K-Society/KSociety.Base/blob/master/docs/K-Society__Logo_vs-negative.png)
+[![Logo](https://github.com/K-Society/KSociety.Base/blob/master/docs/K-Society__Logo_vs-negative.png)](https://github.com/K-Society)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/svxutqmffkucfp0r?svg=true)](https://ci.appveyor.com/project/maniglia/ksociety-base)
+[![Build status](https://ci.appveyor.com/api/projects/status/svxutqmffkucfp0r?svg=true)](https://ci.appveyor.com/project/maniglia/ksociety-base) [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InfraSub.Shared)](https://www.nuget.org/profiles/K-Society)
 
 [KSociety.Base Home](https://github.com/K-Society/KSociety.Base)
 
