@@ -27,7 +27,7 @@ build:
   verbosity: minimal
 
 build_script:
-  - appveyor.cmd
+  - build.cmd
 
 test: off
 
