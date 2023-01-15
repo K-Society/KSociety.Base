@@ -50,10 +50,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FADFC311-ABBF-4761-95DC-333CE85202A4}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		appveyor.cmd = appveyor.cmd
 		appveyor.yml = appveyor.yml
-		BuildLocal.cmd = BuildLocal.cmd
 		dotnet-install.ps1 = dotnet-install.ps1
+		build.cmd = build.cmd
 		global.json = global.json
 		NuGet.config = NuGet.config
 		README.MD = README.MD
