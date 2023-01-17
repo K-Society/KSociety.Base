@@ -31,7 +31,7 @@
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	<PackageTags>ksociety;k-society;microservices;fullstack;framework</PackageTags>
 	
-	<GitThisAssembly>false</GitThisAssembly>
+	<GitThisAssembly>true</GitThisAssembly>
     <GitVersionFile>version.txt</GitVersionFile>
     <GitIgnoreTagVersion>true</GitIgnoreTagVersion>
     <GitInfoReportImportance>low</GitInfoReportImportance>
