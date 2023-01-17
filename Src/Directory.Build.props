@@ -6,7 +6,6 @@
 	<TargetFrameworks>netstandard2.1</TargetFrameworks>
 	
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <!--MSBuildErrorsAsMessages>NU1202</MSBuildErrorsAsMessages-->
 
     <ProjectName Condition=" '$(ProjectName)' == '' ">$(MSBuildProjectName)</ProjectName>
     <BaseOutputPath>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\build\$(ProjectName)\))</BaseOutputPath>
