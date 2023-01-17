@@ -18,7 +18,7 @@ Its advanced features are ideal for Domain Driven Design (DDD), Command Query Re
 
 ## Architecture
 
-![Image of Architecture](https://github.com/K-Society/KSociety.Base/blob/experimental/docs/Architecture_view_for_KSociety.Base.png)
+![Image of Architecture](https://github.com/K-Society/KSociety.Base/blob/master/docs/Architecture_view_for_KSociety.Base.png)
 
 ### 0. Install (KSociety.Base.*)
 The install utility library.

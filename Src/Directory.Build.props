@@ -6,7 +6,6 @@
 	<TargetFrameworks>netstandard2.1</TargetFrameworks>
 	
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <!--MSBuildErrorsAsMessages>NU1202</MSBuildErrorsAsMessages-->
 
     <ProjectName Condition=" '$(ProjectName)' == '' ">$(MSBuildProjectName)</ProjectName>
     <BaseOutputPath>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\build\$(ProjectName)\))</BaseOutputPath>
@@ -15,15 +14,15 @@
 	
 	<Title>$(AssemblyName)</Title>
 	
-    <Authors>K-Society</Authors>
+    <Authors>K-Society Team</Authors>
     <Company>K-Society</Company>
     <Copyright>Copyright © K-Society and contributors 2022. All rights reserved.</Copyright>
 	<PackageLicenseExpression>MS-RL</PackageLicenseExpression>
-	<Description>K-Society Base is a full stack framework for .NET 6 and .NET 7 application https://github.com/K-Society/KSociety.Base</Description>
+	<Description>K-Society Base is a full stack framework for microservices.</Description>
     <Product>K-Society Base</Product>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <PackageProjectUrl>https://github.com/K-Society/KSociety.Base</PackageProjectUrl>
+    <PackageProjectUrl>https://k-society.github.io/KSociety.Base</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/K-Society/KSociety.Base</RepositoryUrl>	
 	<PackageReleaseNotes>https:%2F%2Fk-society.github.io%2FKSociety.Base%2F$(ProjectName)%2Fchange-log</PackageReleaseNotes>
 	<RepositoryType>git</RepositoryType>
@@ -31,6 +30,12 @@
 	<IncludeSymbols>true</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	<PackageTags>ksociety;k-society;microservices;fullstack;framework</PackageTags>
+	
+	<GitThisAssembly>false</GitThisAssembly>
+    <GitVersionFile>version.txt</GitVersionFile>
+    <GitIgnoreTagVersion>true</GitIgnoreTagVersion>
+    <GitInfoReportImportance>low</GitInfoReportImportance>
+    <GitBaseVersionRegex Condition="'$(GitBaseVersionRegex)' == ''">v?(?&lt;MAJOR&gt;\d+|{[\dA-za-z\-\.]+})\.(?&lt;MINOR&gt;(\d+|{[\dA-za-z\-\.]+}))(?:\-(?&lt;LABEL&gt;[\dA-Za-z\-\.{}]+))?$|^v?(?&lt;MAJOR&gt;\d+|{[\dA-za-z\-\.]+})\.(?&lt;MINOR&gt;(\d+|{[\dA-za-z\-\.]+}))\.(?&lt;PATCH&gt;\d+|{[\dA-za-z\-\.]+})(?:\-(?&lt;LABEL&gt;[\dA-Za-z\-\.{}]+))?$|^(?&lt;LABEL&gt;[\dA-Za-z\-\.{}]+)\-v?(?&lt;MAJOR&gt;\d+|{[\dA-za-z\-\.]+})\.(?&lt;MINOR&gt;\d+|{[\dA-za-z\-\.]+})\.(?&lt;PATCH&gt;\d+|{[\dA-za-z\-\.]+})$</GitBaseVersionRegex>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(APPVEYOR)' == 'True'">
