@@ -5,54 +5,53 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Infrastructure Sub Layer", "01. Infrastructure Sub Layer", "{FF8D64B5-39E0-4AC2-BBDC-EC5E9F765828}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.InfraSub.Shared", "Src\01\KSociety.Base.InfraSub.Shared\KSociety.Base.InfraSub.Shared.csproj", "{CBC0B457-1B55-4A12-93E5-78565E40CC5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.InfraSub.Shared", "src\01\KSociety.Base.InfraSub.Shared\KSociety.Base.InfraSub.Shared.csproj", "{CBC0B457-1B55-4A12-93E5-78565E40CC5E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06. Infrastructure Layer", "06. Infrastructure Layer", "{0F17781B-CDB7-481C-9071-248D75DBA9A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Infra.Shared", "Src\01\06\KSociety.Base.Infra.Shared\KSociety.Base.Infra.Shared.csproj", "{21B42B3C-BF3D-4427-896C-A5C30C12C8C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Infra.Shared", "src\01\06\KSociety.Base.Infra.Shared\KSociety.Base.Infra.Shared.csproj", "{21B42B3C-BF3D-4427-896C-A5C30C12C8C9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05. Domain Layer", "05. Domain Layer", "{1456E2C1-C1BF-4FBD-BC04-249A2BB810F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Domain.Shared", "Src\01\05\KSociety.Base.Domain.Shared\KSociety.Base.Domain.Shared.csproj", "{575D2BD7-EFE0-474E-A5D1-4FE1FD87AFA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Domain.Shared", "src\01\05\KSociety.Base.Domain.Shared\KSociety.Base.Domain.Shared.csproj", "{575D2BD7-EFE0-474E-A5D1-4FE1FD87AFA6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Business Layer", "04. Business Layer", "{D3E97DA9-A5E7-4A9E-9995-F57991AB10E6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Application Layer", "03. Application Layer", "{A2168ABB-1685-4900-B758-D72E8B6D904A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.App.Shared", "Src\01\03\KSociety.Base.App.Shared\KSociety.Base.App.Shared.csproj", "{B81B8D04-FF61-4F9D-B6CB-34CB6D123E8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.App.Shared", "src\01\03\KSociety.Base.App.Shared\KSociety.Base.App.Shared.csproj", "{B81B8D04-FF61-4F9D-B6CB-34CB6D123E8A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. Service Layer", "02. Service Layer", "{70BF49C5-3D2C-44BF-AA17-120433A78F9A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Shared", "Src\01\02\KSociety.Base.Srv.Shared\KSociety.Base.Srv.Shared.csproj", "{A42F25C0-774A-4325-B9F8-BD6A5673F70C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Shared", "src\01\02\KSociety.Base.Srv.Shared\KSociety.Base.Srv.Shared.csproj", "{A42F25C0-774A-4325-B9F8-BD6A5673F70C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KSocietyBaseEventBus", "KSocietyBaseEventBus", "{CF73F26D-A353-4070-B365-902C95836192}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.EventBus", "Src\01\KSocietyBaseEventBus\KSociety.Base.EventBus\KSociety.Base.EventBus.csproj", "{B90E03E8-82E8-4F37-A22E-B1806AC35A5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.EventBus", "src\01\KSocietyBaseEventBus\KSociety.Base.EventBus\KSociety.Base.EventBus.csproj", "{B90E03E8-82E8-4F37-A22E-B1806AC35A5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.EventBusRabbitMQ", "Src\01\KSocietyBaseEventBus\KSociety.Base.EventBusRabbitMQ\KSociety.Base.EventBusRabbitMQ.csproj", "{1598697C-A104-4F16-A3ED-FAF9EFE2B567}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.EventBusRabbitMQ", "src\01\KSocietyBaseEventBus\KSociety.Base.EventBusRabbitMQ\KSociety.Base.EventBusRabbitMQ.csproj", "{1598697C-A104-4F16-A3ED-FAF9EFE2B567}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Presentation Layer", "01. Presentation Layer", "{577755C6-6D08-4D83-8580-3FDCA28DCDB6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Model", "Src\01\01\KSociety.Base.Pre.Model\KSociety.Base.Pre.Model.csproj", "{430D4101-97EE-4EC5-B420-0E89E73789C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Model", "src\01\01\KSociety.Base.Pre.Model\KSociety.Base.Pre.Model.csproj", "{430D4101-97EE-4EC5-B420-0E89E73789C9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Agent", "Src\01\02\KSociety.Base.Srv.Agent\KSociety.Base.Srv.Agent.csproj", "{7DB68B7A-CD63-4213-926B-A77856317B96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Agent", "src\01\02\KSociety.Base.Srv.Agent\KSociety.Base.Srv.Agent.csproj", "{7DB68B7A-CD63-4213-926B-A77856317B96}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Contract", "Src\01\02\KSociety.Base.Srv.Contract\KSociety.Base.Srv.Contract.csproj", "{9D656152-E801-4820-9EAF-6F4804B2FF17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Contract", "src\01\02\KSociety.Base.Srv.Contract\KSociety.Base.Srv.Contract.csproj", "{9D656152-E801-4820-9EAF-6F4804B2FF17}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Behavior", "Src\01\02\KSociety.Base.Srv.Behavior\KSociety.Base.Srv.Behavior.csproj", "{154F9F31-DBF0-4DC7-B6F4-A527A7517F9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Behavior", "src\01\02\KSociety.Base.Srv.Behavior\KSociety.Base.Srv.Behavior.csproj", "{154F9F31-DBF0-4DC7-B6F4-A527A7517F9E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Dto", "Src\01\02\KSociety.Base.Srv.Dto\KSociety.Base.Srv.Dto.csproj", "{91C5EBE6-3786-4C6D-A159-A82022EFACD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Dto", "src\01\02\KSociety.Base.Srv.Dto\KSociety.Base.Srv.Dto.csproj", "{91C5EBE6-3786-4C6D-A159-A82022EFACD8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Host", "Host", "{6A24FDA9-784D-42B2-844F-B74F85CC7624}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Host.Shared", "Src\01\02\Host\KSociety.Base.Srv.Host.Shared\KSociety.Base.Srv.Host.Shared.csproj", "{639A76AF-89B7-431E-A39B-42D066D72FBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Srv.Host.Shared", "src\01\02\Host\KSociety.Base.Srv.Host.Shared\KSociety.Base.Srv.Host.Shared.csproj", "{639A76AF-89B7-431E-A39B-42D066D72FBC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FADFC311-ABBF-4761-95DC-333CE85202A4}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		appveyor.cmd = appveyor.cmd
 		appveyor.yml = appveyor.yml
-		BuildLocal.cmd = BuildLocal.cmd
+		build.cmd = build.cmd
 		dotnet-install.ps1 = dotnet-install.ps1
 		global.json = global.json
 		NuGet.config = NuGet.config
@@ -62,35 +61,35 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{D2EEE443-B6C6-42C2-8F2B-E86E27DB20FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Infra.Shared.Test", "Src\01\06\Test\KSociety.Base.Infra.Shared.Test\KSociety.Base.Infra.Shared.Test.csproj", "{B123EEA1-2CEB-431E-B664-F0C398E5CD32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Infra.Shared.Test", "src\01\06\Test\KSociety.Base.Infra.Shared.Test\KSociety.Base.Infra.Shared.Test.csproj", "{B123EEA1-2CEB-431E-B664-F0C398E5CD32}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{C5602DDC-0CF9-47DF-A6CE-2DDF9338D31B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.EventBus.Test", "Src\01\KSocietyBaseEventBus\Test\KSociety.Base.EventBus.Test\KSociety.Base.EventBus.Test.csproj", "{DE64BA52-68C2-4800-8939-D902ADFC79C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.EventBus.Test", "src\01\KSocietyBaseEventBus\Test\KSociety.Base.EventBus.Test\KSociety.Base.EventBus.Test.csproj", "{DE64BA52-68C2-4800-8939-D902ADFC79C4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{3CBDC3D8-D309-4EF0-8B21-7BF08A1C09FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Web.Shared", "Src\01\01\Web\KSociety.Base.Pre.Web.Shared\KSociety.Base.Pre.Web.Shared.csproj", "{3235B228-9294-4E9E-8F24-2146C0AA8DE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Web.Shared", "src\01\01\Web\KSociety.Base.Pre.Web.Shared\KSociety.Base.Pre.Web.Shared.csproj", "{3235B228-9294-4E9E-8F24-2146C0AA8DE1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Web.AppTest", "Src\01\01\Web\KSociety.Base.Pre.Web.AppTest\KSociety.Base.Pre.Web.AppTest.csproj", "{74C29A9D-E488-4C66-8E15-38234234CF5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Web.AppTest", "src\01\01\Web\KSociety.Base.Pre.Web.AppTest\KSociety.Base.Pre.Web.AppTest.csproj", "{74C29A9D-E488-4C66-8E15-38234234CF5F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Install", "00. Install", "{DDD58D75-68A1-4450-BFF6-0A0A107259DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.InstallAction", "Src\00\KSociety.Base.InstallAction\KSociety.Base.InstallAction.csproj", "{161B6B89-1496-4D7A-B5FF-2863A44744A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.InstallAction", "src\00\KSociety.Base.InstallAction\KSociety.Base.InstallAction.csproj", "{161B6B89-1496-4D7A-B5FF-2863A44744A5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Form", "Form", "{E38CEC04-C916-49D8-AF53-EA1E6F950039}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Form.View", "Src\01\01\Form\KSociety.Base.Pre.Form.View\KSociety.Base.Pre.Form.View.csproj", "{7ACB47E1-6E93-4B31-9D94-A30392A28F0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Form.View", "src\01\01\Form\KSociety.Base.Pre.Form.View\KSociety.Base.Pre.Form.View.csproj", "{7ACB47E1-6E93-4B31-9D94-A30392A28F0E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Form.Presenter", "Src\01\01\Form\KSociety.Base.Pre.Form.Presenter\KSociety.Base.Pre.Form.Presenter.csproj", "{93E7C6B0-64E4-4912-93C1-CB6C0A56981F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Form.Presenter", "src\01\01\Form\KSociety.Base.Pre.Form.Presenter\KSociety.Base.Pre.Form.Presenter.csproj", "{93E7C6B0-64E4-4912-93C1-CB6C0A56981F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{14967EA3-A0F5-42A4-A339-1E6D675EB3A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.InfraSub.Test", "Src\01\Test\KSociety.Base.InfraSub.Test\KSociety.Base.InfraSub.Test.csproj", "{E7CD8182-9A33-4D20-ADA4-B4D81C50B736}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.InfraSub.Test", "src\01\Test\KSociety.Base.InfraSub.Test\KSociety.Base.InfraSub.Test.csproj", "{E7CD8182-9A33-4D20-ADA4-B4D81C50B736}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.App.Utility", "Src\01\03\KSociety.Base.App.Utility\KSociety.Base.App.Utility.csproj", "{2D82959D-3C85-4C05-928E-0DC9E69E2D47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.App.Utility", "src\01\03\KSociety.Base.App.Utility\KSociety.Base.App.Utility.csproj", "{2D82959D-3C85-4C05-928E-0DC9E69E2D47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Infra.Abstraction", "Src\01\06\KSociety.Base.Infra.Abstraction\KSociety.Base.Infra.Abstraction.csproj", "{D6B44BDD-05D8-4145-AC61-AECC0CEF26C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Infra.Abstraction", "src\01\06\KSociety.Base.Infra.Abstraction\KSociety.Base.Infra.Abstraction.csproj", "{D6B44BDD-05D8-4145-AC61-AECC0CEF26C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
