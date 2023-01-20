@@ -8,13 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\06\KSociety.Base.Infra.Abstraction\KSociety.Base.Infra.Abstraction.csproj" />
     <ProjectReference Include="..\..\KSociety.Base.InfraSub.Shared\KSociety.Base.InfraSub.Shared.csproj" />
     <ProjectReference Include="..\KSociety.Base.App.Shared\KSociety.Base.App.Shared.csproj" />
