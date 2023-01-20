@@ -17,7 +17,7 @@
         <SmartSolutionDir>$([System.IO.Path]::GetDirectoryName( $(TheSolutionPath) ))</SmartSolutionDir>
         <RegexPattern>(?&lt;="[PackageName]", ")(.*)(?=", ")</RegexPattern>
       </PropertyGroup>
-
+	  
       <ItemGroup>
         <!-- Keep the identity of the PackageReference -->
         <SmartPackageReference Include="@(PackageReference)">
@@ -38,4 +38,5 @@
       </ItemGroup>
     </When>
   </Choose>
+  
 </Project>
