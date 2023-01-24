@@ -35,8 +35,8 @@ jobs:
       - name: Build KSociety.Base
         shell: cmd
         run: ./build.cmd
-        
-        - name: Save build
+
+      - name: Save build
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
