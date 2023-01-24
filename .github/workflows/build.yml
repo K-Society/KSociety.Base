@@ -40,5 +40,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
-          path: build\**\Release\*.*nupkg
+          path: build/**/Release/*.*nupkg
+
+      - name: Push to GitHub Packages
+        if: github.event_name == 'push' && github.repository_owner == 'wixtoolset' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        run: dotnet nuget push "build/**/Release/*.nupkg" --source https://nuget.pkg.github.com/ksociety/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
         
