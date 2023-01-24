@@ -1,0 +1,48 @@
+name: Build KSociety.Base
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - experimental
+  pull_request:
+    branches:
+      - master
+      - develop
+      - experimental
+  workflow_dispatch:
+    inputs:
+      tags:
+        manual: true
+        
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  NUGET_XMLDOC_MODE: skip
+  
+jobs:
+  build:
+    name: Build
+    runs-on: windows-2022
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Build KSociety.Base
+        shell: cmd
+        run: ./build.cmd
+
+      - name: Save build
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: build/**/Release/*.*nupkg
+
+      - name: Push to GitHub Packages
+        if: github.event_name == 'push' && github.repository_owner == 'wixtoolset' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        run: dotnet nuget push "build/**/Release/*.nupkg" --source https://nuget.pkg.github.com/ksociety/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+        

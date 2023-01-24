@@ -12,6 +12,36 @@ KSociety.Base is a .NET Standard 2.1 framework that can be used to create a clea
 Its advanced features are ideal for Domain Driven Design (DDD), Command Query Responsibilty Segragation (CQRS) and Event Sourcing, is an open sourse 
 .NET framework and represents the basic infrastructure. The whole framework is divided into layers listed below.
 
+# Developing K-Society
+
+## Prerequisites
+
+Visual Studio 2022 with the following installed:
+
+| Workloads |
+| :-------- |
+| ASP.NET and web development |
+| .NET desktop development |
+
+| Individual components |
+| :-------------------- |
+| .NET Framework 4.6.1 SDK |
+| .NET Framework 4.6.1 targeting pack |
+
+
+##### Getting started:
+
+* Fork the KSociety.Base repository (https://github.com/K-Society/KSociety.Base.git)
+ into a GitHub domain that you control
+* Clone the KSociety.Base repository from your fork (git clone https://github.com/yourdomain/KSociety.Base.git)
+ into the directory of your choice
+
+##### To build the KSociety.Base:
+
+ * Run 'build.cmd' script
+
+ ##### Uses your newly built KSociety.Base framework
+
 ### Examples
 
 [Here](https://github.com/K-Society/KSociety.Example) you can find several examples.
