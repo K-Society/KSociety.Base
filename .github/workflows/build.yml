@@ -44,5 +44,5 @@ jobs:
 
       - name: Push to GitHub Packages
         if: github.event_name == 'push' && github.repository_owner == 'K-Society' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/experimental')
-        run: dotnet nuget push "build/**/Release/*.nupkg" --source https://nuget.pkg.github.com/ksociety/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+        run: dotnet nuget push "build/**/Release/*.nupkg" --source https://nuget.pkg.github.com/K-Society/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
         
