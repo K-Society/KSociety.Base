@@ -54,7 +54,11 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="eventItem"><see cref="INotification"/></param>
         public void AddDomainEvent(INotification eventItem)
         {
-            _domainEvents ??= new List<INotification>();
+            //_domainEvents ??= new List<INotification>();
+            if (_domainEvents is null)
+            {
+                _domainEvents = new List<INotification>();
+            }
             _domainEvents.Add(eventItem);
         }
 

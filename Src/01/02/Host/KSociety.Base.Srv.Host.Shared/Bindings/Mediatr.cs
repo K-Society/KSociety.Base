@@ -30,6 +30,11 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
                 var c = context.Resolve<IComponentContext>();
                 return t => c.Resolve(t);
             });
+
+            //builder.Services.AddMediatR(cfg =>
+            //{
+            //    cfg.RegisterServicesFromAssemblies(typeof(Startup).Assembly, typeof(YourHandler).Assembly);
+            //});
         }
     }
 }
