@@ -25,11 +25,16 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
                 .InstancePerLifetimeScope();
 
             // request & notification handlers
-            builder.Register<ServiceFactory>(context =>
-            {
-                var c = context.Resolve<IComponentContext>();
-                return t => c.Resolve(t);
-            });
+            //builder.Register<ServiceFactory>(context =>
+            //{
+            //    var c = context.Resolve<IComponentContext>();
+            //    return t => c.Resolve(t);
+            //});
+
+            //builder.Services.AddMediatR(cfg =>
+            //{
+            //    cfg.RegisterServicesFromAssemblies(typeof(Startup).Assembly, typeof(YourHandler).Assembly);
+            //});
         }
     }
 }
