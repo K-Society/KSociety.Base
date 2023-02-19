@@ -50,7 +50,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FADFC311-ABBF-4761-95DC-333CE85202A4}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		appveyor.yml = appveyor.yml
 		build.cmd = build.cmd
 		dotnet-install.ps1 = dotnet-install.ps1
 		global.json = global.json
