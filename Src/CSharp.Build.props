@@ -4,6 +4,7 @@
 <Project>
   <PropertyGroup>
 	<DefaultLanguage>en-US</DefaultLanguage>
+	<Nullable>enable</Nullable>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
 </Project>
