@@ -23,12 +23,6 @@ Visual Studio 2022 with the following installed:
 | ASP.NET and web development |
 | .NET desktop development |
 
-| Individual components |
-| :-------------------- |
-| .NET Framework 4.6.1 SDK |
-| .NET Framework 4.6.1 targeting pack |
-
-
 ##### Getting started:
 
 * Fork the KSociety.Base repository (https://github.com/K-Society/KSociety.Base.git)
@@ -50,12 +44,6 @@ Visual Studio 2022 with the following installed:
 
 ![Image of Architecture](https://github.com/K-Society/KSociety.Base/blob/master/docs/Architecture_view_for_KSociety.Base.png)
 
-### 0. Install (KSociety.Base.*)
-The install utility library.
-
-| GitHub Repository | NuGet | Download |
-| ------------- | ------------- | ------------- |
-| [KSociety.Base.InstallAction](https://github.com/K-Society/KSociety.Base/tree/master/Src/00/KSociety.Base.InstallAction) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InstallAction)](https://www.nuget.org/packages/KSociety.Base.InstallAction) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.InstallAction) |
 
 ### 1. Presentation (KSociety.Base.Pre.*)
 The presentation layer.

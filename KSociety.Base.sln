@@ -71,8 +71,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Web.Share
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Web.AppTest", "src\01\01\Web\KSociety.Base.Pre.Web.AppTest\KSociety.Base.Pre.Web.AppTest.csproj", "{74C29A9D-E488-4C66-8E15-38234234CF5F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00. Install", "00. Install", "{DDD58D75-68A1-4450-BFF6-0A0A107259DB}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Form", "Form", "{E38CEC04-C916-49D8-AF53-EA1E6F950039}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.Pre.Form.View", "src\01\01\Form\KSociety.Base.Pre.Form.View\KSociety.Base.Pre.Form.View.csproj", "{7ACB47E1-6E93-4B31-9D94-A30392A28F0E}"
