@@ -15,7 +15,7 @@ namespace KSociety.Base.EventBus.Handlers
         IIntegrationQueueHandler<TIntegrationEvent>
         where TIntegrationEvent : IIntegrationEvent
     {
-        protected readonly ILogger<IIntegrationQueueHandler<TIntegrationEvent>> Logger;
+        protected readonly ILogger<IIntegrationQueueHandler<TIntegrationEvent>>? Logger;
 
         public BufferBlock<TIntegrationEvent> Queue { get; }
 
@@ -24,7 +24,14 @@ namespace KSociety.Base.EventBus.Handlers
         public IntegrationQueueHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
             : base(loggerFactory, componentContext)
         {
-            Logger = LoggerFactory.CreateLogger<IIntegrationQueueHandler<TIntegrationEvent>>();
+            Logger = LoggerFactory?.CreateLogger<IIntegrationQueueHandler<TIntegrationEvent>>();
+            Queue = new BufferBlock<TIntegrationEvent>();
+        }
+
+        public IntegrationQueueHandler(ILogger<IIntegrationQueueHandler<TIntegrationEvent>> logger, IComponentContext componentContext)
+            : base(componentContext)
+        {
+            Logger = logger;
             Queue = new BufferBlock<TIntegrationEvent>();
         }
 
@@ -47,7 +54,7 @@ namespace KSociety.Base.EventBus.Handlers
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, "Dequeue: ");
+                    Logger?.LogError(ex, "Dequeue: ");
                 }
 
                 if (result != null)

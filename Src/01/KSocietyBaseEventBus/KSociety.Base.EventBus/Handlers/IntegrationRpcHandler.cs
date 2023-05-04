@@ -14,7 +14,7 @@ namespace KSociety.Base.EventBus.Handlers
         where TIntegrationEvent : IIntegrationEvent
         where TIntegrationEventReply : IIntegrationEventReply
     {
-        protected readonly ILogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>> Logger;
+        protected readonly ILogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>? Logger;
 
         public BufferBlock<TIntegrationEventReply> Queue { get; }
         public bool IsEmpty => Queue.Count == 0;
@@ -23,20 +23,27 @@ namespace KSociety.Base.EventBus.Handlers
         public IntegrationRpcHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
             : base(loggerFactory, componentContext)
         {
-            Logger = LoggerFactory.CreateLogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>();
+            Logger = LoggerFactory?.CreateLogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>();
+            Queue = new BufferBlock<TIntegrationEventReply>();
+        }
+
+        public IntegrationRpcHandler(ILogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>> logger, IComponentContext componentContext)
+            : base(componentContext)
+        {
+            Logger = logger;
             Queue = new BufferBlock<TIntegrationEventReply>();
         }
 
         public virtual TIntegrationEventReply HandleRpc(TIntegrationEvent @event, CancellationToken cancel = default)
         {
-            Logger.LogWarning("IntegrationRpcHandler HandleRpc: NotImplemented!");
+            Logger?.LogWarning("IntegrationRpcHandler HandleRpc: NotImplemented!");
             throw new NotImplementedException();
         }
 
         public virtual ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event,
             CancellationToken cancel = default)
         {
-            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: NotImplemented!");
+            Logger?.LogWarning("IntegrationRpcHandler HandleRpcAsync: NotImplemented!");
             throw new NotImplementedException();
         }
 

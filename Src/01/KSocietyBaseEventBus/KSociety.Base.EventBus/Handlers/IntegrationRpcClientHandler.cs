@@ -11,25 +11,31 @@ namespace KSociety.Base.EventBus.Handlers
         : IntegrationGeneralHandler, IIntegrationRpcClientHandler<TIntegrationEventReply>
         where TIntegrationEventReply : IIntegrationEventReply
     {
-        protected readonly ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>> Logger;
+        protected readonly ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>? Logger;
 
         public IntegrationRpcClientHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
             : base(loggerFactory, componentContext)
         {
-            Logger = LoggerFactory.CreateLogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>();
+            Logger = LoggerFactory?.CreateLogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>();
+        }
+
+        public IntegrationRpcClientHandler(ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>> logger, IComponentContext componentContext)
+            : base(componentContext)
+        {
+            Logger = logger;
         }
 
         public virtual void HandleReply(TIntegrationEventReply @integrationEventReply,
             CancellationToken cancel = default)
         {
-            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}", "NotImplemented!",
+            Logger?.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}", "NotImplemented!",
                 @integrationEventReply.RoutingKey);
         }
 
         public virtual async ValueTask HandleReplyAsync(TIntegrationEventReply @integrationEventReply,
             CancellationToken cancel = default)
         {
-            Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}", "NotImplemented!",
+            Logger?.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}", "NotImplemented!",
                 @integrationEventReply.RoutingKey);
         }
     }

@@ -11,10 +11,18 @@ namespace KSociety.Base.EventBus.Handlers
         IIntegrationEventHandler<TIntegrationEvent>
         where TIntegrationEvent : IIntegrationEvent
     {
-        public IntegrationEventHandler(ILoggerFactory loggerFactory, IComponentContext componentContext) : base(
-            loggerFactory, componentContext)
-        {
+        protected readonly ILogger<IntegrationEventHandler<TIntegrationEvent>>? Logger;
 
+        public IntegrationEventHandler(ILoggerFactory loggerFactory, IComponentContext componentContext) 
+            : base(loggerFactory, componentContext)
+        {
+            Logger = LoggerFactory?.CreateLogger<IntegrationEventHandler<TIntegrationEvent>>();
+        }
+
+        public IntegrationEventHandler(ILogger<IntegrationEventHandler<TIntegrationEvent>> logger, IComponentContext componentContext)
+            : base(componentContext)
+        {
+            Logger = logger;
         }
 
         public virtual ValueTask Handle(TIntegrationEvent @event, CancellationToken cancel = default)
