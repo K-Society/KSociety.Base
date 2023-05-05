@@ -6,7 +6,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
     public interface IEventBusBase
     {
-        IIntegrationGeneralHandler EventHandler { get; }
+        IIntegrationGeneralHandler? EventHandler { get; }
 
         void Initialize(CancellationToken cancel = default);
 

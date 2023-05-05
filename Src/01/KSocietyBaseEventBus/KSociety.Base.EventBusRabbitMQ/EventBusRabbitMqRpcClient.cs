@@ -30,7 +30,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public EventBusRabbitMqRpcClient(IRabbitMqPersistentConnection persistentConnection,
             ILoggerFactory loggerFactory,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)

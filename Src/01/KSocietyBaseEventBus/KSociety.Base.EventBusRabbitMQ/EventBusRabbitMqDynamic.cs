@@ -17,7 +17,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         #region [Constructor]
 
         public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            ILifetimeScope autofac, IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
