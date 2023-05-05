@@ -4,10 +4,13 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.EventBus.Handlers
 {
-    public class IntegrationGeneralHandler : IIntegrationGeneralHandler
+    ///<inheritdoc cref="IIntegrationGeneralHandler"/>
+    public abstract class IntegrationGeneralHandler : IIntegrationGeneralHandler
     {
         protected readonly ILoggerFactory? LoggerFactory;
         protected readonly IComponentContext ComponentContext;
+
+        #region [Constructors]
 
         protected IntegrationGeneralHandler(IComponentContext componentContext)
         {
@@ -19,5 +22,7 @@ namespace KSociety.Base.EventBus.Handlers
         {
             LoggerFactory = loggerFactory;
         }
+
+        #endregion
     }
 }

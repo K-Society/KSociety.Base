@@ -4,6 +4,7 @@ using ProtoBuf;
 
 namespace KSociety.Base.EventBus.Events
 {
+    ///<inheritdoc cref="IIntegrationEvent"/>
     [ProtoContract]
     public abstract class IntegrationEvent : IIntegrationEvent
     {

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.EventBus.Handlers
 {
+    ///<inheritdoc cref="IIntegrationRpcHandler{TIntegrationEvent, TIntegrationEventReply}"/>
     public class IntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
         : IntegrationGeneralHandler, IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
         where TIntegrationEvent : IIntegrationEvent
@@ -19,6 +20,7 @@ namespace KSociety.Base.EventBus.Handlers
         public BufferBlock<TIntegrationEventReply> Queue { get; }
         public bool IsEmpty => Queue.Count == 0;
 
+        #region [Constructors]
 
         public IntegrationRpcHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
             : base(loggerFactory, componentContext)
@@ -33,6 +35,8 @@ namespace KSociety.Base.EventBus.Handlers
             Logger = logger;
             Queue = new BufferBlock<TIntegrationEventReply>();
         }
+
+        #endregion
 
         public virtual TIntegrationEventReply HandleRpc(TIntegrationEvent @event, CancellationToken cancel = default)
         {

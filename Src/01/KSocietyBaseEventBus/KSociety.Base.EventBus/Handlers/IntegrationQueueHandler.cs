@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.EventBus.Handlers
 {
+    ///<inheritdoc cref="IIntegrationQueueHandler{TIntegrationEvent}"/>
     public class IntegrationQueueHandler<TIntegrationEvent> : IntegrationGeneralHandler,
         IIntegrationQueueHandler<TIntegrationEvent>
         where TIntegrationEvent : IIntegrationEvent
@@ -20,6 +21,8 @@ namespace KSociety.Base.EventBus.Handlers
         public BufferBlock<TIntegrationEvent> Queue { get; }
 
         public bool IsEmpty => Queue.Count == 0;
+
+        #region [Constructors]
 
         public IntegrationQueueHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
             : base(loggerFactory, componentContext)
@@ -34,6 +37,8 @@ namespace KSociety.Base.EventBus.Handlers
             Logger = logger;
             Queue = new BufferBlock<TIntegrationEvent>();
         }
+
+        #endregion
 
         public virtual async ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent,
             CancellationToken cancel = default)

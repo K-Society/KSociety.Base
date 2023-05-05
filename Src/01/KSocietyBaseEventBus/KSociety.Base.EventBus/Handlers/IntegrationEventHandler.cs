@@ -7,11 +7,14 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.EventBus.Handlers
 {
+    ///<inheritdoc cref="IIntegrationEventHandler{TIntegrationEvent}"/>
     public class IntegrationEventHandler<TIntegrationEvent> : IntegrationGeneralHandler,
         IIntegrationEventHandler<TIntegrationEvent>
         where TIntegrationEvent : IIntegrationEvent
     {
         protected readonly ILogger<IntegrationEventHandler<TIntegrationEvent>>? Logger;
+
+        #region [Constructors]
 
         public IntegrationEventHandler(ILoggerFactory loggerFactory, IComponentContext componentContext) 
             : base(loggerFactory, componentContext)
@@ -24,6 +27,8 @@ namespace KSociety.Base.EventBus.Handlers
         {
             Logger = logger;
         }
+
+        #endregion
 
         public virtual ValueTask Handle(TIntegrationEvent @event, CancellationToken cancel = default)
         {

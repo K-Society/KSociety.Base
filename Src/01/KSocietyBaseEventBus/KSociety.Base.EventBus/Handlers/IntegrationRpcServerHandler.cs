@@ -8,12 +8,15 @@ using Microsoft.Extensions.Logging;
 
 namespace KSociety.Base.EventBus.Handlers
 {
+    ///<inheritdoc cref="IIntegrationRpcServerHandler{TIntegrationEvent, TIntegrationEventReply}"/>
     public class IntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
         : IntegrationGeneralHandler, IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
         where TIntegrationEvent : IIntegrationEventRpc
         where TIntegrationEventReply : IIntegrationEventReply
     {
         protected readonly ILogger<IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>>? Logger;
+
+        #region [Constructors]
 
         public IntegrationRpcServerHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
             : base(loggerFactory, componentContext)
@@ -27,6 +30,8 @@ namespace KSociety.Base.EventBus.Handlers
         {
             Logger = logger;
         }
+
+        #endregion
 
         public virtual TIntegrationEventReply HandleRpc(TIntegrationEvent @event, CancellationToken cancel = default)
         {

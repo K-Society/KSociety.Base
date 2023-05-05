@@ -6,6 +6,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace KSociety.Base.EventBus.Abstractions.Handler
 {
+    /// <include file='..\..\Doc\Handler\IntegrationQueueHandler.xml' path='docs/members[@name="IntegrationQueueHandler"]/IntegrationQueueHandler/*'/>
     public interface IIntegrationQueueHandler<TIntegrationEvent> : IIntegrationGeneralHandler
         where TIntegrationEvent : IIntegrationEvent
     {

@@ -4,6 +4,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace KSociety.Base.EventBus.Abstractions.Handler
 {
+    /// <include file='..\..\Doc\Handler\IntegrationRpcHandler.xml' path='docs/members[@name="IntegrationRpcHandler"]/IntegrationRpcHandler/*'/>
     public interface IIntegrationRpcHandler<in TIntegrationEvent, TIntegrationEventReply>
         : IIntegrationGeneralHandler
         where TIntegrationEvent : IIntegrationEvent
