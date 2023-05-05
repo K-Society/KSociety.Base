@@ -28,14 +28,14 @@ namespace KSociety.Base.EventBusRabbitMQ
         public IIntegrationGeneralHandler EventHandler { get; }
 
         protected AsyncLazy<IModel> ConsumerChannel;
-        protected string QueueName;
+        protected string? QueueName;
 
         #region [Constructor]
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null)
+            string? queueName = null)
         {
             Debug = eventBusParameters.Debug;
             EventBusParameters = eventBusParameters;
@@ -52,7 +52,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null)
+            string? queueName = null)
         {
             Debug = eventBusParameters.Debug;
             EventBusParameters = eventBusParameters;

@@ -45,7 +45,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         public async ValueTask SubscribeClientServer<
             TIntegrationRpcClientHandler, TIntegrationRpcServerHandler,
             TIntegrationEvent, TIntegrationEventReply>(
-            string eventBusName, string queueName,
+            string eventBusName, string? queueName,
             string routingKey, string replyRoutingKey,
             TIntegrationRpcClientHandler integrationRpcClientHandler,
             TIntegrationRpcServerHandler integrationRpcServerHandler
@@ -65,7 +65,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         }
 
         public async ValueTask SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
-            string eventBusName, string queueName,
+            string eventBusName, string? queueName,
             string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler)
             where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
             where TIntegrationEventReply : IIntegrationEventReply
@@ -83,7 +83,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         }
 
         public async ValueTask SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
-            string eventBusName, string queueName,
+            string eventBusName, string? queueName,
             string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler)
             where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
             where TIntegrationEvent : IIntegrationEventRpc
@@ -103,7 +103,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         }
 
         public async ValueTask SubscribeTyped<TIntegrationEventHandler, TIntegrationEvent>(
-            string eventBusName, string queueName,
+            string eventBusName, string? queueName,
             string routingKey, TIntegrationEventHandler integrationEventHandler)
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
             where TIntegrationEvent : IIntegrationEvent
@@ -120,8 +120,19 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey);
         }
 
+        public void SubscribeTyped(string eventBusName, string? queueName)
+        {
+            if (EventBus.ContainsKey(eventBusName)) return;
+
+            EventBus.Add(eventBusName,
+                new EventBusRabbitMqTyped(PersistentConnection, _loggerFactory,
+                    null, _eventBusParameters, queueName));
+
+            ((IEventBusTyped)EventBus[eventBusName]).Initialize();
+        }
+
         public async ValueTask SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
-            string eventBusName, string queueName,
+            string eventBusName, string? queueName,
             TIntegrationEventHandler integrationEventHandler
         )
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>

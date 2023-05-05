@@ -32,7 +32,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             ILoggerFactory loggerFactory,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null)
+            string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
 
