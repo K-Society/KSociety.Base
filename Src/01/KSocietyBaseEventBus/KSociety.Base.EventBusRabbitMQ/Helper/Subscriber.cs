@@ -120,7 +120,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey);
         }
 
-        public void SubscribeTyped(string eventBusName, string? queueName)
+        public void SubscribeTyped(string eventBusName, string? queueName = null)
         {
             if (EventBus.ContainsKey(eventBusName)) return;
 
