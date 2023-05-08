@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>  
-    <PackageReference Include="Grpc.Net.Client" Version="2.52.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.53.0" />
   </ItemGroup>
 
   <ItemGroup>
