@@ -16,6 +16,12 @@ namespace KSociety.Base.EventBus.Handlers
 
         #region [Constructors]
 
+        public IntegrationEventHandler(ILoggerFactory loggerFactory)
+            : base(loggerFactory)
+        {
+            Logger = LoggerFactory?.CreateLogger<IntegrationEventHandler<TIntegrationEvent>>();
+        }
+
         public IntegrationEventHandler(ILoggerFactory loggerFactory, IComponentContext componentContext) 
             : base(loggerFactory, componentContext)
         {

@@ -8,7 +8,7 @@ namespace KSociety.Base.EventBus.Handlers
     public abstract class IntegrationGeneralHandler : IIntegrationGeneralHandler
     {
         protected readonly ILoggerFactory? LoggerFactory;
-        protected readonly IComponentContext ComponentContext;
+        protected readonly IComponentContext? ComponentContext;
 
         #region [Constructors]
 
@@ -19,6 +19,11 @@ namespace KSociety.Base.EventBus.Handlers
 
         protected IntegrationGeneralHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
         : this(componentContext)
+        {
+            LoggerFactory = loggerFactory;
+        }
+
+        protected IntegrationGeneralHandler(ILoggerFactory loggerFactory)
         {
             LoggerFactory = loggerFactory;
         }

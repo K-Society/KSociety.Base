@@ -18,6 +18,13 @@ namespace KSociety.Base.EventBus.Handlers
 
         #region [Constructors]
 
+        public IntegrationRpcServerHandler(ILoggerFactory loggerFactory)
+            : base(loggerFactory)
+        {
+            Logger =
+                LoggerFactory?.CreateLogger<IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>>();
+        }
+
         public IntegrationRpcServerHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
             : base(loggerFactory, componentContext)
         {
