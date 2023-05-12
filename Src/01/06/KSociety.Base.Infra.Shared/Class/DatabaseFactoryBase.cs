@@ -39,7 +39,7 @@ namespace KSociety.Base.Infra.Shared.Class
             Logger = loggerFactory.CreateLogger<DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>>();
         }
 
-        public TContext Get()
+        public TContext? Get()
         {
             if (_dataContext != null) return _dataContext;
             _dataContext = CreateContext();
@@ -47,18 +47,18 @@ namespace KSociety.Base.Infra.Shared.Class
             return _dataContext;
         }
 
-        private TContext CreateContext()
+        private TContext? CreateContext()
         {
-            TContext output = null;
+            TContext? output = null;
             try
             {
                 if (_mediator is null)
                 {
-                    output = (TContext)Activator.CreateInstance(typeof(TContext), LoggerFactory, _configuration);
+                    output = (TContext?)Activator.CreateInstance(typeof(TContext), LoggerFactory, _configuration);
                 }
                 else
                 {
-                    output = (TContext)Activator.CreateInstance(typeof(TContext), LoggerFactory, _configuration,
+                    output = (TContext?)Activator.CreateInstance(typeof(TContext), LoggerFactory, _configuration,
                         _mediator);
                 }
             }
