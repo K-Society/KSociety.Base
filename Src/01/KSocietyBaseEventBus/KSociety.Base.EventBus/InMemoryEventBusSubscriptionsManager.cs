@@ -16,10 +16,10 @@ namespace KSociety.Base.EventBus
         private readonly Dictionary<string, Type> _eventReplyTypes;
 
         ///<inheritdoc/>
-        public event EventHandler<string> OnEventRemoved;
+        public event EventHandler<string>? OnEventRemoved;
 
         ///<inheritdoc/>
-        public event EventHandler<string> OnEventReplyRemoved;
+        public event EventHandler<string>? OnEventReplyRemoved;
 
         public InMemoryEventBusSubscriptionsManager()
         {
