@@ -19,7 +19,7 @@ namespace KSociety.Base.Infra.Shared.Class
         protected readonly ILogger Logger;
         protected readonly TLoggerFactory LoggerFactory;
         private readonly TConfiguration _configuration;
-        private readonly IMediator _mediator;
+        private readonly IMediator? _mediator;
 
 
         protected DatabaseFactoryBase(TLoggerFactory loggerFactory, TConfiguration configuration)
