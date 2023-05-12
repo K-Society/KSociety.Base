@@ -34,10 +34,6 @@
 	<PackageTags>ksociety;k-society;microservices;fullstack;framework</PackageTags>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(APPVEYOR)' == 'True'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
-  
   <ItemGroup>
     <RuntimeHostConfigurationOption Include="System.Globalization.Invariant" Value="true" />
   </ItemGroup>
