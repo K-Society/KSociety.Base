@@ -10,7 +10,7 @@ namespace KSociety.Base.Infra.Shared.Class
     public class UnitOfWork<TContext> : DisposableObject, IDatabaseUnitOfWork
         where TContext : DatabaseContext
     {
-        private IDatabaseFactory<TContext> _dbFactory;
+        private IDatabaseFactory<TContext>? _dbFactory;
         private TContext? _context;
 
         public UnitOfWork(IDatabaseFactory<TContext> dbFactory)
@@ -18,18 +18,18 @@ namespace KSociety.Base.Infra.Shared.Class
             _dbFactory = dbFactory;
         }
 
-        public TContext Context => _context ??= _dbFactory.Get();
+        public TContext? Context => _context ??= _dbFactory?.Get();
 
         ///<inheritdoc/>
-        public string GetConnectionString()
+        public string? GetConnectionString()
         {
-            return Context.GetConnectionString();
+            return Context?.GetConnectionString();
         }
 
         ///<inheritdoc/>
         public ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
         {
-            var result = Context.GetConnectionString();
+            var result = Context?.GetConnectionString();
             return new ValueTask<string>(result);
         }
 
@@ -64,27 +64,27 @@ namespace KSociety.Base.Infra.Shared.Class
         }
 
         ///<inheritdoc/>
-        public void Migrate(string targetMigration = null)
+        public void Migrate(string? targetMigration = null)
         {
-            Context.Migrate(targetMigration);
+            Context?.Migrate(targetMigration);
         }
 
         ///<inheritdoc/>
-        public async ValueTask MigrateAsync(string targetMigration = null,
+        public async ValueTask MigrateAsync(string? targetMigration = null,
             CancellationToken cancellationToken = default)
         {
             await Context.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
         }
 
-        public string CreateScript()
+        public string? CreateScript()
         {
-            return Context.CreateScript();
+            return Context?.CreateScript();
         }
 
         ///<inheritdoc/>
         public void BeginTransaction()
         {
-            Context.BeginTransaction();
+            Context?.BeginTransaction();
         }
 
         ///<inheritdoc/>
@@ -94,9 +94,9 @@ namespace KSociety.Base.Infra.Shared.Class
         }
 
         ///<inheritdoc/>
-        public int Commit()
+        public int? Commit()
         {
-            return Context.Commit();
+            return Context?.Commit();
         }
 
         ///<inheritdoc/>
@@ -108,7 +108,7 @@ namespace KSociety.Base.Infra.Shared.Class
         ///<inheritdoc/>
         public void CommitTransaction()
         {
-            Context.CommitTransaction();
+            Context?.CommitTransaction();
         }
 
         ///<inheritdoc/>
@@ -120,7 +120,7 @@ namespace KSociety.Base.Infra.Shared.Class
         ///<inheritdoc/>
         public void Rollback()
         {
-            Context.Rollback();
+            Context?.Rollback();
         }
 
         ///<inheritdoc/>

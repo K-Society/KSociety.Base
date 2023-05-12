@@ -220,13 +220,13 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return output;
         }
 
-        public void Migrate(string targetMigration = null)
+        public void Migrate(string? targetMigration = null)
         {
             var migrator = Database.GetInfrastructure().GetService<IMigrator>();
             migrator.Migrate(targetMigration);
         }
 
-        public async ValueTask MigrateAsync(string targetMigration = null,
+        public async ValueTask MigrateAsync(string? targetMigration = null,
             CancellationToken cancellationToken = default)
         {
             var migrator = Database.GetInfrastructure().GetService<IMigrator>();
@@ -253,7 +253,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             _transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public int Commit()
+        public int? Commit()
         {
             var output = -1;
             try

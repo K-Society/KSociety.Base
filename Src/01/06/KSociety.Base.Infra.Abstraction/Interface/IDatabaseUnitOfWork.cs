@@ -10,7 +10,7 @@ namespace KSociety.Base.Infra.Abstraction.Interface
         /// GetConnectionString
         /// </summary>
         /// <returns></returns>
-        string GetConnectionString();
+        string? GetConnectionString();
 
         /// <summary>
         /// GetConnectionStringAsync

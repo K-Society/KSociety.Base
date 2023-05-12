@@ -304,7 +304,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         }
 
-        public async ValueTask<TEntity> FindAsync(CancellationToken cancellationToken = default,
+        public async ValueTask<TEntity?> FindAsync(CancellationToken cancellationToken = default,
             params object[] keyObject)
         {
             Logger.LogTrace("RepositoryBase FindAsync: " + GetType().FullName + "." +
@@ -316,7 +316,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         }
 
-        public virtual int Count(Expression<Func<TEntity, bool>> filter = null)
+        public virtual int? Count(Expression<Func<TEntity, bool>>? filter = null)
         {
             if (Exists)
             {

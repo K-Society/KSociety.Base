@@ -25,7 +25,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         private IDbContextTransaction _transaction;
 
-        private readonly IDatabaseConfiguration _configuration;
+        private readonly IDatabaseConfiguration? _configuration;
         private readonly IMediator _mediator;
 
         #region [Constructor]
@@ -280,14 +280,14 @@ namespace KSociety.Base.Infra.Shared.Class
             return output;
         }
 
-        public void Migrate(string targetMigration = null)
+        public void Migrate(string? targetMigration = null)
         {
             Logger.LogTrace("Migrate {0}", targetMigration);
             var migrator = Database.GetInfrastructure().GetService<IMigrator>();
             migrator?.Migrate(targetMigration);
         }
 
-        public async ValueTask MigrateAsync(string targetMigration = null,
+        public async ValueTask MigrateAsync(string? targetMigration = null,
             CancellationToken cancellationToken = default)
         {
             Logger.LogTrace("MigrateAsync {0}", targetMigration);
@@ -295,7 +295,7 @@ namespace KSociety.Base.Infra.Shared.Class
             await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
         }
 
-        public string CreateScript()
+        public string? CreateScript()
         {
             var migrator = Database.GetInfrastructure().GetService<IMigrator>();
             return migrator?.GenerateScript();
@@ -312,7 +312,7 @@ namespace KSociety.Base.Infra.Shared.Class
         }
 
 
-        public int Commit()
+        public int? Commit()
         {
             var output = -1;
             try
