@@ -11,7 +11,7 @@ namespace KSociety.Base.Infra.Shared.Class
         where TContext : DatabaseContext
     {
         private IDatabaseFactory<TContext> _dbFactory;
-        private TContext _context;
+        private TContext? _context;
 
         public UnitOfWork(IDatabaseFactory<TContext> dbFactory)
         {
