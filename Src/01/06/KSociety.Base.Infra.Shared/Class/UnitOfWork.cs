@@ -34,31 +34,31 @@ namespace KSociety.Base.Infra.Shared.Class
         }
 
         ///<inheritdoc/>
-        public bool Exists()
+        public bool? Exists()
         {
-            return Context.Exists();
+            return Context?.Exists();
         }
 
         ///<inheritdoc/>
-        public bool EnsureCreated()
+        public bool? EnsureCreated()
         {
-            return Context.EnsureCreated();
+            return Context?.EnsureCreated();
         }
 
         ///<inheritdoc/>
-        public async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<bool?> EnsureCreatedAsync(CancellationToken cancellationToken = default)
         {
             return await Context.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
         }
 
         ///<inheritdoc/>
-        public bool EnsureDeleted()
+        public bool? EnsureDeleted()
         {
-            return Context.EnsureDeleted();
+            return Context?.EnsureDeleted();
         }
 
         ///<inheritdoc/>
-        public async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<bool?> EnsureDeletedAsync(CancellationToken cancellationToken = default)
         {
             return await Context.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -100,7 +100,7 @@ namespace KSociety.Base.Infra.Shared.Class
         }
 
         ///<inheritdoc/>
-        public async ValueTask<int> CommitAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<int?> CommitAsync(CancellationToken cancellationToken = default)
         {
             return await Context.CommitAsync(cancellationToken).ConfigureAwait(false);
         }

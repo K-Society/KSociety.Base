@@ -49,7 +49,7 @@ namespace KSociety.Base.Infra.Shared.Interface
         int? Count(Expression<Func<TEntity, bool>>? filter = null);
 
         /// <include file='..\Doc\RepositoryBase.xml' path='docs/members[@name="RepositoryBase"]/CountAsync/*'/>
-        ValueTask<int> CountAsync(Expression<Func<TEntity, bool>>? filter = null,
+        ValueTask<int?> CountAsync(Expression<Func<TEntity, bool>>? filter = null,
             CancellationToken cancellationToken = default);
 
         IQueryable<TEntity>? Query(Expression<Func<TEntity, bool>>? filter = null);

@@ -22,12 +22,22 @@ namespace KSociety.Base.App.Utility.ReqHdlr
 
         public EnsureDeleted Execute()
         {
-            return new EnsureDeleted(_unitOfWork.EnsureDeleted());
+            var result = _unitOfWork.EnsureDeleted();
+            if (result.HasValue)
+            {
+                return new EnsureDeleted(result.Value);
+            }
+            return new EnsureDeleted(false);
         }
 
         public async ValueTask<EnsureDeleted> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            return new EnsureDeleted(await _unitOfWork.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false));
+            var result = await _unitOfWork.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
+            if (result.HasValue)
+            {
+                return new EnsureDeleted(result.Value);
+            }
+            return new EnsureDeleted(false);
         }
     }
 }

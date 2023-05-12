@@ -13,33 +13,33 @@ namespace KSociety.Base.Infra.Abstraction.Interface
         /// Exists
         /// </summary>
         /// <returns></returns>
-        bool Exists();
+        bool? Exists();
 
         /// <summary>
         /// EnsureCreated
         /// </summary>
         /// <returns></returns>
-        bool EnsureCreated();
+        bool? EnsureCreated();
 
         /// <summary>
         /// EnsureCreatedAsync
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default);
+        ValueTask<bool?> EnsureCreatedAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// EnsureDeleted
         /// </summary>
         /// <returns></returns>
-        bool EnsureDeleted();
+        bool? EnsureDeleted();
 
         /// <summary>
         /// EnsureDeletedAsync
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default);
+        ValueTask<bool?> EnsureDeletedAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// EnsureDeletedAsync
@@ -80,7 +80,7 @@ namespace KSociety.Base.Infra.Abstraction.Interface
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<int> CommitAsync(CancellationToken cancellationToken = default);
+        ValueTask<int?> CommitAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// CommitTransaction

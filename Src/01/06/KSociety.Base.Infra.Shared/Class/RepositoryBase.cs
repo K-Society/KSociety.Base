@@ -329,7 +329,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
         }
 
-        public virtual async ValueTask<int> CountAsync(Expression<Func<TEntity, bool>>? filter = null,
+        public virtual async ValueTask<int?> CountAsync(Expression<Func<TEntity, bool>>? filter = null,
             CancellationToken cancellationToken = default)
         {
             if (!Exists.HasValue || !Exists.Value)

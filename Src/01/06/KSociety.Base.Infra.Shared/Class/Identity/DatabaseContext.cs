@@ -152,7 +152,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return new ValueTask<string>(result);
         }
 
-        public bool Exists()
+        public bool? Exists()
         {
             var exists =
                 (Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator)?.Exists();
@@ -160,7 +160,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return exists.HasValue && exists.Value;
         }
 
-        public virtual bool EnsureCreated()
+        public virtual bool? EnsureCreated()
         {
             var output = false;
             try
@@ -175,7 +175,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return output;
         }
 
-        public virtual async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
+        public virtual async ValueTask<bool?> EnsureCreatedAsync(CancellationToken cancellationToken = default)
         {
             var output = false;
             try
@@ -190,7 +190,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return output;
         }
 
-        public virtual bool EnsureDeleted()
+        public virtual bool? EnsureDeleted()
         {
             var output = false;
             try
@@ -205,7 +205,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return output;
         }
 
-        public virtual async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
+        public virtual async ValueTask<bool?> EnsureDeletedAsync(CancellationToken cancellationToken = default)
         {
             var output = false;
             try
@@ -297,7 +297,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return output;
         }
 
-        public async ValueTask<int> CommitAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<int?> CommitAsync(CancellationToken cancellationToken = default)
         {
             var output = -1;
             try

@@ -22,12 +22,22 @@ namespace KSociety.Base.App.Utility.ReqHdlr
 
         public EnsureCreated Execute()
         {
-            return new EnsureCreated(_unitOfWork.EnsureCreated());
+            var result = _unitOfWork.EnsureCreated();
+            if (result.HasValue)
+            {
+                return new EnsureCreated(result.Value);
+            }
+            return new EnsureCreated(false);
         }
 
         public async ValueTask<EnsureCreated> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            return new EnsureCreated(await _unitOfWork.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false));
+            var result = await _unitOfWork.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
+            if (result.HasValue)
+            {
+                return new EnsureCreated(result.Value);
+            }
+            return new EnsureCreated(false);
         }
     }
 }
