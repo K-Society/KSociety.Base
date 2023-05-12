@@ -16,7 +16,7 @@ namespace KSociety.Base.Infra.Shared.Class
         where TContext : DatabaseContext
         where TEntity : class
     {
-        private TContext _dataContext;
+        private TContext? _dataContext;
         protected readonly ILoggerFactory LoggerFactory;
 
         protected TContext DataContext => _dataContext ??= DatabaseFactory.Get();
