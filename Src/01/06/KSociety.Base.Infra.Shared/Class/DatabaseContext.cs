@@ -19,14 +19,14 @@ namespace KSociety.Base.Infra.Shared.Class
     {
         public const string DefaultSchema = "ksociety";
 
-        protected readonly ILogger<DatabaseContext> Logger;
+        protected readonly ILogger<DatabaseContext>? Logger;
 
         protected static ILoggerFactory? LoggerFactory;
 
-        private IDbContextTransaction _transaction;
+        private IDbContextTransaction? _transaction;
 
         private readonly IDatabaseConfiguration? _configuration;
-        private readonly IMediator _mediator;
+        private readonly IMediator? _mediator;
 
         #region [Constructor]
 
