@@ -24,7 +24,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 
         protected override void Generate(
             MigrationOperation operation,
-            IModel model,
+            IModel? model,
             MigrationCommandListBuilder builder)
         {
             try
