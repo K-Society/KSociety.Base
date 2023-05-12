@@ -62,8 +62,8 @@ namespace KSociety.Base.Infra.Shared.Interface
 
         IQueryable<TEntity> GetPaged<TKeySelector>(
             int pageNumber, int pageSize,
-            Expression<Func<TEntity, TKeySelector>> keySelector = null,
-            Expression<Func<TEntity, bool>> filter = null);
+            Expression<Func<TEntity, TKeySelector>>? keySelector = null,
+            Expression<Func<TEntity, bool>>? filter = null);
     }
 
 }

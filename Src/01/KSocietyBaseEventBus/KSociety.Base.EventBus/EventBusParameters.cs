@@ -12,7 +12,9 @@
         ///<inheritdoc/>
         public IQueueDeclareParameters QueueDeclareParameters { get; set; }
 
-        public EventBusParameters() { }
+        public EventBusParameters()
+        {
+        }
 
         public EventBusParameters(IExchangeDeclareParameters exchangeDeclareParameters,
             IQueueDeclareParameters queueDeclareParameters, bool debug = false)
