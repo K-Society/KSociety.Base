@@ -28,7 +28,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
         //[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "Just because")]
         protected override void Generate(
             MigrationOperation operation,
-            IModel model,
+            IModel? model,
             MigrationCommandListBuilder builder)
         {
             if (operation is CreateViewOperation createViewOperation)
