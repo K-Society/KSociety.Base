@@ -21,7 +21,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
                 string resourceName = assembly.GetManifestResourceNames()
                     .Single(str => str.EndsWith(operation.ResourceSqlFileName));
 
-                using Stream stream = assembly.GetManifestResourceStream(resourceName);
+                using Stream? stream = assembly.GetManifestResourceStream(resourceName);
                 using StreamReader reader = new StreamReader(stream ?? throw new InvalidOperationException());
                 string result = reader.ReadToEnd();
 
