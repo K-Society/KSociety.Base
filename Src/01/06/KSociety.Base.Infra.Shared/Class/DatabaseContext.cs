@@ -218,7 +218,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual bool EnsureCreated()
         {
-            Logger.LogTrace("EnsureCreated");
+            Logger?.LogTrace("EnsureCreated");
             var output = false;
             try
             {
@@ -234,7 +234,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace("EnsureCreatedAsync");
+            Logger?.LogTrace("EnsureCreatedAsync");
             var output = false;
             try
             {
@@ -250,7 +250,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual bool EnsureDeleted()
         {
-            Logger.LogTrace("EnsureDeleted");
+            Logger?.LogTrace("EnsureDeleted");
             var output = false;
             try
             {
@@ -266,7 +266,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace("EnsureDeletedAsync");
+            Logger?.LogTrace("EnsureDeletedAsync");
             var output = false;
             try
             {
@@ -282,7 +282,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public void Migrate(string? targetMigration = null)
         {
-            Logger.LogTrace("Migrate {0}", targetMigration);
+            Logger?.LogTrace("Migrate {0}", targetMigration);
             var migrator = Database.GetInfrastructure().GetService<IMigrator>();
             migrator?.Migrate(targetMigration);
         }
@@ -290,7 +290,7 @@ namespace KSociety.Base.Infra.Shared.Class
         public async ValueTask MigrateAsync(string? targetMigration = null,
             CancellationToken cancellationToken = default)
         {
-            Logger.LogTrace("MigrateAsync {0}", targetMigration);
+            Logger?.LogTrace("MigrateAsync {0}", targetMigration);
             var migrator = Database.GetInfrastructure().GetService<IMigrator>();
             await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
         }
@@ -333,7 +333,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
                 // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
                 // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
-                _mediator.DispatchDomainEvents(this);
+                _mediator?.DispatchDomainEvents(this);
 
                 // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
                 // performed through the DbContext will be committed
@@ -387,7 +387,11 @@ namespace KSociety.Base.Infra.Shared.Class
                 // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
                 // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
                 // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
-                await _mediator.DispatchDomainEventsAsync(this, cancellationToken).ConfigureAwait(false);
+
+                if (_mediator != null)
+                {
+                    await _mediator.DispatchDomainEventsAsync(this, cancellationToken).ConfigureAwait(false);
+                }
 
                 // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
                 // performed through the DbContext will be committed
@@ -426,16 +430,17 @@ namespace KSociety.Base.Infra.Shared.Class
         {
             try
             {
-                _transaction.Commit();
+                _transaction?.Commit();
             }
             finally
             {
-                _transaction.Dispose();
+                _transaction?.Dispose();
             }
         }
 
         public async ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default)
         {
+            if (_transaction == null) return;
             try
             {
                 await _transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
@@ -448,12 +453,13 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual void Rollback()
         {
-            _transaction.Rollback();
-            _transaction.Dispose();
+            _transaction?.Rollback();
+            _transaction?.Dispose();
         }
 
         public virtual async ValueTask RollbackAsync(CancellationToken cancellationToken = default)
         {
+            if (_transaction == null) return;
             await _transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
             await _transaction.DisposeAsync().ConfigureAwait(false);
         }
