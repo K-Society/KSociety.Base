@@ -14,7 +14,7 @@ namespace KSociety.Base.Infra.Shared.Class
         where TConfiguration : IDatabaseConfiguration
         where TContext : DbContext
     {
-        private TContext _dataContext;
+        private TContext? _dataContext;
 
         protected readonly ILogger Logger;
         protected readonly TLoggerFactory LoggerFactory;
