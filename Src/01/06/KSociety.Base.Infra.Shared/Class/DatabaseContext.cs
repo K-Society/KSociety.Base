@@ -21,7 +21,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         protected readonly ILogger<DatabaseContext> Logger;
 
-        protected static ILoggerFactory LoggerFactory;
+        protected static ILoggerFactory? LoggerFactory;
 
         private IDbContextTransaction _transaction;
 

@@ -33,7 +33,7 @@ namespace KSociety.Base.Infra.Shared.Class
         public virtual TContext CreateDbContext(string[] args)
         {
             _logger.LogTrace("ContextFactory CreateDbContext");
-            TContext output = null;
+            TContext? output = null;
             var dbEngine = DatabaseEngine.Sqlserver;
             var migrationsAssembly = string.Empty;
             var connectionString = string.Empty;
@@ -138,7 +138,7 @@ namespace KSociety.Base.Infra.Shared.Class
                     throw new ArgumentOutOfRangeException();
             }
 
-            output = (TContext)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
+            output = (TContext?)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
 
             return output;
         }
