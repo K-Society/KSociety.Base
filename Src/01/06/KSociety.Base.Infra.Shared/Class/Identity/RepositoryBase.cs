@@ -27,8 +27,8 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         where TUserToken : IdentityUserToken<TKey>, new()
     {
         private TContext? _dataContext;
-        private IUserStore<TUser> _userStore;
-        private IRoleStore<TRole> _roleStore;
+        private IUserStore<TUser>? _userStore;
+        private IRoleStore<TRole>? _roleStore;
         protected readonly ILoggerFactory LoggerFactory;
 
         protected TContext? DataContext => _dataContext ??= DatabaseFactory?.Get();

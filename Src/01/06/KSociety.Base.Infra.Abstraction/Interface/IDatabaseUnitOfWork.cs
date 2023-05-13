@@ -17,6 +17,6 @@ namespace KSociety.Base.Infra.Abstraction.Interface
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default);
+        ValueTask<string?> GetConnectionStringAsync(CancellationToken cancellationToken = default);
     }
 }

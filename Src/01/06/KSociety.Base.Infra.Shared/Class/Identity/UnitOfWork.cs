@@ -44,10 +44,11 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return Context?.GetConnectionString();
         }
 
-        public async ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<string?> GetConnectionStringAsync(CancellationToken cancellationToken = default)
         {
-            return await (Context.GetConnectionStringAsync(cancellationToken)
-                .ConfigureAwait(false));
+            if (Context != null) return await Context.GetConnectionStringAsync(cancellationToken)
+                .ConfigureAwait(false);
+            return null;
         }
 
         public bool? Exists()
@@ -62,7 +63,8 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public async ValueTask<bool?> EnsureCreatedAsync(CancellationToken cancellationToken = default)
         {
-            return await Context.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
+            if (Context != null) await Context.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
+            return null;
         }
 
         public bool? EnsureDeleted()
@@ -72,7 +74,8 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public async ValueTask<bool?> EnsureDeletedAsync(CancellationToken cancellationToken = default)
         {
-            return await Context.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
+            if (Context != null) return await Context.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
+            return null;
         }
 
         public void Migrate(string? targetMigration = null)
@@ -83,7 +86,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         public async ValueTask MigrateAsync(string? targetMigration = null,
             CancellationToken cancellationToken = default)
         {
-            await Context.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
+            if (Context != null) await Context.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
         }
 
         public string? CreateScript()
@@ -98,7 +101,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public async ValueTask BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            await Context.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+            if (Context != null) await Context.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public int? Commit()
@@ -108,7 +111,8 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public async ValueTask<int?> CommitAsync(CancellationToken cancellationToken = default)
         {
-            return await Context.CommitAsync(cancellationToken).ConfigureAwait(false);
+            if (Context != null) return await Context.CommitAsync(cancellationToken).ConfigureAwait(false);
+            return null;
         }
 
         public void CommitTransaction()
@@ -118,7 +122,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public async ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default)
         {
-            await Context.CommitTransactionAsync(cancellationToken).ConfigureAwait(false);
+            if (Context != null) await Context.CommitTransactionAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public void Rollback()
@@ -128,7 +132,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public async ValueTask RollbackAsync(CancellationToken cancellationToken = default)
         {
-            await Context.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            if (Context != null) await Context.RollbackAsync(cancellationToken).ConfigureAwait(false);
         }
 
         protected override void DisposeManagedResources()

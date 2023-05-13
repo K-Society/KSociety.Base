@@ -136,7 +136,7 @@ namespace KSociety.Base.Infra.Shared.Class
             return result;
         }
 
-        public virtual void DeleteRange(IEnumerable<TEntity> entities)
+        public virtual void DeleteRange(IEnumerable<TEntity>? entities)
         {
             if (!Exists.HasValue || !Exists.Value)
             {
@@ -144,8 +144,11 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             else
             {
-
-                DataBaseSet?.RemoveRange(entities);
+                if (entities is not null)
+                {
+                    DataBaseSet?.RemoveRange(entities);
+                }
+                
                 //Logger.LogTrace("RepositoryBase DeleteRange: " + GetType().FullName + "." +
                 //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
