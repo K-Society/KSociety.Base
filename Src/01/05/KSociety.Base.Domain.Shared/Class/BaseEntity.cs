@@ -14,11 +14,11 @@ namespace KSociety.Base.Domain.Shared.Class
     /// </remarks>
     public abstract class BaseEntity : DisposableObject
     {
-        private List<INotification> _domainEvents;
-        public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
+        private List<INotification>? _domainEvents;
+        public IReadOnlyCollection<INotification>? DomainEvents => _domainEvents?.AsReadOnly();
 
-        public ILoggerFactory LoggerFactory;
-        public ILogger Logger;
+        public ILoggerFactory? LoggerFactory;
+        public ILogger? Logger;
 
         /// <summary>
         /// Add the <see cref="ILoggerFactory"/> to the domain base entity and convert it to <see cref="ILogger"/>.

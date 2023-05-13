@@ -20,7 +20,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// </summary>
         /// <param name="fieldName">Domain entiy field name.</param>
         /// <param name="value">New value of the domaint entiy field.</param>
-        public void ModifyField(string fieldName, string value)
+        public void ModifyField(string fieldName, string? value)
         {
             Logger?.LogTrace("ModifyField Entity: {0}.{1} - {2} - {3}",
                 GetType().FullName,
@@ -35,7 +35,7 @@ namespace KSociety.Base.Domain.Shared.Class
                 {
                     //Console.WriteLine("1 " + field.Name);
                     var t = Nullable.GetUnderlyingType(field.PropertyType) ?? field.PropertyType;
-                    object safeValue = null;
+                    object? safeValue = null;
 
                     //If is byte[]
                     if (t == typeof(byte[]))
@@ -97,9 +97,9 @@ namespace KSociety.Base.Domain.Shared.Class
             }
         }
 
-        private void AddEntityModifyFieldEvent(string fieldName, string fieldValue)
+        private void AddEntityModifyFieldEvent(string fieldName, string? fieldValue)
         {
-            var entityModifyField = new EntityModifyField(fieldName, fieldValue, DateTime.Now);
+            var entityModifyField = new EntityModifyField(fieldName, fieldValue);
 
             AddDomainEvent(entityModifyField);
         }
