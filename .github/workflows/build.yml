@@ -40,11 +40,11 @@ jobs:
       #    name: artifacts
       #    path: build/**/Release/*.*nupkg
 
-      - name: Push to GitHub Packages
-        if: github.event_name == 'push' && github.repository_owner == 'K-Society' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
-        run: dotnet nuget push "build/**/Release/*.nupkg" --source https://nuget.pkg.github.com/K-Society/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+      #- name: Push to GitHub Packages
+      #  if: github.event_name == 'push' && github.repository_owner == 'K-Society' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+      #  run: dotnet nuget push "build/**/Release/*.nupkg" --source https://nuget.pkg.github.com/K-Society/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
 
-      - name: Push to NuGet Packages
-        if: github.event_name == 'push' && github.repository_owner == 'K-Society' && (github.ref == 'refs/heads/master')
-        run: nuget push build/**/Release/*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
+      #- name: Push to NuGet Packages
+      #  if: github.event_name == 'push' && github.repository_owner == 'K-Society' && (github.ref == 'refs/heads/master')
+      #  run: nuget push build/**/Release/*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
         
