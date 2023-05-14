@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information. -->
+
+<docs>
+  <members name="IntegrationEventRpc">
+    <IntegrationEventRpc>
+      <summary>
+        IntegrationEventRpc.
+      </summary>
+    </IntegrationEventRpc>
+  </members>
+</docs>

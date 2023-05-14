@@ -1,0 +1,63 @@
+﻿@using Blazorise.DataGrid
+
+@typeparam T
+@typeparam TList
+@typeparam TGridView
+
+<CascadingValue Value="this">
+    <DataGrid TItem="T" Data="@DataItems" Editable="true" EditMode="DataGridEditMode.Inline" UseInternalEditing="false" ShowPager="true" PageSize="3">
+        <DataGridCommandColumn TItem="T">
+                <NewCommandTemplate>
+                    <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+                </NewCommandTemplate>
+                <EditCommandTemplate>
+                    <Button Color="Color.Primary" Clicked="@context.Clicked">Edit</Button>
+                </EditCommandTemplate>
+                <DeleteCommandTemplate>
+                    <Button Color="Color.Danger" Clicked="@context.Clicked">Delete</Button>
+                </DeleteCommandTemplate>
+            </DataGridCommandColumn>
+        @foreach (var column in Columns)
+        {
+
+            @switch (column.ColumnType)
+            {
+                case DataGridColumnType.Text:
+                    <DataGridColumn TItem="T" Field="@column.DataField" Caption="@column.Caption" Editable="true"></DataGridColumn>
+                    break;
+                case DataGridColumnType.Numeric:
+                    <DataGridNumericColumn TItem="T" Field="@column.DataField" Caption="@column.Caption" Editable="true"></DataGridNumericColumn>
+                    break;
+                case DataGridColumnType.Check:
+                    <DataGridCheckColumn TItem="T" Field="@column.DataField" Caption="@column.Caption" Editable="true">
+                        <DisplayTemplate>
+                                <Check TValue="bool" Checked="bool.Parse(context.ToString())" Disabled="true" ReadOnly="true"/>
+                            </DisplayTemplate>
+                    </DataGridCheckColumn>
+                    break;
+                case DataGridColumnType.Date:
+                    <DataGridDateColumn TItem="T" Field="@column.DataField" Caption="@column.Caption" Editable="true"></DataGridDateColumn>
+                    break;
+                case DataGridColumnType.Select:
+                    <DataGridSelectColumn TItem="T" Field="@column.DataField" Caption="@column.Caption" Editable="true">
+                        <DisplayTemplate>
+                            @{
+                                var name = "Pippo";
+                                if (SelectColumns.ContainsKey(column.DataField))
+                                {
+                                    name = SelectColumns[column.DataField];
+                                }
+                                @name
+                            }
+                        </DisplayTemplate>
+                    </DataGridSelectColumn>
+                    break;
+                case DataGridColumnType.Command:
+                    <DataGridCommandColumn TItem="T" Field="@column.DataField" Caption="@column.Caption" Editable="true"></DataGridCommandColumn>
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    </DataGrid>
+</CascadingValue>
