@@ -27,9 +27,6 @@ namespace KSociety.Base.App.Utility.Bindings
             builder.RegisterType<MigrationReqHdlr>()
                 .Named<IRequestHandler>("MigrationReqHdlr")
                 .Named<IRequestHandlerAsync>("MigrationReqHdlr");
-
-            //builder.RegisterType<DatabaseFactory<ILoggerFactory, IDatabaseConfiguration, TContext>>()
-            //    .As<IDatabaseFactory<TContext>>().InstancePerLifetimeScope();
         }
     }
 }
