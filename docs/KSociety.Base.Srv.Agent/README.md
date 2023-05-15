@@ -21,7 +21,7 @@ Refer to the following [readme](https://github.com/K-Society/KSociety.Example/tr
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
-| [KSociety.Base.Srv.Agent](https://github.com/K-Society/KSociety.Base/tree/master/Src/01/KSociety.Base.Srv.Agent) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Agent)](https://www.nuget.org/packages/KSociety.Base.Srv.Agent) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Agent) |
+| [KSociety.Base.Srv.Agent](https://github.com/K-Society/KSociety.Base/tree/master/src/01/KSociety.Base.Srv.Agent) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Agent)](https://www.nuget.org/packages/KSociety.Base.Srv.Agent) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Agent) |
 
 ## License
 The project is under Microsoft Reciprocal License [(MS-RL)](http://www.opensource.org/licenses/MS-RL)
