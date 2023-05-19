@@ -202,16 +202,55 @@ namespace KSociety.Base.Infra.Shared.Class
             return Database.GetDbConnection().ConnectionString;
         }
 
-        public ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
+        public ValueTask<string?> GetConnectionStringAsync(CancellationToken cancellationToken = default)
         {
             var result = Database.GetDbConnection().ConnectionString;
-            return new ValueTask<string>(result);
+            return new ValueTask<string?>(result);
         }
 
         public bool? Exists()
         {
-            var exists =
-                (Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator)?.Exists();
+            bool? exists = null;
+            try
+            {
+                var databaseCreator = Database.GetService<IDatabaseCreator>();
+
+                if (databaseCreator is not null)
+                {
+                    if (databaseCreator is RelationalDatabaseCreator relationalDatabaseCreator)
+                    {
+                        exists = relationalDatabaseCreator.Exists();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogError(ex, "Exists: ");
+            }
+
+            return exists.HasValue && exists.Value;
+        }
+
+        public async ValueTask<bool?> ExistsAsync(CancellationToken cancellationToken = default)
+        {
+            bool? exists = null;
+
+            try
+            {
+                var databaseCreator = Database.GetService<IDatabaseCreator>();
+
+                if (databaseCreator is not null)
+                {
+                    if (databaseCreator is RelationalDatabaseCreator relationalDatabaseCreator)
+                    {
+                        exists = await relationalDatabaseCreator.ExistsAsync(cancellationToken).ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogError(ex, "ExistsAsync: ");
+            }
 
             return exists.HasValue && exists.Value;
         }

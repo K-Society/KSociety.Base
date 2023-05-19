@@ -9,10 +9,6 @@ on:
     branches:
       - master
       - develop
-  workflow_dispatch:
-    inputs:
-      tags:
-        manual: true
 
 env:
   DOTNET_NOLOGO: true
@@ -29,6 +25,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          
+      - name: Get Version
+        uses: dotnet/nbgv@master
+        id: nbgv
+      - run: |
+          echo 'SemVer2=${{ steps.nbgv.outputs.SemVer2 }}'
+          echo 'SimpleVersion=${{ steps.nbgv.outputs.SimpleVersion }}'
 
       - name: Build KSociety.Base
         shell: cmd
