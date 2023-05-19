@@ -35,7 +35,11 @@ namespace KSociety.Base.Srv.Agent
                 }
                 catch (RpcException rex)
                 {
-                    Logger?.LogError(rex, "Channel: ");
+                    Logger?.LogError(rex, "Channel null! ");
+                }
+                catch (Exception ex)
+                {
+                    Logger?.LogError(ex, "Channel null! ");
                 }
 
                 return null;
