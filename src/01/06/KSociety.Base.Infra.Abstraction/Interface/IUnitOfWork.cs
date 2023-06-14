@@ -16,6 +16,12 @@ namespace KSociety.Base.Infra.Abstraction.Interface
         bool? Exists();
 
         /// <summary>
+        /// ExistsAsync
+        /// </summary>
+        /// <returns></returns>
+        ValueTask<bool?> ExistsAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// EnsureCreated
         /// </summary>
         /// <returns></returns>

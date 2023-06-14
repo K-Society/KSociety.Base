@@ -56,6 +56,13 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             return Context?.Exists();
         }
 
+        public async ValueTask<bool?> ExistsAsync(CancellationToken cancellationToken = default)
+        {
+            if(Context != null) return await Context.ExistsAsync(cancellationToken).ConfigureAwait(false);
+
+            return null;
+        }
+
         public bool? EnsureCreated()
         {
             return Context?.EnsureCreated();
