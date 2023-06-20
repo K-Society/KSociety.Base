@@ -59,7 +59,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public async ValueTask<bool> TryConnectAsync()
         {
             bool output;
-            await _connectionLock.WaitAsync(_closeToken);
+            await _connectionLock.WaitAsync(_closeToken).ConfigureAwait(false);
 
             try
             {
