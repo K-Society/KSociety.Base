@@ -302,7 +302,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected async override ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        protected override async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             Logger.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", QueueName);
             if (!PersistentConnection.IsConnected)
