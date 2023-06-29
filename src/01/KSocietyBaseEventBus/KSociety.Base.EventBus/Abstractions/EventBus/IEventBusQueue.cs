@@ -5,7 +5,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
     public interface IEventBusQueue : IEventBus
     {
-        IIntegrationQueueHandler<T> GetIntegrationQueueHandler<T, TH>()
+        IIntegrationQueueHandler<T>? GetIntegrationQueueHandler<T, TH>()
             where T : IIntegrationEvent
             where TH : IIntegrationQueueHandler<T>;
 
