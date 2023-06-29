@@ -4,7 +4,7 @@ using KSociety.Base.EventBus.Abstractions.EventBus;
 using KSociety.Base.EventBus.Abstractions.Handler;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
 namespace KSociety.Base.EventBusRabbitMQ.Helper
@@ -14,7 +14,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         private readonly ILoggerFactory _loggerFactory;
         private readonly IEventBusParameters _eventBusParameters;
         public IRabbitMqPersistentConnection PersistentConnection { get; }
-        public Dictionary<string, IEventBus> EventBus { get; } = new Dictionary<string, IEventBus>();
+        public ConcurrentDictionary<string, IEventBus> EventBus { get; } = new ConcurrentDictionary<string, IEventBus>();
 
         #region [Constructor]
 
@@ -57,11 +57,11 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             await SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
                 eventBusName, queueName,
-                replyRoutingKey, integrationRpcClientHandler);
+                replyRoutingKey, integrationRpcClientHandler).ConfigureAwait(false);
 
             await SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
                 eventBusName, queueName,
-                routingKey, integrationRpcServerHandler);
+                routingKey, integrationRpcServerHandler).ConfigureAwait(false);
         }
 
         public async ValueTask SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
@@ -72,14 +72,16 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             if (EventBus.ContainsKey(eventBusName + "_Client")) return;
 
-            EventBus.Add(eventBusName + "_Client",
-                new EventBusRabbitMqRpcClient(PersistentConnection, _loggerFactory, integrationRpcClientHandler,
-                    null, _eventBusParameters, queueName));
+            if (EventBus.TryAdd(eventBusName + "_Client",
+                    new EventBusRabbitMqRpcClient(PersistentConnection, _loggerFactory, integrationRpcClientHandler,
+                        null, _eventBusParameters, queueName)))
+            {
+                ((IEventBusRpcClient) EventBus[eventBusName + "_Client"]).Initialize();
 
-            ((IEventBusRpcClient)EventBus[eventBusName + "_Client"]).Initialize();
-
-            await ((IEventBusRpcClient)EventBus[eventBusName + "_Client"])
-                .SubscribeRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(replyRoutingKey);
+                await ((IEventBusRpcClient) EventBus[eventBusName + "_Client"])
+                    .SubscribeRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(replyRoutingKey)
+                    .ConfigureAwait(false);
+            }
         }
 
         public async ValueTask SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
@@ -91,15 +93,16 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             if (EventBus.ContainsKey(eventBusName + "_Server")) return;
 
-            EventBus.Add(eventBusName + "_Server",
-                new EventBusRabbitMqRpcServer(PersistentConnection, _loggerFactory, integrationRpcServerHandler,
-                    null, _eventBusParameters, queueName));
+            if (EventBus.TryAdd(eventBusName + "_Server",
+                    new EventBusRabbitMqRpcServer(PersistentConnection, _loggerFactory, integrationRpcServerHandler,
+                        null, _eventBusParameters, queueName)))
+            {
+                ((IEventBusRpcServer) EventBus[eventBusName + "_Server"]).Initialize();
 
-            ((IEventBusRpcServer)EventBus[eventBusName + "_Server"]).Initialize();
-
-            await ((IEventBusRpcServer)EventBus[eventBusName + "_Server"])
-                .SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply,
-                    TIntegrationRpcServerHandler>(routingKey);
+                await ((IEventBusRpcServer) EventBus[eventBusName + "_Server"])
+                    .SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply,
+                        TIntegrationRpcServerHandler>(routingKey).ConfigureAwait(false);
+            }
         }
 
         public async ValueTask SubscribeTyped<TIntegrationEventHandler, TIntegrationEvent>(
@@ -110,28 +113,30 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             if (EventBus.ContainsKey(eventBusName)) return;
 
-            EventBus.Add(eventBusName,
-                new EventBusRabbitMqTyped(PersistentConnection, _loggerFactory, integrationEventHandler,
-                    null, _eventBusParameters, queueName));
+            if (EventBus.TryAdd(eventBusName,
+                    new EventBusRabbitMqTyped(PersistentConnection, _loggerFactory, integrationEventHandler,
+                        null, _eventBusParameters, queueName)))
+            {
+                ((IEventBusTyped) EventBus[eventBusName]).Initialize();
 
-            ((IEventBusTyped)EventBus[eventBusName]).Initialize();
-
-            await ((IEventBusTyped)EventBus[eventBusName])
-                .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey);
+                await ((IEventBusTyped) EventBus[eventBusName])
+                    .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey).ConfigureAwait(false);
+            }
         }
 
         public void SubscribeTyped(string eventBusName, string? queueName = null)
         {
             if (EventBus.ContainsKey(eventBusName)) return;
 
-            EventBus.Add(eventBusName,
-                new EventBusRabbitMqTyped(PersistentConnection, _loggerFactory,
-                    null, _eventBusParameters, queueName));
-
-            ((IEventBusTyped)EventBus[eventBusName]).Initialize();
+            if (EventBus.TryAdd(eventBusName,
+                    new EventBusRabbitMqTyped(PersistentConnection, _loggerFactory,
+                        null, _eventBusParameters, queueName)))
+            {
+                ((IEventBusTyped) EventBus[eventBusName]).Initialize();
+            }
         }
 
-        public async ValueTask SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
+        public void SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
             string eventBusName, string? queueName,
             TIntegrationEventHandler integrationEventHandler
         )
@@ -140,11 +145,12 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             if (EventBus.ContainsKey(eventBusName)) return;
 
-            EventBus.Add(eventBusName,
-                new EventBusRabbitMqQueue(PersistentConnection, _loggerFactory, integrationEventHandler,
-                    null, _eventBusParameters, queueName));
-
-            ((IEventBusQueue)EventBus[eventBusName]).Initialize();
+            if (EventBus.TryAdd(eventBusName,
+                    new EventBusRabbitMqQueue(PersistentConnection, _loggerFactory, integrationEventHandler,
+                        null, _eventBusParameters, queueName)))
+            {
+                ((IEventBusQueue) EventBus[eventBusName]).Initialize();
+            }
         }
     }
 }
