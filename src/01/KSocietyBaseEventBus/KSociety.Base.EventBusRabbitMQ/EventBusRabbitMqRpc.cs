@@ -39,7 +39,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public EventBusRabbitMqRpc(IRabbitMqPersistentConnection persistentConnection,
             IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMqRpc>? logger = default)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
             _correlationId = Guid.NewGuid().ToString();

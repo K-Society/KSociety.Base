@@ -32,7 +32,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection,
             IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMqTyped>? logger = default)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
 
@@ -41,7 +41,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection,
             IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMqTyped>? logger = default)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, subsManager, eventBusParameters, queueName, logger)
         {
 

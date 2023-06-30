@@ -28,7 +28,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection,
             ILifetimeScope autofac, IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMqDynamic>? logger = default)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
             _autofac = autofac;
