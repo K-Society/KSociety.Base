@@ -16,19 +16,19 @@ namespace KSociety.Base.EventBus.Handlers
 
         #region [Constructors]
 
-        public IntegrationEventHandler(ILoggerFactory loggerFactory)
+        public IntegrationEventHandler(ILoggerFactory? loggerFactory = default)
             : base(loggerFactory)
         {
             Logger = LoggerFactory?.CreateLogger<IntegrationEventHandler<TIntegrationEvent>>();
         }
 
-        public IntegrationEventHandler(ILoggerFactory loggerFactory, IComponentContext componentContext) 
+        public IntegrationEventHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default) 
             : base(loggerFactory, componentContext)
         {
             Logger = LoggerFactory?.CreateLogger<IntegrationEventHandler<TIntegrationEvent>>();
         }
 
-        public IntegrationEventHandler(ILogger<IntegrationEventHandler<TIntegrationEvent>> logger, IComponentContext componentContext)
+        public IntegrationEventHandler(ILogger<IntegrationEventHandler<TIntegrationEvent>>? logger = default, IComponentContext? componentContext = default)
             : base(componentContext)
         {
             Logger = logger;

@@ -24,21 +24,21 @@ namespace KSociety.Base.EventBus.Handlers
 
         #region [Constructors]
 
-        public IntegrationQueueHandler(ILoggerFactory loggerFactory)
+        public IntegrationQueueHandler(ILoggerFactory? loggerFactory = default)
             : base(loggerFactory)
         {
             Logger = LoggerFactory?.CreateLogger<IIntegrationQueueHandler<TIntegrationEvent>>();
             Queue = new BufferBlock<TIntegrationEvent>();
         }
 
-        public IntegrationQueueHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
+        public IntegrationQueueHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default)
             : base(loggerFactory, componentContext)
         {
             Logger = LoggerFactory?.CreateLogger<IIntegrationQueueHandler<TIntegrationEvent>>();
             Queue = new BufferBlock<TIntegrationEvent>();
         }
 
-        public IntegrationQueueHandler(ILogger<IIntegrationQueueHandler<TIntegrationEvent>> logger, IComponentContext componentContext)
+        public IntegrationQueueHandler(ILogger<IIntegrationQueueHandler<TIntegrationEvent>>? logger = default, IComponentContext? componentContext = default)
             : base(componentContext)
         {
             Logger = logger;

@@ -12,18 +12,18 @@ namespace KSociety.Base.EventBus.Handlers
 
         #region [Constructors]
 
-        protected IntegrationGeneralHandler(IComponentContext componentContext)
+        protected IntegrationGeneralHandler(IComponentContext? componentContext = default)
         {
             ComponentContext = componentContext;
         }
 
-        protected IntegrationGeneralHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
+        protected IntegrationGeneralHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default)
         : this(componentContext)
         {
             LoggerFactory = loggerFactory;
         }
 
-        protected IntegrationGeneralHandler(ILoggerFactory loggerFactory)
+        protected IntegrationGeneralHandler(ILoggerFactory? loggerFactory = default)
         {
             LoggerFactory = loggerFactory;
         }
