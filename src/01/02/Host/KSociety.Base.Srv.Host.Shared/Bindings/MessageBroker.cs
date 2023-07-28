@@ -2,6 +2,7 @@
 using Autofac;
 using KSociety.Base.EventBus;
 using KSociety.Base.EventBusRabbitMQ;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
@@ -116,7 +117,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
             builder.RegisterInstance(queueDeclareParameters).As<TQueueDeclareParameters>().SingleInstance();
             builder.RegisterInstance(eventBusParameters).As<TEventBusParameters>().SingleInstance();
             builder.RegisterInstance(rabbitMqConnectionFactory).As<TConnectionFactory>().SingleInstance();
-            builder.RegisterType<DefaultRabbitMqPersistentConnection>().As<IRabbitMqPersistentConnection>()
+            builder.RegisterType<DefaultRabbitMqPersistentConnection>().As<IRabbitMqPersistentConnection>().UsingConstructor(typeof(IConnectionFactory), typeof(ILogger<DefaultRabbitMqPersistentConnection>))
                 .SingleInstance();
         }
     }
