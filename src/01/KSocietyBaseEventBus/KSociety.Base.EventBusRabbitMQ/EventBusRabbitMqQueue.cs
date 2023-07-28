@@ -29,9 +29,18 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         }
 
+        public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection,
+            IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
+            IEventBusParameters eventBusParameters,
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
+            : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
+        {
+
+        }
+
         #endregion
 
-        public IIntegrationQueueHandler<T> GetIntegrationQueueHandler<T, TH>()
+        public IIntegrationQueueHandler<T>? GetIntegrationQueueHandler<T, TH>()
             where T : IIntegrationEvent
             where TH : IIntegrationQueueHandler<T>
         {
@@ -55,32 +64,35 @@ namespace KSociety.Base.EventBusRabbitMQ
                 .Or<Exception>()
                 .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
                 {
-                    Logger.LogWarning(ex, "Publish: ");
+                    Logger?.LogWarning(ex, "Publish: ");
                 });
 
             using (var channel = PersistentConnection.CreateModel())
             {
-                var routingKey = @event.RoutingKey;
-
-                channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                    EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                    EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
-                    EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
-
-                using (var ms = new MemoryStream())
+                if (channel != null)
                 {
-                    Serializer.Serialize(ms, @event);
-                    var body = ms.ToArray();
+                    var routingKey = @event.RoutingKey;
 
-                    policy.Execute(() =>
+                    channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                        EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                        EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                        EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+
+                    using (var ms = new MemoryStream())
                     {
-                        var properties = channel.CreateBasicProperties();
-                        properties.DeliveryMode = 1; //2 = persistent, write on disk
+                        Serializer.Serialize(ms, @event);
+                        var body = ms.ToArray();
 
-                        channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,
-                            true,
-                            properties, body);
-                    });
+                        policy.Execute(() =>
+                        {
+                            var properties = channel.CreateBasicProperties();
+                            properties.DeliveryMode = 1; //2 = persistent, write on disk
+
+                            channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,
+                                true,
+                                properties, body);
+                        });
+                    }
                 }
             }
         }
@@ -115,14 +127,11 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             if (SubsManager.HasSubscriptionsForEvent(routingKey))
             {
-
                 var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
                 foreach (var subscription in subscriptions)
                 {
-
                     switch (subscription.SubscriptionManagerType)
                     {
-
 
                         case SubscriptionManagerType.Queue:
                             try
@@ -147,7 +156,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogError(ex, "ProcessQueue: ");
+                                Logger?.LogError(ex, "ProcessQueue: ");
                             }
 
                             break;

@@ -10,7 +10,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
             CancellationToken cancellationToken = default)
             where TIntegrationEventReply : IIntegrationEventReply;
 
-        IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
+        IIntegrationRpcClientHandler<TIntegrationEventReply>? GetIntegrationRpcClientHandler<TIntegrationEventReply>()
             where TIntegrationEventReply : IIntegrationEventReply;
 
         ValueTask SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)

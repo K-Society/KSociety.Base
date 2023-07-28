@@ -11,8 +11,8 @@
     <PackageReference Include="CsvHelper" Version="30.0.1" />   
     <PackageReference Include="MediatR.Contracts" Version="2.0.1" />   
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />   
-    <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.3" />
-    <PackageReference Include="Quartz" Version="3.6.2" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.4" />
+    <PackageReference Include="Quartz" Version="3.6.3" />
   </ItemGroup>
 
 </Project>

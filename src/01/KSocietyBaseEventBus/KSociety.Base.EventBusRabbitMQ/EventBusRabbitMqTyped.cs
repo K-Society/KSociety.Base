@@ -29,6 +29,24 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         }
 
+        public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection,
+            IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
+            IEventBusParameters eventBusParameters,
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
+            : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
+        {
+
+        }
+
+        public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection,
+            IEventBusSubscriptionsManager? subsManager,
+            IEventBusParameters eventBusParameters,
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
+            : base(persistentConnection, subsManager, eventBusParameters, queueName, logger)
+        {
+
+        }
+
         #endregion
 
         #region [Subscribe]
@@ -39,7 +57,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
 
             var eventName = SubsManager.GetEventKey<T>();
-            Logger.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
+            Logger?.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
             await DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
             SubsManager.AddSubscription<T, TH>(eventName + "." + routingKey);
             await StartBasicConsume().ConfigureAwait(false);

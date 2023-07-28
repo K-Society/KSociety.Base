@@ -16,19 +16,19 @@ namespace KSociety.Base.EventBus.Handlers
 
         #region [Constructors]
 
-        public IntegrationRpcClientHandler(ILoggerFactory loggerFactory)
+        public IntegrationRpcClientHandler(ILoggerFactory? loggerFactory = default)
             : base(loggerFactory)
         {
             Logger = LoggerFactory?.CreateLogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>();
         }
 
-        public IntegrationRpcClientHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
+        public IntegrationRpcClientHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default)
             : base(loggerFactory, componentContext)
         {
             Logger = LoggerFactory?.CreateLogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>();
         }
 
-        public IntegrationRpcClientHandler(ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>> logger, IComponentContext componentContext)
+        public IntegrationRpcClientHandler(ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>? logger = default, IComponentContext? componentContext = default)
             : base(componentContext)
         {
             Logger = logger;

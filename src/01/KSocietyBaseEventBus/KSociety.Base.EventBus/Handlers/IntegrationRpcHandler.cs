@@ -22,21 +22,21 @@ namespace KSociety.Base.EventBus.Handlers
 
         #region [Constructors]
 
-        public IntegrationRpcHandler(ILoggerFactory loggerFactory)
+        public IntegrationRpcHandler(ILoggerFactory? loggerFactory = default)
             : base(loggerFactory)
         {
             Logger = LoggerFactory?.CreateLogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>();
             Queue = new BufferBlock<TIntegrationEventReply>();
         }
 
-        public IntegrationRpcHandler(ILoggerFactory loggerFactory, IComponentContext componentContext)
+        public IntegrationRpcHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default)
             : base(loggerFactory, componentContext)
         {
             Logger = LoggerFactory?.CreateLogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>();
             Queue = new BufferBlock<TIntegrationEventReply>();
         }
 
-        public IntegrationRpcHandler(ILogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>> logger, IComponentContext componentContext)
+        public IntegrationRpcHandler(ILogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>? logger = default, IComponentContext? componentContext = default)
             : base(componentContext)
         {
             Logger = logger;
