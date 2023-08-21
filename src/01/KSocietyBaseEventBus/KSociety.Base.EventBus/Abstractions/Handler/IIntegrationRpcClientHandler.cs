@@ -1,8 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.EventBus.Abstractions.Handler
+﻿namespace KSociety.Base.EventBus.Abstractions.Handler
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+
     /// <include file='..\..\Doc\Handler\IntegrationRpcClientHandler.xml' path='docs/members[@name="IntegrationRpcClientHandler"]/IntegrationRpcClientHandler/*'/>
     public interface IIntegrationRpcClientHandler<in TIntegrationEventReply>
         : IIntegrationGeneralHandler

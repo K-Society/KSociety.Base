@@ -1,9 +1,9 @@
-﻿using KSociety.Base.App.Shared;
-using ProtoBuf;
-using System;
-
 namespace KSociety.Base.App.Utility.Dto.Req
 {
+    using Shared;
+    using ProtoBuf;
+    using System;
+
     [ProtoContract]
     public class RemoveReq : IRequest
     {
@@ -14,7 +14,7 @@ namespace KSociety.Base.App.Utility.Dto.Req
 
         public RemoveReq(Guid id)
         {
-            Id = id;
+            this.Id = id;
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System;
-using KSociety.Base.InfraSub.Shared.Interface;
-using ProtoBuf;
-
 namespace KSociety.Base.Srv.Dto
 {
+    using System;
+    using InfraSub.Shared.Interface;
+    using ProtoBuf;
+
     [ProtoContract]
     public class IdObject : IIdObject
     {
@@ -18,7 +18,7 @@ namespace KSociety.Base.Srv.Dto
 
         public IdObject(Guid id)
         {
-            Id = id;
+            this.Id = id;
         }
     }
 }

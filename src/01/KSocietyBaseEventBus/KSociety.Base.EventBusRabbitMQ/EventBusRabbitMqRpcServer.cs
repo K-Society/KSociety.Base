@@ -1,21 +1,21 @@
-﻿using KSociety.Base.EventBus;
-using KSociety.Base.EventBus.Abstractions;
-using KSociety.Base.EventBus.Abstractions.EventBus;
-using KSociety.Base.EventBus.Abstractions.Handler;
-using KSociety.Base.InfraSub.Shared.Class;
-using Microsoft.Extensions.Logging;
-using ProtoBuf;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using RabbitMQ.Client.Exceptions;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.EventBusRabbitMQ
 {
+    using EventBus;
+    using EventBus.Abstractions;
+    using KSociety.Base.EventBus.Abstractions.EventBus;
+    using EventBus.Abstractions.Handler;
+    using InfraSub.Shared.Class;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf;
+    using RabbitMQ.Client;
+    using RabbitMQ.Client.Events;
+    using RabbitMQ.Client.Exceptions;
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcServer
     {
         private AsyncLazy<IModel?> _consumerChannelReply;
@@ -46,21 +46,21 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public override void Initialize(CancellationToken cancel = default)
         {
-            Logger?.LogTrace("EventBusRabbitMqRpcServer Initialize.");
-            SubsManager.OnEventReplyRemoved += SubsManager_OnEventReplyRemoved;
-            ConsumerChannel =
-                new AsyncLazy<IModel?>(async () => await CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
-            _queueNameReply = QueueName + "_Reply";
+            this.Logger?.LogTrace("EventBusRabbitMqRpcServer Initialize.");
+            this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
+            this.ConsumerChannel =
+                new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+            this._queueNameReply = this.QueueName + "_Reply";
 
-            _consumerChannelReply =
-                new AsyncLazy<IModel?>(async () => await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
+            this._consumerChannelReply =
+                new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
         }
 
         public IIntegrationRpcServerHandler<T, TR>? GetIntegrationRpcServerHandler<T, TR>()
             where T : IIntegrationEventRpc
             where TR : IIntegrationEventReply
         {
-            if (EventHandler is IIntegrationRpcServerHandler<T, TR> queue)
+            if (this.EventHandler is IIntegrationRpcServerHandler<T, TR> queue)
             {
                 return queue;
             }
@@ -70,32 +70,35 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async void SubsManager_OnEventReplyRemoved(object sender, string eventName)
         {
-            if (!PersistentConnection.IsConnected)
+            if (!this.PersistentConnection.IsConnected)
             {
-                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
-            using (var channel = PersistentConnection.CreateModel())
+            using (var channel = this.PersistentConnection.CreateModel())
             {
                 if (channel != null)
                 {
-                    channel.QueueUnbind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                    channel.QueueUnbind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                         eventName);
 
-                    channel.QueueUnbind(_queueNameReply, EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                    channel.QueueUnbind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                         eventName);
                 }
             }
 
-            if (!SubsManager.IsReplyEmpty) return;
+            if (!this.SubsManager.IsReplyEmpty)
+            {
+                return;
+            }
 
-            QueueName = string.Empty;
-            (await ConsumerChannel)?.Close();
+            this.QueueName = String.Empty;
+            (await this.ConsumerChannel)?.Close();
 
             //ToDo
 
-            _queueNameReply = string.Empty;
-            (await _consumerChannelReply)?.Close();
+            this._queueNameReply = String.Empty;
+            (await this._consumerChannelReply)?.Close();
 
         }
 
@@ -103,27 +106,22 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             try
             {
-                channel?.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                    EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                    EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
-                    EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+                channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeType, this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
                 //var args = new Dictionary<string, object>
                 //{
                 //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
                 //};
 
-                channel?.QueueDeclare(_queueNameReply, EventBusParameters.QueueDeclareParameters.QueueDurable,
-                    EventBusParameters.QueueDeclareParameters.QueueExclusive,
-                    EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
+                channel?.QueueDeclare(this._queueNameReply, this.EventBusParameters.QueueDeclareParameters.QueueDurable, this.EventBusParameters.QueueDeclareParameters.QueueExclusive, this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
             }
             catch (RabbitMQClientException rex)
             {
-                Logger?.LogError(rex, "EventBusRabbitMqRpcServer RabbitMQClientException QueueInitialize: ");
+                this.Logger?.LogError(rex, "EventBusRabbitMqRpcServer RabbitMQClientException QueueInitialize: ");
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "EventBusRabbitMqRpcServer QueueInitialize: ");
+                this.Logger?.LogError(ex, "EventBusRabbitMqRpcServer QueueInitialize: ");
             }
         }
 
@@ -134,46 +132,50 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcServerHandler<T, TR>
         {
-            var eventName = SubsManager.GetEventKey<T>();
-            var eventNameResult = SubsManager.GetEventReplyKey<TR>();
-            Logger?.LogTrace("SubscribeRpcServer routing key: {0}, event name: {1}, event name result: {2}", routingKey,
+            var eventName = this.SubsManager.GetEventKey<T>();
+            var eventNameResult = this.SubsManager.GetEventReplyKey<TR>();
+            this.Logger?.LogTrace("SubscribeRpcServer routing key: {0}, event name: {1}, event name result: {2}", routingKey,
                 eventName, eventNameResult);
-            await DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey)
+            await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey)
                 .ConfigureAwait(false);
-            SubsManager.AddSubscriptionRpcServer<T, TR, TH>(eventName + "." + routingKey,
+            this.SubsManager.AddSubscriptionRpcServer<T, TR, TH>(eventName + "." + routingKey,
                 eventNameResult + "." + routingKey);
-            await StartBasicConsume().ConfigureAwait(false);
+            await this.StartBasicConsume().ConfigureAwait(false);
         }
 
         private async ValueTask DoInternalSubscriptionRpc(string eventName, string eventNameResult)
         {
             try
             {
-                var containsKey = SubsManager.HasSubscriptionsForEvent(eventName);
-                if (containsKey) return;
-                if (!PersistentConnection.IsConnected)
+                var containsKey = this.SubsManager.HasSubscriptionsForEvent(eventName);
+                if (containsKey)
                 {
-                    var connection = await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                    return;
                 }
 
-                using (var channel = PersistentConnection.CreateModel())
+                if (!this.PersistentConnection.IsConnected)
+                {
+                    var connection = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                }
+
+                using (var channel = this.PersistentConnection.CreateModel())
                 {
                     if (channel != null)
                     {
-                        QueueInitialize(channel);
+                        this.QueueInitialize(channel);
 
-                        channel.QueueBind(QueueName, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
-                        channel.QueueBind(_queueNameReply, EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventNameResult);
+                        channel.QueueBind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+                        channel.QueueBind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventNameResult);
                     }
                 }
             }
             catch (RabbitMQClientException rex)
             {
-                Logger?.LogError(rex, "EventBusRabbitMqRpcClient RabbitMQClientException DoInternalSubscriptionRpc: ");
+                this.Logger?.LogError(rex, "EventBusRabbitMqRpcClient RabbitMQClientException DoInternalSubscriptionRpc: ");
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "EventBusRabbitMqRpcServer DoInternalSubscriptionRpc: ");
+                this.Logger?.LogError(ex, "EventBusRabbitMqRpcServer DoInternalSubscriptionRpc: ");
             }
         }
 
@@ -186,53 +188,53 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TH : IIntegrationRpcServerHandler<T, TR>
             where TR : IIntegrationEventReply
         {
-            SubsManager.RemoveSubscriptionRpcServer<T, TR, TH>(routingKey);
+            this.SubsManager.RemoveSubscriptionRpcServer<T, TR, TH>(routingKey);
         }
 
         #endregion
 
         protected override void DisposeManagedResources()
         {
-            _consumerChannelReply?.Value.Dispose();
-            ConsumerChannel?.Value.Dispose();
-            SubsManager?.Clear();
-            SubsManager?.ClearReply();
+            this._consumerChannelReply?.Value.Dispose();
+            this.ConsumerChannel?.Value.Dispose();
+            this.SubsManager?.Clear();
+            this.SubsManager?.ClearReply();
         }
 
         protected override async ValueTask<bool> StartBasicConsume()
         {
-            Logger?.LogTrace("EventBusRabbitMqRpcServer Starting RabbitMQ basic consume.");
+            this.Logger?.LogTrace("EventBusRabbitMqRpcServer Starting RabbitMQ basic consume.");
 
             try
             {
-                if (ConsumerChannel is null)
+                if (this.ConsumerChannel is null)
                 {
-                    Logger?.LogWarning("EventBusRabbitMqRpcServer ConsumerChannel is null!");
+                    this.Logger?.LogWarning("EventBusRabbitMqRpcServer ConsumerChannel is null!");
                     return false;
                 }
 
-                if (ConsumerChannel?.Value != null)
+                if (this.ConsumerChannel?.Value != null)
                 {
-                    var consumer = new AsyncEventingBasicConsumer(await ConsumerChannel);
+                    var consumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
 
-                    consumer.Received += ConsumerReceivedAsync;
+                    consumer.Received += this.ConsumerReceivedAsync;
 
-                    (await ConsumerChannel).BasicConsume(
-                        queue: QueueName,
+                    (await this.ConsumerChannel).BasicConsume(
+                        queue: this.QueueName,
                         autoAck: false,
                         consumer: consumer);
-                    Logger?.LogInformation(
-                        "EventBusRabbitMqRpcServer StartBasicConsume done. Queue name: {0}, autoAck: {1}", QueueName,
+                    this.Logger?.LogInformation(
+                        "EventBusRabbitMqRpcServer StartBasicConsume done. Queue name: {0}, autoAck: {1}", this.QueueName,
                         false);
 
                     return true;
                 }
 
-                Logger?.LogError("StartBasicConsume can't call on ConsumerChannel is null");
+                this.Logger?.LogError("StartBasicConsume can't call on ConsumerChannel is null");
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "StartBasicConsume: ");
+                this.Logger?.LogError(ex, "StartBasicConsume: ");
             }
 
             return false;
@@ -246,10 +248,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             try
             {
                 var props = eventArgs.BasicProperties;
-                var replyProps = ConsumerChannel?.Value.Result?.CreateBasicProperties();
+                var replyProps = this.ConsumerChannel?.Value.Result?.CreateBasicProperties();
                 replyProps.CorrelationId = props.CorrelationId;
 
-                var response = ProcessEventRpc(eventArgs.RoutingKey, eventName, eventArgs.Body);
+                var response = this.ProcessEventRpc(eventArgs.RoutingKey, eventName, eventArgs.Body);
 
                 if (response != null)
                 {
@@ -257,15 +259,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                     Serializer.Serialize<IIntegrationEventReply>(ms, response);
                     var body = ms.ToArray();
 
-                    _consumerChannelReply?.Value.Result.BasicPublish(
-                        EventBusParameters.ExchangeDeclareParameters.ExchangeName, (string) response.RoutingKey,
+                    this._consumerChannelReply?.Value.Result.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, (string) response.RoutingKey,
                         replyProps,
                         body);
                 }
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "CreateConsumerChannel RPC Received: ");
+                this.Logger?.LogError(ex, "CreateConsumerChannel RPC Received: ");
             }
 
 
@@ -275,11 +276,11 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                ConsumerChannel?.Value.Result?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                this.ConsumerChannel?.Value.Result?.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "CreateConsumerChannel RPC Received 2: ");
+                this.Logger?.LogError(ex, "CreateConsumerChannel RPC Received 2: ");
             }
         }
 
@@ -291,10 +292,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             try
             {
                 var props = eventArgs.BasicProperties;
-                var replyProps = (await ConsumerChannel)?.CreateBasicProperties();
+                var replyProps = (await this.ConsumerChannel)?.CreateBasicProperties();
                 replyProps.CorrelationId = props.CorrelationId;
 
-                var response = await ProcessEventRpcAsync(eventArgs.RoutingKey, eventName, eventArgs.Body)
+                var response = await this.ProcessEventRpcAsync(eventArgs.RoutingKey, eventName, eventArgs.Body)
                     .ConfigureAwait(false);
 
                 if (response != null)
@@ -303,14 +304,13 @@ namespace KSociety.Base.EventBusRabbitMQ
                     Serializer.Serialize<IIntegrationEventReply>(ms, response);
 
                     var body = ms.ToArray();
-                    (await _consumerChannelReply).BasicPublish(
-                        EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                    (await this._consumerChannelReply).BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                         (string) response.RoutingKey, replyProps, body);
                 }
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "CreateConsumerChannel RPC Received: ");
+                this.Logger?.LogError(ex, "CreateConsumerChannel RPC Received: ");
             }
 
             try
@@ -319,42 +319,42 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                (await ConsumerChannel)?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                (await this.ConsumerChannel)?.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "CreateConsumerChannel RPC Received 2: ");
+                this.Logger?.LogError(ex, "CreateConsumerChannel RPC Received 2: ");
             }
         }
 
         protected override async ValueTask<IModel?> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
-            Logger?.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", QueueName);
-            if (!PersistentConnection.IsConnected)
+            this.Logger?.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", this.QueueName);
+            if (!this.PersistentConnection.IsConnected)
             {
-                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
-            var channel = PersistentConnection.CreateModel();
+            var channel = this.PersistentConnection.CreateModel();
 
             if (channel != null)
             {
                 try
                 {
-                    QueueInitialize(channel);
+                    this.QueueInitialize(channel);
                     channel?.BasicQos(0, 1, false);
                 }
                 catch (Exception ex)
                 {
-                    Logger?.LogError(ex, "CreateConsumerChannelAsync: ");
+                    this.Logger?.LogError(ex, "CreateConsumerChannelAsync: ");
                 }
 
                 channel.CallbackException += async (sender, ea) =>
                 {
-                    Logger?.LogError(ea.Exception, "CallbackException: ");
-                    ConsumerChannel?.Value.Dispose();
-                    ConsumerChannel = new AsyncLazy<IModel?>(async () => await CreateConsumerChannelAsync(cancel));
-                    await StartBasicConsume().ConfigureAwait(false);
+                    this.Logger?.LogError(ea.Exception, "CallbackException: ");
+                    this.ConsumerChannel?.Value.Dispose();
+                    this.ConsumerChannel = new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel));
+                    await this.StartBasicConsume().ConfigureAwait(false);
                 };
 
                 return channel;
@@ -365,33 +365,33 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async ValueTask<IModel?> CreateConsumerChannelReplyAsync(CancellationToken cancel = default)
         {
-            Logger?.LogTrace("CreateConsumerChannelReplyAsync queue name: {0}", _queueNameReply);
-            if (!PersistentConnection.IsConnected)
+            this.Logger?.LogTrace("CreateConsumerChannelReplyAsync queue name: {0}", this._queueNameReply);
+            if (!this.PersistentConnection.IsConnected)
             {
-                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
-            var channel = PersistentConnection.CreateModel();
+            var channel = this.PersistentConnection.CreateModel();
 
             if (channel != null)
             {
                 try
                 {
-                    QueueInitialize(channel);
+                    this.QueueInitialize(channel);
                     channel?.BasicQos(0, 1, false);
                 }
                 catch (Exception ex)
                 {
-                    Logger?.LogError(ex, "CreateConsumerChannelReplyAsync: ");
+                    this.Logger?.LogError(ex, "CreateConsumerChannelReplyAsync: ");
                 }
 
                 channel.CallbackException += async (sender, ea) =>
                 {
-                    Logger?.LogError(ea.Exception, "CallbackException Rpc: ");
-                    _consumerChannelReply?.Value.Dispose();
-                    _consumerChannelReply =
+                    this.Logger?.LogError(ea.Exception, "CallbackException Rpc: ");
+                    this._consumerChannelReply?.Value.Dispose();
+                    this._consumerChannelReply =
                         new AsyncLazy<IModel?>(async () =>
-                            await CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
+                            await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
                 };
 
                 return channel;
@@ -405,13 +405,13 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             dynamic? output = null;
 
-            if (SubsManager.HasSubscriptionsForEvent(routingKey))
+            if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {
-                var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
+                var subscriptions = this.SubsManager.GetHandlersForEvent(routingKey);
 
                 if (!subscriptions.Any())
                 {
-                    Logger?.LogError("ProcessEventRpc subscriptions no items! {0}", routingKey);
+                    this.Logger?.LogError("ProcessEventRpc subscriptions no items! {0}", routingKey);
                 }
 
                 foreach (var subscription in subscriptions)
@@ -425,23 +425,23 @@ namespace KSociety.Base.EventBusRabbitMQ
                         case SubscriptionManagerType.RpcServer:
                             try
                             {
-                                if (EventHandler is null)
+                                if (this.EventHandler is null)
                                 {
-                                    Logger?.LogError("ProcessEventRpcServer _eventHandler is null!");
+                                    this.Logger?.LogError("ProcessEventRpcServer _eventHandler is null!");
                                 }
                                 else
                                 {
-                                    var eventType = SubsManager.GetEventTypeByName(routingKey);
+                                    var eventType = this.SubsManager.GetEventTypeByName(routingKey);
                                     if (eventType is null)
                                     {
-                                        Logger?.LogError("ProcessEventRpcServer: eventType is null! {0}", routingKey);
+                                        this.Logger?.LogError("ProcessEventRpcServer: eventType is null! {0}", routingKey);
                                         return null;
                                     }
 
-                                    var eventReplyType = SubsManager.GetEventReplyTypeByName(routingKey);
+                                    var eventReplyType = this.SubsManager.GetEventReplyTypeByName(routingKey);
                                     if (eventReplyType is null)
                                     {
-                                        Logger?.LogError("ProcessEventRpcServer: eventReplyType is null! {0}",
+                                        this.Logger?.LogError("ProcessEventRpcServer: eventReplyType is null! {0}",
                                             routingKey);
                                         return null;
                                     }
@@ -457,18 +457,18 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         //    .Invoke(EventHandler, new[] { integrationEvent, cancel });
 
                                         output = concreteType.GetMethod("HandleRpc")
-                                            .Invoke(EventHandler, new[] {integrationEvent, cancel});
+                                            .Invoke(this.EventHandler, new[] {integrationEvent, cancel});
 
                                         if (output is null)
                                         {
-                                            Logger?.LogError("ProcessEventRpcServer output is null!");
+                                            this.Logger?.LogError("ProcessEventRpcServer output is null!");
                                         }
                                     }
                                 }
                             }
                             catch (Exception ex)
                             {
-                                Logger?.LogError(ex, "ProcessEventRpcServer: ");
+                                this.Logger?.LogError(ex, "ProcessEventRpcServer: ");
                             }
 
                             break;
@@ -487,7 +487,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             else
             {
-                Logger?.LogError("ProcessEventRpc HasSubscriptionsForEvent {0} No Subscriptions!", routingKey);
+                this.Logger?.LogError("ProcessEventRpc HasSubscriptionsForEvent {0} No Subscriptions!", routingKey);
             }
 
             return output;
@@ -498,13 +498,13 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             dynamic? output = null;
 
-            if (SubsManager.HasSubscriptionsForEvent(routingKey))
+            if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {
-                var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
+                var subscriptions = this.SubsManager.GetHandlersForEvent(routingKey);
 
                 if (!subscriptions.Any())
                 {
-                    Logger?.LogError("ProcessEventRpc subscriptions no items! {0}", routingKey);
+                    this.Logger?.LogError("ProcessEventRpc subscriptions no items! {0}", routingKey);
                 }
 
                 foreach (var subscription in subscriptions)
@@ -518,23 +518,23 @@ namespace KSociety.Base.EventBusRabbitMQ
                         case SubscriptionManagerType.RpcServer:
                             try
                             {
-                                if (EventHandler is null)
+                                if (this.EventHandler is null)
                                 {
-                                    Logger?.LogError("ProcessEventRpcServer _eventHandler is null!");
+                                    this.Logger?.LogError("ProcessEventRpcServer _eventHandler is null!");
                                 }
                                 else
                                 {
-                                    var eventType = SubsManager.GetEventTypeByName(routingKey);
+                                    var eventType = this.SubsManager.GetEventTypeByName(routingKey);
                                     if (eventType is null)
                                     {
-                                        Logger?.LogError("ProcessEventRpcServer: eventType is null! {0}", routingKey);
+                                        this.Logger?.LogError("ProcessEventRpcServer: eventType is null! {0}", routingKey);
                                         return null;
                                     }
 
-                                    var eventReplyType = SubsManager.GetEventReplyTypeByName(routingKey);
+                                    var eventReplyType = this.SubsManager.GetEventReplyTypeByName(routingKey);
                                     if (eventReplyType is null)
                                     {
-                                        Logger?.LogError("ProcessEventRpcServer: eventReplyType is null! {0}",
+                                        this.Logger?.LogError("ProcessEventRpcServer: eventReplyType is null! {0}",
                                             routingKey);
                                         return null;
                                     }
@@ -548,19 +548,19 @@ namespace KSociety.Base.EventBusRabbitMQ
                                                 eventReplyType);
 
                                         output = await ((dynamic)concreteType.GetMethod("HandleRpcAsync")
-                                                .Invoke(EventHandler, new[] {integrationEvent, cancel}))
+                                                .Invoke(this.EventHandler, new[] {integrationEvent, cancel}))
                                             .ConfigureAwait(false);
 
                                         if (output is null)
                                         {
-                                            Logger?.LogError("ProcessEventRpcServer output is null!");
+                                            this.Logger?.LogError("ProcessEventRpcServer output is null!");
                                         }
                                     }
                                 }
                             }
                             catch (Exception ex)
                             {
-                                Logger?.LogError(ex, "ProcessEventRpcServer: ");
+                                this.Logger?.LogError(ex, "ProcessEventRpcServer: ");
                             }
 
                             break;
@@ -579,7 +579,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             else
             {
-                Logger?.LogError("ProcessEventRpc HasSubscriptionsForEvent {0} No Subscriptions!", routingKey);
+                this.Logger?.LogError("ProcessEventRpc HasSubscriptionsForEvent {0} No Subscriptions!", routingKey);
             }
 
             return output;

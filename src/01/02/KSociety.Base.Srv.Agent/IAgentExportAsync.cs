@@ -1,8 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.Srv.Agent
+﻿namespace KSociety.Base.Srv.Agent
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public interface IAgentExportAsync<in TExportReq, TExportRes>
         where TExportReq : class
         where TExportRes : class

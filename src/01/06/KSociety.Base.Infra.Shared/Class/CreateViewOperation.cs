@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations.Operations;
-
-namespace KSociety.Base.Infra.Shared.Class
+﻿namespace KSociety.Base.Infra.Shared.Class
 {
+    using Microsoft.EntityFrameworkCore.Migrations.Operations;
+
     public class CreateViewOperation : MigrationOperation
     {
         public string AssemblyName { get; set; }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace KSociety.Base.Pre.Form.View.Abstractions
+﻿namespace KSociety.Base.Pre.Form.View.Abstractions
 {
+    using System;
+    using System.Windows.Forms;
+
     public interface IDataGridViewBase
     {
         DataGridView DataGridView { get; }

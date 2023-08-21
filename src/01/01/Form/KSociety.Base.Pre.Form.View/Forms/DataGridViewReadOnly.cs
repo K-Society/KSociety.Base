@@ -1,37 +1,37 @@
-﻿using KSociety.Base.InfraSub.Shared.Interface;
-using System.ComponentModel;
-
 namespace KSociety.Base.Pre.Form.View.Forms
 {
+    using InfraSub.Shared.Interface;
+    using System.ComponentModel;
+
     public partial class DataGridViewReadOnly<T, TList>
-        where T : IObject where TList : InfraSub.Shared.Interface.IList<T>
+        where T : IObject where TList : IList<T>
     {
         public DataGridViewReadOnly()
         {
-            InitializeComponent();
-            Initialize();
+            this.InitializeComponent();
+            this.Initialize();
         }
 
         public DataGridViewReadOnly(IContainer container)
         {
             container.Add(this);
 
-            InitializeComponent();
-            Initialize();
+            this.InitializeComponent();
+            this.Initialize();
         }
 
         private void Initialize()
         {
-            AutoGenerateColumns = false;
-            AllowUserToAddRows = false;
-            AllowUserToDeleteRows = false;
-            AllowDrop = false;
+            this.AutoGenerateColumns = false;
+            this.AllowUserToAddRows = false;
+            this.AllowUserToDeleteRows = false;
+            this.AllowDrop = false;
 
             foreach (var propertyInfo in typeof(TList).GetProperties())
             {
                 if (!propertyInfo.Name.Equals("List"))
                 {
-                    BindingSourcesComboBox.Add(propertyInfo.Name, null);
+                    this.BindingSourcesComboBox.Add(propertyInfo.Name, null);
                 }
             }
             //AutoGenerateColumns = true;
@@ -42,7 +42,7 @@ namespace KSociety.Base.Pre.Form.View.Forms
             //DataGridViewColumn col = new StdDataGridViewFunctionColumn();
             //Columns.Add(col);
 
-            CreateColumns();
+            this.CreateColumns();
         }
     }
 }

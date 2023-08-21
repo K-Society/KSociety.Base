@@ -1,9 +1,9 @@
-﻿using KSociety.Base.EventBus.Abstractions.Handler;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
+    using Handler;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public interface IEventBusBase
     {
         IIntegrationGeneralHandler? EventHandler { get; }

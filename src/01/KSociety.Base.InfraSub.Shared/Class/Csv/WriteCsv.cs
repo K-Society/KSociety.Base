@@ -1,14 +1,14 @@
-﻿using CsvHelper;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.InfraSub.Shared.Class.Csv
+﻿namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
+    using CsvHelper;
+    using Microsoft.Extensions.Logging;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+
     public class WriteCsv<TEntity>
         where TEntity : class
     {

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace KSociety.Base.InfraSub.Shared.Interface
+﻿namespace KSociety.Base.InfraSub.Shared.Interface
 {
+    using System;
+
     public interface IModifyField
     {
         Guid Id { get; set; }

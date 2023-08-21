@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using KSociety.Base.EventBus.Abstractions;
-using KSociety.Base.EventBus.Abstractions.Handler;
-using static KSociety.Base.EventBus.InMemoryEventBusSubscriptionsManager;
-
 namespace KSociety.Base.EventBus
 {
+    using System;
+    using System.Collections.Generic;
+    using Abstractions;
+    using Abstractions.Handler;
+    using static InMemoryEventBusSubscriptionsManager;
+
     /// <summary>
     /// The EventBusSubscriptionsManager, used for adding or removing an event subscription. 
     /// </summary>

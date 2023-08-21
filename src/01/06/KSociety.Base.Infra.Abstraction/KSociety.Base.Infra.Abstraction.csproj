@@ -8,11 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="7.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Doc\" />
+    <PackageReference Include="Autofac" Version="7.1.0" />
   </ItemGroup>
 
 </Project>

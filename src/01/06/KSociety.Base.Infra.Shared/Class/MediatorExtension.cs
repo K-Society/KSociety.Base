@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.Domain.Shared.Class;
-using MediatR;
-
-namespace KSociety.Base.Infra.Shared.Class
+﻿namespace KSociety.Base.Infra.Shared.Class
 {
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using KSociety.Base.Domain.Shared.Class;
+    using MediatR;
+
     public static class MediatorExtension
     {
         public static void DispatchDomainEvents(this IMediator mediator, DatabaseContext ctx)

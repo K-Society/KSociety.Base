@@ -1,6 +1,5 @@
-﻿using System;
-
 namespace KSociety.Base.Infra.Shared.Test.Csv.Dto;
+using System;
 
 public class TestClassPrivateSetter
 {
@@ -22,33 +21,33 @@ public class TestClassPrivateSetter
 
     public TestClassPrivateSetter(Guid id, int classTypeId, string name, string ip, bool enable, string ahh)
     {
-        Id = id;
-        ClassTypeId = classTypeId;
-        Name = name;
-        Ip = ip;
-        Enable = enable;
-        Ahh = ahh;
+        this.Id = id;
+        this.ClassTypeId = classTypeId;
+        this.Name = name;
+        this.Ip = ip;
+        this.Enable = enable;
+        this.Ahh = ahh;
     }
 
     public TestClassPrivateSetter(Guid id, int classTypeId, string name, string ip, bool enable, string ahh, string test)
     {
-        Id = id;
-        ClassTypeId = classTypeId;
-        Name = name;
-        Ip = ip;
-        Enable = enable;
-        Ahh = ahh;
-        Ahh = test;
+        this.Id = id;
+        this.ClassTypeId = classTypeId;
+        this.Name = name;
+        this.Ip = ip;
+        this.Enable = enable;
+        this.Ahh = ahh;
+        this.Ahh = test;
     }
 
     public TestClassPrivateSetter(Guid id, int classTypeId, string ip, bool enable)
     {
-        Id = id;
-        ClassTypeId = classTypeId;
-        Name = "MaDai";
-        Ip = ip;
-        Enable = enable;
-        Ahh = "MaDai";
+        this.Id = id;
+        this.ClassTypeId = classTypeId;
+        this.Name = "MaDai";
+        this.Ip = ip;
+        this.Enable = enable;
+        this.Ahh = "MaDai";
     }
 
     //Do not use this constructor.

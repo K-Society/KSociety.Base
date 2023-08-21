@@ -1,25 +1,25 @@
-﻿using KSociety.Base.InfraSub.Shared.Interface;
-using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 namespace KSociety.Base.Pre.Form.View.Forms
 {
+    using InfraSub.Shared.Interface;
+    using System;
+    using System.ComponentModel;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
+
     public partial class DataGridView<T, TList> where T : IObject where TList : IList<T>
     {
         public DataGridView()
         {
-            InitializeComponent();
-            Initialize();
+            this.InitializeComponent();
+            this.Initialize();
         }
 
         public DataGridView(IContainer container)
         {
             container.Add(this);
 
-            InitializeComponent();
-            Initialize();
+            this.InitializeComponent();
+            this.Initialize();
         }
 
         private void Initialize()
@@ -28,16 +28,16 @@ namespace KSociety.Base.Pre.Form.View.Forms
             {
                 if (!propertyInfo.Name.Equals("List"))
                 {
-                    BindingSourcesComboBox.Add(propertyInfo.Name, null);
+                    this.BindingSourcesComboBox.Add(propertyInfo.Name, null);
                 }
             }
 
-            AutoGenerateColumns = false;
+            this.AutoGenerateColumns = false;
 
             DataGridViewColumn col = new DataGridViewFunctionColumn();
-            Columns.Add(col);
+            this.Columns.Add(col);
 
-            CreateColumns();
+            this.CreateColumns();
         }
 
         public event EventHandler<T> Remove;
@@ -52,9 +52,12 @@ namespace KSociety.Base.Pre.Form.View.Forms
             {
                 DataGridView senderGrid = (DataGridView)sender;
                 if (senderGrid.Columns[e.ColumnIndex] is DataGridViewFunctionColumn || e.RowIndex < 0 ||
-                    !senderGrid.Rows[e.RowIndex].Cells["Function"].Value.Equals("Remove")) return;
+                    !senderGrid.Rows[e.RowIndex].Cells["Function"].Value.Equals("Remove"))
+                {
+                    return;
+                }
 
-                ModifyField?.Invoke(sender, e);
+                this.ModifyField?.Invoke(sender, e);
             }).ConfigureAwait(false);
         }
 
@@ -63,7 +66,11 @@ namespace KSociety.Base.Pre.Form.View.Forms
             await Task.Factory.StartNew(() =>
             {
                 DataGridView senderGrid = (DataGridView)sender;
-                if (!(senderGrid.Columns[e.ColumnIndex] is DataGridViewFunctionColumn) || e.RowIndex < 0) return;
+                if (!(senderGrid.Columns[e.ColumnIndex] is DataGridViewFunctionColumn) || e.RowIndex < 0)
+                {
+                    return;
+                }
+
                 switch (senderGrid.Rows[e.RowIndex].Cells["Function"].Value)
                 {
                     case "Add":
@@ -74,19 +81,19 @@ namespace KSociety.Base.Pre.Form.View.Forms
                         }
                         else
                         {
-                            Add?.Invoke(sender, myRow);
+                            this.Add?.Invoke(sender, myRow);
                         }
 
                         break;
 
                     case "Remove":
-                        StdDataGridView_UserDeletingRow(sender,
+                        this.StdDataGridView_UserDeletingRow(sender,
                             new DataGridViewRowCancelEventArgs(senderGrid.Rows[e.RowIndex]));
                         break;
 
                     case "Update":
                         var myUpdatedRow = (T)senderGrid.Rows[e.RowIndex].DataBoundItem;
-                        UpdateEntity?.Invoke(sender, myUpdatedRow);
+                        this.UpdateEntity?.Invoke(sender, myUpdatedRow);
                         break;
 
                     default:
@@ -102,7 +109,7 @@ namespace KSociety.Base.Pre.Form.View.Forms
             {
                 try
                 {
-                    DataGridViewRow row = Rows[e.Row.Index - 1];
+                    DataGridViewRow row = this.Rows[e.Row.Index - 1];
                     row.Cells["Function"].Value = "Add";
                 }
                 catch (Exception ex) { MessageBox.Show(ex.Message); }
@@ -122,13 +129,20 @@ namespace KSociety.Base.Pre.Form.View.Forms
             //{ 
             DataGridView senderGrid = (DataGridView)sender;
 
-            if (e.Row.Index < 0) return;
-            senderGrid.CellValueChanged -= StdDataGridView_CellValueChanged;
+            if (e.Row.Index < 0)
+            {
+                return;
+            }
+
+            senderGrid.CellValueChanged -= this.StdDataGridView_CellValueChanged;
             foreach (DataGridViewCell cell in e.Row.Cells)
             {
-                if (!BindingSourcesComboBox.ContainsKey(senderGrid.Columns[cell.ColumnIndex].DataPropertyName))
+                if (!this.BindingSourcesComboBox.ContainsKey(senderGrid.Columns[cell.ColumnIndex].DataPropertyName))
+                {
                     continue;
-                dynamic data = BindingSourcesComboBox[senderGrid.Columns[cell.ColumnIndex].DataPropertyName]
+                }
+
+                dynamic data = this.BindingSourcesComboBox[senderGrid.Columns[cell.ColumnIndex].DataPropertyName]
                     .Current;
 
                 //PropertyInfo field = GetType().GetProperty(fieldName);
@@ -144,7 +158,7 @@ namespace KSociety.Base.Pre.Form.View.Forms
                 cell.Value = data.Key;
             }
 
-            senderGrid.CellValueChanged += StdDataGridView_CellValueChanged;
+            senderGrid.CellValueChanged += this.StdDataGridView_CellValueChanged;
             //});
         }
 
@@ -152,10 +166,18 @@ namespace KSociety.Base.Pre.Form.View.Forms
         {
             await Task.Factory.StartNew(() =>
             {
-                if (CurrentRow == null) return;
-                if (CurrentRow.Index >= RowCount - 1) return;
-                var myRow = (T)CurrentRow.DataBoundItem;
-                Copy?.Invoke(sender, myRow);
+                if (this.CurrentRow == null)
+                {
+                    return;
+                }
+
+                if (this.CurrentRow.Index >= this.RowCount - 1)
+                {
+                    return;
+                }
+
+                var myRow = (T)this.CurrentRow.DataBoundItem;
+                this.Copy?.Invoke(sender, myRow);
             }).ConfigureAwait(false);
         }
 
@@ -163,11 +185,19 @@ namespace KSociety.Base.Pre.Form.View.Forms
         {
             await Task.Factory.StartNew(() =>
             {
-                if (CurrentRow == null) return;
-                if (CurrentRow.Index >= RowCount - 1) return;
-                var myRow = (T)CurrentRow.DataBoundItem;
+                if (this.CurrentRow == null)
+                {
+                    return;
+                }
+
+                if (this.CurrentRow.Index >= this.RowCount - 1)
+                {
+                    return;
+                }
+
+                var myRow = (T)this.CurrentRow.DataBoundItem;
                 //Console.WriteLine("StdDataGridView_UserDeletingRow: " + myRow.);
-                Remove?.Invoke(sender, myRow);
+                this.Remove?.Invoke(sender, myRow);
             }).ConfigureAwait(false);
         }
     }

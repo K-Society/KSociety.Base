@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using ProtoBuf;
-
-namespace KSociety.Base.App.Shared
+﻿namespace KSociety.Base.App.Shared
 {
+    using System.Collections.Generic;
+    using ProtoBuf;
+
     /// <inheritdoc/>
     [ProtoContract]
     public class AppList<T> : IAppList<T> where T : IRequest

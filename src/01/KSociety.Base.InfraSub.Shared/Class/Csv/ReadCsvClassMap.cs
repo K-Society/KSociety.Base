@@ -1,17 +1,17 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.InfraSub.Shared.Class.Csv
+﻿namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
+    using CsvHelper;
+    using CsvHelper.Configuration;
+    using Microsoft.Extensions.Logging;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public static class ReadCsvClassMap<TEntity, TClassMap>
         where TEntity : class
         where TClassMap : ClassMap<TEntity>

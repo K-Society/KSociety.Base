@@ -1,6 +1,5 @@
-﻿using System;
-
 namespace KSociety.Base.Infra.Shared.Test.Csv;
+using System;
 
 public class DtoTestClass5
 {
@@ -10,8 +9,8 @@ public class DtoTestClass5
 
     public DtoTestClass5(/*Int32 classTypeId*/ string parameter)
     {
-        ClassTypeId = 2;
-        Parameter = parameter;
+        this.ClassTypeId = 2;
+        this.Parameter = parameter;
     }
 
     public DtoTestClass5()

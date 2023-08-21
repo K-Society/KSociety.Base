@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.EntityFrameworkCore.Update;
-using Microsoft.Extensions.Logging;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
-using Pomelo.EntityFrameworkCore.MySql.Migrations;
-using System;
-
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
+    using Microsoft.EntityFrameworkCore.Metadata;
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.EntityFrameworkCore.Migrations.Operations;
+    using Microsoft.EntityFrameworkCore.Update;
+    using Microsoft.Extensions.Logging;
+    using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
+    using Pomelo.EntityFrameworkCore.MySql.Migrations;
+    using System;
+
     public class MySqlGenerator : MySqlMigrationsSqlGenerator
     {
         private readonly ILogger<MySqlGenerator> _logger;
@@ -22,8 +22,8 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             IMySqlOptions options)
             : base(dependencies, commandBatchPreparer, options)
         {
-            _logger = loggerFactory.CreateLogger<MySqlGenerator>();
-            _logger.LogTrace("MySqlGenerator");
+            this._logger = loggerFactory.CreateLogger<MySqlGenerator>();
+            this._logger.LogTrace("MySqlGenerator");
         }
 #endif
 
@@ -37,8 +37,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
                 if (operation is CreateViewOperation createViewOperation)
                 {
                     //Generate(createViewOperation, builder);
-                    SqlGeneratorHelper.Generate(_logger, createViewOperation, builder,
-                        Dependencies.SqlGenerationHelper);
+                    SqlGeneratorHelper.Generate(this._logger, createViewOperation, builder, this.Dependencies.SqlGenerationHelper);
                 }
                 else
                 {
@@ -47,7 +46,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Generate: ");
+                this._logger.LogError(ex, "Generate: ");
             }
         }
     }

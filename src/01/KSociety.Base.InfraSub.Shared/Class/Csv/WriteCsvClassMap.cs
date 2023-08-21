@@ -1,13 +1,13 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.InfraSub.Shared.Class.Csv
+﻿namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
+    using CsvHelper;
+    using CsvHelper.Configuration;
+    using Microsoft.Extensions.Logging;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Threading.Tasks;
+
     public static class WriteCsvClassMap<TEntity, TClassMap>
         where TEntity : class
         where TClassMap : ClassMap<TEntity>

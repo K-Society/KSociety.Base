@@ -1,7 +1,7 @@
-﻿using KSociety.Base.Infra.Abstraction.Interface;
-
 namespace KSociety.Base.Infra.Abstraction.Class
 {
+    using Interface;
+
     public class DatabaseConfiguration : IDatabaseConfiguration
     {
         public DatabaseEngine DatabaseEngine { get; }
@@ -14,26 +14,25 @@ namespace KSociety.Base.Infra.Abstraction.Class
             string connectionString, bool logging = false,
             string migrationsAssembly = "", bool lazyLoading = false)
         {
-            DatabaseEngine = databaseEngine;
-            ConnectionString = connectionString;
-            Logging = logging;
-            MigrationsAssembly = migrationsAssembly;
-            LazyLoading = lazyLoading;
+            this.DatabaseEngine = databaseEngine;
+            this.ConnectionString = connectionString;
+            this.Logging = logging;
+            this.MigrationsAssembly = migrationsAssembly;
+            this.LazyLoading = lazyLoading;
         }
 
         public DatabaseConfiguration(DatabaseOptions databaseOptions)
         {
-            DatabaseEngine = databaseOptions.DatabaseEngine;
-            ConnectionString = databaseOptions.ConnectionString;
-            Logging = databaseOptions.Logging;
-            MigrationsAssembly = databaseOptions.MigrationsAssembly;
-            LazyLoading = databaseOptions.LazyLoading;
+            this.DatabaseEngine = databaseOptions.DatabaseEngine;
+            this.ConnectionString = databaseOptions.ConnectionString;
+            this.Logging = databaseOptions.Logging;
+            this.MigrationsAssembly = databaseOptions.MigrationsAssembly;
+            this.LazyLoading = databaseOptions.LazyLoading;
         }
 
         public override string ToString()
         {
-            return DatabaseEngine + " " + ConnectionString + " " + Logging + " " + MigrationsAssembly + " " +
-                   LazyLoading;
+            return this.DatabaseEngine + " " + this.ConnectionString + " " + this.Logging + " " + this.MigrationsAssembly + " " + this.LazyLoading;
         }
     }
 }

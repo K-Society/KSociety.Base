@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using KSociety.Base.EventBus.Abstractions;
-using KSociety.Base.EventBus.Abstractions.Handler;
-
 namespace KSociety.Base.EventBus
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Abstractions;
+    using Abstractions.Handler;
+
     ///<inheritdoc/>
     public partial class InMemoryEventBusSubscriptionsManager
     {
@@ -23,23 +23,29 @@ namespace KSociety.Base.EventBus
 
         public InMemoryEventBusSubscriptionsManager()
         {
-            _handlers = new Dictionary<string, List<SubscriptionInfo>>();
-            _replyHandlers = new Dictionary<string, List<SubscriptionInfo>>();
-            _eventTypes = new Dictionary<string, Type>();
-            _eventReplyTypes = new Dictionary<string, Type>();
+            this._handlers = new Dictionary<string, List<SubscriptionInfo>>();
+            this._replyHandlers = new Dictionary<string, List<SubscriptionInfo>>();
+            this._eventTypes = new Dictionary<string, Type>();
+            this._eventReplyTypes = new Dictionary<string, Type>();
         }
 
         ///<inheritdoc/>
-        public bool IsEmpty => !_handlers.Keys.Any();
+        public bool IsEmpty => !this._handlers.Keys.Any();
 
         ///<inheritdoc/>
-        public bool IsReplyEmpty => !_replyHandlers.Keys.Any();
+        public bool IsReplyEmpty => !this._replyHandlers.Keys.Any();
 
         ///<inheritdoc/>
-        public void Clear() => _handlers.Clear();
+        public void Clear()
+        {
+            this._handlers.Clear();
+        }
 
         ///<inheritdoc/>
-        public void ClearReply() => _replyHandlers.Clear();
+        public void ClearReply()
+        {
+            this._replyHandlers.Clear();
+        }
 
         #region [AddSubscription]
 
@@ -47,7 +53,7 @@ namespace KSociety.Base.EventBus
         public void AddDynamicSubscription<TH>(string routingKey)
             where TH : IDynamicIntegrationEventHandler
         {
-            DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Dynamic);
+            this.DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Dynamic);
         }
 
         ///<inheritdoc/>
@@ -55,11 +61,11 @@ namespace KSociety.Base.EventBus
             where T : IIntegrationEvent
             where TH : IIntegrationEventHandler<T>
         {
-            var routingKey = GetEventKey<T>();
-            DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Typed);
-            if (!_eventTypes.ContainsKey(routingKey))
+            var routingKey = this.GetEventKey<T>();
+            this.DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Typed);
+            if (!this._eventTypes.ContainsKey(routingKey))
             {
-                _eventTypes.Add(routingKey, typeof(T));
+                this._eventTypes.Add(routingKey, typeof(T));
             }
         }
 
@@ -68,10 +74,10 @@ namespace KSociety.Base.EventBus
             where T : IIntegrationEvent
             where TH : IIntegrationEventHandler<T>
         {
-            DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Typed);
-            if (!_eventTypes.ContainsKey(routingKey))
+            this.DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Typed);
+            if (!this._eventTypes.ContainsKey(routingKey))
             {
-                _eventTypes.Add(routingKey, typeof(T));
+                this._eventTypes.Add(routingKey, typeof(T));
             }
         }
 
@@ -80,10 +86,10 @@ namespace KSociety.Base.EventBus
             where T : IIntegrationEvent
             where TH : IIntegrationQueueHandler<T>
         {
-            DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Queue);
-            if (!_eventTypes.ContainsKey(routingKey))
+            this.DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Queue);
+            if (!this._eventTypes.ContainsKey(routingKey))
             {
-                _eventTypes.Add(routingKey, typeof(T));
+                this._eventTypes.Add(routingKey, typeof(T));
             }
         }
 
@@ -93,26 +99,26 @@ namespace KSociety.Base.EventBus
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcHandler<T, TR>
         {
-            DoAddSubscriptionReply(typeof(TH), routingKey, SubscriptionManagerType.Rpc, routingReplyKey);
+            this.DoAddSubscriptionReply(typeof(TH), routingKey, SubscriptionManagerType.Rpc, routingReplyKey);
 
-            if (!_eventTypes.ContainsKey(routingKey))
+            if (!this._eventTypes.ContainsKey(routingKey))
             {
-                _eventTypes.Add(routingKey, typeof(T));
+                this._eventTypes.Add(routingKey, typeof(T));
             }
 
-            if (!_eventTypes.ContainsKey(routingReplyKey))
+            if (!this._eventTypes.ContainsKey(routingReplyKey))
             {
-                _eventTypes.Add(routingReplyKey, typeof(T));
+                this._eventTypes.Add(routingReplyKey, typeof(T));
             }
 
-            if (!_eventReplyTypes.ContainsKey(routingReplyKey))
+            if (!this._eventReplyTypes.ContainsKey(routingReplyKey))
             {
-                _eventReplyTypes.Add(routingReplyKey, typeof(TR));
+                this._eventReplyTypes.Add(routingReplyKey, typeof(TR));
             }
 
-            if (!_eventReplyTypes.ContainsKey(routingKey))
+            if (!this._eventReplyTypes.ContainsKey(routingKey))
             {
-                _eventReplyTypes.Add(routingKey, typeof(TR));
+                this._eventReplyTypes.Add(routingKey, typeof(TR));
             }
         }
 
@@ -121,11 +127,11 @@ namespace KSociety.Base.EventBus
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcClientHandler<TR>
         {
-            DoAddSubscription(typeof(TH), routingReplyKey, SubscriptionManagerType.RpcClient);
+            this.DoAddSubscription(typeof(TH), routingReplyKey, SubscriptionManagerType.RpcClient);
 
-            if (!_eventReplyTypes.ContainsKey(routingReplyKey))
+            if (!this._eventReplyTypes.ContainsKey(routingReplyKey))
             {
-                _eventReplyTypes.Add(routingReplyKey, typeof(TR));
+                this._eventReplyTypes.Add(routingReplyKey, typeof(TR));
             }
         }
 
@@ -135,16 +141,16 @@ namespace KSociety.Base.EventBus
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcServerHandler<T, TR>
         {
-            DoAddSubscriptionReply(typeof(TH), routingKey, SubscriptionManagerType.RpcServer, routingReplyKey);
+            this.DoAddSubscriptionReply(typeof(TH), routingKey, SubscriptionManagerType.RpcServer, routingReplyKey);
 
-            if (!_eventTypes.ContainsKey(routingKey))
+            if (!this._eventTypes.ContainsKey(routingKey))
             {
-                _eventTypes.Add(routingKey, typeof(T));
+                this._eventTypes.Add(routingKey, typeof(T));
             }
 
-            if (!_eventReplyTypes.ContainsKey(routingKey))
+            if (!this._eventReplyTypes.ContainsKey(routingKey))
             {
-                _eventReplyTypes.Add(routingKey, typeof(TR));
+                this._eventReplyTypes.Add(routingKey, typeof(TR));
             }
         }
 
@@ -155,12 +161,12 @@ namespace KSociety.Base.EventBus
 
             if (subscriptionManagerType.Equals(SubscriptionManagerType.RpcClient))
             {
-                if (!HasSubscriptionsForEventReply(eventName))
+                if (!this.HasSubscriptionsForEventReply(eventName))
                 {
-                    _replyHandlers.Add(eventName, new List<SubscriptionInfo>());
+                    this._replyHandlers.Add(eventName, new List<SubscriptionInfo>());
                 }
 
-                if (_replyHandlers[eventName].Any(s => s.HandlerType == handlerType))
+                if (this._replyHandlers[eventName].Any(s => s.HandlerType == handlerType))
                 {
                     throw new ArgumentException(
                         $"ReplyHandler Type {handlerType.Name} already registered for '{eventName}'",
@@ -169,12 +175,12 @@ namespace KSociety.Base.EventBus
             }
             else
             {
-                if (!HasSubscriptionsForEvent(eventName))
+                if (!this.HasSubscriptionsForEvent(eventName))
                 {
-                    _handlers.Add(eventName, new List<SubscriptionInfo>());
+                    this._handlers.Add(eventName, new List<SubscriptionInfo>());
                 }
 
-                if (_handlers[eventName].Any(s => s.HandlerType == handlerType))
+                if (this._handlers[eventName].Any(s => s.HandlerType == handlerType))
                 {
                     throw new ArgumentException(
                         $"Handler Type {handlerType.Name} already registered for '{eventName}'", nameof(handlerType));
@@ -184,21 +190,21 @@ namespace KSociety.Base.EventBus
             switch (subscriptionManagerType)
             {
                 case SubscriptionManagerType.Dynamic:
-                    _handlers[eventName].Add(SubscriptionInfo.Dynamic(handlerType));
+                    this._handlers[eventName].Add(SubscriptionInfo.Dynamic(handlerType));
                     break;
 
                 case SubscriptionManagerType.Typed:
-                    _handlers[eventName].Add(SubscriptionInfo.Typed(handlerType));
+                    this._handlers[eventName].Add(SubscriptionInfo.Typed(handlerType));
                     break;
 
                 case SubscriptionManagerType.Queue:
-                    _handlers[eventName].Add(SubscriptionInfo.Queue(handlerType));
+                    this._handlers[eventName].Add(SubscriptionInfo.Queue(handlerType));
                     break;
 
                 case SubscriptionManagerType.Rpc:
                     break;
                 case SubscriptionManagerType.RpcClient:
-                    _replyHandlers[eventName].Add(SubscriptionInfo.RpcClient(handlerType));
+                    this._replyHandlers[eventName].Add(SubscriptionInfo.RpcClient(handlerType));
                     break;
                 case SubscriptionManagerType.RpcServer:
                     break;
@@ -211,25 +217,25 @@ namespace KSociety.Base.EventBus
         private void DoAddSubscriptionReply(Type handlerType, string eventName,
             SubscriptionManagerType subscriptionManagerType, string eventReplyName)
         {
-            if (!HasSubscriptionsForEvent(eventName))
+            if (!this.HasSubscriptionsForEvent(eventName))
             {
-                _handlers.Add(eventName, new List<SubscriptionInfo>());
+                this._handlers.Add(eventName, new List<SubscriptionInfo>());
             }
 
-            if (_handlers[eventName].Any(s => s.HandlerType == handlerType))
+            if (this._handlers[eventName].Any(s => s.HandlerType == handlerType))
             {
                 throw new ArgumentException(
                     $"Handler Type {handlerType.Name} already registered for '{eventName}'", nameof(handlerType));
             }
 
-            if (!string.IsNullOrEmpty(eventReplyName))
+            if (!String.IsNullOrEmpty(eventReplyName))
             {
-                if (!HasSubscriptionsForEventReply(eventReplyName))
+                if (!this.HasSubscriptionsForEventReply(eventReplyName))
                 {
-                    _replyHandlers.Add(eventReplyName, new List<SubscriptionInfo>());
+                    this._replyHandlers.Add(eventReplyName, new List<SubscriptionInfo>());
                 }
 
-                if (_replyHandlers[eventReplyName].Any(s => s.HandlerType == handlerType))
+                if (this._replyHandlers[eventReplyName].Any(s => s.HandlerType == handlerType))
                 {
                     throw new ArgumentException(
                         $"ReplyHandler Type {handlerType.Name} already registered for '{eventReplyName}'",
@@ -249,20 +255,20 @@ namespace KSociety.Base.EventBus
                     break;
 
                 case SubscriptionManagerType.Rpc:
-                    _handlers[eventName].Add(SubscriptionInfo.Rpc(handlerType));
-                    if (!string.IsNullOrEmpty(eventReplyName))
+                    this._handlers[eventName].Add(SubscriptionInfo.Rpc(handlerType));
+                    if (!String.IsNullOrEmpty(eventReplyName))
                     {
-                        _replyHandlers[eventReplyName].Add(SubscriptionInfo.Rpc(handlerType));
+                        this._replyHandlers[eventReplyName].Add(SubscriptionInfo.Rpc(handlerType));
                     }
 
                     break;
                 case SubscriptionManagerType.RpcClient:
                     break;
                 case SubscriptionManagerType.RpcServer:
-                    _handlers[eventName].Add(SubscriptionInfo.RpcServer(handlerType));
-                    if (!string.IsNullOrEmpty(eventReplyName))
+                    this._handlers[eventName].Add(SubscriptionInfo.RpcServer(handlerType));
+                    if (!String.IsNullOrEmpty(eventReplyName))
                     {
-                        _replyHandlers[eventReplyName].Add(SubscriptionInfo.RpcServer(handlerType));
+                        this._replyHandlers[eventReplyName].Add(SubscriptionInfo.RpcServer(handlerType));
                     }
 
                     break;
@@ -280,8 +286,8 @@ namespace KSociety.Base.EventBus
         public void RemoveDynamicSubscription<TH>(string routingKey)
             where TH : IDynamicIntegrationEventHandler
         {
-            var handlerToRemove = FindDynamicSubscriptionToRemove<TH>(routingKey);
-            DoRemoveHandler(routingKey, handlerToRemove);
+            var handlerToRemove = this.FindDynamicSubscriptionToRemove<TH>(routingKey);
+            this.DoRemoveHandler(routingKey, handlerToRemove);
         }
 
         ///<inheritdoc/>
@@ -289,9 +295,9 @@ namespace KSociety.Base.EventBus
             where TH : IIntegrationEventHandler<T>
             where T : IIntegrationEvent
         {
-            var handlerToRemove = FindSubscriptionToRemove<T, TH>();
-            var eventName = GetEventKey<T>();
-            DoRemoveHandler(eventName, handlerToRemove);
+            var handlerToRemove = this.FindSubscriptionToRemove<T, TH>();
+            var eventName = this.GetEventKey<T>();
+            this.DoRemoveHandler(eventName, handlerToRemove);
         }
 
         ///<inheritdoc/>
@@ -299,10 +305,10 @@ namespace KSociety.Base.EventBus
             where TH : IIntegrationEventHandler<T>
             where T : IIntegrationEvent
         {
-            var eventName = GetEventKey<T>();
-            var handlerToRemove = FindSubscriptionToRemove<T, TH>(eventName + "." + routingKey);
+            var eventName = this.GetEventKey<T>();
+            var handlerToRemove = this.FindSubscriptionToRemove<T, TH>(eventName + "." + routingKey);
 
-            DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
+            this.DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
         }
 
         ///<inheritdoc/>
@@ -310,9 +316,9 @@ namespace KSociety.Base.EventBus
             where TH : IIntegrationQueueHandler<T>
             where T : IIntegrationEvent
         {
-            var eventName = GetEventKey<T>();
-            var handlerToRemove = FindSubscriptionQueueToRemove<T, TH>(eventName + "." + routingKey);
-            DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
+            var eventName = this.GetEventKey<T>();
+            var handlerToRemove = this.FindSubscriptionQueueToRemove<T, TH>(eventName + "." + routingKey);
+            this.DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
         }
 
         ///<inheritdoc/>
@@ -321,12 +327,12 @@ namespace KSociety.Base.EventBus
             where T : IIntegrationEvent
             where TR : IIntegrationEventReply
         {
-            var eventName = GetEventKey<T>();
-            var eventNameResult = GetEventReplyKey<TR>();
-            var handlerToRemove = FindSubscriptionRpcToRemove<T, TR, TH>(eventName + "." + routingKey);
-            var handlerToRemoveReply = FindSubscriptionRpcToRemoveReply<T, TR, TH>(eventNameResult + "." + routingKey);
-            DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
-            DoRemoveHandlerReply(eventNameResult + "." + routingKey, handlerToRemoveReply);
+            var eventName = this.GetEventKey<T>();
+            var eventNameResult = this.GetEventReplyKey<TR>();
+            var handlerToRemove = this.FindSubscriptionRpcToRemove<T, TR, TH>(eventName + "." + routingKey);
+            var handlerToRemoveReply = this.FindSubscriptionRpcToRemoveReply<T, TR, TH>(eventNameResult + "." + routingKey);
+            this.DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
+            this.DoRemoveHandlerReply(eventNameResult + "." + routingKey, handlerToRemoveReply);
         }
 
         ///<inheritdoc/>
@@ -334,10 +340,9 @@ namespace KSociety.Base.EventBus
             where TH : IIntegrationRpcClientHandler<TR>
             where TR : IIntegrationEventReply
         {
-            var eventNameResult = GetEventReplyKey<TR>();
-            var handlerToRemoveReply =
-                FindSubscriptionRpcClientToRemoveReply<TR, TH>(eventNameResult + "." + routingKey);
-            DoRemoveHandlerReply(eventNameResult + "." + routingKey, handlerToRemoveReply);
+            var eventNameResult = this.GetEventReplyKey<TR>();
+            var handlerToRemoveReply = this.FindSubscriptionRpcClientToRemoveReply<TR, TH>(eventNameResult + "." + routingKey);
+            this.DoRemoveHandlerReply(eventNameResult + "." + routingKey, handlerToRemoveReply);
         }
 
         ///<inheritdoc/>
@@ -346,26 +351,26 @@ namespace KSociety.Base.EventBus
             where T : IIntegrationEventRpc
             where TR : IIntegrationEventReply
         {
-            var eventName = GetEventKey<T>();
-            var handlerToRemove = FindSubscriptionRpcServerToRemove<T, TR, TH>(eventName + "." + routingKey);
-            DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
+            var eventName = this.GetEventKey<T>();
+            var handlerToRemove = this.FindSubscriptionRpcServerToRemove<T, TR, TH>(eventName + "." + routingKey);
+            this.DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
         }
 
         private void DoRemoveHandler(string eventName, SubscriptionInfo subsToRemove)
         {
             if (subsToRemove != null)
             {
-                _handlers[eventName].Remove(subsToRemove);
-                if (!_handlers[eventName].Any())
+                this._handlers[eventName].Remove(subsToRemove);
+                if (!this._handlers[eventName].Any())
                 {
-                    _handlers.Remove(eventName);
+                    this._handlers.Remove(eventName);
 
-                    if (_eventTypes.ContainsKey(eventName))
+                    if (this._eventTypes.ContainsKey(eventName))
                     {
-                        _eventTypes.Remove(eventName);
+                        this._eventTypes.Remove(eventName);
                     }
 
-                    RaiseOnEventRemoved(eventName);
+                    this.RaiseOnEventRemoved(eventName);
                 }
             }
         }
@@ -374,17 +379,17 @@ namespace KSociety.Base.EventBus
         {
             if (subsToRemove != null)
             {
-                _replyHandlers[eventReplyName].Remove(subsToRemove);
-                if (!_replyHandlers[eventReplyName].Any())
+                this._replyHandlers[eventReplyName].Remove(subsToRemove);
+                if (!this._replyHandlers[eventReplyName].Any())
                 {
-                    _replyHandlers.Remove(eventReplyName);
+                    this._replyHandlers.Remove(eventReplyName);
 
-                    if (_eventReplyTypes.ContainsKey(eventReplyName))
+                    if (this._eventReplyTypes.ContainsKey(eventReplyName))
                     {
-                        _eventReplyTypes.Remove(eventReplyName);
+                        this._eventReplyTypes.Remove(eventReplyName);
                     }
 
-                    RaiseOnEventReplyRemoved(eventReplyName);
+                    this.RaiseOnEventReplyRemoved(eventReplyName);
                 }
             }
         }
@@ -394,59 +399,65 @@ namespace KSociety.Base.EventBus
         ///<inheritdoc/>
         public IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : IIntegrationEvent
         {
-            var key = GetEventKey<T>();
-            return GetHandlersForEvent(key);
+            var key = this.GetEventKey<T>();
+            return this.GetHandlersForEvent(key);
         }
 
         ///<inheritdoc/>
         public IEnumerable<SubscriptionInfo> GetHandlersForEventReply<TR>() where TR : IIntegrationEventReply
         {
-            var key = GetEventReplyKey<TR>();
-            return GetHandlersForEventReply(key);
+            var key = this.GetEventReplyKey<TR>();
+            return this.GetHandlersForEventReply(key);
         }
 
         ///<inheritdoc/>
-        public IEnumerable<SubscriptionInfo> GetHandlersForEvent(string eventName) => _handlers[eventName];
+        public IEnumerable<SubscriptionInfo> GetHandlersForEvent(string eventName)
+        {
+            return this._handlers[eventName];
+        }
 
         ///<inheritdoc/>
-        public IEnumerable<SubscriptionInfo> GetHandlersForEventReply(string eventName) => _replyHandlers[eventName];
+        public IEnumerable<SubscriptionInfo> GetHandlersForEventReply(string eventName)
+        {
+            return this._replyHandlers[eventName];
+        }
 
         private void RaiseOnEventRemoved(string eventName)
         {
-            OnEventRemoved?.Invoke(this, eventName);
+            this.OnEventRemoved?.Invoke(this, eventName);
         }
 
         private void RaiseOnEventReplyRemoved(string eventName)
         {
-            OnEventReplyRemoved?.Invoke(this, eventName);
+            this.OnEventReplyRemoved?.Invoke(this, eventName);
         }
 
         private SubscriptionInfo FindDynamicSubscriptionToRemove<TH>(string eventName)
             where TH : IDynamicIntegrationEventHandler
         {
-            return DoFindSubscriptionToRemove(eventName, typeof(TH));
+            return this.DoFindSubscriptionToRemove(eventName, typeof(TH));
         }
 
         private SubscriptionInfo FindSubscriptionToRemove<T, TH>()
             where T : IIntegrationEvent
             where TH : IIntegrationEventHandler<T>
         {
-            var eventName = GetEventKey<T>();
-            return DoFindSubscriptionToRemove(eventName, typeof(TH));
+            var eventName = this.GetEventKey<T>();
+            return this.DoFindSubscriptionToRemove(eventName, typeof(TH));
         }
 
         private SubscriptionInfo FindSubscriptionToRemove<T, TH>(string routingKey)
             where T : IIntegrationEvent
             where TH : IIntegrationEventHandler<T>
         {
-            return DoFindSubscriptionToRemove(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemove(routingKey, typeof(TH));
         }
 
         private SubscriptionInfo FindSubscriptionQueueToRemove<T, TH>(string routingKey)
             where T : IIntegrationEvent
             where TH : IIntegrationQueueHandler<T>
         {
-            return DoFindSubscriptionToRemove(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemove(routingKey, typeof(TH));
         }
 
         private SubscriptionInfo FindSubscriptionRpcToRemove<T, TR, TH>(string routingKey)
@@ -454,7 +465,7 @@ namespace KSociety.Base.EventBus
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcHandler<T, TR>
         {
-            return DoFindSubscriptionToRemove(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemove(routingKey, typeof(TH));
         }
 
         private SubscriptionInfo FindSubscriptionRpcToRemoveReply<T, TR, TH>(string routingKey)
@@ -462,14 +473,14 @@ namespace KSociety.Base.EventBus
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcHandler<T, TR>
         {
-            return DoFindSubscriptionToRemoveReply(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemoveReply(routingKey, typeof(TH));
         }
 
         private SubscriptionInfo FindSubscriptionRpcClientToRemoveReply<TR, TH>(string routingKey)
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcClientHandler<TR>
         {
-            return DoFindSubscriptionToRemove(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemove(routingKey, typeof(TH));
         }
 
         private SubscriptionInfo FindSubscriptionRpcServerToRemove<T, TR, TH>(string routingKey)
@@ -477,55 +488,61 @@ namespace KSociety.Base.EventBus
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcServerHandler<T, TR>
         {
-            return DoFindSubscriptionToRemove(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemove(routingKey, typeof(TH));
         }
 
         private SubscriptionInfo DoFindSubscriptionToRemove(string eventName, Type handlerType)
         {
-            return !HasSubscriptionsForEvent(eventName)
+            return !this.HasSubscriptionsForEvent(eventName)
                 ? null
-                : _handlers[eventName].SingleOrDefault(s => s.HandlerType == handlerType);
+                : this._handlers[eventName].SingleOrDefault(s => s.HandlerType == handlerType);
         }
 
         private SubscriptionInfo DoFindSubscriptionToRemoveReply(string eventReplyName, Type handlerType)
         {
-            return !HasSubscriptionsForEventReply(eventReplyName)
+            return !this.HasSubscriptionsForEventReply(eventReplyName)
                 ? null
-                : _replyHandlers[eventReplyName].SingleOrDefault(s => s.HandlerType == handlerType);
+                : this._replyHandlers[eventReplyName].SingleOrDefault(s => s.HandlerType == handlerType);
         }
 
         ///<inheritdoc/>
         public bool HasSubscriptionsForEvent<T>() where T : IIntegrationEvent
         {
 
-            var key = GetEventKey<T>();
-            return HasSubscriptionsForEvent(key);
+            var key = this.GetEventKey<T>();
+            return this.HasSubscriptionsForEvent(key);
         }
 
         ///<inheritdoc/>
         public bool HasSubscriptionsForEventReply<TR>() where TR : IIntegrationEventReply
         {
 
-            var key = GetEventReplyKey<TR>();
-            return HasSubscriptionsForEventReply(key);
+            var key = this.GetEventReplyKey<TR>();
+            return this.HasSubscriptionsForEventReply(key);
         }
 
         ///<inheritdoc/>
-        public bool HasSubscriptionsForEvent(string eventName) => _handlers.ContainsKey(eventName);
+        public bool HasSubscriptionsForEvent(string eventName)
+        {
+            return this._handlers.ContainsKey(eventName);
+        }
 
         ///<inheritdoc/>
-        public bool HasSubscriptionsForEventReply(string eventName) => _replyHandlers.ContainsKey(eventName);
+        public bool HasSubscriptionsForEventReply(string eventName)
+        {
+            return this._replyHandlers.ContainsKey(eventName);
+        }
 
         ///<inheritdoc/>
         public Type GetEventTypeByName(string eventName)
         {
-            return _eventTypes.ContainsKey(eventName) ? _eventTypes[eventName] : null;
+            return this._eventTypes.ContainsKey(eventName) ? this._eventTypes[eventName] : null;
         }
 
         ///<inheritdoc/>
         public Type GetEventReplyTypeByName(string eventResultName)
         {
-            return _eventReplyTypes.ContainsKey(eventResultName) ? _eventReplyTypes[eventResultName] : null;
+            return this._eventReplyTypes.ContainsKey(eventResultName) ? this._eventReplyTypes[eventResultName] : null;
         }
 
         ///<inheritdoc/>

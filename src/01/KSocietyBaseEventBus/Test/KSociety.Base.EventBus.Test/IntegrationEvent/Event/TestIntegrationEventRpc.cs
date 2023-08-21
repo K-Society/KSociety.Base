@@ -1,6 +1,5 @@
-﻿using ProtoBuf;
-
 namespace KSociety.Base.EventBus.Test.IntegrationEvent.Event;
+using ProtoBuf;
 
 [ProtoContract]
 public class TestIntegrationEventRpc : BaseTestIntegrationEventRpc
@@ -21,8 +20,7 @@ public class TestIntegrationEventRpc : BaseTestIntegrationEventRpc
     )
         : base(routingKey, replyRoutingKey)
     {
-            
-        TestName = testName;
-        ByteArray = byteArray;
+        this.TestName = testName;
+        this.ByteArray = byteArray;
     }
 }

@@ -1,7 +1,7 @@
-﻿using System.Threading;
-
-namespace KSociety.Base.Srv.Agent
+﻿namespace KSociety.Base.Srv.Agent
 {
+    using System.Threading;
+
     public interface IAgentImportBase<in TImportReq, out TImportRes>
         where TImportReq : class
         where TImportRes : class

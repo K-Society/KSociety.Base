@@ -1,18 +1,18 @@
-﻿using KSociety.Base.InfraSub.Shared.Class;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Polly;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using RabbitMQ.Client.Exceptions;
-using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.EventBusRabbitMQ
 {
+    using InfraSub.Shared.Class;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Abstractions;
+    using Polly;
+    using RabbitMQ.Client;
+    using RabbitMQ.Client.Events;
+    using RabbitMQ.Client.Exceptions;
+    using System;
+    using System.IO;
+    using System.Net.Sockets;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class DefaultRabbitMqPersistentConnection
         : DisposableObject, IRabbitMqPersistentConnection
     {
@@ -28,54 +28,54 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory)
         {
-            _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
-            _closeToken = _closeTokenSource.Token;
+            this._connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
+            this._closeToken = this._closeTokenSource.Token;
         }
 
         public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMqPersistentConnection>? logger = default)
         :this(connectionFactory)
         {
             logger ??= new NullLogger<DefaultRabbitMqPersistentConnection>();
-            _logger = logger;
+            this._logger = logger;
         }
 
         public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILoggerFactory loggerFactory)
         :this(connectionFactory)
         {
-            _logger = loggerFactory.CreateLogger<DefaultRabbitMqPersistentConnection>() ??
-                      throw new ArgumentNullException(nameof(loggerFactory));
+            this._logger = loggerFactory.CreateLogger<DefaultRabbitMqPersistentConnection>() ??
+                           throw new ArgumentNullException(nameof(loggerFactory));
         }
 
         #endregion
 
-        public bool IsConnected => _connection is {IsOpen: true} && !Disposed;
+        public bool IsConnected => this._connection is {IsOpen: true} && !this.Disposed;
 
         public IModel? CreateModel()
         {
-            if (!IsConnected)
+            if (!this.IsConnected)
             {
                 throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
             }
 
-            return _connection?.CreateModel();
+            return this._connection?.CreateModel();
         }
 
         protected override void DisposeManagedResources()
         {
             try
             {
-                _connection?.Dispose();
+                this._connection?.Dispose();
             }
             catch (IOException ex)
             {
-                _logger?.LogError(ex, "DisposeManagedResources: ");
+                this._logger?.LogError(ex, "DisposeManagedResources: ");
             }
         }
 
         public async ValueTask<bool> TryConnectAsync()
         {
             bool output;
-            await _connectionLock.WaitAsync(_closeToken).ConfigureAwait(false);
+            await this._connectionLock.WaitAsync(this._closeToken).ConfigureAwait(false);
 
             try
             {
@@ -85,7 +85,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                         (ex, time) =>
                         {
-                            _logger?.LogWarning(ex, "TryConnectAsync: ");
+                            this._logger?.LogWarning(ex, "TryConnectAsync: ");
                         });
 
 
@@ -93,34 +93,34 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     await Task.Run(() =>
                     {
-                        _logger?.LogInformation("RabbitMQ CreateConnection.");
+                        this._logger?.LogInformation("RabbitMQ CreateConnection.");
                         //_logger.LogTrace("RabbitMQ CreateConnection StackTrace: {0}", System.Environment.StackTrace);
-                        _connection = _connectionFactory
+                        this._connection = this._connectionFactory
                             .CreateConnection(); //ToDo
-                    }, _closeToken);
+                    }, this._closeToken);
 
                 });
 
-                if (IsConnected)
+                if (this.IsConnected)
                 {
-                    _connection.ConnectionShutdown += OnConnectionShutdownAsync;
-                    _connection.CallbackException += OnCallbackExceptionAsync;
-                    _connection.ConnectionBlocked += OnConnectionBlockedAsync;
+                    this._connection.ConnectionShutdown += this.OnConnectionShutdownAsync;
+                    this._connection.CallbackException += this.OnCallbackExceptionAsync;
+                    this._connection.ConnectionBlocked += this.OnConnectionBlockedAsync;
 
-                    _logger?.LogInformation(
-                        $"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
+                    this._logger?.LogInformation(
+                        $"RabbitMQ persistent connection acquired a connection {this._connection.Endpoint.HostName} and is subscribed to failure events");
                     output = true;
                 }
                 else
                 {
-                    _logger?.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
+                    this._logger?.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
 
                     output = false;
                 }
             }
             finally
             {
-                _connectionLock.Release();
+                this._connectionLock.Release();
             }
 
             return output;
@@ -128,26 +128,35 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async void OnConnectionBlockedAsync(object sender, ConnectionBlockedEventArgs e)
         {
-            if (Disposed) return;
+            if (this.Disposed)
+            {
+                return;
+            }
 
-            _logger?.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
-            await TryConnectAsync().ConfigureAwait(false);
+            this._logger?.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
+            await this.TryConnectAsync().ConfigureAwait(false);
         }
 
         private async void OnCallbackExceptionAsync(object sender, CallbackExceptionEventArgs e)
         {
-            if (Disposed) return;
+            if (this.Disposed)
+            {
+                return;
+            }
 
-            _logger?.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
-            await TryConnectAsync().ConfigureAwait(false);
+            this._logger?.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
+            await this.TryConnectAsync().ConfigureAwait(false);
         }
 
         private async void OnConnectionShutdownAsync(object sender, ShutdownEventArgs reason)
         {
-            if (Disposed) return;
+            if (this.Disposed)
+            {
+                return;
+            }
 
-            _logger?.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
-            await TryConnectAsync().ConfigureAwait(false);
+            this._logger?.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
+            await this.TryConnectAsync().ConfigureAwait(false);
         }
     }
 }

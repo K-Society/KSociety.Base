@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using ProtoBuf;
-
 namespace KSociety.Base.Srv.Dto
 {
+    using System.Collections.Generic;
+    using ProtoBuf;
+
     [ProtoContract]
     public class ListKeyValuePair<TKey, TValue>
     {
@@ -19,7 +19,7 @@ namespace KSociety.Base.Srv.Dto
 
         public ListKeyValuePair(List<KeyValuePair<TKey, TValue>> keyValuePairs)
         {
-            List = keyValuePairs;
+            this.List = keyValuePairs;
         }
     }
 }

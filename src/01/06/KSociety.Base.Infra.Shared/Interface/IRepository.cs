@@ -1,8 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.Infra.Shared.Interface
+﻿namespace KSociety.Base.Infra.Shared.Interface
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+
     ///<inheritdoc cref="IRepositoryBase{TEntity}"/>
     public interface IRepository<TEntity> : IRepositoryBase<TEntity> where TEntity : class
     {

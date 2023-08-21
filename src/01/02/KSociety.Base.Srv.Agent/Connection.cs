@@ -1,13 +1,13 @@
-﻿using Grpc.Core;
-using Grpc.Net.Client;
-using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc;
-using ProtoBuf.Grpc.Client;
-using System;
-using System.Threading;
-
 namespace KSociety.Base.Srv.Agent
 {
+    using Grpc.Core;
+    using Grpc.Net.Client;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf.Grpc;
+    using ProtoBuf.Grpc.Client;
+    using System;
+    using System.Threading;
+
     public class Connection
     {
         protected readonly ILogger<Connection>? Logger;
@@ -26,7 +26,7 @@ namespace KSociety.Base.Srv.Agent
                     //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                     //};
                     //var httpClient = new HttpClient(httpClientHandler);
-                    return GrpcChannel.ForAddress(_agentConfiguration.ConnectionUrl, new GrpcChannelOptions
+                    return GrpcChannel.ForAddress(this._agentConfiguration.ConnectionUrl, new GrpcChannelOptions
                     {
                         MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB
                         MaxSendMessageSize = null // 2 * 1024 * 1024 // 2 MB
@@ -35,11 +35,11 @@ namespace KSociety.Base.Srv.Agent
                 }
                 catch (RpcException rex)
                 {
-                    Logger?.LogError(rex, "Channel null! ");
+                    this.Logger?.LogError(rex, "Channel null! ");
                 }
                 catch (Exception ex)
                 {
-                    Logger?.LogError(ex, "Channel null! ");
+                    this.Logger?.LogError(ex, "Channel null! ");
                 }
 
                 return null;
@@ -52,24 +52,24 @@ namespace KSociety.Base.Srv.Agent
 
         private Connection(IAgentConfiguration agentConfiguration)
         {
-            _agentConfiguration = agentConfiguration;
+            this._agentConfiguration = agentConfiguration;
 
-            DebugFlag = agentConfiguration.DebugFlag;
+            this.DebugFlag = agentConfiguration.DebugFlag;
 
-            if (DebugFlag)
+            if (this.DebugFlag)
             {
-                Logger?.LogTrace(@"Grpc Agent Connection for: {0}", _agentConfiguration.ConnectionUrl);
+                this.Logger?.LogTrace(@"Grpc Agent Connection for: {0}", this._agentConfiguration.ConnectionUrl);
             }
         }
 
         protected Connection(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory) : this(agentConfiguration)
         {
-            Logger = loggerFactory.CreateLogger<Connection>();
+            this.Logger = loggerFactory.CreateLogger<Connection>();
         }
 
         protected Connection(IAgentConfiguration agentConfiguration, ILogger<Connection> logger) : this(agentConfiguration)
         {
-            Logger = logger; 
+            this.Logger = logger; 
         }
 
         /// <summary>

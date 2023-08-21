@@ -1,8 +1,8 @@
-﻿using KSociety.Base.InfraSub.Shared.Interface;
-using System.Threading;
-
 namespace KSociety.Base.Srv.Agent.List
 {
+    using InfraSub.Shared.Interface;
+    using System.Threading;
+
     public interface IAgentQueryModelBase<T, out TList>
         where T : IObject
         where TList : IList<T>

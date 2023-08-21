@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using Autofac;
-using KSociety.Base.App.Shared;
-using KSociety.Base.Srv.Shared.Class;
-using KSociety.Base.Srv.Shared.Interface;
-
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    using System.Linq;
+    using Autofac;
+    using KSociety.Base.App.Shared;
+    using KSociety.Base.Srv.Shared.Class;
+    using KSociety.Base.Srv.Shared.Interface;
+
     /// <summary>
     /// The Command Handler module for Autofac.
     /// </summary>
@@ -15,7 +15,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
 
         public CommandHdlr(string[] assemblies)
         {
-            _assemblies = assemblies;
+            this._assemblies = assemblies;
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -23,7 +23,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
             builder.RegisterType<CommandHandler>().As<ICommandHandler>();
             builder.RegisterType<CommandHandlerAsync>().As<ICommandHandlerAsync>();
 
-            var assemblies = _assemblies.Select(System.Reflection.Assembly.LoadFrom).ToArray();
+            var assemblies = this._assemblies.Select(System.Reflection.Assembly.LoadFrom).ToArray();
 
             builder.RegisterAssemblyTypes(assemblies)
                 .Where(t => t.Name.EndsWith("ReqHdlr"))

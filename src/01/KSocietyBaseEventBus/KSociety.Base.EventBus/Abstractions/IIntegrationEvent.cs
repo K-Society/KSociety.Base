@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace KSociety.Base.EventBus.Abstractions
+﻿namespace KSociety.Base.EventBus.Abstractions
 {
+    using System;
+
     /// <include file='..\Doc\IntegrationEvent.xml' path='docs/members[@name="IntegrationEvent"]/IntegrationEvent/*'/>
     public interface IIntegrationEvent
     {

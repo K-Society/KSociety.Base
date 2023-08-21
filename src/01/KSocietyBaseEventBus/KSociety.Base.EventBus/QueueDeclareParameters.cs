@@ -1,4 +1,4 @@
-﻿namespace KSociety.Base.EventBus
+namespace KSociety.Base.EventBus
 {
     ///<inheritdoc/>
     public class QueueDeclareParameters : IQueueDeclareParameters
@@ -14,16 +14,16 @@
 
         public QueueDeclareParameters()
         {
-            QueueDurable = true;
-            QueueExclusive = false;
-            QueueAutoDelete = false;
+            this.QueueDurable = true;
+            this.QueueExclusive = false;
+            this.QueueAutoDelete = false;
         }
 
         public QueueDeclareParameters(bool queueDurable, bool queueExclusive, bool queueAutoDelete)
         {
-            QueueDurable = queueDurable;
-            QueueExclusive = queueExclusive;
-            QueueAutoDelete = queueAutoDelete;
+            this.QueueDurable = queueDurable;
+            this.QueueExclusive = queueExclusive;
+            this.QueueAutoDelete = queueAutoDelete;
         }
     }
 }

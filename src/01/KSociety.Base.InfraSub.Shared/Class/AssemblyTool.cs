@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-
-namespace KSociety.Base.InfraSub.Shared.Class
+﻿namespace KSociety.Base.InfraSub.Shared.Class
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+
     /// <summary>
     /// The AssemblyTool static class.
     /// </summary>

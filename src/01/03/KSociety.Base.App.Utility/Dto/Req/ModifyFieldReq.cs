@@ -1,10 +1,10 @@
-﻿using KSociety.Base.App.Shared;
-using KSociety.Base.InfraSub.Shared.Interface;
-using ProtoBuf;
-using System;
-
 namespace KSociety.Base.App.Utility.Dto.Req
 {
+    using Shared;
+    using KSociety.Base.InfraSub.Shared.Interface;
+    using ProtoBuf;
+    using System;
+
     [ProtoContract]
     public class ModifyFieldReq : IRequest, IModifyField
     {
@@ -23,9 +23,9 @@ namespace KSociety.Base.App.Utility.Dto.Req
             string value
         )
         {
-            Id = id;
-            FieldName = fieldName;
-            Value = value;
+            this.Id = id;
+            this.FieldName = fieldName;
+            this.Value = value;
         }
     }
 }

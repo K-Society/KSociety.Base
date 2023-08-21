@@ -1,13 +1,13 @@
-﻿using Autofac;
-using KSociety.Base.App.Shared;
-using KSociety.Base.Srv.Contract;
-using KSociety.Base.Srv.Shared.Interface;
-using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.Srv.Behavior
 {
+    using Autofac;
+    using KSociety.Base.App.Shared;
+    using Contract;
+    using Shared.Interface;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf.Grpc;
+    using System.Threading.Tasks;
+
     public class CommandImportExportAsync<
         TAddReq, TAddRes,
         TUpdateReq, TUpdateRes,
@@ -21,7 +21,7 @@ namespace KSociety.Base.Srv.Behavior
             TCopyReq, TCopyRes,
             TModifyFieldReq, TModifyFieldRes,
             TRemoveReq, TRemoveRes>,
-        KSociety.Base.Srv.Contract.ICommandImportExportAsync<
+        ICommandImportExportAsync<
             TAddReq, TAddRes,
             TUpdateReq, TUpdateRes,
             TCopyReq, TCopyRes,
@@ -53,20 +53,20 @@ namespace KSociety.Base.Srv.Behavior
             ICommandHandlerAsync commandHandlerAsync
         ) : base(loggerFactory, componentContext, commandHandlerAsync)
         {
-            _importAsync =
+            this._importAsync =
                 new ImportAsync<TImportReq, TImportRes>(loggerFactory, componentContext, commandHandlerAsync);
-            _exportAsync =
+            this._exportAsync =
                 new ExportAsync<TExportReq, TExportRes>(loggerFactory, componentContext, commandHandlerAsync);
         }
 
         public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq importReq, CallContext context = default)
         {
-            return await _importAsync.ImportDataAsync(importReq, context).ConfigureAwait(false);
+            return await this._importAsync.ImportDataAsync(importReq, context).ConfigureAwait(false);
         }
 
         public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq exportReq, CallContext context = default)
         {
-            return await _exportAsync.ExportDataAsync(exportReq, context).ConfigureAwait(false);
+            return await this._exportAsync.ExportDataAsync(exportReq, context).ConfigureAwait(false);
         }
     }
 }

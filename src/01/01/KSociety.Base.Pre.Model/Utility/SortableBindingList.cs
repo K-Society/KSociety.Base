@@ -1,10 +1,10 @@
-﻿using KSociety.Base.InfraSub.Shared.Interface;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-
 namespace KSociety.Base.Pre.Model.Utility
 {
+    using InfraSub.Shared.Interface;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+
     /// <inheritdoc />
     /// <summary>
     /// Provides a generic collection that supports data binding and additionally supports sorting.
@@ -47,19 +47,19 @@ namespace KSociety.Base.Pre.Model.Utility
         /// <summary>
         /// Gets a value indicating whether the list is sorted.
         /// </summary>
-        protected override bool IsSortedCore => _isSorted;
+        protected override bool IsSortedCore => this._isSorted;
 
         /// <inheritdoc />
         /// <summary>
         /// Gets the direction the list is sorted.
         /// </summary>
-        protected override ListSortDirection SortDirectionCore => _sortDirection;
+        protected override ListSortDirection SortDirectionCore => this._sortDirection;
 
         /// <inheritdoc />
         /// <summary>
         /// Gets the property descriptor that is used for sorting the list if sorting is implemented in a derived class; otherwise, returns null
         /// </summary>
-        protected override PropertyDescriptor SortPropertyCore => _sortProperty;
+        protected override PropertyDescriptor SortPropertyCore => this._sortProperty;
 
         /// <inheritdoc />
         /// <summary>
@@ -67,9 +67,9 @@ namespace KSociety.Base.Pre.Model.Utility
         /// </summary>
         protected override void RemoveSortCore()
         {
-            _sortDirection = ListSortDirection.Ascending;
-            _sortProperty = null;
-            _isSorted = false;
+            this._sortDirection = ListSortDirection.Ascending;
+            this._sortProperty = null;
+            this._isSorted = false;
         }
 
         /// <inheritdoc />
@@ -80,34 +80,37 @@ namespace KSociety.Base.Pre.Model.Utility
         /// <param name="direction"></param>
         protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
         {
-            _sortProperty = prop;
-            _sortDirection = direction;
+            this._sortProperty = prop;
+            this._sortDirection = direction;
 
             //if (Items is not List<T> list) return;
-            if (Items is List<T> list)
+            if (this.Items is List<T> list)
             {
-                list.Sort(Compare);
+                list.Sort(this.Compare);
 
-                _isSorted = true;
+                this._isSorted = true;
                 //fire an event that the list has been changed.
-                OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
+                this.OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
             }
         }
 
 
         private int Compare(T lhs, T rhs)
         {
-            var result = OnComparison(lhs, rhs);
+            var result = this.OnComparison(lhs, rhs);
             //invert if descending
-            if (_sortDirection == ListSortDirection.Descending)
+            if (this._sortDirection == ListSortDirection.Descending)
+            {
                 result = -result;
+            }
+
             return result;
         }
 
         private int OnComparison(T lhs, T rhs)
         {
-            object lhsValue = lhs == null ? null : _sortProperty.GetValue(lhs);
-            object rhsValue = rhs == null ? null : _sortProperty.GetValue(rhs);
+            object lhsValue = lhs == null ? null : this._sortProperty.GetValue(lhs);
+            object rhsValue = rhs == null ? null : this._sortProperty.GetValue(rhs);
             if (lhsValue == null)
             {
                 return (rhsValue == null) ? 0 : -1; //nulls are equal
@@ -125,7 +128,7 @@ namespace KSociety.Base.Pre.Model.Utility
 
             return lhsValue.Equals(rhsValue)
                 ? 0
-                : string.Compare(lhsValue.ToString(), rhsValue.ToString(), StringComparison.Ordinal);
+                : String.Compare(lhsValue.ToString(), rhsValue.ToString(), StringComparison.Ordinal);
             //not comparable, compare ToString
         }
     }

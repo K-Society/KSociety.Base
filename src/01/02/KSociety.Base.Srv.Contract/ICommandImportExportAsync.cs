@@ -1,7 +1,7 @@
-﻿using ProtoBuf.Grpc.Configuration;
-
-namespace KSociety.Base.Srv.Contract
+﻿namespace KSociety.Base.Srv.Contract
 {
+    using ProtoBuf.Grpc.Configuration;
+
     [Service]
     public interface ICommandImportExportAsync<
         in TAddReq, TAddRes,

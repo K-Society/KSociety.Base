@@ -1,32 +1,36 @@
-﻿using System;
-
 namespace KSociety.Base.InfraSub.Shared.Class
 {
+    using System;
+
     public abstract class DisposableObject : IDisposable
     {
         protected bool Disposed { get; private set; }
 
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         ~DisposableObject()
         {
-            Dispose(false);
+            this.Dispose(false);
         }
 
         private void Dispose(bool disposing)
         {
-            if (Disposed) return;
-            if (disposing)
+            if (this.Disposed)
             {
-                DisposeManagedResources();
+                return;
             }
 
-            DisposeUnmanagedResources();
-            Disposed = true;
+            if (disposing)
+            {
+                this.DisposeManagedResources();
+            }
+
+            this.DisposeUnmanagedResources();
+            this.Disposed = true;
         }
 
         /// <summary>

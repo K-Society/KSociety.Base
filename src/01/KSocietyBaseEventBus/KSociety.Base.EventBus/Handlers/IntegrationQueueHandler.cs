@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
-using Autofac;
-using KSociety.Base.EventBus.Abstractions;
-using KSociety.Base.EventBus.Abstractions.Handler;
-using Microsoft.Extensions.Logging;
-
 namespace KSociety.Base.EventBus.Handlers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Threading.Tasks.Dataflow;
+    using Autofac;
+    using Abstractions;
+    using Abstractions.Handler;
+    using Microsoft.Extensions.Logging;
+
     ///<inheritdoc cref="IIntegrationQueueHandler{TIntegrationEvent}"/>
     public class IntegrationQueueHandler<TIntegrationEvent> : IntegrationGeneralHandler,
         IIntegrationQueueHandler<TIntegrationEvent>
@@ -20,29 +20,29 @@ namespace KSociety.Base.EventBus.Handlers
 
         public BufferBlock<TIntegrationEvent> Queue { get; }
 
-        public bool IsEmpty => Queue.Count == 0;
+        public bool IsEmpty => this.Queue.Count == 0;
 
         #region [Constructors]
 
         public IntegrationQueueHandler(ILoggerFactory? loggerFactory = default)
             : base(loggerFactory)
         {
-            Logger = LoggerFactory?.CreateLogger<IIntegrationQueueHandler<TIntegrationEvent>>();
-            Queue = new BufferBlock<TIntegrationEvent>();
+            this.Logger = this.LoggerFactory?.CreateLogger<IIntegrationQueueHandler<TIntegrationEvent>>();
+            this.Queue = new BufferBlock<TIntegrationEvent>();
         }
 
         public IntegrationQueueHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default)
             : base(loggerFactory, componentContext)
         {
-            Logger = LoggerFactory?.CreateLogger<IIntegrationQueueHandler<TIntegrationEvent>>();
-            Queue = new BufferBlock<TIntegrationEvent>();
+            this.Logger = this.LoggerFactory?.CreateLogger<IIntegrationQueueHandler<TIntegrationEvent>>();
+            this.Queue = new BufferBlock<TIntegrationEvent>();
         }
 
         public IntegrationQueueHandler(ILogger<IIntegrationQueueHandler<TIntegrationEvent>>? logger = default, IComponentContext? componentContext = default)
             : base(componentContext)
         {
-            Logger = logger;
-            Queue = new BufferBlock<TIntegrationEvent>();
+            this.Logger = logger;
+            this.Queue = new BufferBlock<TIntegrationEvent>();
         }
 
         #endregion
@@ -50,7 +50,7 @@ namespace KSociety.Base.EventBus.Handlers
         public virtual async ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent,
             CancellationToken cancel = default)
         {
-            return await Queue.SendAsync(@integrationEvent, cancel).ConfigureAwait(false);
+            return await this.Queue.SendAsync(@integrationEvent, cancel).ConfigureAwait(false);
         }
 
 
@@ -62,11 +62,11 @@ namespace KSociety.Base.EventBus.Handlers
                 var result = default(TIntegrationEvent);
                 try
                 {
-                    result = await Queue.ReceiveAsync(cancel).ConfigureAwait(false);
+                    result = await this.Queue.ReceiveAsync(cancel).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    Logger?.LogError(ex, "Dequeue: ");
+                    this.Logger?.LogError(ex, "Dequeue: ");
                 }
 
                 if (result != null)

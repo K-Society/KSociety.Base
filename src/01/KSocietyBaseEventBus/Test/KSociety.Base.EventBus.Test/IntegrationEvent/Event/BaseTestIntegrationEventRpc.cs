@@ -1,9 +1,8 @@
-﻿using ProtoBuf;
-
 namespace KSociety.Base.EventBus.Test.IntegrationEvent.Event;
+using ProtoBuf;
 
 [ProtoContract]
-public class BaseTestIntegrationEventRpc : KSociety.Base.EventBus.Events.IntegrationEventRpc
+public class BaseTestIntegrationEventRpc : Events.IntegrationEventRpc
 {
     public BaseTestIntegrationEventRpc()
     {

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace KSociety.Base.InfraSub.Shared.Interface
+﻿namespace KSociety.Base.InfraSub.Shared.Interface
 {
+    using System.Collections.Generic;
+
     public interface IList<T> where T : IObject
     {
         List<T> List { get; set; }

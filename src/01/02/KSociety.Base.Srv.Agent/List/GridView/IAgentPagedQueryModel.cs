@@ -1,10 +1,10 @@
-﻿using KSociety.Base.InfraSub.Shared.Interface;
-using KSociety.Base.Srv.Dto;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.Srv.Agent.List.GridView
 {
+    using InfraSub.Shared.Interface;
+    using Dto;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public interface IAgentPagedQueryModel<T, TList>
         where T : IObject
         where TList : IList<T>

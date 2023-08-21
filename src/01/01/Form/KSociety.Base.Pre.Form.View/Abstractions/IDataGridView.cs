@@ -1,9 +1,9 @@
-﻿using System;
-using KSociety.Base.InfraSub.Shared.Interface;
-using System.Windows.Forms;
-
 namespace KSociety.Base.Pre.Form.View.Abstractions
 {
+    using System;
+    using InfraSub.Shared.Interface;
+    using System.Windows.Forms;
+
     public interface IDataGridView<T> : IDataGridViewBase where T : IObject
     {
         event EventHandler<T> Remove;

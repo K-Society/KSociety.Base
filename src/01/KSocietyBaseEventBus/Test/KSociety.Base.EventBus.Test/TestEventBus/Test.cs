@@ -1,12 +1,11 @@
-﻿using System;
+namespace KSociety.Base.EventBus.Test.TestEventBus;
+using System;
 using Autofac;
 using KSociety.Base.EventBus.Abstractions.EventBus;
-using KSociety.Base.EventBus.Test.ProtoModel;
-using KSociety.Base.EventBusRabbitMQ;
+using ProtoModel;
+using EventBusRabbitMQ;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-
-namespace KSociety.Base.EventBus.Test.TestEventBus;
 
 public class Test
 {
@@ -25,13 +24,13 @@ public class Test
     public Test()
     {
         Configuration.ProtoBufConfiguration();
-        LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
+        this.LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
         {
             builder.AddConsole();
             builder.SetMinimumLevel(LogLevel.Trace);
         });
 
-        ConnectionFactory = new ConnectionFactory
+        this.ConnectionFactory = new ConnectionFactory
         {
             HostName = "localhost",
             UserName = "KSociety",
@@ -42,16 +41,16 @@ public class Test
             DispatchConsumersAsync = true
         };
 
-        _exchangeDeclareParameters = new ExchangeDeclareParameters("k-society_test", KSociety.Base.EventBus.ExchangeType.Direct, false, ExchangeAutoDelete);
-        _queueDeclareParameters = new QueueDeclareParameters(false, false, QueueAutoDelete);
+        this._exchangeDeclareParameters = new ExchangeDeclareParameters("k-society_test", KSociety.Base.EventBus.ExchangeType.Direct, false, ExchangeAutoDelete);
+        this._queueDeclareParameters = new QueueDeclareParameters(false, false, QueueAutoDelete);
 
-        EventBusParameters = new EventBusParameters(_exchangeDeclareParameters, _queueDeclareParameters, true);
-        PersistentConnection = new DefaultRabbitMqPersistentConnection(ConnectionFactory, LoggerFactory);
+        this.EventBusParameters = new EventBusParameters(this._exchangeDeclareParameters, this._queueDeclareParameters, true);
+        this.PersistentConnection = new DefaultRabbitMqPersistentConnection(this.ConnectionFactory, this.LoggerFactory);
 
         var builder = new ContainerBuilder();
         builder.RegisterModule(new Bindings.Test.Test());
         var container = builder.Build();
 
-        ComponentContext = container.BeginLifetimeScope();
+        this.ComponentContext = container.BeginLifetimeScope();
     }
 }

@@ -1,16 +1,15 @@
-﻿using KSociety.Base.Infra.Abstraction.Interface;
-using KSociety.Base.Infra.Shared.Interface.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-
-namespace KSociety.Base.Infra.Shared.Class.Identity
+namespace KSociety.Base.Infra.Shared.Identity.Class
 {
+    using System;
+    using KSociety.Base.Infra.Abstraction.Interface;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using Shared.Class;
+
     public class DatabaseFactory<TLoggerFactory, TConfiguration, TContext, TUser, TRole, TKey, TUserClaim, TUserRole,
             TUserLogin, TRoleClaim, TUserToken>
-        : DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>,
-            IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+        : DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>, Interface.IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TLoggerFactory : ILoggerFactory
         where TConfiguration : IDatabaseConfiguration
         where TContext : IdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
@@ -35,18 +34,26 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public IUserStore<TUser> GetUserStore()
         {
-            if (_userStore != null) return _userStore;
-            _userStore = CreateUserStore();
+            if (this._userStore != null)
+            {
+                return this._userStore;
+            }
 
-            return _userStore;
+            this._userStore = this.CreateUserStore();
+
+            return this._userStore;
         }
 
         public IRoleStore<TRole> GetRoleStore()
         {
-            if (_roleStore != null) return _roleStore;
-            _roleStore = CreateRoleStore();
+            if (this._roleStore != null)
+            {
+                return this._roleStore;
+            }
 
-            return _roleStore;
+            this._roleStore = this.CreateRoleStore();
+
+            return this._roleStore;
         }
 
         private IUserStore<TUser> CreateUserStore()
@@ -58,11 +65,11 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
                     (UserStore<TUser, TRole, TContext, TKey, TUserClaim, TUserRole, TUserLogin, TUserToken, TRoleClaim>)
                     Activator.CreateInstance(
                         typeof(UserStore<TUser, TRole, TContext, TKey, TUserClaim, TUserRole, TUserLogin, TUserToken,
-                            TRoleClaim>), Get(), null);
+                            TRoleClaim>), this.Get(), null);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "CreateUserStore: ");
+                this.Logger.LogError(ex, "CreateUserStore: ");
             }
 
             return output;
@@ -74,11 +81,11 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             try
             {
                 output = (RoleStore<TRole, TContext, TKey, TUserRole, TRoleClaim>)Activator.CreateInstance(
-                    typeof(RoleStore<TRole, TContext, TKey, TUserRole, TRoleClaim>), Get(), null);
+                    typeof(RoleStore<TRole, TContext, TKey, TUserRole, TRoleClaim>), this.Get(), null);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "CreateRoleStore: ");
+                this.Logger.LogError(ex, "CreateRoleStore: ");
             }
 
             return output;

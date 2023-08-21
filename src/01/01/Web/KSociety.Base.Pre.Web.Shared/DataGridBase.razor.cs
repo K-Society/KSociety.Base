@@ -1,16 +1,16 @@
-﻿using Blazorise.DataGrid;
-using KSociety.Base.InfraSub.Shared.Interface;
-using KSociety.Base.Srv.Agent.List.GridView;
-using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.Pre.Web.Shared
 {
+    using Blazorise.DataGrid;
+    using KSociety.Base.InfraSub.Shared.Interface;
+    using Srv.Agent.List.GridView;
+    using Microsoft.AspNetCore.Components;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+
     public partial class DataGridBase<T, TList, TGridView>
         where T : IObject
         where TList : InfraSub.Shared.Interface.IList<T>
@@ -37,9 +37,9 @@ namespace KSociety.Base.Pre.Web.Shared
         protected override void OnInitialized()
         {
             //_queryListGridView = await QueryListGridView.LoadAllRecordsAsync();
-            CreateSelectColumns();
-            CreateColumns();
-            DataItems = QueryListGridView.LoadAllRecords().List;
+            this.CreateSelectColumns();
+            this.CreateColumns();
+            this.DataItems = this.QueryListGridView.LoadAllRecords().List;
 
         }
 
@@ -75,20 +75,26 @@ namespace KSociety.Base.Pre.Web.Shared
         {
             foreach (var propertyInfo in typeof(TList).GetProperties())
             {
-                if (propertyInfo.Name.Equals("List")) continue;
+                if (propertyInfo.Name.Equals("List"))
+                {
+                    continue;
+                }
 
-                SelectColumns.Add(propertyInfo.Name, propertyInfo.Name);
+                this.SelectColumns.Add(propertyInfo.Name, propertyInfo.Name);
             }
         }
 
         protected void CreateColumns()
         {
-            Columns ??= new List<ColumnDefinition>();
+            this.Columns ??= new List<ColumnDefinition>();
             try
             {
                 foreach (var propertyInfo in typeof(T).GetProperties())
                 {
-                    if (!IsBrowsable(propertyInfo)) continue;
+                    if (!IsBrowsable(propertyInfo))
+                    {
+                        continue;
+                    }
 
                     //DataGridViewColumn dataGridViewColumn;
                     ColumnDefinition dataGridViewColumn = new ColumnDefinition();
@@ -106,7 +112,7 @@ namespace KSociety.Base.Pre.Web.Shared
                     //else
                     //{
 
-                    if (SelectColumns.ContainsKey(propertyInfo.Name))
+                    if (this.SelectColumns.ContainsKey(propertyInfo.Name))
                     {
                         dataGridViewColumn.ColumnType = DataGridColumnType.Text;
                         dataGridViewColumn.ColumnType = DataGridColumnType.Select;
@@ -156,13 +162,12 @@ namespace KSociety.Base.Pre.Web.Shared
                     //dataGridViewColumn.DataPropertyName = propertyInfo.Name;
 
 
-
-                    Columns.Add(dataGridViewColumn);
+                    this.Columns.Add(dataGridViewColumn);
                 }
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine(ex.Message + " - " + ex.StackTrace);
+                Console.WriteLine(ex.Message + " - " + ex.StackTrace);
             }
         }
 

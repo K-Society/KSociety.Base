@@ -1,12 +1,12 @@
-﻿using KSociety.Base.App.Shared;
-using KSociety.Base.App.Utility.Dto.Res.Control;
-using KSociety.Base.Infra.Abstraction.Interface;
-using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.App.Utility.ReqHdlr
 {
+    using Shared;
+    using Dto.Res.Control;
+    using Infra.Abstraction.Interface;
+    using Microsoft.Extensions.Logging;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class EnsureCreatedReqHdlr :
         IRequestHandlerWithResponse<EnsureCreated>,
         IRequestHandlerWithResponseAsync<EnsureCreated>
@@ -16,13 +16,13 @@ namespace KSociety.Base.App.Utility.ReqHdlr
 
         public EnsureCreatedReqHdlr(ILogger<EnsureCreatedReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
         {
-            _logger = logger;
-            _unitOfWork = unitOfWork;
+            this._logger = logger;
+            this._unitOfWork = unitOfWork;
         }
 
         public EnsureCreated Execute()
         {
-            var result = _unitOfWork.EnsureCreated();
+            var result = this._unitOfWork.EnsureCreated();
             if (result.HasValue)
             {
                 return new EnsureCreated(result.Value);
@@ -32,7 +32,7 @@ namespace KSociety.Base.App.Utility.ReqHdlr
 
         public async ValueTask<EnsureCreated> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            var result = await _unitOfWork.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
+            var result = await this._unitOfWork.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
             if (result.HasValue)
             {
                 return new EnsureCreated(result.Value);

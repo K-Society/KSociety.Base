@@ -1,19 +1,19 @@
-﻿using KSociety.Base.Infra.Abstraction.Interface;
-using KSociety.Base.Infra.Shared.Class.SqlGenerator;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.Infra.Shared.Class.Identity
+namespace KSociety.Base.Infra.Shared.Identity.Class
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using KSociety.Base.Infra.Abstraction.Interface;
+    using KSociety.Base.Infra.Shared.Class.SqlGenerator;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Infrastructure;
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.EntityFrameworkCore.Storage;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+
     public class DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         : IdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>,
             IDatabaseUnitOfWork
@@ -47,7 +47,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
                 });
             });
 
-            Logger = LoggerFactory
+            this.Logger = LoggerFactory
                 .CreateLogger<DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
                     TUserToken>>();
         }
@@ -55,9 +55,9 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         public DatabaseContext(ILoggerFactory loggerFactory, IDatabaseConfiguration configuration)
         {
             LoggerFactory = loggerFactory;
-            _configuration = configuration;
+            this._configuration = configuration;
             //_mediator = mediator;
-            Logger = LoggerFactory
+            this.Logger = LoggerFactory
                 .CreateLogger<DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
                     TUserToken>>();
         }
@@ -73,7 +73,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
 
             //Console.WriteLine("ConnectionString: " + _configuration.ConnectionString);
-            if (_configuration is null || string.IsNullOrEmpty(_configuration.ConnectionString))
+            if (this._configuration is null || String.IsNullOrEmpty(this._configuration.ConnectionString))
             {
                 //string path = Assembly.GetExecutingAssembly().Location;
                 //Configuration config = ConfigurationManager.OpenExeConfiguration(path);
@@ -83,44 +83,44 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             }
             else
             {
-                if (_configuration.Logging)
+                if (this._configuration.Logging)
                 {
-                    _debug = true;
+                    this._debug = true;
 
-                    if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
+                    if (String.IsNullOrEmpty(this._configuration.MigrationsAssembly))
                     {
                         optionsBuilder
                             .UseLoggerFactory(LoggerFactory)
                             .EnableSensitiveDataLogging()
-                            .UseSqlServer(_configuration.ConnectionString);
+                            .UseSqlServer(this._configuration.ConnectionString);
                     }
                     else
                     {
                         optionsBuilder
                             .UseLoggerFactory(LoggerFactory)
                             .EnableSensitiveDataLogging()
-                            .UseSqlServer(_configuration.ConnectionString,
+                            .UseSqlServer(this._configuration.ConnectionString,
                                 sql =>
                                 {
-                                    sql.MigrationsAssembly(_configuration.MigrationsAssembly);
+                                    sql.MigrationsAssembly(this._configuration.MigrationsAssembly);
                                     sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
                                 });
                     }
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(_configuration.MigrationsAssembly))
+                    if (String.IsNullOrEmpty(this._configuration.MigrationsAssembly))
                     {
                         optionsBuilder
-                            .UseSqlServer(_configuration.ConnectionString);
+                            .UseSqlServer(this._configuration.ConnectionString);
                     }
                     else
                     {
                         optionsBuilder
-                            .UseSqlServer(_configuration.ConnectionString,
+                            .UseSqlServer(this._configuration.ConnectionString,
                                 sql =>
                                 {
-                                    sql.MigrationsAssembly(_configuration.MigrationsAssembly);
+                                    sql.MigrationsAssembly(this._configuration.MigrationsAssembly);
                                     sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
                                 });
                     }
@@ -143,12 +143,12 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public string GetConnectionString()
         {
-            return Database.GetDbConnection().ConnectionString;
+            return this.Database.GetDbConnection().ConnectionString;
         }
 
         public ValueTask<string?> GetConnectionStringAsync(CancellationToken cancellationToken = default)
         {
-            var result = Database.GetDbConnection().ConnectionString;
+            var result = this.Database.GetDbConnection().ConnectionString;
             return new ValueTask<string?>(result);
         }
 
@@ -165,7 +165,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             bool? exists = null;
             try
             {
-                var databaseCreator = Database.GetService<IDatabaseCreator>();
+                var databaseCreator = this.Database.GetService<IDatabaseCreator>();
 
                 if (databaseCreator is not null)
                 {
@@ -177,7 +177,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "Exists: ");
+                this.Logger?.LogError(ex, "Exists: ");
             }
 
             return exists.HasValue && exists.Value;
@@ -189,7 +189,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
             try
             {
-                var databaseCreator = Database.GetService<IDatabaseCreator>();
+                var databaseCreator = this.Database.GetService<IDatabaseCreator>();
 
                 if (databaseCreator is not null)
                 {
@@ -201,7 +201,7 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "ExistsAsync: ");
+                this.Logger?.LogError(ex, "ExistsAsync: ");
             }
 
             return exists.HasValue && exists.Value;
@@ -212,11 +212,11 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             var output = false;
             try
             {
-                output = Database.EnsureCreated();
+                output = this.Database.EnsureCreated();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                this.Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
             }
 
             return output;
@@ -227,11 +227,11 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             var output = false;
             try
             {
-                output = await Database.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
+                output = await this.Database.EnsureCreatedAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                this.Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
             }
 
             return output;
@@ -242,11 +242,11 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             var output = false;
             try
             {
-                output = Database.EnsureDeleted();
+                output = this.Database.EnsureDeleted();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                this.Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
             }
 
             return output;
@@ -257,11 +257,11 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
             var output = false;
             try
             {
-                output = await Database.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
+                output = await this.Database.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                this.Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
             }
 
             return output;
@@ -269,14 +269,14 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
         public void Migrate(string? targetMigration = null)
         {
-            var migrator = Database.GetInfrastructure().GetService<IMigrator>();
+            var migrator = this.Database.GetInfrastructure().GetService<IMigrator>();
             migrator.Migrate(targetMigration);
         }
 
         public async ValueTask MigrateAsync(string? targetMigration = null,
             CancellationToken cancellationToken = default)
         {
-            var migrator = Database.GetInfrastructure().GetService<IMigrator>();
+            var migrator = this.Database.GetInfrastructure().GetService<IMigrator>();
             await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
 
             //Database.Mi
@@ -286,32 +286,32 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         {
             //var migratorAssembly = Database.GetInfrastructure().GetService<IMigrationsAssembly>();
             //migratorAssembly.Assembly.FullName
-            var migrator = Database.GetInfrastructure().GetService<IMigrator>();
+            var migrator = this.Database.GetInfrastructure().GetService<IMigrator>();
             return migrator.GenerateScript();
         }
 
         public virtual void BeginTransaction()
         {
-            _transaction = Database.BeginTransaction();
+            this._transaction = this.Database.BeginTransaction();
         }
 
         public virtual async ValueTask BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            _transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+            this._transaction = await this.Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public int? Commit()
         {
-            var output = -1;
+            //var output1 = -1;
             try
             {
-                if (_debug)
+                if (this._debug)
                 {
-                    var entries = ChangeTracker.Entries();
+                    var entries = this.ChangeTracker.Entries();
 
                     foreach (var entry in entries)
                     {
-                        Logger?.LogDebug("CommitAsync entry: " + entry.Entity.GetType().FullName + " " + entry.State);
+                        this.Logger?.LogDebug("CommitAsync entry: " + entry.Entity.GetType().FullName + " " + entry.State);
                     }
                 }
 
@@ -325,37 +325,37 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
                 // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
                 // performed through the DbContext will be committed
-                var result = SaveChanges();
+                var result = this.SaveChanges();
                 //_transaction.Commit();
-                Logger?.LogTrace("Commit: " + GetType().FullName + "." +
-                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name + " Result: " + result);
-                output = result;
+                this.Logger?.LogTrace("Commit: " + this.GetType().FullName + "." +
+                                      System.Reflection.MethodBase.GetCurrentMethod()?.Name + " Result: " + result);
+                //output1 = result;
+                return result;
             }
             catch (Exception ex)
             {
-                Logger?.LogError("Commit: " + ex.Source + " - " + ex.Message + " - " + ex.InnerException);
-                output = -1;
+                this.Logger?.LogError("Commit: " + ex.Source + " - " + ex.Message + " - " + ex.InnerException);
+                //output1 = -1;
+                return -1;
             }
             //finally
             //{
             //    _transaction.Dispose();
             //}
-
-            return output;
         }
 
         public async ValueTask<int?> CommitAsync(CancellationToken cancellationToken = default)
         {
-            var output = -1;
+            //var output = -1;
             try
             {
-                if (_debug)
+                if (this._debug)
                 {
-                    var entries = ChangeTracker.Entries();
+                    var entries = this.ChangeTracker.Entries();
 
                     foreach (var entry in entries)
                     {
-                        Logger?.LogDebug("CommitAsync entry: " + entry.Entity.GetType().FullName + " " + entry.State);
+                        this.Logger?.LogDebug("CommitAsync entry: " + entry.Entity.GetType().FullName + " " + entry.State);
                     }
                 }
 
@@ -369,34 +369,36 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
 
                 // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
                 // performed through the DbContext will be committed
-                var result = await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                var result = await this.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 //await _transaction.CommitAsync(cancellationToken);
-                Logger?.LogTrace("CommitAsync: " + GetType().FullName + "." +
-                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name + " Result: " + result);
-                output = result;
+                this.Logger?.LogTrace("CommitAsync: " + this.GetType().FullName + "." +
+                                      System.Reflection.MethodBase.GetCurrentMethod()?.Name + " Result: " + result);
+                //output = result;
+                return result;
             }
             catch (Exception ex)
             {
-                Logger?.LogError("CommitAsync: " + ex.Source + " - " + ex.Message + " - " + ex.InnerException);
-                output = -1;
+                this.Logger?.LogError("CommitAsync: " + ex.Source + " - " + ex.Message + " - " + ex.InnerException);
+                //output = -1;
+                return -1;
             }
 
             //finally
             //{
             //    await _transaction.DisposeAsync();
             //}
-            return output;
+            //return output;
         }
 
         public void CommitTransaction()
         {
             try
             {
-                _transaction.Commit();
+                this._transaction.Commit();
             }
             finally
             {
-                _transaction.Dispose();
+                this._transaction.Dispose();
             }
         }
 
@@ -404,24 +406,24 @@ namespace KSociety.Base.Infra.Shared.Class.Identity
         {
             try
             {
-                await _transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+                await this._transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
             }
             finally
             {
-                await _transaction.DisposeAsync().ConfigureAwait(false);
+                await this._transaction.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public virtual void Rollback()
         {
-            _transaction.Rollback();
-            _transaction.Dispose();
+            this._transaction.Rollback();
+            this._transaction.Dispose();
         }
 
         public virtual async ValueTask RollbackAsync(CancellationToken cancellationToken = default)
         {
-            await _transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
-            await _transaction.DisposeAsync().ConfigureAwait(false);
+            await this._transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            await this._transaction.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

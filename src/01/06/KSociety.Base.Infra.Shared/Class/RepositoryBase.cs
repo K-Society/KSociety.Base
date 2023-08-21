@@ -1,16 +1,16 @@
-﻿using KSociety.Base.Infra.Shared.Interface;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.Infra.Shared.Class
 {
+    using Interface;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.ChangeTracking;
+    using Microsoft.Extensions.Logging;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     ///<inheritdoc cref="IRepositoryBase{TEntity}"/>
     public abstract class RepositoryBase<TContext, TEntity> : IRepositoryBase<TEntity>
         where TContext : DatabaseContext
@@ -19,7 +19,7 @@ namespace KSociety.Base.Infra.Shared.Class
         private TContext? _dataContext;
         protected readonly ILoggerFactory LoggerFactory;
 
-        protected TContext? DataContext => _dataContext ??= DatabaseFactory.Get();
+        protected TContext? DataContext => this._dataContext ??= this.DatabaseFactory.Get();
 
         protected readonly DbSet<TEntity>? DataBaseSet;
 
@@ -27,26 +27,26 @@ namespace KSociety.Base.Infra.Shared.Class
 
         protected IDatabaseFactory<TContext> DatabaseFactory { get; private set; }
 
-        protected bool? Exists => DataContext?.Exists();
+        protected bool? Exists => this.DataContext?.Exists();
 
         protected RepositoryBase(ILoggerFactory loggerFactory, IDatabaseFactory<TContext> databaseFactory)
         {
-            LoggerFactory = loggerFactory;
-            DatabaseFactory = databaseFactory;
-            DataBaseSet = DataContext?.Set<TEntity>();
+            this.LoggerFactory = loggerFactory;
+            this.DatabaseFactory = databaseFactory;
+            this.DataBaseSet = this.DataContext?.Set<TEntity>();
 
-            Logger = LoggerFactory.CreateLogger<RepositoryBase<TContext, TEntity>>();
+            this.Logger = this.LoggerFactory.CreateLogger<RepositoryBase<TContext, TEntity>>();
         }
 
         public virtual EntityEntry<TEntity>? Add(TEntity entity)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
-            var result = DataBaseSet?.Add(entity);
+            var result = this.DataBaseSet?.Add(entity);
             //Logger.LogTrace("RepositoryBase Add: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName + ")" + " State: " + result.State);
             return result;
         }
@@ -54,13 +54,13 @@ namespace KSociety.Base.Infra.Shared.Class
         public virtual async ValueTask<EntityEntry<TEntity>?> AddAsync(TEntity entity,
             CancellationToken cancellationToken = default)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
-            var result = await DataBaseSet.AddAsync(entity, cancellationToken).ConfigureAwait(false);
+            var result = await this.DataBaseSet.AddAsync(entity, cancellationToken).ConfigureAwait(false);
             //Logger.LogTrace("RepositoryBase AddAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName + ")" + " State: " + result.State);
             return result;
                 
@@ -68,13 +68,13 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual void AddRange(IEnumerable<TEntity> entities)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
             }
             else
             {
-                DataBaseSet?.AddRange(entities);
+                this.DataBaseSet?.AddRange(entities);
                 //Logger.LogTrace("RepositoryBase AddRange: " + GetType().FullName + "." +
                 //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
@@ -83,13 +83,13 @@ namespace KSociety.Base.Infra.Shared.Class
         public virtual async ValueTask AddRangeAsync(IEnumerable<TEntity> entities,
             CancellationToken cancellationToken = default)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
             }
             else
             {
-                await DataBaseSet.AddRangeAsync(entities, cancellationToken).ConfigureAwait(false);
+                await this.DataBaseSet.AddRangeAsync(entities, cancellationToken).ConfigureAwait(false);
                 //Logger.LogTrace("RepositoryBase AddRangeAsync: " + GetType().FullName + "." +
                 //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
@@ -97,27 +97,26 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual EntityEntry<TEntity>? Update(TEntity entity)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
-            var result = DataBaseSet?.Update(entity);
+            var result = this.DataBaseSet?.Update(entity);
             //Logger.LogTrace("RepositoryBase Update: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName + ")" + " State: " + result.State);
             return result;
         }
 
         public virtual void UpdateRange(IEnumerable<TEntity> entities)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
             }
             else
             {
-
-                DataBaseSet?.UpdateRange(entities);
+                this.DataBaseSet?.UpdateRange(entities);
                 //Logger.LogTrace("RepositoryBase UpdateRange: " + GetType().FullName + "." +
                 //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
@@ -125,28 +124,28 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual EntityEntry<TEntity>? Delete(TEntity entity)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
-            var result = DataBaseSet?.Remove(entity);
+            var result = this.DataBaseSet?.Remove(entity);
             //Logger.LogTrace("RepositoryBase Delete: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName + ")" + " State: " + result.State);
             return result;
         }
 
         public virtual void DeleteRange(IEnumerable<TEntity>? entities)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
             }
             else
             {
                 if (entities is not null)
                 {
-                    DataBaseSet?.RemoveRange(entities);
+                    this.DataBaseSet?.RemoveRange(entities);
                 }
                 
                 //Logger.LogTrace("RepositoryBase DeleteRange: " + GetType().FullName + "." +
@@ -157,20 +156,20 @@ namespace KSociety.Base.Infra.Shared.Class
         public virtual IEnumerable<EntityEntry<TEntity>?>? Delete(Expression<Func<TEntity, bool>> where)
         {
             //Logger.LogTrace("RepositoryBase Delete: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + where.GetType().FullName + ")");
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
-            IEnumerable<TEntity>? objects = DataBaseSet?.Where(@where).AsEnumerable();
+            IEnumerable<TEntity>? objects = this.DataBaseSet?.Where(@where).AsEnumerable();
             IEnumerable<EntityEntry<TEntity>?>? output = new List<EntityEntry<TEntity>>();
 
             if (objects is not null)
             {
                 foreach (var obj in objects)
                 {
-                    output = output?.Append(DataBaseSet?.Remove(obj));
+                    output = output?.Append(this.DataBaseSet?.Remove(obj));
                 }
             }
 
@@ -179,19 +178,19 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual TEntity? First(Expression<Func<TEntity, bool>>? filter = null)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
             try
             {
-                return filter is null ? DataBaseSet?.FirstOrDefault() : DataBaseSet?.FirstOrDefault(filter);
+                return filter is null ? this.DataBaseSet?.FirstOrDefault() : this.DataBaseSet?.FirstOrDefault(filter);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return null;
             }
@@ -200,21 +199,21 @@ namespace KSociety.Base.Infra.Shared.Class
         public virtual async ValueTask<TEntity?> FirstAsync(Expression<Func<TEntity, bool>>? filter = null,
             CancellationToken cancellationToken = default)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
             try
             {
                 return filter is null
-                    ? await DataBaseSet.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false)
-                    : await DataBaseSet.FirstOrDefaultAsync(filter, cancellationToken).ConfigureAwait(false);
+                    ? await this.DataBaseSet.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false)
+                    : await this.DataBaseSet.FirstOrDefaultAsync(filter, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return null;
             }
@@ -223,21 +222,21 @@ namespace KSociety.Base.Infra.Shared.Class
         public virtual TEntity? Last<TKeySelector>(Expression<Func<TEntity, TKeySelector>> keySelector,
             Expression<Func<TEntity, bool>>? filter = null)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
             try
             {
                 return filter is null
-                    ? DataBaseSet.OrderBy(keySelector).LastOrDefault()
-                    : DataBaseSet.OrderBy(keySelector).LastOrDefault(filter);
+                    ? this.DataBaseSet.OrderBy(keySelector).LastOrDefault()
+                    : this.DataBaseSet.OrderBy(keySelector).LastOrDefault(filter);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return null;
             }
@@ -247,23 +246,23 @@ namespace KSociety.Base.Infra.Shared.Class
             Expression<Func<TEntity, TKeySelector>> keySelector, Expression<Func<TEntity, bool>>? filter = null,
             CancellationToken cancellationToken = default)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
             try
             {
                 return filter is null
-                    ? await DataBaseSet.OrderBy(keySelector).LastOrDefaultAsync(cancellationToken)
+                    ? await this.DataBaseSet.OrderBy(keySelector).LastOrDefaultAsync(cancellationToken)
                         .ConfigureAwait(false)
-                    : await DataBaseSet.OrderBy(keySelector).LastOrDefaultAsync(filter, cancellationToken)
+                    : await this.DataBaseSet.OrderBy(keySelector).LastOrDefaultAsync(filter, cancellationToken)
                         .ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return null;
             }
@@ -272,19 +271,19 @@ namespace KSociety.Base.Infra.Shared.Class
         public virtual TEntity? Find(params object[] keyObject)
         {
             //Logger.LogTrace("RepositoryBase Find: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
             try
             {
-                return DataBaseSet?.Find(keyObject);
+                return this.DataBaseSet?.Find(keyObject);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}({2})", GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}({2})", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, keyObject.GetType().FullName);
                 return null;
             }
@@ -294,19 +293,19 @@ namespace KSociety.Base.Infra.Shared.Class
             params object[] keyObject)
         {
             //Logger.LogTrace("RepositoryBase FindAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
             try
             {
-                return await DataBaseSet.FindAsync(keyObject, cancellationToken).ConfigureAwait(false);
+                return await this.DataBaseSet.FindAsync(keyObject, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "FindAsync {0}.{1}({2})", GetType().FullName,
+                this.Logger.LogError(ex, "FindAsync {0}.{1}({2})", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, keyObject.GetType().FullName);
                 return null;
             }
@@ -314,19 +313,19 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual int? Count(Expression<Func<TEntity, bool>>? filter = null)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return -1;
             }
 
             try
             {
-                return filter is null ? DataBaseSet?.Count() : DataBaseSet?.Count(filter);
+                return filter is null ? this.DataBaseSet?.Count() : this.DataBaseSet?.Count(filter);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Count {0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "Count {0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return -1;
             }
@@ -335,21 +334,21 @@ namespace KSociety.Base.Infra.Shared.Class
         public virtual async ValueTask<int?> CountAsync(Expression<Func<TEntity, bool>>? filter = null,
             CancellationToken cancellationToken = default)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return -1;
             }
 
             try
             {
                 return filter is null
-                    ? await DataBaseSet.CountAsync(cancellationToken).ConfigureAwait(false)
-                    : await DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
+                    ? await this.DataBaseSet.CountAsync(cancellationToken).ConfigureAwait(false)
+                    : await this.DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "CountAsync {0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "CountAsync {0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return -1;
             }
@@ -358,19 +357,19 @@ namespace KSociety.Base.Infra.Shared.Class
         public virtual IQueryable<TEntity>? Query(Expression<Func<TEntity, bool>>? filter = null)
         {
             //Logger.LogTrace("RepositoryBase Query: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName + ")");
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
             try
             {
-                return filter is null ? DataBaseSet : DataBaseSet?.Where(filter);
+                return filter is null ? this.DataBaseSet : this.DataBaseSet?.Where(filter);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Query {0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "Query {0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return null;
             }
@@ -378,32 +377,32 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public virtual IQueryable<TEntity>? QueryObjectGraph(Expression<Func<TEntity, bool>> filter, string children)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("Database not exists!");
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
-            return DataBaseSet?.Include(children).Where(filter);
+            return this.DataBaseSet?.Include(children).Where(filter);
         }
 
         public virtual IQueryable<TEntity>? FindAll()
         {
             //Logger.LogTrace("RepositoryBase FindAll: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("{0}.{1} Database not exists!", GetType().FullName,
+                this.Logger.LogWarning("{0}.{1} Database not exists!", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return null;
             }
 
             try
             {
-                return DataBaseSet;
+                return this.DataBaseSet;
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return null;
             }
@@ -414,9 +413,9 @@ namespace KSociety.Base.Infra.Shared.Class
             Expression<Func<TEntity, TKeySelector>>? keySelector = null,
             Expression<Func<TEntity, bool>>? filter = null)
         {
-            if (!Exists.HasValue || !Exists.Value)
+            if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                Logger.LogWarning("{0}.{1} Database not exists!", GetType().FullName,
+                this.Logger.LogWarning("{0}.{1} Database not exists!", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return null;
             }
@@ -428,17 +427,17 @@ namespace KSociety.Base.Infra.Shared.Class
                 if (filter is null)
                 {
                     return keySelector is null
-                        ? DataBaseSet?.Skip(skip).Take(pageSize)
-                        : DataBaseSet?.OrderBy(keySelector).Skip(skip).Take(pageSize);
+                        ? this.DataBaseSet?.Skip(skip).Take(pageSize)
+                        : this.DataBaseSet?.OrderBy(keySelector).Skip(skip).Take(pageSize);
                 }
 
                 return keySelector is null
-                    ? DataBaseSet?.Where(filter).Skip(skip).Take(pageSize)
-                    : DataBaseSet?.Where(filter).OrderBy(keySelector).Skip(skip).Take(pageSize);
+                    ? this.DataBaseSet?.Where(filter).Skip(skip).Take(pageSize)
+                    : this.DataBaseSet?.Where(filter).OrderBy(keySelector).Skip(skip).Take(pageSize);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return null;
             }
@@ -446,7 +445,7 @@ namespace KSociety.Base.Infra.Shared.Class
 
         public void Dispose()
         {
-            DataContext?.Dispose();
+            this.DataContext?.Dispose();
         }
     }
 }

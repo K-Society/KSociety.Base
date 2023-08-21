@@ -1,14 +1,14 @@
-﻿using Autofac;
-using KSociety.Base.EventBus;
-using KSociety.Base.EventBus.Abstractions.EventBus;
-using KSociety.Base.EventBus.Abstractions.Handler;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.EventBusRabbitMQ
 {
+    using Autofac;
+    using EventBus;
+    using KSociety.Base.EventBus.Abstractions.EventBus;
+    using EventBus.Abstractions.Handler;
+    using Microsoft.Extensions.Logging;
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public sealed class EventBusRabbitMqDynamic : EventBusRabbitMq, IEventBusDynamic
     {
         private readonly ILifetimeScope _autofac;
@@ -22,7 +22,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
-            _autofac = autofac;
+            this._autofac = autofac;
         }
 
         public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection,
@@ -31,7 +31,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
-            _autofac = autofac;
+            this._autofac = autofac;
         }
 
         #endregion
@@ -41,9 +41,9 @@ namespace KSociety.Base.EventBusRabbitMQ
         public async ValueTask SubscribeDynamic<TH>(string eventName)
             where TH : IDynamicIntegrationEventHandler
         {
-            await DoInternalSubscription(eventName).ConfigureAwait(false);
-            SubsManager.AddDynamicSubscription<TH>(eventName);
-            await StartBasicConsume().ConfigureAwait(false);
+            await this.DoInternalSubscription(eventName).ConfigureAwait(false);
+            this.SubsManager.AddDynamicSubscription<TH>(eventName);
+            await this.StartBasicConsume().ConfigureAwait(false);
         }
 
         #endregion
@@ -53,7 +53,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public void UnsubscribeDynamic<TH>(string eventName)
             where TH : IDynamicIntegrationEventHandler
         {
-            SubsManager.RemoveDynamicSubscription<TH>(eventName);
+            this.SubsManager.RemoveDynamicSubscription<TH>(eventName);
         }
 
         #endregion
@@ -61,13 +61,13 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected override async ValueTask ProcessEvent(string routingKey, string eventName,
             ReadOnlyMemory<byte> message, CancellationToken cancel = default)
         {
-            if (SubsManager.HasSubscriptionsForEvent(routingKey))
+            if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {
-                if (_autofac != null)
+                if (this._autofac != null)
                 {
-                    using (var scope = _autofac.BeginLifetimeScope(AutofacScopeName))
+                    using (var scope = this._autofac.BeginLifetimeScope(AutofacScopeName))
                     {
-                        var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
+                        var subscriptions = this.SubsManager.GetHandlersForEvent(routingKey);
                         foreach (var subscription in subscriptions)
                         {
                             //if (subscription.IsDynamic)

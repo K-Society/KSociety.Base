@@ -1,9 +1,9 @@
-﻿using Autofac;
-using KSociety.Base.Infra.Abstraction.Interface;
-using KSociety.Base.Infra.Shared.Class;
-
 namespace KSociety.Base.Infra.Shared.Bindings
 {
+    using Autofac;
+    using KSociety.Base.Infra.Abstraction.Interface;
+    using Class;
+
     /// <summary>
     /// The UnitOfWork module for Autofac.
     /// </summary>

@@ -1,11 +1,11 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
-using KSociety.Base.App.Shared;
-using Microsoft.Extensions.Logging;
-
-namespace KSociety.Base.Srv.Shared.Interface
+﻿namespace KSociety.Base.Srv.Shared.Interface
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Autofac;
+    using KSociety.Base.App.Shared;
+    using Microsoft.Extensions.Logging;
+
     public interface ICommandHandlerAsync
     {
         #region [ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>]

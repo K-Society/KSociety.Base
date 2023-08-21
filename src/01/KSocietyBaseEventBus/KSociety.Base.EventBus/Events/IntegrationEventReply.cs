@@ -1,9 +1,9 @@
-﻿using System;
-using KSociety.Base.EventBus.Abstractions;
-using ProtoBuf;
-
 namespace KSociety.Base.EventBus.Events
 {
+    using System;
+    using Abstractions;
+    using ProtoBuf;
+
     ///<inheritdoc cref="IIntegrationEventReply"/>
     [ProtoContract]
     public abstract class IntegrationEventReply : IIntegrationEventReply
@@ -18,22 +18,22 @@ namespace KSociety.Base.EventBus.Events
 
         public IntegrationEventReply()
         {
-            Id = Guid.NewGuid();
-            CreationDate = DateTime.UtcNow;
-            RoutingKey = GetType().Name;
+            this.Id = Guid.NewGuid();
+            this.CreationDate = DateTime.UtcNow;
+            this.RoutingKey = this.GetType().Name;
         }
 
         public IntegrationEventReply(string routingKey)
         {
-            Id = Guid.NewGuid();
-            CreationDate = DateTime.UtcNow;
-            RoutingKey = GetType().Name + "." + routingKey;
+            this.Id = Guid.NewGuid();
+            this.CreationDate = DateTime.UtcNow;
+            this.RoutingKey = this.GetType().Name + "." + routingKey;
         }
 
         public string GetTypeName()
         {
-            string[] result = RoutingKey.Split('.');
-            return result.Length > 1 ? result[0] : RoutingKey;
+            string[] result = this.RoutingKey.Split('.');
+            return result.Length > 1 ? result[0] : this.RoutingKey;
         }
     }
 }

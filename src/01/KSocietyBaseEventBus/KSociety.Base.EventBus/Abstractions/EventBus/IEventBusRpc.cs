@@ -1,8 +1,8 @@
-﻿using KSociety.Base.EventBus.Abstractions.Handler;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
+    using Handler;
+    using System.Threading.Tasks;
+
     public interface IEventBusRpc : IEventBus
     {
         IIntegrationRpcHandler<T, TR>? GetIntegrationRpcHandler<T, TR>()

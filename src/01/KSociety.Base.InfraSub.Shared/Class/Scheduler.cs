@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Quartz;
-using Quartz.Impl;
-
 namespace KSociety.Base.InfraSub.Shared.Class
 {
+    using System;
+    using System.Threading.Tasks;
+    using Quartz;
+    using Quartz.Impl;
+
     /// <summary>
     /// Scheduler
     /// </summary>
@@ -28,119 +28,119 @@ namespace KSociety.Base.InfraSub.Shared.Class
                 ["quartz.serializer.type"] = "binary"
             };
 
-            _schedulerFactJob = new StdSchedulerFactory(properties);
+            this._schedulerFactJob = new StdSchedulerFactory(properties);
 
-            Name = schedulerName;
+            this.Name = schedulerName;
             Quartz.Logging.LogProvider.IsDisabled = true;
             switch (tType)
             {
                 case TimeType.ms:
-                    _timeInterval = TimeSpan.FromMilliseconds(interval);
+                    this._timeInterval = TimeSpan.FromMilliseconds(interval);
                     break;
                 case TimeType.s:
-                    _timeInterval = TimeSpan.FromSeconds(interval);
+                    this._timeInterval = TimeSpan.FromSeconds(interval);
                     break;
                 case TimeType.min:
-                    _timeInterval = TimeSpan.FromMinutes(interval);
+                    this._timeInterval = TimeSpan.FromMinutes(interval);
                     break;
                 case TimeType.h:
-                    _timeInterval = TimeSpan.FromHours(interval);
+                    this._timeInterval = TimeSpan.FromHours(interval);
                     break;
             }
 
-            GetSchedulerJobAsync(_schedulerFactJob);
+            this.GetSchedulerJobAsync(this._schedulerFactJob);
         }
 
         private async void GetSchedulerJobAsync(ISchedulerFactory isf)
         {
             Task<IScheduler> t = isf.GetScheduler();
-            _schedulerJob = await t.ConfigureAwait(false);
+            this._schedulerJob = await t.ConfigureAwait(false);
         }
 
         public void Start<T>() where T : IJob
         {
-            StartJob<T>();
+            this.StartJob<T>();
         }
 
         public void Start<T>(string name, object jobData) where T : IJob
         {
-            StartJob<T>(name, jobData);
+            this.StartJob<T>(name, jobData);
         }
 
         public void Stop()
         {
-            StopJob();
+            this.StopJob();
         }
 
         public void Pause()
         {
-            _schedulerJob.PauseJob(_job.Key);
+            this._schedulerJob.PauseJob(this._job.Key);
         }
 
         public void Resume()
         {
-            _schedulerJob.ResumeJob(_job.Key);
+            this._schedulerJob.ResumeJob(this._job.Key);
         }
 
         private async void StartJob<T>() where T : IJob
         {
-            _startTimeJob = new DateTimeOffset(2008, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
+            this._startTimeJob = new DateTimeOffset(2008, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
 
-            await _schedulerJob.Start().ConfigureAwait(false);
+            await this._schedulerJob.Start().ConfigureAwait(false);
 
             // define the job and tie it to our Job class
             IJobDetail job = JobBuilder.Create<T>()
-                .WithIdentity("myJob_" + Name, "group1_" + Name)
+                .WithIdentity("myJob_" + this.Name, "group1_" + this.Name)
                 .Build();
 
             // Trigger the job to run now, and then every 5 seconds
             ITrigger trigger = TriggerBuilder.Create()
-                .WithIdentity("myTrigger_" + Name, "group1_" + Name)
-                .StartAt(_startTimeJob)
+                .WithIdentity("myTrigger_" + this.Name, "group1_" + this.Name)
+                .StartAt(this._startTimeJob)
                 .WithSimpleSchedule(x => x
-                    .WithInterval(_timeInterval)
+                    .WithInterval(this._timeInterval)
                     .RepeatForever()
                     .WithMisfireHandlingInstructionNextWithRemainingCount()
                 )
                 .Build();
 
-            await _schedulerJob.ScheduleJob(job, trigger).ConfigureAwait(false);
+            await this._schedulerJob.ScheduleJob(job, trigger).ConfigureAwait(false);
         }
 
         private async void StartJob<T>(string name, object jobData) where T : IJob
         {
-            _startTimeJob = new DateTimeOffset(2008, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
+            this._startTimeJob = new DateTimeOffset(2008, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
             // construct a scheduler factory
 
 
-            _schedulerJob.Context.Put(name, jobData);
+            this._schedulerJob.Context.Put(name, jobData);
             // get a scheduler
-            await _schedulerJob.Start().ConfigureAwait(false);
+            await this._schedulerJob.Start().ConfigureAwait(false);
 
             // define the job and tie it to our Job class
             /*IJobDetail*/
-            _job = JobBuilder.Create<T>()
-                .WithIdentity("myJob_" + Name, "group1_" + Name)
+            this._job = JobBuilder.Create<T>()
+                .WithIdentity("myJob_" + this.Name, "group1_" + this.Name)
                 .Build();
 
             // Trigger the job to run now, and then every 5 seconds
             ITrigger trigger = TriggerBuilder.Create()
-                .WithIdentity("myTrigger_" + Name, "group1_" + Name)
-                .StartAt(_startTimeJob)
+                .WithIdentity("myTrigger_" + this.Name, "group1_" + this.Name)
+                .StartAt(this._startTimeJob)
                 .WithSimpleSchedule(x => x
-                    .WithInterval(_timeInterval)
+                    .WithInterval(this._timeInterval)
                     .RepeatForever()
                     .WithMisfireHandlingInstructionNextWithRemainingCount()
                 )
                 .Build();
 
-            await _schedulerJob.ScheduleJob(_job, trigger).ConfigureAwait(false);
+            await this._schedulerJob.ScheduleJob(this._job, trigger).ConfigureAwait(false);
         }
 
         private async void StopJob()
         {
-            await _schedulerJob.Standby().ConfigureAwait(false);
-            await _schedulerJob.Shutdown(waitForJobsToComplete: true).ConfigureAwait(false);
+            await this._schedulerJob.Standby().ConfigureAwait(false);
+            await this._schedulerJob.Shutdown(waitForJobsToComplete: true).ConfigureAwait(false);
         }
     }
 }

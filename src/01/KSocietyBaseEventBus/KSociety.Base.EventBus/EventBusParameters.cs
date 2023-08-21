@@ -1,4 +1,4 @@
-﻿namespace KSociety.Base.EventBus
+namespace KSociety.Base.EventBus
 {
     ///<inheritdoc/>
     public class EventBusParameters : IEventBusParameters
@@ -19,9 +19,9 @@
         public EventBusParameters(IExchangeDeclareParameters exchangeDeclareParameters,
             IQueueDeclareParameters queueDeclareParameters, bool debug = false)
         {
-            Debug = debug;
-            ExchangeDeclareParameters = exchangeDeclareParameters;
-            QueueDeclareParameters = queueDeclareParameters;
+            this.Debug = debug;
+            this.ExchangeDeclareParameters = exchangeDeclareParameters;
+            this.QueueDeclareParameters = queueDeclareParameters;
         }
     }
 }

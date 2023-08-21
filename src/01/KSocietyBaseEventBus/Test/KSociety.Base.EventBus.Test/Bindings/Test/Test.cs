@@ -1,6 +1,5 @@
-﻿using Autofac;
-
-namespace KSociety.Base.EventBus.Test.Bindings.Test;
+﻿namespace KSociety.Base.EventBus.Test.Bindings.Test;
+using Autofac;
 
 public class Test : Module
 {

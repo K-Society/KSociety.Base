@@ -1,8 +1,8 @@
-﻿using KSociety.Base.EventBus.Abstractions.Handler;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
+    using Handler;
+    using System.Threading.Tasks;
+
     public interface IEventBusTyped : IEventBus
     {
         ValueTask Subscribe<T, TH>(string routingKey)

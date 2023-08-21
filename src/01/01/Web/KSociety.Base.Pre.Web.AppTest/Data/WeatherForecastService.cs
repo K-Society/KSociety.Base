@@ -1,8 +1,7 @@
+namespace KSociety.Base.Pre.Web.AppTest.Data;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-
-namespace KSociety.Base.Pre.Web.AppTest.Data;
 
 public class WeatherForecastService
 {

@@ -1,12 +1,12 @@
-﻿using KSociety.Base.Srv.Contract;
-using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc.Client;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.Srv.Agent
 {
+    using Contract;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf.Grpc.Client;
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class AgentExportAsync<TExportAsync, TExportReq, TExportRes> : Connection,
         IAgentExportAsync<TExportReq, TExportRes>
         where TExportAsync : class, IExportAsync<TExportReq, TExportRes>
@@ -25,11 +25,11 @@ namespace KSociety.Base.Srv.Agent
             TExportRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<TExportAsync>();
+                    var client = this.Channel.CreateGrpcService<TExportAsync>();
 
-                    var result = await client.ExportDataAsync(request, ConnectionOptions(cancellationToken))
+                    var result = await client.ExportDataAsync(request, this.ConnectionOptions(cancellationToken))
                         .ConfigureAwait(false);
 
                     output = result;
@@ -37,7 +37,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
 

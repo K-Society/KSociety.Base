@@ -1,9 +1,9 @@
-﻿using Autofac;
-using Microsoft.Extensions.Logging;
-using Serilog.Extensions.Logging;
-
-namespace KSociety.Base.Srv.Host.Shared.Bindings
+﻿namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    using Autofac;
+    using Microsoft.Extensions.Logging;
+    using Serilog.Extensions.Logging;
+
     /// <summary>
     /// 
     /// </summary>

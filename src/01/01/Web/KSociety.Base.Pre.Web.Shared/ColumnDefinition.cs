@@ -1,14 +1,14 @@
-﻿using Blazorise.DataGrid;
-
 namespace KSociety.Base.Pre.Web.Shared
 {
+    using Blazorise.DataGrid;
+
     public class ColumnDefinition
     {
         public ColumnDefinition()
         {
-            DataType = DataType.NotSet;
-            Alignment = Alignment.NotSet;
-            ColumnType = DataGridColumnType.Text;
+            this.DataType = DataType.NotSet;
+            this.Alignment = Alignment.NotSet;
+            this.ColumnType = DataGridColumnType.Text;
         }
 
         public DataGridColumnType ColumnType { get; set; }

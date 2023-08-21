@@ -1,10 +1,10 @@
-﻿using Autofac;
-using KSociety.Base.App.Shared;
-using KSociety.Base.App.Utility.Dto.Res.Control;
-using KSociety.Base.App.Utility.ReqHdlr;
-
 namespace KSociety.Base.App.Utility.Bindings
 {
+    using Autofac;
+    using Shared;
+    using Dto.Res.Control;
+    using ReqHdlr;
+
     /// <summary>
     /// 
     /// </summary>

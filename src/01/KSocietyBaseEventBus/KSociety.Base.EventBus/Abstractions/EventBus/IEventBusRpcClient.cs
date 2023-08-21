@@ -1,9 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.EventBus.Abstractions.Handler;
-
 namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Handler;
+
     public interface IEventBusRpcClient : IEventBus
     {
         Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event,

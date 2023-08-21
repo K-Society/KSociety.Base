@@ -1,10 +1,9 @@
-﻿using KSociety.Base.Infra.Shared.Class.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Design;
-using System;
-
-namespace KSociety.Base.Infra.Shared.Interface.Identity
+namespace KSociety.Base.Infra.Shared.Identity.Interface
 {
+    using System;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore.Design;
+
     public interface IContextFactory<out TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
             TUserToken>
         : IDesignTimeDbContextFactory<TContext>
@@ -16,7 +15,7 @@ namespace KSociety.Base.Infra.Shared.Interface.Identity
         where TUserLogin : IdentityUserLogin<TKey>, new()
         where TRoleClaim : IdentityRoleClaim<TKey>, new()
         where TUserToken : IdentityUserToken<TKey>, new()
-        where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+        where TContext : Class.DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
     {
     }
 }
