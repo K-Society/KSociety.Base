@@ -1,9 +1,9 @@
-﻿using Autofac;
-using KSociety.Base.EventBus.Abstractions.Handler;
-using Microsoft.Extensions.Logging;
-
 namespace KSociety.Base.EventBus.Handlers
 {
+    using Autofac;
+    using Abstractions.Handler;
+    using Microsoft.Extensions.Logging;
+
     ///<inheritdoc cref="IIntegrationGeneralHandler"/>
     public abstract class IntegrationGeneralHandler : IIntegrationGeneralHandler
     {
@@ -14,18 +14,18 @@ namespace KSociety.Base.EventBus.Handlers
 
         protected IntegrationGeneralHandler(IComponentContext? componentContext = default)
         {
-            ComponentContext = componentContext;
+            this.ComponentContext = componentContext;
         }
 
         protected IntegrationGeneralHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default)
         : this(componentContext)
         {
-            LoggerFactory = loggerFactory;
+            this.LoggerFactory = loggerFactory;
         }
 
         protected IntegrationGeneralHandler(ILoggerFactory? loggerFactory = default)
         {
-            LoggerFactory = loggerFactory;
+            this.LoggerFactory = loggerFactory;
         }
 
         #endregion

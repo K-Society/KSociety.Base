@@ -1,15 +1,15 @@
-﻿using KSociety.Base.EventBus;
-using KSociety.Base.EventBus.Abstractions;
-using KSociety.Base.EventBus.Abstractions.EventBus;
-using KSociety.Base.EventBus.Abstractions.Handler;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using RabbitMQ.Client;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.EventBusRabbitMQ.Helper
 {
+    using EventBus;
+    using EventBus.Abstractions;
+    using KSociety.Base.EventBus.Abstractions.EventBus;
+    using EventBus.Abstractions.Handler;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Abstractions;
+    using RabbitMQ.Client;
+    using System.Collections.Concurrent;
+    using System.Threading.Tasks;
+
     public class Subscriber
     {
         private readonly ILoggerFactory? _loggerFactory;
@@ -25,10 +25,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             IConnectionFactory connectionFactory,
             IEventBusParameters eventBusParameters)
         {
-            _loggerFactory = loggerFactory;
-            _eventBusParameters = eventBusParameters;
+            this._loggerFactory = loggerFactory;
+            this._eventBusParameters = eventBusParameters;
 
-            PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, _loggerFactory);
+            this.PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, this._loggerFactory);
         }
 
         public Subscriber(
@@ -37,14 +37,14 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             ILogger<EventBusRabbitMq>? loggerEventBusRabbitMq = default,
             ILogger<DefaultRabbitMqPersistentConnection>? loggerDefaultRabbitMqPersistentConnection = default)
         {
-            _eventBusParameters = eventBusParameters;
+            this._eventBusParameters = eventBusParameters;
 
             loggerEventBusRabbitMq ??= new NullLogger<EventBusRabbitMq>();
-            _loggerEventBusRabbitMq = loggerEventBusRabbitMq;
+            this._loggerEventBusRabbitMq = loggerEventBusRabbitMq;
 
             loggerDefaultRabbitMqPersistentConnection ??= new NullLogger<DefaultRabbitMqPersistentConnection>();
 
-            PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, loggerDefaultRabbitMqPersistentConnection);
+            this.PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, loggerDefaultRabbitMqPersistentConnection);
         }
 
         public Subscriber(
@@ -52,10 +52,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             IRabbitMqPersistentConnection persistentConnection,
             IEventBusParameters eventBusParameters)
         {
-            _loggerFactory = loggerFactory;
-            _eventBusParameters = eventBusParameters;
+            this._loggerFactory = loggerFactory;
+            this._eventBusParameters = eventBusParameters;
 
-            PersistentConnection = persistentConnection;
+            this.PersistentConnection = persistentConnection;
         }
 
         public Subscriber(
@@ -63,12 +63,12 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             IEventBusParameters eventBusParameters,
             ILogger<EventBusRabbitMq>? loggerEventBusRabbitMq = default)
         {
-            _eventBusParameters = eventBusParameters;
+            this._eventBusParameters = eventBusParameters;
 
-            PersistentConnection = persistentConnection;
+            this.PersistentConnection = persistentConnection;
 
             loggerEventBusRabbitMq ??= new NullLogger<EventBusRabbitMq>();
-            _loggerEventBusRabbitMq = loggerEventBusRabbitMq;
+            this._loggerEventBusRabbitMq = loggerEventBusRabbitMq;
         }
 
         #endregion
@@ -86,11 +86,11 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             where TIntegrationEvent : IIntegrationEventRpc
             where TIntegrationEventReply : IIntegrationEventReply
         {
-            await SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
+            await this.SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
                 eventBusName, queueName,
                 replyRoutingKey, integrationRpcClientHandler).ConfigureAwait(false);
 
-            await SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
+            await this.SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
                 eventBusName, queueName,
                 routingKey, integrationRpcServerHandler).ConfigureAwait(false);
         }
@@ -101,29 +101,35 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
             where TIntegrationEventReply : IIntegrationEventReply
         {
-            if (EventBus.ContainsKey(eventBusName + "_Client")) return;
+            if (this.EventBus.ContainsKey(eventBusName + "_Client"))
+            {
+                return;
+            }
 
             IEventBus? eventBus = null;
 
-            if (_loggerFactory != null)
+            if (this._loggerFactory != null)
             {
-                eventBus = new EventBusRabbitMqRpcClient(PersistentConnection, _loggerFactory,
+                eventBus = new EventBusRabbitMqRpcClient(this.PersistentConnection, this._loggerFactory,
                     integrationRpcClientHandler,
-                    null, _eventBusParameters, queueName);
-            }else if (_loggerFactory == null && _loggerEventBusRabbitMq != null)
+                    null, this._eventBusParameters, queueName);
+            }else if (this._loggerFactory == null && this._loggerEventBusRabbitMq != null)
             {
-                eventBus = new EventBusRabbitMqRpcClient(PersistentConnection,
+                eventBus = new EventBusRabbitMqRpcClient(this.PersistentConnection,
                     integrationRpcClientHandler,
-                    null, _eventBusParameters, queueName, _loggerEventBusRabbitMq);
+                    null, this._eventBusParameters, queueName, this._loggerEventBusRabbitMq);
             }
 
-            if (eventBus == null) return;
-
-            if (EventBus.TryAdd(eventBusName + "_Client", eventBus))
+            if (eventBus == null)
             {
-                ((IEventBusRpcClient) EventBus[eventBusName + "_Client"]).Initialize();
+                return;
+            }
 
-                await ((IEventBusRpcClient) EventBus[eventBusName + "_Client"])
+            if (this.EventBus.TryAdd(eventBusName + "_Client", eventBus))
+            {
+                ((IEventBusRpcClient)this.EventBus[eventBusName + "_Client"]).Initialize();
+
+                await ((IEventBusRpcClient)this.EventBus[eventBusName + "_Client"])
                     .SubscribeRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(replyRoutingKey)
                     .ConfigureAwait(false);
             }
@@ -136,30 +142,36 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             where TIntegrationEvent : IIntegrationEventRpc
             where TIntegrationEventReply : IIntegrationEventReply
         {
-            if (EventBus.ContainsKey(eventBusName + "_Server")) return;
+            if (this.EventBus.ContainsKey(eventBusName + "_Server"))
+            {
+                return;
+            }
 
             IEventBus? eventBus = null;
 
-            if (_loggerFactory != null)
+            if (this._loggerFactory != null)
             {
-                eventBus = new EventBusRabbitMqRpcServer(PersistentConnection, _loggerFactory,
+                eventBus = new EventBusRabbitMqRpcServer(this.PersistentConnection, this._loggerFactory,
                     integrationRpcServerHandler,
-                    null, _eventBusParameters, queueName);
+                    null, this._eventBusParameters, queueName);
             }
-            else if (_loggerFactory == null && _loggerEventBusRabbitMq != null)
+            else if (this._loggerFactory == null && this._loggerEventBusRabbitMq != null)
             {
-                eventBus = new EventBusRabbitMqRpcServer(PersistentConnection,
+                eventBus = new EventBusRabbitMqRpcServer(this.PersistentConnection,
                     integrationRpcServerHandler,
-                    null, _eventBusParameters, queueName, _loggerEventBusRabbitMq);
+                    null, this._eventBusParameters, queueName, this._loggerEventBusRabbitMq);
             }
 
-            if (eventBus == null) return;
-
-            if (EventBus.TryAdd(eventBusName + "_Server", eventBus))
+            if (eventBus == null)
             {
-                ((IEventBusRpcServer) EventBus[eventBusName + "_Server"]).Initialize();
+                return;
+            }
 
-                await ((IEventBusRpcServer) EventBus[eventBusName + "_Server"])
+            if (this.EventBus.TryAdd(eventBusName + "_Server", eventBus))
+            {
+                ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"]).Initialize();
+
+                await ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"])
                     .SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply,
                         TIntegrationRpcServerHandler>(routingKey).ConfigureAwait(false);
             }
@@ -171,54 +183,66 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
             where TIntegrationEvent : IIntegrationEvent
         {
-            if (EventBus.ContainsKey(eventBusName)) return;
+            if (this.EventBus.ContainsKey(eventBusName))
+            {
+                return;
+            }
 
             IEventBus? eventBus = null;
 
-            if (_loggerFactory != null)
+            if (this._loggerFactory != null)
             {
-                eventBus = new EventBusRabbitMqTyped(PersistentConnection, _loggerFactory, integrationEventHandler,
-                    null, _eventBusParameters, queueName);
+                eventBus = new EventBusRabbitMqTyped(this.PersistentConnection, this._loggerFactory, integrationEventHandler,
+                    null, this._eventBusParameters, queueName);
             }
-            else if (_loggerFactory == null && _loggerEventBusRabbitMq != null)
+            else if (this._loggerFactory == null && this._loggerEventBusRabbitMq != null)
             {
-                eventBus = new EventBusRabbitMqTyped(PersistentConnection, integrationEventHandler,
-                    null, _eventBusParameters, queueName, _loggerEventBusRabbitMq);
+                eventBus = new EventBusRabbitMqTyped(this.PersistentConnection, integrationEventHandler,
+                    null, this._eventBusParameters, queueName, this._loggerEventBusRabbitMq);
             }
 
-            if (eventBus == null) return;
-
-            if (EventBus.TryAdd(eventBusName, eventBus))
+            if (eventBus == null)
             {
-                ((IEventBusTyped) EventBus[eventBusName]).Initialize();
+                return;
+            }
 
-                await ((IEventBusTyped) EventBus[eventBusName])
+            if (this.EventBus.TryAdd(eventBusName, eventBus))
+            {
+                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize();
+
+                await ((IEventBusTyped)this.EventBus[eventBusName])
                     .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey).ConfigureAwait(false);
             }
         }
 
         public void SubscribeTyped(string eventBusName, string? queueName = null)
         {
-            if (EventBus.ContainsKey(eventBusName)) return;
+            if (this.EventBus.ContainsKey(eventBusName))
+            {
+                return;
+            }
 
             IEventBus? eventBus = null;
 
-            if (_loggerFactory != null)
+            if (this._loggerFactory != null)
             {
-                eventBus = new EventBusRabbitMqTyped(PersistentConnection, _loggerFactory,
-                    null, _eventBusParameters, queueName);
+                eventBus = new EventBusRabbitMqTyped(this.PersistentConnection, this._loggerFactory,
+                    null, this._eventBusParameters, queueName);
             }
-            else if (_loggerFactory == null && _loggerEventBusRabbitMq != null)
+            else if (this._loggerFactory == null && this._loggerEventBusRabbitMq != null)
             {
-                eventBus = new EventBusRabbitMqTyped(PersistentConnection,
-                    null, _eventBusParameters, queueName, _loggerEventBusRabbitMq);
+                eventBus = new EventBusRabbitMqTyped(this.PersistentConnection,
+                    null, this._eventBusParameters, queueName, this._loggerEventBusRabbitMq);
             }
 
-            if (eventBus == null) return;
-
-            if (EventBus.TryAdd(eventBusName, eventBus))
+            if (eventBus == null)
             {
-                ((IEventBusTyped) EventBus[eventBusName]).Initialize();
+                return;
+            }
+
+            if (this.EventBus.TryAdd(eventBusName, eventBus))
+            {
+                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize();
             }
         }
 
@@ -229,26 +253,32 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
             where TIntegrationEvent : IIntegrationEvent
         {
-            if (EventBus.ContainsKey(eventBusName)) return;
+            if (this.EventBus.ContainsKey(eventBusName))
+            {
+                return;
+            }
 
             IEventBus? eventBus = null;
 
-            if (_loggerFactory != null)
+            if (this._loggerFactory != null)
             {
-                eventBus = new EventBusRabbitMqQueue(PersistentConnection, _loggerFactory, integrationEventHandler,
-                    null, _eventBusParameters, queueName);
+                eventBus = new EventBusRabbitMqQueue(this.PersistentConnection, this._loggerFactory, integrationEventHandler,
+                    null, this._eventBusParameters, queueName);
             }
-            else if (_loggerFactory == null && _loggerEventBusRabbitMq != null)
+            else if (this._loggerFactory == null && this._loggerEventBusRabbitMq != null)
             {
-                eventBus = new EventBusRabbitMqQueue(PersistentConnection, integrationEventHandler,
-                    null, _eventBusParameters, queueName, _loggerEventBusRabbitMq);
+                eventBus = new EventBusRabbitMqQueue(this.PersistentConnection, integrationEventHandler,
+                    null, this._eventBusParameters, queueName, this._loggerEventBusRabbitMq);
             }
 
-            if (eventBus == null) return;
-
-            if (EventBus.TryAdd(eventBusName, eventBus))
+            if (eventBus == null)
             {
-                ((IEventBusQueue) EventBus[eventBusName]).Initialize();
+                return;
+            }
+
+            if (this.EventBus.TryAdd(eventBusName, eventBus))
+            {
+                ((IEventBusQueue)this.EventBus[eventBusName]).Initialize();
             }
         }
     }

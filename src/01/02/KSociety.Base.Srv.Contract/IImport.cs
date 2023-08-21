@@ -1,8 +1,8 @@
-﻿using ProtoBuf.Grpc;
-using ProtoBuf.Grpc.Configuration;
-
-namespace KSociety.Base.Srv.Contract
+﻿namespace KSociety.Base.Srv.Contract
 {
+    using ProtoBuf.Grpc;
+    using ProtoBuf.Grpc.Configuration;
+
     [Service]
     public interface IImport<in TImportReq, out TImportRes>
         where TImportReq : class

@@ -3,7 +3,7 @@ namespace KSociety.Base.Infra.Shared.Class
     using KSociety.Base.Infra.Abstraction.Interface;
     using System.Threading;
     using System.Threading.Tasks;
-    using KSociety.Base.Infra.Shared.Interface;
+    using Interface;
     using KSociety.Base.InfraSub.Shared.Class;
 
     ///<inheritdoc cref="IDatabaseUnitOfWork"/>

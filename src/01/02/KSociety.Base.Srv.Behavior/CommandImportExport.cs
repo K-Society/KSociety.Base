@@ -1,12 +1,12 @@
-﻿using Autofac;
-using KSociety.Base.App.Shared;
-using KSociety.Base.Srv.Contract;
-using KSociety.Base.Srv.Shared.Interface;
-using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc;
-
 namespace KSociety.Base.Srv.Behavior
 {
+    using Autofac;
+    using KSociety.Base.App.Shared;
+    using Contract;
+    using Shared.Interface;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf.Grpc;
+
     public class CommandImportExport<
         TAddReq, TAddRes,
         TUpdateReq, TUpdateRes,
@@ -20,7 +20,7 @@ namespace KSociety.Base.Srv.Behavior
             TCopyReq, TCopyRes,
             TModifyFieldReq, TModifyFieldRes,
             TRemoveReq, TRemoveRes>,
-        KSociety.Base.Srv.Contract.ICommandImportExport<
+        ICommandImportExport<
             TAddReq, TAddRes,
             TUpdateReq, TUpdateRes,
             TCopyReq, TCopyRes,
@@ -53,18 +53,18 @@ namespace KSociety.Base.Srv.Behavior
             ICommandHandler commandHandler
         ) : base(loggerFactory, componentContext, commandHandler)
         {
-            _import = new Import<TImportReq, TImportRes>(loggerFactory, componentContext, commandHandler);
-            _export = new Export<TExportReq, TExportRes>(loggerFactory, componentContext, commandHandler);
+            this._import = new Import<TImportReq, TImportRes>(loggerFactory, componentContext, commandHandler);
+            this._export = new Export<TExportReq, TExportRes>(loggerFactory, componentContext, commandHandler);
         }
 
         public virtual TImportRes ImportData(TImportReq importReq, CallContext context = default)
         {
-            return _import.ImportData(importReq, context);
+            return this._import.ImportData(importReq, context);
         }
 
         public virtual TExportRes ExportData(TExportReq exportReq, CallContext context = default)
         {
-            return _export.ExportData(exportReq, context);
+            return this._export.ExportData(exportReq, context);
         }
     }
 }

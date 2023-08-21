@@ -1,8 +1,8 @@
-﻿using System;
-using MediatR;
-
 namespace KSociety.Base.Domain.Shared.Event
 {
+    using System;
+    using MediatR;
+
     /// <summary>
     /// The EntityModifyField class.
     /// </summary>
@@ -20,9 +20,9 @@ namespace KSociety.Base.Domain.Shared.Event
         /// <param name="entered">Entered</param>
         public EntityModifyField(string fieldName, string? fieldValue, DateTime entered)
         {
-            FieldName = fieldName;
-            FieldValue = fieldValue;
-            Entered = entered;
+            this.FieldName = fieldName;
+            this.FieldValue = fieldValue;
+            this.Entered = entered;
         }
 
         /// <summary>

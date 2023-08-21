@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @using KSociety.Base.Srv.Dto
 @using KSociety.Base.InfraSub.Shared.Interface
 @using System.ComponentModel
@@ -331,7 +331,7 @@ Welcome to your new app.
         public ConnectionList
             (
             List<Connection> tagGroups,
-            List<Base.Srv.Dto.KeyValuePair<int, string>> automationTypeId
+            List<Srv.Dto.KeyValuePair<int, string>> automationTypeId
             )
         {
             List = tagGroups;

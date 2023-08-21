@@ -1,9 +1,9 @@
-﻿using KSociety.Base.App.Shared;
-using KSociety.Base.InfraSub.Shared.Interface;
-using ProtoBuf;
-
 namespace KSociety.Base.App.Utility.Dto.Req
 {
+    using Shared;
+    using KSociety.Base.InfraSub.Shared.Interface;
+    using ProtoBuf;
+
     [ProtoContract]
     public class ExportReq : IRequest, IExport
     {
@@ -13,7 +13,7 @@ namespace KSociety.Base.App.Utility.Dto.Req
 
         public ExportReq(string fileName)
         {
-            FileName = fileName;
+            this.FileName = fileName;
         }
     }
 }

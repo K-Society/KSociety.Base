@@ -1,9 +1,9 @@
-﻿using KSociety.Base.InfraSub.Shared.Interface;
-using System.ComponentModel;
-using System.Threading;
-
 namespace KSociety.Base.Pre.Model.Utility
 {
+    using InfraSub.Shared.Interface;
+    using System.ComponentModel;
+    using System.Threading;
+
     public class ObjectBindingList<T> : BindingList<T> where T : IObject
     {
         public SynchronizationContext SynchronizationContext { private get; set; }
@@ -28,15 +28,15 @@ namespace KSociety.Base.Pre.Model.Utility
 
         protected override void OnAddingNew(AddingNewEventArgs e)
         {
-            if (SynchronizationContext == null)
+            if (this.SynchronizationContext == null)
             {
-                BaseAddingNew(e);
+                this.BaseAddingNew(e);
             }
             else
             {
                 SynchronizationContext.Current?.Send(delegate
                 {
-                    BaseAddingNew(e);
+                    this.BaseAddingNew(e);
                 }, null);
             }
         }
@@ -48,13 +48,13 @@ namespace KSociety.Base.Pre.Model.Utility
 
         protected override void OnListChanged(ListChangedEventArgs e)
         {
-            if (SynchronizationContext == null)
+            if (this.SynchronizationContext == null)
             {
-                BaseListChanged(e);
+                this.BaseListChanged(e);
             }
             else
             {
-                SynchronizationContext.Send(delegate { BaseListChanged(e); }, null);
+                this.SynchronizationContext.Send(delegate { this.BaseListChanged(e); }, null);
             }
         }
 

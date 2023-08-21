@@ -14,7 +14,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
 
     public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin,
         TRoleClaim, TUserToken> : KSociety.Base.Infra.Shared.Interface.IRepositoryBase<TEntity>
-        where TContext : Shared.Identity.Class.DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+        where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TEntity : class
         where TUser : IdentityUser<TKey>
         where TRole : IdentityRole<TKey>

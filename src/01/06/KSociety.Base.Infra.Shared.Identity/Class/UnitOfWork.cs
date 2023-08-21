@@ -10,7 +10,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
     public class
         UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
             TUserToken> : DisposableObject, IDatabaseUnitOfWork
-        where TContext : Shared.Identity.Class.DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+        where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TUser : IdentityUser<TKey>
         where TRole : IdentityRole<TKey>
         where TKey : IEquatable<TKey>

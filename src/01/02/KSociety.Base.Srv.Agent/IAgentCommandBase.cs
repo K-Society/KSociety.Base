@@ -1,7 +1,7 @@
-﻿using System.Threading;
-
-namespace KSociety.Base.Srv.Agent
+﻿namespace KSociety.Base.Srv.Agent
 {
+    using System.Threading;
+
     public interface IAgentCommandBase<
         in TAddReq, out TAddRes,
         in TUpdateReq, out TUpdateRes,

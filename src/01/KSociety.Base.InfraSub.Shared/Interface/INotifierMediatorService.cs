@@ -1,9 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-
-namespace KSociety.Base.InfraSub.Shared.Interface
+﻿namespace KSociety.Base.InfraSub.Shared.Interface
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MediatR;
+
     /// <summary>
     /// The INotifierMediatorService interface.
     /// </summary>

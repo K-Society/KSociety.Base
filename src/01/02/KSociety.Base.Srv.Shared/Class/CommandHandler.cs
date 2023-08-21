@@ -1,11 +1,11 @@
-﻿using System;
-using Autofac;
-using KSociety.Base.App.Shared;
-using KSociety.Base.Srv.Shared.Interface;
-using Microsoft.Extensions.Logging;
-
 namespace KSociety.Base.Srv.Shared.Class
 {
+    using System;
+    using Autofac;
+    using KSociety.Base.App.Shared;
+    using Interface;
+    using Microsoft.Extensions.Logging;
+
     public class CommandHandler : ICommandHandler
     {
         #region [ExecuteListWithResponse<TRequest, TRequestList, TResponse>]
@@ -149,7 +149,10 @@ namespace KSociety.Base.Srv.Shared.Class
                     var requestHandler = componentContext.ResolveNamed<IRequestHandler>(serviceName);
                     var methodInfo = type.GetMethod("Execute");
                     //logger.LogTrace("Execute: " + type.Name + " - " + serviceName + " Response: void");
-                    if (methodInfo != null) methodInfo.Invoke(requestHandler, null);
+                    if (methodInfo != null)
+                    {
+                        methodInfo.Invoke(requestHandler, null);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -202,7 +205,10 @@ namespace KSociety.Base.Srv.Shared.Class
                     var requestHandler = componentContext.Resolve(type);
                     var methodInfo = type.GetMethod("Execute");
                     //logger.LogTrace("Execute: " + openType.Name + " - " + " Request: " + typeof(TRequest).FullName + " Response: void");
-                    if (methodInfo != null) methodInfo.Invoke(requestHandler, new[] {(object)request});
+                    if (methodInfo != null)
+                    {
+                        methodInfo.Invoke(requestHandler, new[] {(object)request});
+                    }
                 }
                 catch (Exception ex)
                 {

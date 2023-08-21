@@ -1,11 +1,11 @@
-﻿using KSociety.Base.Infra.Abstraction.Interface;
-using KSociety.Base.Infra.Shared.Interface;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-
 namespace KSociety.Base.Infra.Shared.Class
 {
+    using KSociety.Base.Infra.Abstraction.Interface;
+    using Interface;
+    using MediatR;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+
     /// <summary>
     /// 
     /// </summary>

@@ -1,9 +1,9 @@
-﻿using System;
-using KSociety.Base.EventBus.Abstractions;
-using ProtoBuf;
-
 namespace KSociety.Base.EventBus.Events
 {
+    using System;
+    using Abstractions;
+    using ProtoBuf;
+
     ///<inheritdoc cref="IIntegrationEventRpc"/>
     [ProtoContract]
     public class IntegrationEventRpc : IIntegrationEventRpc
@@ -20,24 +20,24 @@ namespace KSociety.Base.EventBus.Events
 
         public IntegrationEventRpc()
         {
-            Id = Guid.NewGuid();
-            CreationDate = DateTime.UtcNow;
-            RoutingKey = GetType().Name;
-            ReplyRoutingKey = GetType().Name + ".Reply";
+            this.Id = Guid.NewGuid();
+            this.CreationDate = DateTime.UtcNow;
+            this.RoutingKey = this.GetType().Name;
+            this.ReplyRoutingKey = this.GetType().Name + ".Reply";
         }
 
         public IntegrationEventRpc(string routingKey, string replyRoutingKey)
         {
-            Id = Guid.NewGuid();
-            CreationDate = DateTime.UtcNow;
-            RoutingKey = GetType().Name + "." + routingKey;
-            ReplyRoutingKey = replyRoutingKey;
+            this.Id = Guid.NewGuid();
+            this.CreationDate = DateTime.UtcNow;
+            this.RoutingKey = this.GetType().Name + "." + routingKey;
+            this.ReplyRoutingKey = replyRoutingKey;
         }
 
         public string GetTypeName()
         {
-            string[] result = RoutingKey.Split('.');
-            return result.Length > 1 ? result[0] : RoutingKey;
+            string[] result = this.RoutingKey.Split('.');
+            return result.Length > 1 ? result[0] : this.RoutingKey;
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using System.Linq;
-
-namespace KSociety.Base.Pre.Model.Utility
+﻿namespace KSociety.Base.Pre.Model.Utility
 {
+    using System.Diagnostics;
+    using System.Linq;
+
     public static class Utility
     {
         public static Process PriorProcess()

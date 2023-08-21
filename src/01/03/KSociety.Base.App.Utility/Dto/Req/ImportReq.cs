@@ -1,9 +1,9 @@
-﻿using KSociety.Base.App.Shared;
-using KSociety.Base.InfraSub.Shared.Interface;
-using ProtoBuf;
-
 namespace KSociety.Base.App.Utility.Dto.Req
 {
+    using Shared;
+    using KSociety.Base.InfraSub.Shared.Interface;
+    using ProtoBuf;
+
     [ProtoContract]
     public class ImportReq : IRequest, IImport
     {
@@ -15,8 +15,8 @@ namespace KSociety.Base.App.Utility.Dto.Req
 
         public ImportReq(string fileName, byte[] byteArray)
         {
-            FileName = fileName;
-            ByteArray = byteArray;
+            this.FileName = fileName;
+            this.ByteArray = byteArray;
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace KSociety.Base.App.Shared
+﻿namespace KSociety.Base.App.Shared
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// The IAppList interface.
     /// </summary>

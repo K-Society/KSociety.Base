@@ -1,9 +1,9 @@
-﻿using Autofac;
-using KSociety.Base.App.Shared;
-using Microsoft.Extensions.Logging;
-
-namespace KSociety.Base.Srv.Shared.Interface
+﻿namespace KSociety.Base.Srv.Shared.Interface
 {
+    using Autofac;
+    using KSociety.Base.App.Shared;
+    using Microsoft.Extensions.Logging;
+
     /// <summary>
     /// The ICommandHandler interface.
     /// </summary>

@@ -1,7 +1,7 @@
-﻿using KSociety.Base.InfraSub.Shared.Interface;
-
 namespace KSociety.Base.Domain.Shared.Class
 {
+    using KSociety.Base.InfraSub.Shared.Interface;
+
     /// <inheritdoc/>
     public class EntityNotifier
         : Entity
@@ -24,7 +24,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="notifierMediatorService"><see cref="INotifierMediatorService"/></param>
         public EntityNotifier(INotifierMediatorService notifierMediatorService)
         {
-            NotifierMediatorService = notifierMediatorService;
+            this.NotifierMediatorService = notifierMediatorService;
 
         }
 
@@ -36,7 +36,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="notifierMediatorService"><see cref="INotifierMediatorService"/></param>
         public void AddNotifierMediatorService(INotifierMediatorService notifierMediatorService)
         {
-            NotifierMediatorService = notifierMediatorService;
+            this.NotifierMediatorService = notifierMediatorService;
         }
     }
 }

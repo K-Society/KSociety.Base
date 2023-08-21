@@ -1,14 +1,14 @@
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.EntityFrameworkCore.Update;
-using Microsoft.Extensions.Logging;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
-using Pomelo.EntityFrameworkCore.MySql.Migrations;
-using System;
-
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
+    using Microsoft.EntityFrameworkCore.Metadata;
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.EntityFrameworkCore.Migrations.Operations;
+    using Microsoft.EntityFrameworkCore.Update;
+    using Microsoft.Extensions.Logging;
+    using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
+    using Pomelo.EntityFrameworkCore.MySql.Migrations;
+    using System;
+
     public class MySqlGenerator : MySqlMigrationsSqlGenerator
     {
         private readonly ILogger<MySqlGenerator> _logger;

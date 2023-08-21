@@ -1,12 +1,12 @@
-﻿using System;
-using Autofac;
-using KSociety.Base.EventBus;
-using KSociety.Base.EventBusRabbitMQ;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
-
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    using System;
+    using Autofac;
+    using EventBus;
+    using EventBusRabbitMQ;
+    using Microsoft.Extensions.Logging;
+    using RabbitMQ.Client;
+
     /// <summary>
     /// The MessageBroker module for Autofac.
     /// </summary>
@@ -47,65 +47,65 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
             bool queueExclusive,
             bool queueAutoDelete)
         {
-            _debug = debug;
-            _brokerName = brokerName;
-            _exchangeType = exchangeType;
-            _exchangeDurable = exchangeDurable;
-            _exchangeAutoDelete = exchangeAutoDelete;
+            this._debug = debug;
+            this._brokerName = brokerName;
+            this._exchangeType = exchangeType;
+            this._exchangeDurable = exchangeDurable;
+            this._exchangeAutoDelete = exchangeAutoDelete;
 
-            _queueDurable = queueDurable;
-            _queueExclusive = queueExclusive;
-            _queueAutoDelete = queueAutoDelete;
+            this._queueDurable = queueDurable;
+            this._queueExclusive = queueExclusive;
+            this._queueAutoDelete = queueAutoDelete;
 
-            _mqHostName = mqHostName;
-            _mqUserName = mqUserName;
-            _mqPassword = mqPassword;
+            this._mqHostName = mqHostName;
+            this._mqUserName = mqUserName;
+            this._mqPassword = mqPassword;
         }
 
         public MessageBroker(Class.MessageBrokerOptions messageBroker, bool debug = false)
         {
-            _debug = debug;
-            _brokerName = messageBroker.ExchangeDeclareParameters.BrokerName;
-            _exchangeType = messageBroker.ExchangeDeclareParameters.ExchangeType;
-            _exchangeDurable = messageBroker.ExchangeDeclareParameters.ExchangeDurable;
-            _exchangeAutoDelete = messageBroker.ExchangeDeclareParameters.ExchangeAutoDelete;
+            this._debug = debug;
+            this._brokerName = messageBroker.ExchangeDeclareParameters.BrokerName;
+            this._exchangeType = messageBroker.ExchangeDeclareParameters.ExchangeType;
+            this._exchangeDurable = messageBroker.ExchangeDeclareParameters.ExchangeDurable;
+            this._exchangeAutoDelete = messageBroker.ExchangeDeclareParameters.ExchangeAutoDelete;
 
-            _queueDurable = messageBroker.QueueDeclareParameters.QueueDurable;
-            _queueExclusive = messageBroker.QueueDeclareParameters.QueueExclusive;
-            _queueAutoDelete = messageBroker.QueueDeclareParameters.QueueAutoDelete;
+            this._queueDurable = messageBroker.QueueDeclareParameters.QueueDurable;
+            this._queueExclusive = messageBroker.QueueDeclareParameters.QueueExclusive;
+            this._queueAutoDelete = messageBroker.QueueDeclareParameters.QueueAutoDelete;
 
-            _mqHostName = messageBroker.ConnectionFactory.MqHostName;
-            _mqUserName = messageBroker.ConnectionFactory.MqUserName;
-            _mqPassword = messageBroker.ConnectionFactory.MqPassword;
+            this._mqHostName = messageBroker.ConnectionFactory.MqHostName;
+            this._mqUserName = messageBroker.ConnectionFactory.MqUserName;
+            this._mqPassword = messageBroker.ConnectionFactory.MqPassword;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
             var exchangeDeclareParameters = new TExchangeDeclareParametersClass
             {
-                BrokerName = _brokerName,
-                ExchangeType = _exchangeType.ToString().ToLower(),
-                ExchangeDurable = _exchangeDurable,
-                ExchangeAutoDelete = _exchangeAutoDelete
+                BrokerName = this._brokerName,
+                ExchangeType = this._exchangeType.ToString().ToLower(),
+                ExchangeDurable = this._exchangeDurable,
+                ExchangeAutoDelete = this._exchangeAutoDelete
             };
 
             var queueDeclareParameters = new TQueueDeclareParametersClass
             {
-                QueueDurable = _queueDurable, QueueExclusive = _queueExclusive, QueueAutoDelete = _queueAutoDelete
+                QueueDurable = this._queueDurable, QueueExclusive = this._queueExclusive, QueueAutoDelete = this._queueAutoDelete
             };
 
             var eventBusParameters = new TEventBusParametersClass
             {
                 ExchangeDeclareParameters = exchangeDeclareParameters,
                 QueueDeclareParameters = queueDeclareParameters,
-                Debug = _debug
+                Debug = this._debug
             };
 
             var rabbitMqConnectionFactory = new ConnectionFactory
             {
-                HostName = _mqHostName,
-                UserName = _mqUserName,
-                Password = _mqPassword,
+                HostName = this._mqHostName,
+                UserName = this._mqUserName,
+                Password = this._mqPassword,
                 AutomaticRecoveryEnabled = true,
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(10),
                 RequestedHeartbeat = TimeSpan.FromSeconds(10),

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using RabbitMQ.Client;
-
-namespace KSociety.Base.EventBusRabbitMQ
+﻿namespace KSociety.Base.EventBusRabbitMQ
 {
+    using System;
+    using System.Threading.Tasks;
+    using RabbitMQ.Client;
+
     public interface IRabbitMqPersistentConnection
         : IDisposable
     {

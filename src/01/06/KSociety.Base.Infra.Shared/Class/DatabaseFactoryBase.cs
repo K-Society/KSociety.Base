@@ -2,7 +2,7 @@ namespace KSociety.Base.Infra.Shared.Class
 {
     using KSociety.Base.Infra.Abstraction.Interface;
     using System;
-    using KSociety.Base.Infra.Shared.Interface;
+    using Interface;
     using KSociety.Base.InfraSub.Shared.Class;
     using MediatR;
     using Microsoft.EntityFrameworkCore;

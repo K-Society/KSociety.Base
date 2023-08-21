@@ -1,7 +1,7 @@
-﻿using ProtoBuf;
-
 namespace KSociety.Base.Srv.Dto
 {
+    using ProtoBuf;
+
     [ProtoContract]
     public class PagedRequest
     {
@@ -16,8 +16,8 @@ namespace KSociety.Base.Srv.Dto
 
         public PagedRequest(int pageNumber, int pageSize)
         {
-            PageNumber = pageNumber;
-            PageSize = pageSize;
+            this.PageNumber = pageNumber;
+            this.PageSize = pageSize;
         }
     }
 }

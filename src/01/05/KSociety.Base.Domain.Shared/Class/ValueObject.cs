@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
 namespace KSociety.Base.Domain.Shared.Class
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public abstract class ValueObject
     {
         protected static bool EqualOperator(ValueObject left, ValueObject right)
@@ -24,13 +24,13 @@ namespace KSociety.Base.Domain.Shared.Class
 
         public override bool Equals(object obj)
         {
-            if (obj == null || obj.GetType() != GetType())
+            if (obj == null || obj.GetType() != this.GetType())
             {
                 return false;
             }
 
             ValueObject other = (ValueObject)obj;
-            IEnumerator<object> thisValues = GetAtomicValues().GetEnumerator();
+            IEnumerator<object> thisValues = this.GetAtomicValues().GetEnumerator();
             IEnumerator<object> otherValues = other.GetAtomicValues().GetEnumerator();
             while (thisValues.MoveNext() && otherValues.MoveNext())
             {
@@ -52,7 +52,7 @@ namespace KSociety.Base.Domain.Shared.Class
 
         public override int GetHashCode()
         {
-            return GetAtomicValues()
+            return this.GetAtomicValues()
                 .Select(x => x != null ? x.GetHashCode() : 0)
                 .Aggregate((x, y) => x ^ y);
         }

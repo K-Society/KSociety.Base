@@ -1,8 +1,8 @@
-﻿using Autofac;
-using MediatR;
-
-namespace KSociety.Base.Srv.Host.Shared.Bindings
+﻿namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    using Autofac;
+    using MediatR;
+
     /// <summary>
     /// 
     /// </summary>

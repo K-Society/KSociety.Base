@@ -1,16 +1,16 @@
-using KSociety.Base.Infra.Shared.Interface;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.Infra.Shared.Class
 {
+    using Interface;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.ChangeTracking;
+    using Microsoft.Extensions.Logging;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     ///<inheritdoc cref="IRepositoryBase{TEntity}"/>
     public abstract class RepositoryBase<TContext, TEntity> : IRepositoryBase<TEntity>
         where TContext : DatabaseContext

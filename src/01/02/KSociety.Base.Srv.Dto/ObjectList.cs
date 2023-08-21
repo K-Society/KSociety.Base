@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using KSociety.Base.InfraSub.Shared.Interface;
-using ProtoBuf;
-using ProtoBuf.Meta;
-
 namespace KSociety.Base.Srv.Dto
 {
+    using System;
+    using System.Collections.Generic;
+    using InfraSub.Shared.Interface;
+    using ProtoBuf;
+    using ProtoBuf.Meta;
+
     [ProtoContract]
     public class ObjectList<T> : InfraSub.Shared.Interface.IList<T> where T : IObject
     {
@@ -20,7 +20,7 @@ namespace KSociety.Base.Srv.Dto
         {
             get
             {
-                return List?.Count ?? 0;
+                return this.List?.Count ?? 0;
             }
         }
 

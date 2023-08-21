@@ -1,12 +1,12 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-
-namespace KSociety.Base.InfraSub.Shared.Class.Csv
+﻿namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
+    using CsvHelper;
+    using CsvHelper.Configuration;
+    using System;
+    using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
+
     public static class Configuration
     {
         public static CsvConfiguration CsvConfiguration => new CsvConfiguration(CultureInfo.InvariantCulture)

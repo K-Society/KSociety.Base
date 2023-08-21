@@ -1,11 +1,10 @@
-﻿using System.Threading;
+namespace KSociety.Base.EventBus.Test.IntegrationEvent.EventHandling;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using KSociety.Base.EventBus.Handlers;
-using KSociety.Base.EventBus.Test.IntegrationEvent.Event;
+using Handlers;
+using Event;
 using Microsoft.Extensions.Logging;
-
-namespace KSociety.Base.EventBus.Test.IntegrationEvent.EventHandling;
 
 public class TestRpcServerHandler : IntegrationRpcServerHandler<TestIntegrationEventRpc, TestIntegrationEventReply>
 {

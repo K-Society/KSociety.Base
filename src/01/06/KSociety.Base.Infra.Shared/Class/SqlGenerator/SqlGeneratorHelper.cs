@@ -1,12 +1,12 @@
-﻿using KSociety.Base.InfraSub.Shared.Class;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Linq;
-
-namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
+﻿namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
+    using KSociety.Base.InfraSub.Shared.Class;
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.Extensions.Logging;
+    using System;
+    using System.IO;
+    using System.Linq;
+
     public static class SqlGeneratorHelper
     {
         public static void Generate(ILogger logger,

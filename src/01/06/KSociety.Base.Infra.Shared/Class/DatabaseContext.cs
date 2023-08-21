@@ -2,7 +2,7 @@ namespace KSociety.Base.Infra.Shared.Class
 {
     using KSociety.Base.Infra.Abstraction.Class;
     using KSociety.Base.Infra.Abstraction.Interface;
-    using KSociety.Base.Infra.Shared.Class.SqlGenerator;
+    using SqlGenerator;
     using MediatR;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Infrastructure;

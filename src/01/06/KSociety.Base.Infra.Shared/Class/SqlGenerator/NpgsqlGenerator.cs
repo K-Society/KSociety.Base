@@ -1,12 +1,12 @@
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.Extensions.Logging;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations;
-
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
+    using Microsoft.EntityFrameworkCore.Metadata;
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.EntityFrameworkCore.Migrations.Operations;
+    using Microsoft.Extensions.Logging;
+    using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
+    using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations;
+
     //No Abstract.
     public class NpgsqlGenerator : NpgsqlMigrationsSqlGenerator
     {

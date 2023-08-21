@@ -1,6 +1,5 @@
-﻿using ProtoBuf;
-
-namespace KSociety.Base.EventBus.Test.IntegrationEvent.Event;
+﻿namespace KSociety.Base.EventBus.Test.IntegrationEvent.Event;
+using ProtoBuf;
 
 [ProtoContract]
 public class BaseTestIntegrationEvent : KSociety.Base.EventBus.Events.IntegrationEvent

@@ -1,7 +1,7 @@
-﻿using ProtoBuf;
-
 namespace KSociety.Base.Srv.Dto
 {
+    using ProtoBuf;
+
     [ProtoContract]
     public class KeyValuePair<TKey, TValue>
     {
@@ -15,8 +15,8 @@ namespace KSociety.Base.Srv.Dto
 
         public KeyValuePair(TKey key, TValue value)
         {
-            Key = key;
-            Value = value;
+            this.Key = key;
+            this.Value = value;
         }
     }
 }

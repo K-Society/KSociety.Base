@@ -11,8 +11,4 @@
     <PackageReference Include="Autofac" Version="7.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Doc\" />
-  </ItemGroup>
-
 </Project>

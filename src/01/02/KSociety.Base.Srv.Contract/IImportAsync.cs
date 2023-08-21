@@ -1,9 +1,9 @@
-﻿using ProtoBuf.Grpc;
-using ProtoBuf.Grpc.Configuration;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.Srv.Contract
+﻿namespace KSociety.Base.Srv.Contract
 {
+    using ProtoBuf.Grpc;
+    using ProtoBuf.Grpc.Configuration;
+    using System.Threading.Tasks;
+
     [Service]
     public interface IImportAsync<in TImportReq, TImportRes>
         where TImportReq : class

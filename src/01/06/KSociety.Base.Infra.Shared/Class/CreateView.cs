@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
-
-namespace KSociety.Base.Infra.Shared.Class
+﻿namespace KSociety.Base.Infra.Shared.Class
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
+
     public static class CreateView
     {
         public static OperationBuilder<CreateViewOperation> CreateViewFromSql(

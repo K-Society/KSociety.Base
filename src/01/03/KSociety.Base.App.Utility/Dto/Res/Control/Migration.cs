@@ -1,8 +1,8 @@
-﻿using KSociety.Base.App.Shared;
-using ProtoBuf;
-
 namespace KSociety.Base.App.Utility.Dto.Res.Control
 {
+    using Shared;
+    using ProtoBuf;
+
     [ProtoContract]
     public class Migration : IResponse
     {
@@ -12,7 +12,7 @@ namespace KSociety.Base.App.Utility.Dto.Res.Control
 
         public Migration(bool result)
         {
-            Result = result;
+            this.Result = result;
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.App.Shared
+﻿namespace KSociety.Base.App.Shared
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+
     /// <summary>
     /// The IRequestListHandlerWithResponseAsync interface.
     /// </summary>

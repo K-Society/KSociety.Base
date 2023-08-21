@@ -1,6 +1,5 @@
-﻿using ProtoBuf;
-
 namespace KSociety.Base.EventBus.Test.IntegrationEvent.Event;
+using ProtoBuf;
 
 [ProtoContract]
 public class TestIntegrationEventReply : BaseTestIntegrationEventReply
@@ -22,7 +21,7 @@ public class TestIntegrationEventReply : BaseTestIntegrationEventReply
         byte[] byteArray)
         :base(routingKey)
     {
-        TestName = testName;
-        ByteArray = byteArray;
+        this.TestName = testName;
+        this.ByteArray = byteArray;
     }
 }

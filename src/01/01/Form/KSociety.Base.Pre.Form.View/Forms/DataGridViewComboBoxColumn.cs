@@ -1,19 +1,19 @@
-﻿using System.ComponentModel;
-
 namespace KSociety.Base.Pre.Form.View.Forms
 {
+    using System.ComponentModel;
+
     public partial class DataGridViewComboBoxColumn : System.Windows.Forms.DataGridViewComboBoxColumn
     {
         public DataGridViewComboBoxColumn()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public DataGridViewComboBoxColumn(IContainer container)
         {
             container.Add(this);
 
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }

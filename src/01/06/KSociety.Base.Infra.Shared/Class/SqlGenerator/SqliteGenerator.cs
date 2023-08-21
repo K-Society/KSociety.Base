@@ -1,11 +1,11 @@
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.Extensions.Logging;
-using System;
-
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
-{   
+{
+    using Microsoft.EntityFrameworkCore.Metadata;
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.EntityFrameworkCore.Migrations.Operations;
+    using Microsoft.Extensions.Logging;
+    using System;
+
     //No Abstract.
     public class SqliteGenerator : SqliteMigrationsSqlGenerator
     {

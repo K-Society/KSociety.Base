@@ -1,10 +1,10 @@
-﻿using KSociety.Base.InfraSub.Shared.Interface;
-using KSociety.Base.Pre.Form.Presenter.Abstractions;
-using KSociety.Base.Pre.Form.View.Abstractions;
-using Microsoft.Extensions.Logging;
-
 namespace KSociety.Base.Pre.Form.Presenter.Forms
 {
+    using InfraSub.Shared.Interface;
+    using Abstractions;
+    using KSociety.Base.Pre.Form.View.Abstractions;
+    using Microsoft.Extensions.Logging;
+
     public abstract class PresenterReadOnly<TView, T, TList, TQuery> : PresenterBase<TView, T, TList, TQuery>,
         IPresenterReadOnly<TView, T, TList>
         where T : IObject

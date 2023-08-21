@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
 namespace KSociety.Base.Infra.Shared.Test.Csv
 {
+    using System.Collections.Generic;
+
     public class ClassType
     {
         public int Id { get; private set; }
@@ -14,9 +14,9 @@ namespace KSociety.Base.Infra.Shared.Test.Csv
 
         public ClassType(int id, string name, string mean)
         {
-            Id = id;
-            Name = name;
-            Mean = mean;
+            this.Id = id;
+            this.Name = name;
+            this.Mean = mean;
         }
     }
 }

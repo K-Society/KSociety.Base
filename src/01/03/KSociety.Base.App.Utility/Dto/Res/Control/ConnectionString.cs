@@ -1,8 +1,8 @@
-﻿using KSociety.Base.App.Shared;
-using ProtoBuf;
-
 namespace KSociety.Base.App.Utility.Dto.Res.Control
 {
+    using Shared;
+    using ProtoBuf;
+
     [ProtoContract]
     public class ConnectionString : IResponse
     {
@@ -12,7 +12,7 @@ namespace KSociety.Base.App.Utility.Dto.Res.Control
 
         public ConnectionString(string result)
         {
-            Result = result;
+            this.Result = result;
         }
     }
 }

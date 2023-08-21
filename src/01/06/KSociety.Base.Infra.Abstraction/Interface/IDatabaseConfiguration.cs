@@ -1,7 +1,7 @@
-﻿using KSociety.Base.Infra.Abstraction.Class;
-
 namespace KSociety.Base.Infra.Abstraction.Interface
 {
+    using Class;
+
     /// <summary>
     /// The Database configuration.
     /// </summary>

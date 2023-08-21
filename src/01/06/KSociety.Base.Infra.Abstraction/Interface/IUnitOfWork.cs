@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.Infra.Abstraction.Interface
+﻿namespace KSociety.Base.Infra.Abstraction.Interface
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     /// <summary>
     /// The UnitOfWork class.
     /// </summary>

@@ -1,7 +1,7 @@
-﻿using System;
-
 namespace KSociety.Base.EventBus
 {
+    using System;
+
     public partial class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManager
     {
         public class SubscriptionInfo
@@ -12,8 +12,8 @@ namespace KSociety.Base.EventBus
 
             private SubscriptionInfo(SubscriptionManagerType subscriptionManagerType, Type handlerType)
             {
-                SubscriptionManagerType = subscriptionManagerType;
-                HandlerType = handlerType;
+                this.SubscriptionManagerType = subscriptionManagerType;
+                this.HandlerType = handlerType;
             }
 
             public static SubscriptionInfo Dynamic(Type handlerType)

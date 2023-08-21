@@ -1,13 +1,13 @@
-﻿using Grpc.Core;
-using KSociety.Base.Srv.Contract.Control;
-using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc.Client;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace KSociety.Base.Srv.Agent.Control
 {
+    using Grpc.Core;
+    using KSociety.Base.Srv.Contract.Control;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf.Grpc.Client;
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class DatabaseControl : Connection, IAgentDatabaseControl
     {
         public DatabaseControl(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
@@ -18,74 +18,74 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public string GetConnectionString(CancellationToken cancellationToken = default)
         {
-            Logger?.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            this.Logger?.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<IDatabaseControl>();
+                    var client = this.Channel.CreateGrpcService<IDatabaseControl>();
 
-                    return client.GetConnectionString(ConnectionOptions(cancellationToken)).Result;
+                    return client.GetConnectionString(this.ConnectionOptions(cancellationToken)).Result;
                 }
             }
             catch (RpcException rex)
             {
-                Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
+                this.Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "{0}.{1} - {2}", GetType().FullName,
+                this.Logger?.LogError(ex, "{0}.{1} - {2}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
-            return string.Empty;
+            return String.Empty;
         }
 
         public async ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
         {
-            Logger?.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            this.Logger?.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<IDatabaseControlAsync>();
-                    var result = await client.GetConnectionStringAsync(ConnectionOptions(cancellationToken))
+                    var client = this.Channel.CreateGrpcService<IDatabaseControlAsync>();
+                    var result = await client.GetConnectionStringAsync(this.ConnectionOptions(cancellationToken))
                         .ConfigureAwait(false);
                     return result.Result;
                 }
             }
             catch (RpcException rex)
             {
-                Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
+                this.Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "{0}.{1} - {2}", GetType().FullName,
+                this.Logger?.LogError(ex, "{0}.{1} - {2}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
-            return string.Empty;
+            return String.Empty;
         }
 
         public bool EnsureCreated(CancellationToken cancellationToken = default)
         {
-            Logger?.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            this.Logger?.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<IDatabaseControl>();
+                    var client = this.Channel.CreateGrpcService<IDatabaseControl>();
 
-                    return client.EnsureCreated(ConnectionOptions(cancellationToken)).Result;
+                    return client.EnsureCreated(this.ConnectionOptions(cancellationToken)).Result;
                 }
             }
             catch (RpcException rex)
             {
-                Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
+                this.Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1} - {2}", GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1} - {2}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
@@ -94,14 +94,14 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public async ValueTask<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
         {
-            Logger?.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            this.Logger?.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<IDatabaseControlAsync>();
+                    var client = this.Channel.CreateGrpcService<IDatabaseControlAsync>();
 
-                    var result = await client.EnsureCreatedAsync(ConnectionOptions(cancellationToken))
+                    var result = await client.EnsureCreatedAsync(this.ConnectionOptions(cancellationToken))
                         .ConfigureAwait(false);
 
                     return result.Result;
@@ -109,11 +109,11 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (RpcException rex)
             {
-                Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
+                this.Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "{0}.{1} - {2}", GetType().FullName,
+                this.Logger?.LogError(ex, "{0}.{1} - {2}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
@@ -122,23 +122,23 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public bool EnsureDeleted(CancellationToken cancellationToken = default)
         {
-            Logger?.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            this.Logger?.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<IDatabaseControl>();
+                    var client = this.Channel.CreateGrpcService<IDatabaseControl>();
 
-                    return client.EnsureDeleted(ConnectionOptions(cancellationToken)).Result;
+                    return client.EnsureDeleted(this.ConnectionOptions(cancellationToken)).Result;
                 }
             }
             catch (RpcException rex)
             {
-                Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
+                this.Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "{0}.{1} - {2}", GetType().FullName,
+                this.Logger?.LogError(ex, "{0}.{1} - {2}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
@@ -147,14 +147,14 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public async ValueTask<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
         {
-            Logger?.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            this.Logger?.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<IDatabaseControlAsync>();
+                    var client = this.Channel.CreateGrpcService<IDatabaseControlAsync>();
 
-                    var result = await client.EnsureDeletedAsync(ConnectionOptions(cancellationToken))
+                    var result = await client.EnsureDeletedAsync(this.ConnectionOptions(cancellationToken))
                         .ConfigureAwait(false);
 
                     return result.Result;
@@ -162,11 +162,11 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (RpcException rex)
             {
-                Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
+                this.Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "{0}.{1} - {2}", GetType().FullName,
+                this.Logger?.LogError(ex, "{0}.{1} - {2}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
@@ -175,46 +175,46 @@ namespace KSociety.Base.Srv.Agent.Control
 
         public void Migration(CancellationToken cancellationToken = default)
         {
-            Logger?.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            this.Logger?.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<IDatabaseControl>();
+                    var client = this.Channel.CreateGrpcService<IDatabaseControl>();
 
-                    client.Migration(ConnectionOptions(cancellationToken));
+                    client.Migration(this.ConnectionOptions(cancellationToken));
                 }
             }
             catch (RpcException rex)
             {
-                Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
+                this.Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "{0}.{1} - {2}", GetType().FullName,
+                this.Logger?.LogError(ex, "{0}.{1} - {2}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
         }
 
         public async ValueTask MigrationAsync(CancellationToken cancellationToken = default)
         {
-            Logger?.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            this.Logger?.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<IDatabaseControlAsync>();
+                    var client = this.Channel.CreateGrpcService<IDatabaseControlAsync>();
 
-                    await client.MigrationAsync(ConnectionOptions(cancellationToken)).ConfigureAwait(false);
+                    await client.MigrationAsync(this.ConnectionOptions(cancellationToken)).ConfigureAwait(false);
                 }
             }
             catch (RpcException rex)
             {
-                Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
+                this.Logger?.LogError(rex, "{0} - {1} - {2}", rex.Source, rex.Status.StatusCode, rex.Status.Detail);
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "{0}.{1} - {2}", GetType().FullName,
+                this.Logger?.LogError(ex, "{0}.{1} - {2}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
         }

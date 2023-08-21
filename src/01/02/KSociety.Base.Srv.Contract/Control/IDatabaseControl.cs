@@ -1,9 +1,9 @@
-﻿using KSociety.Base.App.Utility.Dto.Res.Control;
-using ProtoBuf.Grpc;
-using ProtoBuf.Grpc.Configuration;
-
-namespace KSociety.Base.Srv.Contract.Control
+﻿namespace KSociety.Base.Srv.Contract.Control
 {
+    using KSociety.Base.App.Utility.Dto.Res.Control;
+    using ProtoBuf.Grpc;
+    using ProtoBuf.Grpc.Configuration;
+
     [Service]
     public interface IDatabaseControl
     {

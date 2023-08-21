@@ -14,7 +14,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             TUserLogin, TRoleClaim, TUserToken>
         : RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
             TUserToken>, IRepository<TEntity>
-        where TContext : Shared.Identity.Class.DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+        where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TEntity : class
         where TClassMap : ClassMap<TEntity>
         where TUser : IdentityUser<TKey>

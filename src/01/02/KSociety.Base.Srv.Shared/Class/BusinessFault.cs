@@ -1,7 +1,7 @@
-﻿using System.Runtime.Serialization;
-
 namespace KSociety.Base.Srv.Shared.Class
 {
+    using System.Runtime.Serialization;
+
     [DataContract]
     public class BusinessFault
     {
@@ -11,8 +11,8 @@ namespace KSociety.Base.Srv.Shared.Class
 
         public BusinessFault(string errorCode, string message)
         {
-            ErrorCode = errorCode;
-            Message = message;
+            this.ErrorCode = errorCode;
+            this.Message = message;
         }
     }
 }

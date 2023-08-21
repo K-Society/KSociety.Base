@@ -1,4 +1,4 @@
-﻿namespace KSociety.Base.Srv.Agent
+namespace KSociety.Base.Srv.Agent
 {
     ///<inheritdoc/>
     public class AgentConfiguration : IAgentConfiguration
@@ -13,9 +13,9 @@
 
         public AgentConfiguration(string connectionUrl, bool debugFlag, string token = null)
         {
-            ConnectionUrl = connectionUrl;
-            DebugFlag = debugFlag;
-            Token = token;
+            this.ConnectionUrl = connectionUrl;
+            this.DebugFlag = debugFlag;
+            this.Token = token;
         }
     }
 }

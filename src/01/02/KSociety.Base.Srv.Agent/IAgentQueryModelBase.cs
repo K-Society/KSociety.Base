@@ -1,8 +1,8 @@
-﻿using KSociety.Base.InfraSub.Shared.Interface;
-using System.Threading;
-
 namespace KSociety.Base.Srv.Agent
 {
+    using InfraSub.Shared.Interface;
+    using System.Threading;
+
     public interface IAgentQueryModelBase<in TObject, out T>
         where TObject : IIdObject
         where T : IObject

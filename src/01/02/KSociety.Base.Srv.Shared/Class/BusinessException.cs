@@ -1,7 +1,7 @@
-﻿using System;
-
 namespace KSociety.Base.Srv.Shared.Class
 {
+    using System;
+
     public abstract class BusinessException : Exception
     {
         public string ErrorCode { get; private set; }
@@ -9,7 +9,7 @@ namespace KSociety.Base.Srv.Shared.Class
         protected BusinessException(string errorCode, string message)
             : base(message)
         {
-            ErrorCode = errorCode;
+            this.ErrorCode = errorCode;
         }
     }
 }
