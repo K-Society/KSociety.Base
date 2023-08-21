@@ -1,14 +1,13 @@
-﻿using Autofac;
-using KSociety.Base.Infra.Abstraction.Interface;
-using KSociety.Base.Infra.Shared.Class.Identity;
-using Microsoft.AspNetCore.Identity;
-using System;
-
-namespace KSociety.Base.Infra.Shared.Bindings.Identity
+namespace KSociety.Base.Infra.Shared.Identity.Bindings
 {
+    using System;
+    using Autofac;
+    using KSociety.Base.Infra.Abstraction.Interface;
+    using Microsoft.AspNetCore.Identity;
+
     public class UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
         TUserToken> : Module
-        where TContext : DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+        where TContext : Class.DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TUser : IdentityUser<TKey>
         where TRole : IdentityRole<TKey>
         where TKey : IEquatable<TKey>
@@ -21,8 +20,7 @@ namespace KSociety.Base.Infra.Shared.Bindings.Identity
         protected override void Load(ContainerBuilder builder)
         {
             builder
-                .RegisterType<
-                    Infra.Shared.Class.Identity.UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole,
+                .RegisterType<Class.UnitOfWork<TContext, TUser, TRole, TKey, TUserClaim, TUserRole,
                         TUserLogin, TRoleClaim, TUserToken>>().As<IDatabaseUnitOfWork>();
         }
     }

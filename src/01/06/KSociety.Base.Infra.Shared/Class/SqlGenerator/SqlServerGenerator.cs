@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.Update;
@@ -19,8 +19,8 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             ICommandBatchPreparer commandBatchPreparer)
             : base(dependencies, commandBatchPreparer)
         {
-            _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
-            _logger.LogTrace("SqlServerGenerator");
+            this._logger = loggerFactory.CreateLogger<SqlServerGenerator>();
+            this._logger.LogTrace("SqlServerGenerator");
         }
 #endif
 
@@ -34,8 +34,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             {
                 if (operation is CreateViewOperation createViewOperation)
                 {
-                    SqlGeneratorHelper.Generate(_logger, createViewOperation, builder,
-                        Dependencies.SqlGenerationHelper);
+                    SqlGeneratorHelper.Generate(this._logger, createViewOperation, builder, this.Dependencies.SqlGenerationHelper);
                 }
                 else
                 {
@@ -44,7 +43,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Generate: ");
+                this._logger.LogError(ex, "Generate: ");
             }
         }
     }

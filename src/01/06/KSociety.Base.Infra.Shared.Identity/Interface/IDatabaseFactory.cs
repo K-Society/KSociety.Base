@@ -1,9 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
-namespace KSociety.Base.Infra.Shared.Interface.Identity
+namespace KSociety.Base.Infra.Shared.Identity.Interface
 {
+    using System;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Shared.Interface;
+
     public interface IDatabaseFactory<out TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
         TUserToken> : IDatabaseFactoryBase<TContext>
         where TContext : IdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,

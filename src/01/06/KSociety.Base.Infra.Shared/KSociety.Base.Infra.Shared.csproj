@@ -21,16 +21,6 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
   </ItemGroup>
 
-  <!-- .NET 6.0 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.21" />
-  </ItemGroup>
-
-  <!-- .NET 7.0 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.10" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\05\KSociety.Base.Domain.Shared\KSociety.Base.Domain.Shared.csproj" />
     <ProjectReference Include="..\KSociety.Base.Infra.Abstraction\KSociety.Base.Infra.Abstraction.csproj" />

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-
 namespace KSociety.Base.InfraSub.Shared.Class
 {
+    using System;
+    using System.Linq;
+
     public static class Converter
     {
         public static byte[] StringToByteArray(string bytes)
         {
-            if (string.IsNullOrEmpty(bytes)) return Array.Empty<byte>();
+            if (String.IsNullOrEmpty(bytes)) {return Array.Empty<byte>();}
 
             string[] splitResult = bytes.Contains('-') ? bytes.Split('-') : bytes.SplitInParts(2).ToArray();
 

@@ -1,41 +1,59 @@
-using KSociety.Base.Infra.Shared.Interface;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace KSociety.Base.Infra.Shared.Class
+namespace KSociety.Base.Infra.Shared.Identity.Class
 {
-    ///<inheritdoc cref="IRepositoryBase{TEntity}"/>
-    public abstract class RepositoryBase<TContext, TEntity> : IRepositoryBase<TEntity>
-        where TContext : DatabaseContext
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using KSociety.Base.InfraSub.Shared.Class.Csv;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.ChangeTracking;
+    using Microsoft.Extensions.Logging;
+
+    public abstract class RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin,
+        TRoleClaim, TUserToken> : KSociety.Base.Infra.Shared.Interface.IRepositoryBase<TEntity>
+        where TContext : Shared.Identity.Class.DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
         where TEntity : class
+        where TUser : IdentityUser<TKey>
+        where TRole : IdentityRole<TKey>
+        where TKey : IEquatable<TKey>
+        where TUserClaim : IdentityUserClaim<TKey>, new()
+        where TUserRole : IdentityUserRole<TKey>, new()
+        where TUserLogin : IdentityUserLogin<TKey>, new()
+        where TRoleClaim : IdentityRoleClaim<TKey>, new()
+        where TUserToken : IdentityUserToken<TKey>, new()
     {
         private TContext? _dataContext;
+        private IUserStore<TUser>? _userStore;
+        private IRoleStore<TRole>? _roleStore;
         protected readonly ILoggerFactory LoggerFactory;
 
-        protected TContext? DataContext => this._dataContext ??= this.DatabaseFactory.Get();
+        protected TContext? DataContext => this._dataContext ??= this.DatabaseFactory?.Get();
+        protected IUserStore<TUser>? UserStore => this._userStore ??= this.DatabaseFactory?.GetUserStore();
+        protected IRoleStore<TRole>? RoleStore => this._roleStore ??= this.DatabaseFactory?.GetRoleStore();
 
         protected readonly DbSet<TEntity>? DataBaseSet;
 
-        protected readonly ILogger<RepositoryBase<TContext, TEntity>> Logger;
+        protected readonly ILogger<RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole,
+            TUserLogin, TRoleClaim, TUserToken>> Logger;
 
-        protected IDatabaseFactory<TContext> DatabaseFactory { get; private set; }
+        protected Interface.IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim,
+            TUserToken>? DatabaseFactory { get; private set; }
 
         protected bool? Exists => this.DataContext?.Exists();
 
-        protected RepositoryBase(ILoggerFactory loggerFactory, IDatabaseFactory<TContext> databaseFactory)
+        protected RepositoryBase(ILoggerFactory loggerFactory, Interface.IDatabaseFactory<TContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+                databaseFactory)
         {
             this.LoggerFactory = loggerFactory;
             this.DatabaseFactory = databaseFactory;
             this.DataBaseSet = this.DataContext?.Set<TEntity>();
 
-            this.Logger = this.LoggerFactory.CreateLogger<RepositoryBase<TContext, TEntity>>();
+            this.Logger = this.LoggerFactory
+                .CreateLogger<RepositoryBase<TContext, TEntity, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin,
+                    TRoleClaim, TUserToken>>();
         }
 
         public virtual EntityEntry<TEntity>? Add(TEntity entity)
@@ -47,7 +65,9 @@ namespace KSociety.Base.Infra.Shared.Class
             }
 
             var result = this.DataBaseSet?.Add(entity);
-            //Logger.LogTrace("RepositoryBase Add: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName + ")" + " State: " + result.State);
+            this.Logger.LogTrace("RepositoryBase Add: " + this.GetType().FullName + "." +
+                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName +
+                                 ")" + " State: " + result?.State);
             return result;
         }
 
@@ -61,9 +81,10 @@ namespace KSociety.Base.Infra.Shared.Class
             }
 
             var result = await this.DataBaseSet.AddAsync(entity, cancellationToken).ConfigureAwait(false);
-            //Logger.LogTrace("RepositoryBase AddAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName + ")" + " State: " + result.State);
+            this.Logger.LogTrace("RepositoryBase AddAsync: " + this.GetType().FullName + "." +
+                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName +
+                                 ")" + " State: " + result.State);
             return result;
-                
         }
 
         public virtual void AddRange(IEnumerable<TEntity> entities)
@@ -74,9 +95,10 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             else
             {
+
                 this.DataBaseSet?.AddRange(entities);
-                //Logger.LogTrace("RepositoryBase AddRange: " + GetType().FullName + "." +
-                //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogTrace("RepositoryBase AddRange: " + this.GetType().FullName + "." +
+                                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
         }
 
@@ -90,8 +112,8 @@ namespace KSociety.Base.Infra.Shared.Class
             else
             {
                 await this.DataBaseSet.AddRangeAsync(entities, cancellationToken).ConfigureAwait(false);
-                //Logger.LogTrace("RepositoryBase AddRangeAsync: " + GetType().FullName + "." +
-                //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogTrace("RepositoryBase AddRangeAsync: " + this.GetType().FullName + "." +
+                                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
         }
 
@@ -104,7 +126,9 @@ namespace KSociety.Base.Infra.Shared.Class
             }
 
             var result = this.DataBaseSet?.Update(entity);
-            //Logger.LogTrace("RepositoryBase Update: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName + ")" + " State: " + result.State);
+            this.Logger.LogTrace("RepositoryBase Update: " + this.GetType().FullName + "." +
+                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName +
+                                 ")" + " State: " + result?.State);
             return result;
         }
 
@@ -116,9 +140,10 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             else
             {
+
                 this.DataBaseSet?.UpdateRange(entities);
-                //Logger.LogTrace("RepositoryBase UpdateRange: " + GetType().FullName + "." +
-                //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogTrace("RepositoryBase UpdateRange: " + this.GetType().FullName + "." +
+                                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
         }
 
@@ -131,11 +156,13 @@ namespace KSociety.Base.Infra.Shared.Class
             }
 
             var result = this.DataBaseSet?.Remove(entity);
-            //Logger.LogTrace("RepositoryBase Delete: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName + ")" + " State: " + result.State);
+            this.Logger.LogTrace("RepositoryBase Delete: " + this.GetType().FullName + "." +
+                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName +
+                                 ")" + " State: " + result?.State);
             return result;
         }
 
-        public virtual void DeleteRange(IEnumerable<TEntity>? entities)
+        public virtual void DeleteRange(IEnumerable<TEntity> entities)
         {
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
@@ -143,37 +170,33 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             else
             {
-                if (entities is not null)
-                {
-                    this.DataBaseSet?.RemoveRange(entities);
-                }
-                
-                //Logger.LogTrace("RepositoryBase DeleteRange: " + GetType().FullName + "." +
-                //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+
+                this.DataBaseSet?.RemoveRange(entities);
+                this.Logger.LogTrace("RepositoryBase DeleteRange: " + this.GetType().FullName + "." +
+                                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
         }
 
-        public virtual IEnumerable<EntityEntry<TEntity>?>? Delete(Expression<Func<TEntity, bool>> where)
+        public virtual IEnumerable<EntityEntry<TEntity>> Delete(Expression<Func<TEntity, bool>> where)
         {
-            //Logger.LogTrace("RepositoryBase Delete: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + where.GetType().FullName + ")");
+            //Logger.LogTrace("RepositoryBase Delete: " + GetType().FullName + "." +
+            //                System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + where.GetType().FullName +
+            //                ")");
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
                 this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
-            IEnumerable<TEntity>? objects = this.DataBaseSet?.Where(@where).AsEnumerable();
-            IEnumerable<EntityEntry<TEntity>?>? output = new List<EntityEntry<TEntity>>();
-
-            if (objects is not null)
+            IEnumerable<TEntity> objects = this.DataBaseSet.Where(@where).AsEnumerable();
+            IEnumerable<EntityEntry<TEntity>> output = new List<EntityEntry<TEntity>>();
+            foreach (var obj in objects)
             {
-                foreach (var obj in objects)
-                {
-                    output = output?.Append(this.DataBaseSet?.Remove(obj));
-                }
+                output.Append(this.DataBaseSet.Remove(obj));
             }
 
             return output;
+
         }
 
         public virtual TEntity? First(Expression<Func<TEntity, bool>>? filter = null)
@@ -231,8 +254,8 @@ namespace KSociety.Base.Infra.Shared.Class
             try
             {
                 return filter is null
-                    ? this.DataBaseSet.OrderBy(keySelector).LastOrDefault()
-                    : this.DataBaseSet.OrderBy(keySelector).LastOrDefault(filter);
+                    ? this.DataBaseSet?.OrderBy(keySelector).LastOrDefault()
+                    : this.DataBaseSet?.OrderBy(keySelector).LastOrDefault(filter);
             }
             catch (Exception ex)
             {
@@ -268,47 +291,33 @@ namespace KSociety.Base.Infra.Shared.Class
             }
         }
 
-        public virtual TEntity? Find(params object[] keyObject)
+        public TEntity? Find(params object[] keyObject)
         {
-            //Logger.LogTrace("RepositoryBase Find: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");
+            //Logger.LogTrace("RepositoryBase Find: " + GetType().FullName + "." +
+            //                System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName +
+            //                ")");
+
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
                 this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
-            try
-            {
-                return this.DataBaseSet?.Find(keyObject);
-            }
-            catch (Exception ex)
-            {
-                this.Logger.LogError(ex, "{0}.{1}({2})", this.GetType().FullName,
-                    System.Reflection.MethodBase.GetCurrentMethod()?.Name, keyObject.GetType().FullName);
-                return null;
-            }
+            return this.DataBaseSet?.Find(keyObject);
         }
 
-        public virtual async ValueTask<TEntity?> FindAsync(CancellationToken cancellationToken = default,
+        public async ValueTask<TEntity?> FindAsync(CancellationToken cancellationToken = default,
             params object[] keyObject)
         {
-            //Logger.LogTrace("RepositoryBase FindAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName + ")");
+            //Logger.LogTrace("RepositoryBase FindAsync: " + GetType().FullName + "." +
+            //System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + keyObject.GetType().FullName +
+            //")");
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
                 this.Logger.LogWarning("Database not exists!");
                 return null;
             }
-
-            try
-            {
-                return await this.DataBaseSet.FindAsync(keyObject, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                this.Logger.LogError(ex, "FindAsync {0}.{1}({2})", this.GetType().FullName,
-                    System.Reflection.MethodBase.GetCurrentMethod()?.Name, keyObject.GetType().FullName);
-                return null;
-            }
+            return await this.DataBaseSet.FindAsync(keyObject).ConfigureAwait(false);
         }
 
         public virtual int? Count(Expression<Func<TEntity, bool>>? filter = null)
@@ -316,7 +325,7 @@ namespace KSociety.Base.Infra.Shared.Class
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
                 this.Logger.LogWarning("Database not exists!");
-                return -1;
+                return null;
             }
 
             try
@@ -325,7 +334,7 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "Count {0}.{1}", this.GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return -1;
             }
@@ -334,49 +343,56 @@ namespace KSociety.Base.Infra.Shared.Class
         public virtual async ValueTask<int?> CountAsync(Expression<Func<TEntity, bool>>? filter = null,
             CancellationToken cancellationToken = default)
         {
+
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
                 this.Logger.LogWarning("Database not exists!");
-                return -1;
-            }
-
+                return null;
+            } 
+            
             try
             {
-                return filter is null
-                    ? await this.DataBaseSet.CountAsync(cancellationToken).ConfigureAwait(false)
-                    : await this.DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
+                if (filter is null)
+                {
+                    return await this.DataBaseSet.CountAsync(cancellationToken).ConfigureAwait(false);
+                }
+
+                return await this.DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "CountAsync {0}.{1}", this.GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return -1;
             }
         }
 
-        public virtual IQueryable<TEntity>? Query(Expression<Func<TEntity, bool>>? filter = null)
+        public IQueryable<TEntity>? Query(Expression<Func<TEntity, bool>>? filter = null)
         {
-            //Logger.LogTrace("RepositoryBase Query: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName + ")");
+            //Logger.LogTrace("RepositoryBase Query: " + GetType().FullName + "." +
+            //                System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName +
+            //                ")");
+
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
                 this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
-            try
+            if (filter is not null)
             {
-                return filter is null ? this.DataBaseSet : this.DataBaseSet?.Where(filter);
+                return this.DataBaseSet?.Where(filter);
             }
-            catch (Exception ex)
-            {
-                this.Logger.LogError(ex, "Query {0}.{1}", this.GetType().FullName,
-                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-                return null;
-            }
+
+            return this.DataBaseSet;
         }
 
-        public virtual IQueryable<TEntity>? QueryObjectGraph(Expression<Func<TEntity, bool>> filter, string children)
+        public IQueryable<TEntity>? QueryObjectGraph(Expression<Func<TEntity, bool>> filter, string children)
         {
+            //Logger.LogTrace("RepositoryBase QueryObjectGraph: " + GetType().FullName + "." +
+            //                System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + filter.GetType().FullName +
+            //                "," + children + ")");
+
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
                 this.Logger.LogWarning("Database not exists!");
@@ -386,26 +402,18 @@ namespace KSociety.Base.Infra.Shared.Class
             return this.DataBaseSet?.Include(children).Where(filter);
         }
 
-        public virtual IQueryable<TEntity>? FindAll()
+        public IQueryable<TEntity>? FindAll()
         {
-            //Logger.LogTrace("RepositoryBase FindAll: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            //Logger.LogTrace("RepositoryBase FindAll: " + GetType().FullName + "." +
+            //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                this.Logger.LogWarning("{0}.{1} Database not exists!", this.GetType().FullName,
-                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
 
-            try
-            {
-                return this.DataBaseSet;
-            }
-            catch (Exception ex)
-            {
-                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
-                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-                return null;
-            }
+            return this.DataBaseSet;
         }
 
         public virtual IQueryable<TEntity>? GetPaged<TKeySelector>(
@@ -413,17 +421,18 @@ namespace KSociety.Base.Infra.Shared.Class
             Expression<Func<TEntity, TKeySelector>>? keySelector = null,
             Expression<Func<TEntity, bool>>? filter = null)
         {
+            //Logger.LogTrace("RepositoryBase FindAll: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
-                this.Logger.LogWarning("{0}.{1} Database not exists!", this.GetType().FullName,
-                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogWarning("Database not exists!");
                 return null;
             }
+
 
             try
             {
                 var skip = (pageNumber - 1) * pageSize;
-
                 if (filter is null)
                 {
                     return keySelector is null
@@ -441,6 +450,50 @@ namespace KSociety.Base.Infra.Shared.Class
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
                 return null;
             }
+        }
+
+        public void ImportCsv(string fileName)
+        {
+            this.Logger.LogTrace("RepositoryBase ImportCsv: " + this.GetType().FullName + "." +
+                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var result = ReadCsv<TEntity>.Import(this.LoggerFactory, fileName);
+            if (!result.Any())
+            {
+                return;
+            }
+
+            this.DeleteRange(this.FindAll());
+
+            this.AddRange(result);
+        }
+
+        public async ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+        {
+            this.Logger.LogTrace("RepositoryBase ImportCsvAsync: " + this.GetType().FullName + "." +
+                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            var result = ReadCsv<TEntity>.ImportAsync(this.LoggerFactory, fileName, cancellationToken);
+
+            this.DeleteRange(this.FindAll());
+
+            await foreach (var entity in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+            {
+                await this.AddAsync(entity, cancellationToken).ConfigureAwait(false);
+            }
+
+        }
+
+        public void ExportCsv(string fileName)
+        {
+            this.Logger.LogTrace("RepositoryBase ExportCsv: " + this.GetType().FullName + "." +
+                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            WriteCsv<TEntity>.Export(this.LoggerFactory, fileName, this.FindAll());
+        }
+
+        public async ValueTask ExportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+        {
+            this.Logger.LogTrace("RepositoryBase ExportCsvAsync: " + this.GetType().FullName + "." +
+                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            await WriteCsv<TEntity>.ExportAsync(this.LoggerFactory, fileName, this.FindAll()).ConfigureAwait(false);
         }
 
         public void Dispose()

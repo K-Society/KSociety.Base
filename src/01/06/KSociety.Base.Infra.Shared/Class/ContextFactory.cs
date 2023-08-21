@@ -1,15 +1,15 @@
-﻿using KSociety.Base.Infra.Abstraction.Class;
-using KSociety.Base.Infra.Shared.Class.SqlGenerator;
-using KSociety.Base.Infra.Shared.Interface;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-
 namespace KSociety.Base.Infra.Shared.Class
 {
+    using KSociety.Base.Infra.Abstraction.Class;
+    using SqlGenerator;
+    using Interface;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+    using System;
+    using System.IO;
+
     ///<inheritdoc cref="IContextFactory{TContext}"/>
     public class ContextFactory<TContext> : IContextFactory<TContext> where TContext : DatabaseContext
     {
@@ -22,23 +22,23 @@ namespace KSociety.Base.Infra.Shared.Class
                 builder.AddConsole();
                 builder.SetMinimumLevel(LogLevel.Trace);
             });
-            _logger = loggerFactory.CreateLogger<ContextFactory<TContext>>();
+            this._logger = loggerFactory.CreateLogger<ContextFactory<TContext>>();
         }
 
         public ContextFactory(ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<ContextFactory<TContext>>();
+            this._logger = loggerFactory.CreateLogger<ContextFactory<TContext>>();
         }
 
         public virtual TContext CreateDbContext(string[] args)
         {
-            _logger.LogTrace("ContextFactory CreateDbContext");
+            this._logger.LogTrace("ContextFactory CreateDbContext");
             TContext? output = null;
             var dbEngine = DatabaseEngine.Sqlserver;
-            var migrationsAssembly = string.Empty;
-            var connectionString = string.Empty;
+            var migrationsAssembly = String.Empty;
+            var connectionString = String.Empty;
 
-            if (args.Length < 2) return output;
+            if (args.Length < 2) {return output;}
 
             if (args.Length > 0)
             {
@@ -68,14 +68,14 @@ namespace KSociety.Base.Infra.Shared.Class
                     .AddJsonFile("appsettings.json")
                     .Build();
                 connectionString = config.GetConnectionString(connectionStringName);
-                _logger.LogTrace(@"ContextFactory CreateDbContext connectionString: {0}", connectionString);
+                this._logger.LogTrace(@"ContextFactory CreateDbContext connectionString: {0}", connectionString);
             }
 
             if (args.Length >= 3)
             {
                 migrationsAssembly = args[2];
 
-                _logger.LogTrace(@"ContextFactory CreateDbContext migrationsAssembly: {0}", migrationsAssembly);
+                this._logger.LogTrace(@"ContextFactory CreateDbContext migrationsAssembly: {0}", migrationsAssembly);
             }
 
             var optionBuilder = new DbContextOptionsBuilder<TContext>();

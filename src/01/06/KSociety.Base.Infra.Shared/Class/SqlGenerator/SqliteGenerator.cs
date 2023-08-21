@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.Extensions.Logging;
@@ -18,8 +18,8 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             IRelationalAnnotationProvider migrationsAnnotations)
             : base(dependencies, migrationsAnnotations)
         {
-            _logger = loggerFactory.CreateLogger<SqliteGenerator>();
-            _logger.LogTrace("SqliteGenerator");
+            this._logger = loggerFactory.CreateLogger<SqliteGenerator>();
+            this._logger.LogTrace("SqliteGenerator");
         }
 
         protected override void Generate(
@@ -32,8 +32,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
                 if (operation is CreateViewOperation createViewOperation)
                 {
                     //Generate(createViewOperation, builder);
-                    SqlGeneratorHelper.Generate(_logger, createViewOperation, builder,
-                        Dependencies.SqlGenerationHelper);
+                    SqlGeneratorHelper.Generate(this._logger, createViewOperation, builder, this.Dependencies.SqlGenerationHelper);
                 }
                 else
                 {
@@ -42,7 +41,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Generate: ");
+                this._logger.LogError(ex, "Generate: ");
             }
         }
     }
