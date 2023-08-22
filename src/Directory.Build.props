@@ -10,7 +10,7 @@
     <ProjectName Condition=" '$(ProjectName)' == '' ">$(MSBuildProjectName)</ProjectName>
     <BaseOutputPath>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\build\$(ProjectName)\))</BaseOutputPath>
     <BaseIntermediateOutputPath>$(BaseOutputPath)obj\</BaseIntermediateOutputPath>
-    <OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
+    <OutputPath>$(BaseOutputPath)bin\$(Configuration)\</OutputPath>
 	
 	<AssemblyOriginatorKeyFile>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)ksociety.snk))</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
