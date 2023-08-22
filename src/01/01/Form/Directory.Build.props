@@ -14,6 +14,9 @@
     <BaseIntermediateOutputPath>$(BaseOutputPath)obj\</BaseIntermediateOutputPath>
     <OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
 
+	<AssemblyOriginatorKeyFile>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\..\..\ksociety.snk))</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+
     <Title>$(AssemblyName)</Title>
 	
     <Authors>K-Society Team</Authors>
