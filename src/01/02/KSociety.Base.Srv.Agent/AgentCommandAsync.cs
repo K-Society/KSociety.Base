@@ -1,12 +1,14 @@
-ï»¿using KSociety.Base.Srv.Contract;
-using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc.Client;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Agent
 {
+    using Contract;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf.Grpc.Client;
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class AgentCommandAsync<TCommandAsync, TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>
         : Connection, IAgentCommandAsync<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>
         where TCommandAsync : class, ICommandAsync<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>
@@ -32,11 +34,11 @@ namespace KSociety.Base.Srv.Agent
             TAddRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
 
-                    var result = await client.AddAsync(addItem, ConnectionOptions(cancellationToken))
+                    var result = await client.AddAsync(addItem, this.ConnectionOptions(cancellationToken))
                         .ConfigureAwait(false);
 
                     output = result;
@@ -44,7 +46,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
@@ -54,11 +56,11 @@ namespace KSociety.Base.Srv.Agent
             TUpdateRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
 
-                    var result = await client.UpdateAsync(updateItem, ConnectionOptions(cancellationToken))
+                    var result = await client.UpdateAsync(updateItem, this.ConnectionOptions(cancellationToken))
                         .ConfigureAwait(false);
 
                     output = result;
@@ -66,7 +68,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
@@ -76,11 +78,11 @@ namespace KSociety.Base.Srv.Agent
             TCopyRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
 
-                    var result = await client.CopyAsync(copyItem, ConnectionOptions(cancellationToken))
+                    var result = await client.CopyAsync(copyItem, this.ConnectionOptions(cancellationToken))
                         .ConfigureAwait(false);
 
                     output = result;
@@ -88,7 +90,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
@@ -98,11 +100,11 @@ namespace KSociety.Base.Srv.Agent
             TModifyFieldRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
 
-                    var result = await client.ModifyFieldAsync(modifyFieldItem, ConnectionOptions(cancellationToken))
+                    var result = await client.ModifyFieldAsync(modifyFieldItem, this.ConnectionOptions(cancellationToken))
                         .ConfigureAwait(false);
 
                     output = result;
@@ -110,7 +112,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
@@ -120,11 +122,11 @@ namespace KSociety.Base.Srv.Agent
             TRemoveRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
 
-                    var result = await client.RemoveAsync(removeItem, ConnectionOptions(cancellationToken))
+                    var result = await client.RemoveAsync(removeItem, this.ConnectionOptions(cancellationToken))
                         .ConfigureAwait(false);
 
                     output = result;
@@ -132,7 +134,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }

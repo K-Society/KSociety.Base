@@ -1,8 +1,10 @@
-ï»¿using KSociety.Base.App.Shared;
-using ProtoBuf;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.App.Utility.Dto.Res.Control
 {
+    using Shared;
+    using ProtoBuf;
+
     [ProtoContract]
     public class EnsureDeleted : IResponse
     {
@@ -12,7 +14,7 @@ namespace KSociety.Base.App.Utility.Dto.Res.Control
 
         public EnsureDeleted(bool result)
         {
-            Result = result;
+            this.Result = result;
         }
     }
 }

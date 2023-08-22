@@ -1,12 +1,14 @@
-ï»¿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.Extensions.Logging;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
+    using Microsoft.EntityFrameworkCore.Metadata;
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.EntityFrameworkCore.Migrations.Operations;
+    using Microsoft.Extensions.Logging;
+    using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
+    using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations;
+
     //No Abstract.
     public class NpgsqlGenerator : NpgsqlMigrationsSqlGenerator
     {
@@ -20,8 +22,8 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             INpgsqlSingletonOptions migrationsAnnotations)
             : base(dependencies, migrationsAnnotations)
         {
-            _logger = loggerFactory.CreateLogger<NpgsqlGenerator>();
-            _logger.LogTrace("NpgsqlGenerator");
+            this._logger = loggerFactory.CreateLogger<NpgsqlGenerator>();
+            this._logger.LogTrace("NpgsqlGenerator");
         }
 #endif
 
@@ -34,7 +36,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             if (operation is CreateViewOperation createViewOperation)
             {
                 //Generate(createViewOperation, builder);
-                SqlGeneratorHelper.Generate(_logger, createViewOperation, builder, Dependencies.SqlGenerationHelper);
+                SqlGeneratorHelper.Generate(this._logger, createViewOperation, builder, this.Dependencies.SqlGenerationHelper);
             }
             else
             {

@@ -1,12 +1,14 @@
-ï»¿using KSociety.Base.Srv.Contract;
-using Autofac;
-using KSociety.Base.App.Shared;
-using KSociety.Base.Srv.Shared.Interface;
-using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Behavior
 {
+    using Contract;
+    using Autofac;
+    using KSociety.Base.App.Shared;
+    using Shared.Interface;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf.Grpc;
+
     public class Export<TExportReq, TExportRes> : IExport<TExportReq, TExportRes>
         where TExportReq : class, IRequest, new()
         where TExportRes : class, IResponse, new()
@@ -21,14 +23,14 @@ namespace KSociety.Base.Srv.Behavior
             ICommandHandler commandHandler
         )
         {
-            LoggerFactory = loggerFactory;
-            ComponentContext = componentContext;
-            CommandHandler = commandHandler;
+            this.LoggerFactory = loggerFactory;
+            this.ComponentContext = componentContext;
+            this.CommandHandler = commandHandler;
         }
 
         public virtual TExportRes ExportData(TExportReq exportReq, CallContext context = default)
         {
-            return CommandHandler.ExecuteWithResponse<TExportReq, TExportRes>(LoggerFactory, ComponentContext,
+            return this.CommandHandler.ExecuteWithResponse<TExportReq, TExportRes>(this.LoggerFactory, this.ComponentContext,
                 exportReq);
         }
     }

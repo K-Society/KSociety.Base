@@ -1,12 +1,14 @@
-ï»¿using KSociety.Base.App.Shared;
-using KSociety.Base.App.Utility.Dto.Res.Control;
-using KSociety.Base.Infra.Abstraction.Interface;
-using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.App.Utility.ReqHdlr
 {
+    using Shared;
+    using Dto.Res.Control;
+    using Infra.Abstraction.Interface;
+    using Microsoft.Extensions.Logging;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class EnsureDeletedReqHdlr :
         IRequestHandlerWithResponse<EnsureDeleted>,
         IRequestHandlerWithResponseAsync<EnsureDeleted>
@@ -16,13 +18,13 @@ namespace KSociety.Base.App.Utility.ReqHdlr
 
         public EnsureDeletedReqHdlr(ILogger<EnsureDeletedReqHdlr> logger, IDatabaseUnitOfWork unitOfWork)
         {
-            _logger = logger;
-            _unitOfWork = unitOfWork;
+            this._logger = logger;
+            this._unitOfWork = unitOfWork;
         }
 
         public EnsureDeleted Execute()
         {
-            var result = _unitOfWork.EnsureDeleted();
+            var result = this._unitOfWork.EnsureDeleted();
             if (result.HasValue)
             {
                 return new EnsureDeleted(result.Value);
@@ -32,7 +34,7 @@ namespace KSociety.Base.App.Utility.ReqHdlr
 
         public async ValueTask<EnsureDeleted> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            var result = await _unitOfWork.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
+            var result = await this._unitOfWork.EnsureDeletedAsync(cancellationToken).ConfigureAwait(false);
             if (result.HasValue)
             {
                 return new EnsureDeleted(result.Value);

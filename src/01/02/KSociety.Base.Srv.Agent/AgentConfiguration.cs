@@ -1,4 +1,6 @@
-ï»¿namespace KSociety.Base.Srv.Agent
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+
+namespace KSociety.Base.Srv.Agent
 {
     ///<inheritdoc/>
     public class AgentConfiguration : IAgentConfiguration
@@ -13,9 +15,9 @@
 
         public AgentConfiguration(string connectionUrl, bool debugFlag, string token = null)
         {
-            ConnectionUrl = connectionUrl;
-            DebugFlag = debugFlag;
-            Token = token;
+            this.ConnectionUrl = connectionUrl;
+            this.DebugFlag = debugFlag;
+            this.Token = token;
         }
     }
 }

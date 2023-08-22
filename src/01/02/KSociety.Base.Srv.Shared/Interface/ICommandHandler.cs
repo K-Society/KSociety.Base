@@ -1,9 +1,11 @@
-﻿using Autofac;
-using KSociety.Base.App.Shared;
-using Microsoft.Extensions.Logging;
+﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Shared.Interface
 {
+    using Autofac;
+    using KSociety.Base.App.Shared;
+    using Microsoft.Extensions.Logging;
+
     /// <summary>
     /// The ICommandHandler interface.
     /// </summary>

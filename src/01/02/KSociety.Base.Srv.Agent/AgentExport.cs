@@ -1,11 +1,13 @@
-ï»¿using KSociety.Base.Srv.Contract;
-using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc.Client;
-using System;
-using System.Threading;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Agent
 {
+    using Contract;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf.Grpc.Client;
+    using System;
+    using System.Threading;
+
     public class AgentExport<TExport, TExportAsync, TExportReq, TExportRes> : AgentExportAsync<TExportAsync, TExportReq, TExportRes>,
         IAgentExport<TExportReq, TExportRes>
         where TExport : class, IExport<TExportReq, TExportRes>
@@ -24,18 +26,18 @@ namespace KSociety.Base.Srv.Agent
             TExportRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
-                    var client = Channel.CreateGrpcService<TExport>();
+                    var client = this.Channel.CreateGrpcService<TExport>();
 
-                    var result = client.ExportData(request, ConnectionOptions(cancellationToken));
+                    var result = client.ExportData(request, this.ConnectionOptions(cancellationToken));
 
                     output = result;
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName,
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
 

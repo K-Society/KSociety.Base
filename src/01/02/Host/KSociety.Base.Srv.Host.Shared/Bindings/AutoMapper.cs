@@ -1,10 +1,12 @@
-ï»¿using System.Collections.Generic;
-using System.Linq;
-using Autofac;
-using AutoMapper;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Autofac;
+    using global::AutoMapper;
+
     /// <summary>
     /// 
     /// </summary>
@@ -14,12 +16,12 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
 
         public AutoMapper(string[] assemblies)
         {
-            _assemblies = assemblies;
+            this._assemblies = assemblies;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            var assemblies = _assemblies.Select(System.Reflection.Assembly.LoadFrom).ToArray();
+            var assemblies = this._assemblies.Select(System.Reflection.Assembly.LoadFrom).ToArray();
 
             //RegisterAutoMapper Profile
             builder.RegisterAssemblyTypes(assemblies)

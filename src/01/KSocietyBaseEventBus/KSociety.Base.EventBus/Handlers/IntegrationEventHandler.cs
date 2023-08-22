@@ -1,12 +1,14 @@
-ï»¿using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
-using KSociety.Base.EventBus.Abstractions;
-using KSociety.Base.EventBus.Abstractions.Handler;
-using Microsoft.Extensions.Logging;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus.Handlers
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Autofac;
+    using Abstractions;
+    using Abstractions.Handler;
+    using Microsoft.Extensions.Logging;
+
     ///<inheritdoc cref="IIntegrationEventHandler{TIntegrationEvent}"/>
     public class IntegrationEventHandler<TIntegrationEvent> : IntegrationGeneralHandler,
         IIntegrationEventHandler<TIntegrationEvent>
@@ -19,19 +21,19 @@ namespace KSociety.Base.EventBus.Handlers
         public IntegrationEventHandler(ILoggerFactory? loggerFactory = default)
             : base(loggerFactory)
         {
-            Logger = LoggerFactory?.CreateLogger<IntegrationEventHandler<TIntegrationEvent>>();
+            this.Logger = this.LoggerFactory?.CreateLogger<IntegrationEventHandler<TIntegrationEvent>>();
         }
 
         public IntegrationEventHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default) 
             : base(loggerFactory, componentContext)
         {
-            Logger = LoggerFactory?.CreateLogger<IntegrationEventHandler<TIntegrationEvent>>();
+            this.Logger = this.LoggerFactory?.CreateLogger<IntegrationEventHandler<TIntegrationEvent>>();
         }
 
         public IntegrationEventHandler(ILogger<IntegrationEventHandler<TIntegrationEvent>>? logger = default, IComponentContext? componentContext = default)
             : base(componentContext)
         {
-            Logger = logger;
+            this.Logger = logger;
         }
 
         #endregion

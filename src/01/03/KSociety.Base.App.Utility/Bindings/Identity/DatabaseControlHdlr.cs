@@ -1,10 +1,12 @@
-ï»¿using Autofac;
-using KSociety.Base.App.Shared;
-using KSociety.Base.App.Utility.Dto.Res.Control;
-using KSociety.Base.App.Utility.ReqHdlr;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.App.Utility.Bindings.Identity
 {
+    using Autofac;
+    using Shared;
+    using Dto.Res.Control;
+    using ReqHdlr;
+
     public class DatabaseControlHdlr : Module
     {
         protected override void Load(ContainerBuilder builder)

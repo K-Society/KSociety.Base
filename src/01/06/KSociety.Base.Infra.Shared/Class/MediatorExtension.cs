@@ -1,11 +1,13 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using KSociety.Base.Domain.Shared.Class;
-using MediatR;
+﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Class
 {
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using KSociety.Base.Domain.Shared.Class;
+    using MediatR;
+
     public static class MediatorExtension
     {
         public static void DispatchDomainEvents(this IMediator mediator, DatabaseContext ctx)

@@ -1,10 +1,12 @@
-ï»¿using KSociety.Base.Srv.Contract;
-using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Agent
 {
+    using Contract;
+    using Microsoft.Extensions.Logging;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class AgentCommandImportExport<
         TCommandImportExport, TCommandImportExportAsync,
         TAddReq, TAddRes,
@@ -51,34 +53,34 @@ namespace KSociety.Base.Srv.Agent
         public AgentCommandImportExport(IAgentConfiguration agentConfiguration, ILoggerFactory loggerFactory)
             : base(agentConfiguration, loggerFactory)
         {
-            _agentImport =
+            this._agentImport =
                 new AgentImport<TCommandImportExport, TCommandImportExportAsync, TImportReq, TImportRes>(
                     agentConfiguration, loggerFactory);
-            _agentExport =
+            this._agentExport =
                 new AgentExport<TCommandImportExport, TCommandImportExportAsync, TExportReq, TExportRes>(
                     agentConfiguration, loggerFactory);
         }
 
         public virtual TImportRes ImportData(TImportReq request, CancellationToken cancellationToken = default)
         {
-            return _agentImport.ImportData(request, cancellationToken);
+            return this._agentImport.ImportData(request, cancellationToken);
         }
 
         public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq request,
             CancellationToken cancellationToken = default)
         {
-            return await _agentImport.ImportDataAsync(request, cancellationToken).ConfigureAwait(false);
+            return await this._agentImport.ImportDataAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
         public virtual TExportRes ExportData(TExportReq request, CancellationToken cancellationToken = default)
         {
-            return _agentExport.ExportData(request, cancellationToken);
+            return this._agentExport.ExportData(request, cancellationToken);
         }
 
         public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq request,
             CancellationToken cancellationToken = default)
         {
-            return await _agentExport.ExportDataAsync(request, cancellationToken).ConfigureAwait(false);
+            return await this._agentExport.ExportDataAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }
 }

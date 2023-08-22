@@ -1,7 +1,8 @@
-ï»¿using System;
-using KSociety.Base.Domain.Shared.Class;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Test.Csv;
+using System;
+using KSociety.Base.Domain.Shared.Class;
 
 public class DtoTestClass3 : BaseEntity
 {
@@ -24,20 +25,20 @@ public class DtoTestClass3 : BaseEntity
     public DtoTestClass3(/*Guid id,*/ int classTypeId, string name, string ip, bool enable)
     {
         //Id = id;
-        ClassTypeId = classTypeId;
-        Name = name;
-        Ip = ip;
-        Enable = enable;
-        Name = "Urka";
+        this.ClassTypeId = classTypeId;
+        this.Name = name;
+        this.Ip = ip;
+        this.Enable = enable;
+        this.Name = "Urka";
     }
 
     public DtoTestClass3(string name, string ip, bool enable)
     {
-        ClassTypeId = 0;
-        Name = name;
-        Ip = ip;
-        Enable = enable;
-        Name = "Urka2";
+        this.ClassTypeId = 0;
+        this.Name = name;
+        this.Ip = ip;
+        this.Enable = enable;
+        this.Name = "Urka2";
     }
 
     protected DtoTestClass3()

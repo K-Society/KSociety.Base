@@ -1,13 +1,15 @@
-ï»¿using System.Threading.Tasks;
-using Autofac;
-using KSociety.Base.App.Utility.Dto.Res.Control;
-using KSociety.Base.Srv.Contract.Control;
-using KSociety.Base.Srv.Shared.Interface;
-using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Behavior.Control
 {
+    using System.Threading.Tasks;
+    using Autofac;
+    using KSociety.Base.App.Utility.Dto.Res.Control;
+    using KSociety.Base.Srv.Contract.Control;
+    using Shared.Interface;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf.Grpc;
+
     public class DatabaseControlAsync : IDatabaseControlAsync
     {
         private readonly ILogger<DatabaseControlAsync> _logger;
@@ -21,41 +23,41 @@ namespace KSociety.Base.Srv.Behavior.Control
             ICommandHandlerAsync commandHandlerAsync
         )
         {
-            _loggerFactory = loggerFactory;
-            _componentContext = componentContext;
-            _commandHandlerAsync = commandHandlerAsync;
-            _logger = _loggerFactory.CreateLogger<DatabaseControlAsync>();
+            this._loggerFactory = loggerFactory;
+            this._componentContext = componentContext;
+            this._commandHandlerAsync = commandHandlerAsync;
+            this._logger = this._loggerFactory.CreateLogger<DatabaseControlAsync>();
         }
 
         public async ValueTask<EnsureCreated> EnsureCreatedAsync(CallContext context = default)
         {
-            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            return await _commandHandlerAsync
-                .ExecuteWithResponseAsync<EnsureCreated>(_loggerFactory, _componentContext, context.CancellationToken)
+            this._logger.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return await this._commandHandlerAsync
+                .ExecuteWithResponseAsync<EnsureCreated>(this._loggerFactory, this._componentContext, context.CancellationToken)
                 .ConfigureAwait(false);
         }
 
         public async ValueTask<EnsureDeleted> EnsureDeletedAsync(CallContext context = default)
         {
-            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            return await _commandHandlerAsync
-                .ExecuteWithResponseAsync<EnsureDeleted>(_loggerFactory, _componentContext, context.CancellationToken)
+            this._logger.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return await this._commandHandlerAsync
+                .ExecuteWithResponseAsync<EnsureDeleted>(this._loggerFactory, this._componentContext, context.CancellationToken)
                 .ConfigureAwait(false);
         }
 
         public async ValueTask MigrationAsync(CallContext context = default)
         {
-            _logger.LogTrace("{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            await _commandHandlerAsync
-                .ExecuteAsync(_loggerFactory, _componentContext, "MigrationReqHdlr", context.CancellationToken)
+            this._logger.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            await this._commandHandlerAsync
+                .ExecuteAsync(this._loggerFactory, this._componentContext, "MigrationReqHdlr", context.CancellationToken)
                 .ConfigureAwait(false);
         }
 
         public async ValueTask<ConnectionString> GetConnectionStringAsync(CallContext context = default)
         {
-            _logger.LogTrace(GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            return await _commandHandlerAsync
-                .ExecuteWithResponseAsync<ConnectionString>(_loggerFactory, _componentContext).ConfigureAwait(false);
+            this._logger.LogTrace(this.GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+            return await this._commandHandlerAsync
+                .ExecuteWithResponseAsync<ConnectionString>(this._loggerFactory, this._componentContext).ConfigureAwait(false);
         }
     }
 }

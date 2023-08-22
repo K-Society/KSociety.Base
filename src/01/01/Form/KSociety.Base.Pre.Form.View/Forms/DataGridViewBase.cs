@@ -1,17 +1,19 @@
-ï»¿using KSociety.Base.InfraSub.Shared.Interface;
-using KSociety.Base.Pre.Model.Utility;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Pre.Form.View.Forms
 {
+    using InfraSub.Shared.Interface;
+    using Model.Utility;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
+
     public partial class DataGridViewBase<T, TList> where T : IObject where TList : InfraSub.Shared.Interface.IList<T>
     {
         protected readonly Dictionary<string, BindingSource> BindingSourcesComboBox =
@@ -32,28 +34,35 @@ namespace KSociety.Base.Pre.Form.View.Forms
                         return;
                     }
 
-                    BindingSource =
+                    this.BindingSource =
                         new BindingSource(
                             new SortableBindingList<T>(value.List)
                             {
                                 SynchronizationContext = SynchronizationContext.Current
                             }, null);
 
-                    DataSource = BindingSource;
-                    BindingSource.AllowNew = true;
+                    this.DataSource = this.BindingSource;
+                    this.BindingSource.AllowNew = true;
                     foreach (var propertyInfo in typeof(TList).GetProperties())
                     {
-                        if (propertyInfo.Name.Equals("List")) continue;
-                        dynamic objectValue = propertyInfo.GetValue(value, null);
-                        if (!BindingSourcesComboBox.ContainsKey(propertyInfo.Name)) continue;
-                        BindingSourcesComboBox[propertyInfo.Name] = new BindingSource(objectValue.List, null);
+                        if (propertyInfo.Name.Equals("List"))
+                        {
+                            continue;
+                        }
 
-                        (Columns[propertyInfo.Name] as DataGridViewComboBoxColumn).DataSource =
-                            BindingSourcesComboBox[propertyInfo.Name];
+                        dynamic objectValue = propertyInfo.GetValue(value, null);
+                        if (!this.BindingSourcesComboBox.ContainsKey(propertyInfo.Name))
+                        {
+                            continue;
+                        }
+
+                        this.BindingSourcesComboBox[propertyInfo.Name] = new BindingSource(objectValue.List, null);
+
+                        (this.Columns[propertyInfo.Name] as DataGridViewComboBoxColumn).DataSource = this.BindingSourcesComboBox[propertyInfo.Name];
 
                     }
 
-                    BindingSource.BindingComplete += BindingSourceBindingComplete;
+                    this.BindingSource.BindingComplete += BindingSourceBindingComplete;
                 }
                 catch (Exception ex)
                 {
@@ -65,14 +74,14 @@ namespace KSociety.Base.Pre.Form.View.Forms
 
         public DataGridViewBase()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public DataGridViewBase(IContainer container)
         {
             container.Add(this);
 
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public event EventHandler Error; // { get; set; }
@@ -81,11 +90,14 @@ namespace KSociety.Base.Pre.Form.View.Forms
         {
             foreach (var propertyInfo in typeof(T).GetProperties())
             {
-                if (!IsBrowsable(propertyInfo)) continue;
+                if (!IsBrowsable(propertyInfo))
+                {
+                    continue;
+                }
 
                 DataGridViewColumn dataGridViewColumn;
 
-                if (BindingSourcesComboBox.ContainsKey(propertyInfo.Name))
+                if (this.BindingSourcesComboBox.ContainsKey(propertyInfo.Name))
                 {
                     dataGridViewColumn = new DataGridViewComboBoxColumn
                     {
@@ -119,7 +131,7 @@ namespace KSociety.Base.Pre.Form.View.Forms
                 dataGridViewColumn.Name = propertyInfo.Name;
                 dataGridViewColumn.DataPropertyName = propertyInfo.Name;
 
-                Columns.Add(dataGridViewColumn);
+                this.Columns.Add(dataGridViewColumn);
             }
         }
 
@@ -131,7 +143,9 @@ namespace KSociety.Base.Pre.Form.View.Forms
                 BindingCompleteContext.DataSourceUpdate && e.Exception == null)
 
                 // If not, end the current edit.
+            {
                 e.Binding.BindingManagerBase.EndCurrentEdit();
+            }
         }
 
         private static bool IsBrowsable(PropertyInfo propertyInfo)
@@ -158,12 +172,12 @@ namespace KSociety.Base.Pre.Form.View.Forms
         private void StdDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
             // get style to use for row header cells
-            DataGridViewCellStyle style = RowHeadersDefaultCellStyle;
+            DataGridViewCellStyle style = this.RowHeadersDefaultCellStyle;
             // get pen (needed to get text brush)
             Pen pen = new Pen(style.ForeColor);
             // get row rectangle and adjust to width of row header
             RectangleF rec = e.RowBounds;
-            rec.Width = RowHeadersWidth;
+            rec.Width = this.RowHeadersWidth;
             // create formating object to center row number
             StringFormat format = StringFormat.GenericTypographic;
             format.Alignment = StringAlignment.Center;
@@ -204,7 +218,7 @@ namespace KSociety.Base.Pre.Form.View.Forms
 
         public void LoadDataGrid()
         {
-            LoadData?.Invoke(new object(), new EventArgs());
+            this.LoadData?.Invoke(new object(), new EventArgs());
         }
 
         private void StdDataGridViewBase_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -222,7 +236,9 @@ namespace KSociety.Base.Pre.Form.View.Forms
                     e.FormattingApplied = true;
                 }
                 else
+                {
                     e.FormattingApplied = false;
+                }
             }
             //}
             //catch (Exception ex)
@@ -253,7 +269,9 @@ namespace KSociety.Base.Pre.Form.View.Forms
                     e.ParsingApplied = true;
                 }
                 else
+                {
                     e.ParsingApplied = false;
+                }
             }
         }
     }

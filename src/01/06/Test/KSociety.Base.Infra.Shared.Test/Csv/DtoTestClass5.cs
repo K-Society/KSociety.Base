@@ -1,6 +1,7 @@
-ï»¿using System;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Test.Csv;
+using System;
 
 public class DtoTestClass5
 {
@@ -10,8 +11,8 @@ public class DtoTestClass5
 
     public DtoTestClass5(/*Int32 classTypeId*/ string parameter)
     {
-        ClassTypeId = 2;
-        Parameter = parameter;
+        this.ClassTypeId = 2;
+        this.Parameter = parameter;
     }
 
     public DtoTestClass5()

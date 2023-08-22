@@ -1,6 +1,7 @@
-ï»¿using System;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Test.Csv.Dto;
+using System;
 
 public class TestClassParameterlessConstructor
 {
@@ -21,33 +22,33 @@ public class TestClassParameterlessConstructor
 
     public TestClassParameterlessConstructor(Guid id, int classTypeId, string name, string ip, bool enable, string ahh)
     {
-        Id = id;
-        ClassTypeId = classTypeId;
-        Name = name;
-        Ip = ip;
-        Enable = enable;
-        Ahh = ahh;
+        this.Id = id;
+        this.ClassTypeId = classTypeId;
+        this.Name = name;
+        this.Ip = ip;
+        this.Enable = enable;
+        this.Ahh = ahh;
     }
 
     public TestClassParameterlessConstructor(Guid id, int classTypeId, string name, string ip, bool enable, string ahh, string test)
     {
-        Id = id;
-        ClassTypeId = classTypeId;
-        Name = name;
-        Ip = ip;
-        Enable = enable;
-        Ahh = ahh;
-        Ahh = test;
+        this.Id = id;
+        this.ClassTypeId = classTypeId;
+        this.Name = name;
+        this.Ip = ip;
+        this.Enable = enable;
+        this.Ahh = ahh;
+        this.Ahh = test;
     }
 
     public TestClassParameterlessConstructor(Guid id, int classTypeId, string ip, bool enable)
     {
-        Id = id;
-        ClassTypeId = classTypeId;
-        Name = "MaDai";
-        Ip = ip;
-        Enable = enable;
-        Ahh = "MaDai";
+        this.Id = id;
+        this.ClassTypeId = classTypeId;
+        this.Name = "MaDai";
+        this.Ip = ip;
+        this.Enable = enable;
+        this.Ahh = "MaDai";
     }
 
     public TestClassParameterlessConstructor()

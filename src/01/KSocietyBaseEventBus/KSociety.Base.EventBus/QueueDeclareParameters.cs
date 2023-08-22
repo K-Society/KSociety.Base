@@ -1,4 +1,6 @@
-ï»¿namespace KSociety.Base.EventBus
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+
+namespace KSociety.Base.EventBus
 {
     ///<inheritdoc/>
     public class QueueDeclareParameters : IQueueDeclareParameters
@@ -14,16 +16,16 @@
 
         public QueueDeclareParameters()
         {
-            QueueDurable = true;
-            QueueExclusive = false;
-            QueueAutoDelete = false;
+            this.QueueDurable = true;
+            this.QueueExclusive = false;
+            this.QueueAutoDelete = false;
         }
 
         public QueueDeclareParameters(bool queueDurable, bool queueExclusive, bool queueAutoDelete)
         {
-            QueueDurable = queueDurable;
-            QueueExclusive = queueExclusive;
-            QueueAutoDelete = queueAutoDelete;
+            this.QueueDurable = queueDurable;
+            this.QueueExclusive = queueExclusive;
+            this.QueueAutoDelete = queueAutoDelete;
         }
     }
 }

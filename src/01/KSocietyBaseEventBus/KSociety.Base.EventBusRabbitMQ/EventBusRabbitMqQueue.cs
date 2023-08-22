@@ -1,20 +1,22 @@
-ï»¿using KSociety.Base.EventBus;
-using KSociety.Base.EventBus.Abstractions;
-using KSociety.Base.EventBus.Abstractions.EventBus;
-using KSociety.Base.EventBus.Abstractions.Handler;
-using Microsoft.Extensions.Logging;
-using Polly;
-using ProtoBuf;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Exceptions;
-using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
+    using EventBus;
+    using EventBus.Abstractions;
+    using KSociety.Base.EventBus.Abstractions.EventBus;
+    using EventBus.Abstractions.Handler;
+    using Microsoft.Extensions.Logging;
+    using Polly;
+    using ProtoBuf;
+    using RabbitMQ.Client;
+    using RabbitMQ.Client.Exceptions;
+    using System;
+    using System.IO;
+    using System.Net.Sockets;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public sealed class EventBusRabbitMqQueue : EventBusRabbitMq, IEventBusQueue
     {
 
@@ -44,7 +46,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             where T : IIntegrationEvent
             where TH : IIntegrationQueueHandler<T>
         {
-            if (EventHandler is IIntegrationQueueHandler<T> queue)
+            if (this.EventHandler is IIntegrationQueueHandler<T> queue)
             {
                 return queue;
             }
@@ -54,9 +56,9 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public override async ValueTask Publish(IIntegrationEvent @event)
         {
-            if (!PersistentConnection.IsConnected)
+            if (!this.PersistentConnection.IsConnected)
             {
-                await PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
             var policy = Policy.Handle<BrokerUnreachableException>()
@@ -64,19 +66,16 @@ namespace KSociety.Base.EventBusRabbitMQ
                 .Or<Exception>()
                 .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
                 {
-                    Logger?.LogWarning(ex, "Publish: ");
+                    this.Logger?.LogWarning(ex, "Publish: ");
                 });
 
-            using (var channel = PersistentConnection.CreateModel())
+            using (var channel = this.PersistentConnection.CreateModel())
             {
                 if (channel != null)
                 {
                     var routingKey = @event.RoutingKey;
 
-                    channel.ExchangeDeclare(EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                        EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
-                        EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+                    channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeType, this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
                     using (var ms = new MemoryStream())
                     {
@@ -88,7 +87,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                             var properties = channel.CreateBasicProperties();
                             properties.DeliveryMode = 1; //2 = persistent, write on disk
 
-                            channel.BasicPublish(EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,
+                            channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,
                                 true,
                                 properties, body);
                         });
@@ -103,10 +102,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             where T : IIntegrationEvent
             where TH : IIntegrationQueueHandler<T>
         {
-            var eventName = SubsManager.GetEventKey<T>();
-            await DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
-            SubsManager.AddSubscriptionQueue<T, TH>(eventName + "." + routingKey);
-            await StartBasicConsume().ConfigureAwait(false);
+            var eventName = this.SubsManager.GetEventKey<T>();
+            await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
+            this.SubsManager.AddSubscriptionQueue<T, TH>(eventName + "." + routingKey);
+            await this.StartBasicConsume().ConfigureAwait(false);
         }
 
         #endregion
@@ -117,7 +116,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             where T : IIntegrationEvent
             where TH : IIntegrationQueueHandler<T>
         {
-            SubsManager.RemoveSubscriptionQueue<T, TH>(routingKey);
+            this.SubsManager.RemoveSubscriptionQueue<T, TH>(routingKey);
         }
 
         #endregion
@@ -125,9 +124,9 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected override async ValueTask ProcessEvent(string routingKey, string eventName,
             ReadOnlyMemory<byte> message, CancellationToken cancel = default)
         {
-            if (SubsManager.HasSubscriptionsForEvent(routingKey))
+            if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {
-                var subscriptions = SubsManager.GetHandlersForEvent(routingKey);
+                var subscriptions = this.SubsManager.GetHandlersForEvent(routingKey);
                 foreach (var subscription in subscriptions)
                 {
                     switch (subscription.SubscriptionManagerType)
@@ -136,27 +135,27 @@ namespace KSociety.Base.EventBusRabbitMQ
                         case SubscriptionManagerType.Queue:
                             try
                             {
-                                if (EventHandler is null)
+                                if (this.EventHandler is null)
                                 {
 
                                 }
                                 else
                                 {
-                                    var eventType = SubsManager.GetEventTypeByName(routingKey);
+                                    var eventType = this.SubsManager.GetEventTypeByName(routingKey);
                                     using (var ms = new MemoryStream(message.ToArray()))
                                     {
                                         var integrationEvent = Serializer.Deserialize(eventType, ms);
                                         var concreteType =
                                             typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
                                         await ((ValueTask<bool>)concreteType.GetMethod("Enqueue")
-                                                .Invoke(EventHandler, new[] {integrationEvent, cancel}))
+                                                .Invoke(this.EventHandler, new[] {integrationEvent, cancel}))
                                             .ConfigureAwait(false);
                                     }
                                 }
                             }
                             catch (Exception ex)
                             {
-                                Logger?.LogError(ex, "ProcessQueue: ");
+                                this.Logger?.LogError(ex, "ProcessQueue: ");
                             }
 
                             break;

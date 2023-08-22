@@ -1,7 +1,9 @@
-ï»¿using System;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus
 {
+    using System;
+
     public partial class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManager
     {
         public class SubscriptionInfo
@@ -12,8 +14,8 @@ namespace KSociety.Base.EventBus
 
             private SubscriptionInfo(SubscriptionManagerType subscriptionManagerType, Type handlerType)
             {
-                SubscriptionManagerType = subscriptionManagerType;
-                HandlerType = handlerType;
+                this.SubscriptionManagerType = subscriptionManagerType;
+                this.HandlerType = handlerType;
             }
 
             public static SubscriptionInfo Dynamic(Type handlerType)

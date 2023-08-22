@@ -1,9 +1,11 @@
-ï»¿using Autofac;
-using KSociety.Base.Infra.Abstraction.Class;
-using KSociety.Base.Infra.Abstraction.Interface;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Abstraction.Bindings
 {
+    using Autofac;
+    using Class;
+    using Interface;
+
     /// <summary>
     /// 
     /// </summary>
@@ -18,26 +20,25 @@ namespace KSociety.Base.Infra.Abstraction.Bindings
         public DatabaseConfiguration(DatabaseEngine databaseEngine,
             string masterString, bool debugFlag = false, string migrationsAssembly = "", bool lazyLoading = false)
         {
-            _databaseEngine = databaseEngine;
-            _masterString = masterString;
-            _debugFlag = debugFlag;
-            _migrationsAssembly = migrationsAssembly;
-            _lazyLoading = lazyLoading;
+            this._databaseEngine = databaseEngine;
+            this._masterString = masterString;
+            this._debugFlag = debugFlag;
+            this._migrationsAssembly = migrationsAssembly;
+            this._lazyLoading = lazyLoading;
         }
 
         public DatabaseConfiguration(DatabaseOptions databaseOptions)
         {
-            _databaseEngine = databaseOptions.DatabaseEngine;
-            _masterString = databaseOptions.ConnectionString;
-            _debugFlag = databaseOptions.Logging;
-            _migrationsAssembly = databaseOptions.MigrationsAssembly;
-            _lazyLoading = databaseOptions.LazyLoading;
+            this._databaseEngine = databaseOptions.DatabaseEngine;
+            this._masterString = databaseOptions.ConnectionString;
+            this._debugFlag = databaseOptions.Logging;
+            this._migrationsAssembly = databaseOptions.MigrationsAssembly;
+            this._lazyLoading = databaseOptions.LazyLoading;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            var conf = new Infra.Abstraction.Class.DatabaseConfiguration(_databaseEngine, _masterString, _debugFlag,
-                _migrationsAssembly, _lazyLoading);
+            var conf = new Infra.Abstraction.Class.DatabaseConfiguration(this._databaseEngine, this._masterString, this._debugFlag, this._migrationsAssembly, this._lazyLoading);
             builder.RegisterInstance<IDatabaseConfiguration>(conf).SingleInstance();
         }
     }

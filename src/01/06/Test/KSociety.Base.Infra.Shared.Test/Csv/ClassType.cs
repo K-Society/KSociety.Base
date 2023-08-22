@@ -1,7 +1,9 @@
-ï»¿using System.Collections.Generic;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Test.Csv
 {
+    using System.Collections.Generic;
+
     public class ClassType
     {
         public int Id { get; private set; }
@@ -14,9 +16,9 @@ namespace KSociety.Base.Infra.Shared.Test.Csv
 
         public ClassType(int id, string name, string mean)
         {
-            Id = id;
-            Name = name;
-            Mean = mean;
+            this.Id = id;
+            this.Name = name;
+            this.Mean = mean;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace KSociety.Base.InfraSub.Shared.Class
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+
+namespace KSociety.Base.InfraSub.Shared.Class
 {
     /// <summary>
     /// HashCode
@@ -21,7 +23,9 @@
                 {
                     hash1 = ((hash1 << 5) + hash1) ^ str[i];
                     if (i == str.Length - 1)
+                    {
                         break;
+                    }
                     hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
                 }
 

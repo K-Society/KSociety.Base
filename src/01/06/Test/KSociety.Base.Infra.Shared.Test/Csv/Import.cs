@@ -1,12 +1,13 @@
-ï»¿using KSociety.Base.Infra.Shared.Csv;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+
+namespace KSociety.Base.Infra.Shared.Test.Csv;
+using KSociety.Base.Infra.Shared.Csv;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-
-namespace KSociety.Base.Infra.Shared.Test.Csv;
 
 public class Import
 {
@@ -15,18 +16,18 @@ public class Import
         
     public Import()
     {
-        _loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
+        this._loggerFactory = LoggerFactory.Create(builder =>
         {
             builder.AddConsole();
             builder.SetMinimumLevel(LogLevel.Trace);
         });
-        _logger = _loggerFactory.CreateLogger<ReadCsvTest>();
+        this._logger = this._loggerFactory.CreateLogger<ReadCsvTest>();
     }
 
     [Fact]
     public void ImportCsv()
     {
-        var result = ReadCsv<Dto.TestClass>.Import(_loggerFactory, Path.Combine(
+        var result = ReadCsv<Dto.TestClass>.Import(this._loggerFactory, Path.Combine(
             Directory.GetCurrentDirectory(), "Csv", "DtoTestClass.csv"));
 
         Assert.NotNull(result);
@@ -44,7 +45,7 @@ public class Import
     [Fact]
     public async Task ImportCsvAsync()
     {
-        var result = ReadCsv<Dto.TestClass>.ImportAsync(_loggerFactory, Path.Combine(
+        var result = ReadCsv<Dto.TestClass>.ImportAsync(this._loggerFactory, Path.Combine(
             Directory.GetCurrentDirectory(), "Csv", "DtoTestClass.csv"));
 
         Assert.NotNull(result);
@@ -71,7 +72,7 @@ public class Import
     [Fact]
     public void ImportCsvPrivateSetter()
     {
-        var result = ReadCsv<Dto.TestClassPrivateSetter>.Import(_loggerFactory, Path.Combine(
+        var result = ReadCsv<Dto.TestClassPrivateSetter>.Import(this._loggerFactory, Path.Combine(
             Directory.GetCurrentDirectory(), "Csv", "DtoTestClass.csv"));
 
         Assert.NotNull(result);
@@ -89,7 +90,7 @@ public class Import
     [Fact]
     public void ImportCsvParameterlessConstructor()
     {
-        var result = ReadCsv<Dto.TestClassParameterlessConstructor>.Import(_loggerFactory, Path.Combine(
+        var result = ReadCsv<Dto.TestClassParameterlessConstructor>.Import(this._loggerFactory, Path.Combine(
             Directory.GetCurrentDirectory(), "Csv", "DtoTestClass.csv"));
 
         Assert.NotNull(result);
@@ -107,7 +108,7 @@ public class Import
     [Fact]
     public void ImportCsvClassMap()
     {
-        var result = ReadCsvClassMap<Dto.TestClass, Csv.ClassMap.TestClass>.Import(_loggerFactory, Path.Combine(
+        var result = ReadCsvClassMap<Dto.TestClass, ClassMap.TestClass>.Import(this._loggerFactory, Path.Combine(
             Directory.GetCurrentDirectory(), "Csv", "DtoTestClass.csv"));
 
         Assert.NotNull(result);
@@ -125,7 +126,7 @@ public class Import
     [Fact]
     public void ImportCsvClassMapPrivateSetter()
     {
-        var result = ReadCsvClassMap<Dto.TestClassPrivateSetter, ClassMap.TestClassPrivateSetter>.Import(_loggerFactory, Path.Combine(
+        var result = ReadCsvClassMap<Dto.TestClassPrivateSetter, ClassMap.TestClassPrivateSetter>.Import(this._loggerFactory, Path.Combine(
             Directory.GetCurrentDirectory(), "Csv", "DtoTestClass.csv"));
 
         Assert.NotNull(result);
@@ -143,7 +144,7 @@ public class Import
     [Fact]
     public void ImportCsvClassMapParameterlessConstructor()
     {
-        var result = ReadCsvClassMap<Dto.TestClassParameterlessConstructor, Csv.ClassMap.TestClassParameterlessConstructor>.Import(_loggerFactory, Path.Combine(
+        var result = ReadCsvClassMap<Dto.TestClassParameterlessConstructor, ClassMap.TestClassParameterlessConstructor>.Import(this._loggerFactory, Path.Combine(
             Directory.GetCurrentDirectory(), "Csv", "DtoTestClass.csv"));
 
         Assert.NotNull(result);

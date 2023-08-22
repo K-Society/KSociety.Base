@@ -1,9 +1,11 @@
-ï»¿using System;
-using KSociety.Base.EventBus.Abstractions;
-using ProtoBuf;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus.Events
 {
+    using System;
+    using Abstractions;
+    using ProtoBuf;
+
     ///<inheritdoc cref="IIntegrationEvent"/>
     [ProtoContract]
     public abstract class IntegrationEvent : IIntegrationEvent
@@ -18,22 +20,22 @@ namespace KSociety.Base.EventBus.Events
 
         public IntegrationEvent()
         {
-            Id = Guid.NewGuid();
-            CreationDate = DateTime.UtcNow;
-            RoutingKey = GetType().Name;
+            this.Id = Guid.NewGuid();
+            this.CreationDate = DateTime.UtcNow;
+            this.RoutingKey = this.GetType().Name;
         }
 
         public IntegrationEvent(string routingKey)
         {
-            Id = Guid.NewGuid();
-            CreationDate = DateTime.UtcNow;
-            RoutingKey = GetType().Name + "." + routingKey;
+            this.Id = Guid.NewGuid();
+            this.CreationDate = DateTime.UtcNow;
+            this.RoutingKey = this.GetType().Name + "." + routingKey;
         }
 
         public string GetTypeName()
         {
-            string[] result = RoutingKey.Split('.');
-            return result.Length > 1 ? result[0] : RoutingKey;
+            string[] result = this.RoutingKey.Split('.');
+            return result.Length > 1 ? result[0] : this.RoutingKey;
         }
     }
 }

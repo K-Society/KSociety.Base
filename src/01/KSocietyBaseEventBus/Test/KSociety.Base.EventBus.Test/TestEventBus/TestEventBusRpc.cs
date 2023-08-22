@@ -1,11 +1,12 @@
-ï»¿using System.Threading;
-using KSociety.Base.EventBus.Abstractions.EventBus;
-using KSociety.Base.EventBus.Test.IntegrationEvent.Event;
-using KSociety.Base.EventBus.Test.IntegrationEvent.EventHandling;
-using KSociety.Base.EventBusRabbitMQ;
-using Xunit;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus.Test.TestEventBus;
+using System.Threading;
+using KSociety.Base.EventBus.Abstractions.EventBus;
+using IntegrationEvent.Event;
+using IntegrationEvent.EventHandling;
+using EventBusRabbitMQ;
+using Xunit;
 
 public class TestEventBusRpc : Test
 {
@@ -19,7 +20,7 @@ public class TestEventBusRpc : Test
         new Thread(() =>
         {
             Thread.CurrentThread.IsBackground = true;
-            StartServer();
+            this.StartServer();
         }).Start();
 
         //Thread client = new Thread(StartClient);
@@ -27,7 +28,7 @@ public class TestEventBusRpc : Test
 
         //new Thread(StartClient).Start();
         //StartServer();
-        StartClient();
+        this.StartClient();
             
     }
 
@@ -60,7 +61,7 @@ public class TestEventBusRpc : Test
         for (int i = 0; i < 1; i++)
         {
             ;
-            result1 = await _eventBusRpcClient
+            result1 = await this._eventBusRpcClient
                 .CallAsync<TestIntegrationEventReply>(new TestIntegrationEventRpc("pippo.server", "pippo.client",
                     expectedName1, null));
             //.ConfigureAwait(false);

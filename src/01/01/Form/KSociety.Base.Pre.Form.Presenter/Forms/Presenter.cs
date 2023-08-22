@@ -1,15 +1,17 @@
-ï»¿using KSociety.Base.InfraSub.Shared.Interface;
-using KSociety.Base.Pre.Form.Presenter.Abstractions;
-using KSociety.Base.Pre.Form.View.Abstractions;
-using KSociety.Base.Srv.Agent;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Pre.Form.Presenter.Forms
 {
+    using InfraSub.Shared.Interface;
+    using Abstractions;
+    using KSociety.Base.Pre.Form.View.Abstractions;
+    using Srv.Agent;
+    using Microsoft.Extensions.Logging;
+    using System;
+    using System.Drawing;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
+
     public abstract class Presenter<TView, T, TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes,
             TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes, TList, TCommand, TQuery>
         : PresenterBase<TView, T, TList, TQuery>, IPresenter<TView, T, TList>
@@ -35,33 +37,33 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
         protected Presenter(TView view, TCommand commandModel, TQuery queryModel, ILoggerFactory loggerFactory)
             : base(view, queryModel, loggerFactory)
         {
-            CommandModel = commandModel;
+            this.CommandModel = commandModel;
             //Logger.LogDebug("");
-            WireViewEvents();
+            this.WireViewEvents();
         }
 
         private void WireViewEvents()
         {
-            View.Remove += ViewRemove;
+            this.View.Remove += this.ViewRemove;
 
-            View.Add += ViewAdd;
+            this.View.Add += this.ViewAdd;
 
-            View.UpdateEntity += ViewUpdate;
+            this.View.UpdateEntity += this.ViewUpdate;
 
-            View.Copy += ViewCopy;
+            this.View.Copy += this.ViewCopy;
 
-            View.ModifyField += ViewModifyField;
+            this.View.ModifyField += this.ViewModifyField;
         }
 
         private async void ViewRemove(object sender, T e)
         {
             await Task.Run(() =>
             {
-                var result = CommandModel.Remove(e.GetRemoveReq());
+                var result = this.CommandModel.Remove(e.GetRemoveReq());
 
                 if (result.Result)
                 {
-                    View.BindingSource.Remove(e);
+                    this.View.BindingSource.Remove(e);
                 }
             }).ConfigureAwait(false);
         }
@@ -70,8 +72,16 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
         {
             var dgv = (TView)sender;
 
-            if (dgv.DataGridView.CurrentRow == null) return;
-            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1) return;
+            if (dgv.DataGridView.CurrentRow == null)
+            {
+                return;
+            }
+
+            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1)
+            {
+                return;
+            }
+
             var row = dgv.DataGridView.CurrentRow;
 
             await Task.Run(() =>
@@ -101,7 +111,7 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
                     //{
                     //    MessageBox.Show(ex.Message + " " + ex.Source);
                     //}
-                    var addResult = CommandModel.Add(e.GetAddReq());
+                    var addResult = this.CommandModel.Add(e.GetAddReq());
 
                     if (addResult.Id.Equals(Guid.Empty))
                     {
@@ -121,7 +131,7 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
                 catch (Exception ex)
                 {
                     MessageBox.Show("" + ex.Source + " - " + ex.Message + " - " + ex.StackTrace);
-                    Logger.LogError("ViewAdd: " + ex.Message + " - " + ex.StackTrace);
+                    this.Logger.LogError("ViewAdd: " + ex.Message + " - " + ex.StackTrace);
                 }
             }).ConfigureAwait(false);
         }
@@ -130,13 +140,21 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
         {
             TView dgv = (TView)sender;
 
-            if (dgv.DataGridView.CurrentRow == null) return;
-            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1) return;
+            if (dgv.DataGridView.CurrentRow == null)
+            {
+                return;
+            }
+
+            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1)
+            {
+                return;
+            }
+
             DataGridViewRow row = dgv.DataGridView.CurrentRow;
 
             await Task.Run(() =>
             {
-                var addResult = CommandModel.Update(e.GetUpdateReq());
+                var addResult = this.CommandModel.Update(e.GetUpdateReq());
                 ;
 
                 if (addResult.Id.Equals(Guid.Empty))
@@ -160,14 +178,21 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
         {
             TView dgv = (TView)sender;
 
-            if (dgv.DataGridView.CurrentRow == null) return;
-            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1) return;
+            if (dgv.DataGridView.CurrentRow == null)
+            {
+                return;
+            }
+
+            if (dgv.DataGridView.CurrentRow.Index >= dgv.DataGridView.RowCount - 1)
+            {
+                return;
+            }
 
             DataGridViewRow row = dgv.DataGridView.CurrentRow;
 
             await Task.Run(() =>
             {
-                var copyResult = CommandModel.Copy(e.GetCopyReq());
+                var copyResult = this.CommandModel.Copy(e.GetCopyReq());
 
                 if (copyResult.Id.Equals(Guid.Empty))
                 {
@@ -186,18 +211,24 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
         private async void ViewModifyField(object sender, DataGridViewCellEventArgs e)
         {
             TView dgv = (TView)sender;
-            if (dgv.DataGridView.Rows[e.RowIndex].Index >= dgv.DataGridView.RowCount - 1) return;
+            if (dgv.DataGridView.Rows[e.RowIndex].Index >= dgv.DataGridView.RowCount - 1)
+            {
+                return;
+            }
 
             DataGridViewRow row = dgv.DataGridView.Rows[e.RowIndex];
             DataGridViewCell cell = dgv.DataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
             var rowValue = (T)row.DataBoundItem;
 
-            if (rowValue.Id.Equals(Guid.Empty)) return;
+            if (rowValue.Id.Equals(Guid.Empty))
+            {
+                return;
+            }
 
             string columnName = dgv.DataGridView.Columns[cell.ColumnIndex].Name;
 
-            string value = string.Empty;
+            string value = String.Empty;
 
             if (row.Cells[cell.ColumnIndex].ValueType == typeof(byte[]))
             {
@@ -216,7 +247,7 @@ namespace KSociety.Base.Pre.Form.Presenter.Forms
 
             await Task.Run(() =>
             {
-                var modifyResult = CommandModel.ModifyField(new TModifyFieldReq
+                var modifyResult = this.CommandModel.ModifyField(new TModifyFieldReq
                 {
                     Id = id, FieldName = columnName, Value = value
                 });

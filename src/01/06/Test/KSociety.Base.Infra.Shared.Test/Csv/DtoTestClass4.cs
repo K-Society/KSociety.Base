@@ -1,6 +1,7 @@
-ï»¿using System;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Test.Csv;
+using System;
 
 public class DtoTestClass4 : DtoTestClass3
 {
@@ -11,8 +12,8 @@ public class DtoTestClass4 : DtoTestClass3
     public DtoTestClass4(Int32 intt, /*Guid id,*/ int classTypeId, string name, string ip, bool enable, string ahh)
         :base(/*id,*/ classTypeId, name, ip, enable)
     {
-        Int = intt;
-        Ahh = ahh;
+        this.Int = intt;
+        this.Ahh = ahh;
     }
 
     public DtoTestClass4(int classTypeId, string name, string ip, bool enable)

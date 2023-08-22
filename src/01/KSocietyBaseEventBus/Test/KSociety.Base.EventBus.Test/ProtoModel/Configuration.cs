@@ -1,7 +1,8 @@
-ï»¿using System;
-using KSociety.Base.EventBus.Test.IntegrationEvent.Event;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus.Test.ProtoModel;
+using System;
+using IntegrationEvent.Event;
 
 public static class Configuration
 {
@@ -15,13 +16,13 @@ public static class Configuration
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(BaseTestIntegrationEvent), true)
                 .AddSubType(600, typeof(TestIntegrationEvent));
 
-            ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(KSociety.Base.EventBus.Events.IntegrationEventRpc), true)
+            ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Events.IntegrationEventRpc), true)
                 .AddSubType(601, typeof(BaseTestIntegrationEventRpc));
 
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(BaseTestIntegrationEventRpc), true)
                 .AddSubType(601, typeof(TestIntegrationEventRpc));
 
-            ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(KSociety.Base.EventBus.Events.IntegrationEventReply), true)
+            ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Events.IntegrationEventReply), true)
                 .AddSubType(602, typeof(BaseTestIntegrationEventReply));
 
             ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(BaseTestIntegrationEventReply), true)

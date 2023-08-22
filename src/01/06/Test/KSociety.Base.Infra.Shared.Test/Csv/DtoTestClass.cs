@@ -1,7 +1,8 @@
-ï»¿using System;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Test.Csv
 {
+    using System;
 
 
 
@@ -40,12 +41,12 @@ namespace KSociety.Base.Infra.Shared.Test.Csv
 
         public DtoTestClass(Guid id, int classTypeId, string name, string ip, bool enable, string ahh)
         {
-            Id = id;
-            ClassTypeId = classTypeId;
-            Name = name;
-            Ip = ip;
-            Enable = enable;
-            Ahh = ahh;
+            this.Id = id;
+            this.ClassTypeId = classTypeId;
+            this.Name = name;
+            this.Ip = ip;
+            this.Enable = enable;
+            this.Ahh = ahh;
         }
 
         //public DtoTestClass()

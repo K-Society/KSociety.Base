@@ -1,9 +1,11 @@
-ï»¿using KSociety.Base.InfraSub.Shared.Interface;
-using ProtoBuf;
-using System;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Dto
 {
+    using InfraSub.Shared.Interface;
+    using ProtoBuf;
+    using System;
+
     [ProtoContract]
     public class PagedList<T>
         : ObjectList<T> where T : IObject
@@ -20,7 +22,7 @@ namespace KSociety.Base.Srv.Dto
         {
             get
             {
-                return PageNumber > 1;
+                return this.PageNumber > 1;
             }
         }
 
@@ -28,7 +30,7 @@ namespace KSociety.Base.Srv.Dto
         {
             get
             {
-                return PageNumber < TotalPages;
+                return this.PageNumber < this.TotalPages;
             }
         }
 
@@ -39,10 +41,10 @@ namespace KSociety.Base.Srv.Dto
 
         public PagedList(int totalRows, int pageNumber, int pageSize)
         {
-            TotalRows = totalRows;
-            PageNumber = pageNumber;
-            PageSize = pageSize;
-            TotalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+            this.TotalRows = totalRows;
+            this.PageNumber = pageNumber;
+            this.PageSize = pageSize;
+            this.TotalPages = (int)Math.Ceiling((double)totalRows / pageSize);
         }
     }
 }

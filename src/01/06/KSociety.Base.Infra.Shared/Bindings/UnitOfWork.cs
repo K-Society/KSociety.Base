@@ -1,9 +1,11 @@
-ï»¿using Autofac;
-using KSociety.Base.Infra.Abstraction.Interface;
-using KSociety.Base.Infra.Shared.Class;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Bindings
 {
+    using Autofac;
+    using KSociety.Base.Infra.Abstraction.Interface;
+    using Class;
+
     /// <summary>
     /// The UnitOfWork module for Autofac.
     /// </summary>

@@ -1,11 +1,13 @@
-ï»¿using System;
-using System.ComponentModel;
-using System.Reflection;
-using KSociety.Base.Domain.Shared.Event;
-using Microsoft.Extensions.Logging;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Domain.Shared.Class
 {
+    using System;
+    using System.ComponentModel;
+    using System.Reflection;
+    using Event;
+    using Microsoft.Extensions.Logging;
+
     /// <inheritdoc/>
     public class Entity : BaseEntity
     {
@@ -22,15 +24,14 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="value">New value of the domaint entiy field.</param>
         public void ModifyField(string fieldName, string? value)
         {
-            Logger?.LogTrace("ModifyField Entity: {0}.{1} - {2} - {3}",
-                GetType().FullName,
+            this.Logger?.LogTrace("ModifyField Entity: {0}.{1} - {2} - {3}", this.GetType().FullName,
                 MethodBase.GetCurrentMethod()?.Name,
                 fieldName, value);
 
-            AddEntityModifyFieldEvent(fieldName, value);
+            this.AddEntityModifyFieldEvent(fieldName, value);
             try
             {
-                var field = GetType().GetProperty(fieldName); //, BindingFlags.Public | BindingFlags.Instance);
+                var field = this.GetType().GetProperty(fieldName); //, BindingFlags.Public | BindingFlags.Instance);
                 if (field != null && field.CanWrite)
                 {
                     //Console.WriteLine("1 " + field.Name);
@@ -57,8 +58,7 @@ namespace KSociety.Base.Domain.Shared.Class
                             }
                             else
                             {
-                                Logger?.LogWarning("ModifyField Entity: {0}.{1} - {2} - {3}: Byte Array on data!",
-                                    GetType().FullName,
+                                this.Logger?.LogWarning("ModifyField Entity: {0}.{1} - {2} - {3}: Byte Array on data!", this.GetType().FullName,
                                     MethodBase.GetCurrentMethod()?.Name,
                                     fieldName, value);
                             }
@@ -86,14 +86,13 @@ namespace KSociety.Base.Domain.Shared.Class
                 }
                 else
                 {
-                    Logger?.LogWarning("ModifyField Entity: {0}.{1} - {2} - {3}: Can not write OR null!",
-                        GetType().FullName,
+                    this.Logger?.LogWarning("ModifyField Entity: {0}.{1} - {2} - {3}: Can not write OR null!", this.GetType().FullName,
                         MethodBase.GetCurrentMethod()?.Name, fieldName, value);
                 }
             }
             catch (Exception ex)
             {
-                Logger?.LogError(ex, "ModifyField");
+                this.Logger?.LogError(ex, "ModifyField");
             }
         }
 
@@ -101,7 +100,7 @@ namespace KSociety.Base.Domain.Shared.Class
         {
             var entityModifyField = new EntityModifyField(fieldName, fieldValue);
 
-            AddDomainEvent(entityModifyField);
+            this.AddDomainEvent(entityModifyField);
         }
     }
 }

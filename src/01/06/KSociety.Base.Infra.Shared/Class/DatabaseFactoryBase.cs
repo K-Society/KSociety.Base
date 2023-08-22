@@ -1,13 +1,15 @@
-ï»¿using KSociety.Base.Infra.Abstraction.Interface;
-using System;
-using KSociety.Base.Infra.Shared.Interface;
-using KSociety.Base.InfraSub.Shared.Class;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Class
 {
+    using KSociety.Base.Infra.Abstraction.Interface;
+    using System;
+    using Interface;
+    using KSociety.Base.InfraSub.Shared.Class;
+    using MediatR;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+
     public class DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>
         : DisposableObject, IDatabaseFactoryBase<TContext>
         where TLoggerFactory : ILoggerFactory
@@ -24,27 +26,27 @@ namespace KSociety.Base.Infra.Shared.Class
 
         protected DatabaseFactoryBase(TLoggerFactory loggerFactory, TConfiguration configuration)
         {
-            LoggerFactory = loggerFactory;
-            _configuration = configuration;
+            this.LoggerFactory = loggerFactory;
+            this._configuration = configuration;
 
-            Logger = loggerFactory.CreateLogger<DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>>();
+            this.Logger = loggerFactory.CreateLogger<DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>>();
         }
 
         protected DatabaseFactoryBase(TLoggerFactory loggerFactory, TConfiguration configuration, IMediator mediator)
         {
-            LoggerFactory = loggerFactory;
-            _configuration = configuration;
-            _mediator = mediator;
+            this.LoggerFactory = loggerFactory;
+            this._configuration = configuration;
+            this._mediator = mediator;
 
-            Logger = loggerFactory.CreateLogger<DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>>();
+            this.Logger = loggerFactory.CreateLogger<DatabaseFactoryBase<TLoggerFactory, TConfiguration, TContext>>();
         }
 
         public TContext? Get()
         {
-            if (_dataContext != null) return _dataContext;
-            _dataContext = CreateContext();
+            if (this._dataContext != null) {return this._dataContext;}
+            this._dataContext = this.CreateContext();
 
-            return _dataContext;
+            return this._dataContext;
         }
 
         private TContext? CreateContext()
@@ -52,19 +54,18 @@ namespace KSociety.Base.Infra.Shared.Class
             TContext? output = null;
             try
             {
-                if (_mediator is null)
+                if (this._mediator is null)
                 {
-                    output = (TContext?)Activator.CreateInstance(typeof(TContext), LoggerFactory, _configuration);
+                    output = (TContext?)Activator.CreateInstance(typeof(TContext), this.LoggerFactory, this._configuration);
                 }
                 else
                 {
-                    output = (TContext?)Activator.CreateInstance(typeof(TContext), LoggerFactory, _configuration,
-                        _mediator);
+                    output = (TContext?)Activator.CreateInstance(typeof(TContext), this.LoggerFactory, this._configuration, this._mediator);
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "CreateContext: ");
+                this.Logger.LogError(ex, "CreateContext: ");
             }
 
             return output;
@@ -73,9 +74,9 @@ namespace KSociety.Base.Infra.Shared.Class
         protected override void DisposeManagedResources()
         {
 
-            if (_dataContext == null) return;
-            _dataContext.Dispose();
-            _dataContext = null;
+            if (this._dataContext == null) {return;}
+            this._dataContext.Dispose();
+            this._dataContext = null;
         }
     }
 }

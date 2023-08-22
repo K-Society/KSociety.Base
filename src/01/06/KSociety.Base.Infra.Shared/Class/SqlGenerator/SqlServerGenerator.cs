@@ -1,12 +1,14 @@
-ï»¿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.EntityFrameworkCore.Update;
-using Microsoft.Extensions.Logging;
-using System;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
+    using Microsoft.EntityFrameworkCore.Metadata;
+    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.EntityFrameworkCore.Migrations.Operations;
+    using Microsoft.EntityFrameworkCore.Update;
+    using Microsoft.Extensions.Logging;
+    using System;
+
     //No Abstract.
     public class SqlServerGenerator : SqlServerMigrationsSqlGenerator
     {
@@ -19,8 +21,8 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             ICommandBatchPreparer commandBatchPreparer)
             : base(dependencies, commandBatchPreparer)
         {
-            _logger = loggerFactory.CreateLogger<SqlServerGenerator>();
-            _logger.LogTrace("SqlServerGenerator");
+            this._logger = loggerFactory.CreateLogger<SqlServerGenerator>();
+            this._logger.LogTrace("SqlServerGenerator");
         }
 #endif
 
@@ -34,8 +36,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             {
                 if (operation is CreateViewOperation createViewOperation)
                 {
-                    SqlGeneratorHelper.Generate(_logger, createViewOperation, builder,
-                        Dependencies.SqlGenerationHelper);
+                    SqlGeneratorHelper.Generate(this._logger, createViewOperation, builder, this.Dependencies.SqlGenerationHelper);
                 }
                 else
                 {
@@ -44,7 +45,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Generate: ");
+                this._logger.LogError(ex, "Generate: ");
             }
         }
     }

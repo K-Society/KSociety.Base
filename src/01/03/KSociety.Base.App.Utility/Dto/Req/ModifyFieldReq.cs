@@ -1,10 +1,12 @@
-ï»¿using KSociety.Base.App.Shared;
-using KSociety.Base.InfraSub.Shared.Interface;
-using ProtoBuf;
-using System;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.App.Utility.Dto.Req
 {
+    using Shared;
+    using KSociety.Base.InfraSub.Shared.Interface;
+    using ProtoBuf;
+    using System;
+
     [ProtoContract]
     public class ModifyFieldReq : IRequest, IModifyField
     {
@@ -23,9 +25,9 @@ namespace KSociety.Base.App.Utility.Dto.Req
             string value
         )
         {
-            Id = id;
-            FieldName = fieldName;
-            Value = value;
+            this.Id = id;
+            this.FieldName = fieldName;
+            this.Value = value;
         }
     }
 }

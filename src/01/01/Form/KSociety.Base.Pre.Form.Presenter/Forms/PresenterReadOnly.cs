@@ -1,10 +1,12 @@
-ï»¿using KSociety.Base.InfraSub.Shared.Interface;
-using KSociety.Base.Pre.Form.Presenter.Abstractions;
-using KSociety.Base.Pre.Form.View.Abstractions;
-using Microsoft.Extensions.Logging;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Pre.Form.Presenter.Forms
 {
+    using InfraSub.Shared.Interface;
+    using Abstractions;
+    using KSociety.Base.Pre.Form.View.Abstractions;
+    using Microsoft.Extensions.Logging;
+
     public abstract class PresenterReadOnly<TView, T, TList, TQuery> : PresenterBase<TView, T, TList, TQuery>,
         IPresenterReadOnly<TView, T, TList>
         where T : IObject

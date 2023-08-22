@@ -1,10 +1,12 @@
-ï»¿using System.Collections.Generic;
-using KSociety.Base.InfraSub.Shared.Class;
-using MediatR;
-using Microsoft.Extensions.Logging;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Domain.Shared.Class
 {
+    using System.Collections.Generic;
+    using KSociety.Base.InfraSub.Shared.Class;
+    using MediatR;
+    using Microsoft.Extensions.Logging;
+
     /// <summary>
     /// The abstract BaseEntity class.
     /// Contains all methods for adding a logger and events to the domain entity.
@@ -15,7 +17,7 @@ namespace KSociety.Base.Domain.Shared.Class
     public abstract class BaseEntity : DisposableObject
     {
         private List<INotification>? _domainEvents;
-        public IReadOnlyCollection<INotification>? DomainEvents => _domainEvents?.AsReadOnly();
+        public IReadOnlyCollection<INotification>? DomainEvents => this._domainEvents?.AsReadOnly();
 
         public ILoggerFactory? LoggerFactory;
         public ILogger? Logger;
@@ -26,8 +28,8 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="loggerFactory"><see cref="ILoggerFactory"/></param>
         public void AddLoggerFactory(ILoggerFactory loggerFactory)
         {
-            LoggerFactory = loggerFactory;
-            AddLogger(loggerFactory);
+            this.LoggerFactory = loggerFactory;
+            this.AddLogger(loggerFactory);
         }
 
         /// <summary>
@@ -36,7 +38,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="loggerFactory"><see cref="ILoggerFactory"/></param>
         public void AddLogger(ILoggerFactory loggerFactory)
         {
-            Logger = loggerFactory.CreateLogger(GetType());
+            this.Logger = loggerFactory.CreateLogger(this.GetType());
         }
 
         /// <summary>
@@ -45,7 +47,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="logger"><see cref="ILogger"/></param>
         public void AddLogger(ILogger logger)
         {
-            Logger = logger;
+            this.Logger = logger;
         }
 
         /// <summary>
@@ -55,11 +57,12 @@ namespace KSociety.Base.Domain.Shared.Class
         public void AddDomainEvent(INotification eventItem)
         {
             //_domainEvents ??= new List<INotification>();
-            if (_domainEvents is null)
+            if (this._domainEvents is null)
             {
-                _domainEvents = new List<INotification>();
+                this._domainEvents = new List<INotification>();
             }
-            _domainEvents.Add(eventItem);
+
+            this._domainEvents.Add(eventItem);
         }
 
         /// <summary>
@@ -68,7 +71,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="eventItem"><see cref="INotification"/></param>
         public void RemoveDomainEvent(INotification eventItem)
         {
-            _domainEvents?.Remove(eventItem);
+            this._domainEvents?.Remove(eventItem);
         }
 
         /// <summary>
@@ -76,7 +79,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// </summary>
         public void ClearDomainEvents()
         {
-            _domainEvents?.Clear();
+            this._domainEvents?.Clear();
         }
     }
 }

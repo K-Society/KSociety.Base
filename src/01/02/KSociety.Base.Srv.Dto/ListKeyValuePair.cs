@@ -1,8 +1,10 @@
-ï»¿using System.Collections.Generic;
-using ProtoBuf;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Dto
 {
+    using System.Collections.Generic;
+    using ProtoBuf;
+
     [ProtoContract]
     public class ListKeyValuePair<TKey, TValue>
     {
@@ -19,7 +21,7 @@ namespace KSociety.Base.Srv.Dto
 
         public ListKeyValuePair(List<KeyValuePair<TKey, TValue>> keyValuePairs)
         {
-            List = keyValuePairs;
+            this.List = keyValuePairs;
         }
     }
 }

@@ -1,13 +1,15 @@
-ï»¿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
-using KSociety.Base.App.Shared;
-using KSociety.Base.Srv.Shared.Interface;
-using Microsoft.Extensions.Logging;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Shared.Class
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Autofac;
+    using KSociety.Base.App.Shared;
+    using Interface;
+    using Microsoft.Extensions.Logging;
+
     public class CommandHandlerAsync : ICommandHandlerAsync
     {
         #region [ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>]
@@ -164,8 +166,10 @@ namespace KSociety.Base.Srv.Shared.Class
                     var methodInfo = type.GetMethod("ExecuteAsync");
                     //logger.LogTrace("ExecuteAsync: " + type.Name + " - " + serviceName + " Response: ValueTask");
                     if (methodInfo != null)
+                    {
                         await ((ValueTask)methodInfo.Invoke(requestHandler, new[] {(object)cancellationToken}))
                             .ConfigureAwait(false);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -222,8 +226,10 @@ namespace KSociety.Base.Srv.Shared.Class
                     var methodInfo = type.GetMethod("ExecuteAsync");
                     //logger.LogTrace("ExecuteAsync: " + openType.Name + " - " + " Request: " + typeof(TRequest).FullName + " Response: void");
                     if (methodInfo != null)
+                    {
                         await ((ValueTask)methodInfo.Invoke(requestHandler, new[] {(object)request, cancellationToken}))
                             .ConfigureAwait(false);
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -1,11 +1,13 @@
-ï»¿using KSociety.Base.Srv.Contract;
-using Microsoft.Extensions.Logging;
-using ProtoBuf.Grpc.Client;
-using System;
-using System.Threading;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Agent
 {
+    using Contract;
+    using Microsoft.Extensions.Logging;
+    using ProtoBuf.Grpc.Client;
+    using System;
+    using System.Threading;
+
     public class AgentCommand<TCommand, TCommandAsync, TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes> 
         : AgentCommandAsync<TCommandAsync, TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>, 
             IAgentCommand<TAddReq, TAddRes, TUpdateReq, TUpdateRes, TCopyReq, TCopyRes, TModifyFieldReq, TModifyFieldRes, TRemoveReq, TRemoveRes>
@@ -33,19 +35,19 @@ namespace KSociety.Base.Srv.Agent
             TAddRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
 
-                    var client = Channel.CreateGrpcService<TCommand>();
+                    var client = this.Channel.CreateGrpcService<TCommand>();
 
-                    var result = client.Add(addItem, ConnectionOptions(cancellationToken));
+                    var result = client.Add(addItem, this.ConnectionOptions(cancellationToken));
 
                     output = result;
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
@@ -55,19 +57,19 @@ namespace KSociety.Base.Srv.Agent
             TUpdateRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
 
-                    var client = Channel.CreateGrpcService<TCommand>();
+                    var client = this.Channel.CreateGrpcService<TCommand>();
 
-                    var result = client.Update(updateItem, ConnectionOptions(cancellationToken));
+                    var result = client.Update(updateItem, this.ConnectionOptions(cancellationToken));
 
                     output = result;
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
@@ -77,19 +79,19 @@ namespace KSociety.Base.Srv.Agent
             TCopyRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
 
-                    var client = Channel.CreateGrpcService<TCommand>();
+                    var client = this.Channel.CreateGrpcService<TCommand>();
 
-                    var result = client.Copy(copyItem, ConnectionOptions(cancellationToken));
+                    var result = client.Copy(copyItem, this.ConnectionOptions(cancellationToken));
 
                     output = result;
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
@@ -99,19 +101,19 @@ namespace KSociety.Base.Srv.Agent
             TModifyFieldRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
 
-                    var client = Channel.CreateGrpcService<TCommand>();
+                    var client = this.Channel.CreateGrpcService<TCommand>();
 
-                    var result = client.ModifyField(modifyFieldItem, ConnectionOptions(cancellationToken));
+                    var result = client.ModifyField(modifyFieldItem, this.ConnectionOptions(cancellationToken));
 
                     output = result;
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
@@ -121,19 +123,19 @@ namespace KSociety.Base.Srv.Agent
             TRemoveRes output = default;
             try
             {
-                using (Channel)
+                using (this.Channel)
                 {
 
-                    var client = Channel.CreateGrpcService<TCommand>();
+                    var client = this.Channel.CreateGrpcService<TCommand>();
 
-                    var result = client.Remove(removeItem, ConnectionOptions(cancellationToken));
+                    var result = client.Remove(removeItem, this.ConnectionOptions(cancellationToken));
 
                     output = result;
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "{0}.{1}", GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }

@@ -1,36 +1,37 @@
-ï»¿using System.ComponentModel;
-using System.Windows.Forms;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Pre.Form.View.Forms
 {
+    using System.ComponentModel;
+    using System.Windows.Forms;
+
     public partial class DataGridViewFunctionColumn : DataGridViewButtonColumn
     {
         public DataGridViewFunctionColumn()
         {
-            InitializeComponent();
-            Initialize();
+            this.InitializeComponent();
+            this.Initialize();
         }
 
         public DataGridViewFunctionColumn(IContainer container)
         {
             container.Add(this);
 
-            InitializeComponent();
-            Initialize();
+            this.InitializeComponent();
+            this.Initialize();
         }
 
         private void Initialize()
         {
-
-            DataPropertyName = "Function";
-            Name = "Function";
+            this.DataPropertyName = "Function";
+            this.Name = "Function";
             //Text = "Remove";
-            HeaderText = @"Function";
-            UseColumnTextForButtonValue = false;
+            this.HeaderText = @"Function";
+            this.UseColumnTextForButtonValue = false;
 
-            Width = 60;
+            this.Width = 60;
 
-            CellTemplate = new DataGridViewFunctionCell();
+            this.CellTemplate = new DataGridViewFunctionCell();
         }
     }
 }

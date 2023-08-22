@@ -1,7 +1,9 @@
-ï»¿using KSociety.Base.InfraSub.Shared.Interface;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Domain.Shared.Class
 {
+    using KSociety.Base.InfraSub.Shared.Interface;
+
     /// <inheritdoc/>
     public class BaseEntityNotifier
         : BaseEntity
@@ -25,7 +27,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="notifierMediatorService"><see cref="INotifierMediatorService"/></param>
         public BaseEntityNotifier(INotifierMediatorService notifierMediatorService)
         {
-            NotifierMediatorService = notifierMediatorService;
+            this.NotifierMediatorService = notifierMediatorService;
 
         }
 
@@ -37,7 +39,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="notifierMediatorService"><see cref="INotifierMediatorService"/></param>
         public void AddNotifierMediatorService(INotifierMediatorService notifierMediatorService)
         {
-            NotifierMediatorService = notifierMediatorService;
+            this.NotifierMediatorService = notifierMediatorService;
         }
     }
 }

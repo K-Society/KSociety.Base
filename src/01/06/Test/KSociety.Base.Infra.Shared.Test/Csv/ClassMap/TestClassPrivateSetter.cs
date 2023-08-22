@@ -1,14 +1,16 @@
-ï»¿namespace KSociety.Base.Infra.Shared.Test.Csv.ClassMap;
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+
+namespace KSociety.Base.Infra.Shared.Test.Csv.ClassMap;
 
 public sealed class TestClassPrivateSetter : CsvHelper.Configuration.ClassMap<Csv.Dto.TestClassPrivateSetter>
 {
     public TestClassPrivateSetter()
     {
-        Map(map => map.Id);
-        Map(map => map.ClassTypeId);
-        Map(map => map.Name);
-        Map(map => map.Ip);
-        Map(map => map.Enable);
-        Map(map => map.Ahh);
+        this.Map(map => map.Id);
+        this.Map(map => map.ClassTypeId);
+        this.Map(map => map.Name);
+        this.Map(map => map.Ip);
+        this.Map(map => map.Enable);
+        this.Map(map => map.Ahh);
     }
 }
