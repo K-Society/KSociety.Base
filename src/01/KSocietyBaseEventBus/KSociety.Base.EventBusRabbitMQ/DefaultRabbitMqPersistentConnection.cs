@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
@@ -95,7 +95,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     await Task.Run(() =>
                     {
-                        this._logger?.LogInformation("RabbitMQ CreateConnection.");
+                        //this._logger?.LogInformation("RabbitMQ CreateConnection.");
                         //_logger.LogTrace("RabbitMQ CreateConnection StackTrace: {0}", System.Environment.StackTrace);
                         this._connection = this._connectionFactory
                             .CreateConnection(); //ToDo
@@ -109,8 +109,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     this._connection.CallbackException += this.OnCallbackExceptionAsync;
                     this._connection.ConnectionBlocked += this.OnConnectionBlockedAsync;
 
-                    this._logger?.LogInformation(
-                        $"RabbitMQ persistent connection acquired a connection {this._connection.Endpoint.HostName} and is subscribed to failure events");
+                    //this._logger?.LogInformation($"RabbitMQ persistent connection acquired a connection {this._connection.Endpoint.HostName} and is subscribed to failure events");
                     output = true;
                 }
                 else

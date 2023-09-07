@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
@@ -51,7 +51,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public override void Initialize(CancellationToken cancel = default)
         {
-            this.Logger?.LogTrace("EventBusRabbitMqRpc Initialize.");
+            //this.Logger?.LogTrace("EventBusRabbitMqRpc Initialize.");
             this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
             this.ConsumerChannel =
                 new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
@@ -169,8 +169,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             var eventName = this.SubsManager.GetEventKey<T>();
             var eventNameResult = this.SubsManager.GetEventReplyKey<TR>();
-            this.Logger?.LogDebug("SubscribeRpc: eventName: {0}.{1} eventNameResult: {2}.{3}", eventName, routingKey,
-                eventNameResult, routingKey);
+            //this.Logger?.LogDebug("SubscribeRpc: eventName: {0}.{1} eventNameResult: {2}.{3}", eventName, routingKey, eventNameResult, routingKey);
             await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey);
             this.SubsManager.AddSubscriptionRpc<T, TR, TH>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
             await this.StartBasicConsume().ConfigureAwait(false);
@@ -226,7 +225,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override async ValueTask<bool> StartBasicConsume()
         {
-            this.Logger?.LogTrace("Starting RabbitMQ basic consume");
+            //this.Logger?.LogTrace("Starting RabbitMQ basic consume");
             try
             {
                 if (this.ConsumerChannel is null)
@@ -261,7 +260,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async ValueTask StartBasicConsumeReply()
         {
-            this.Logger?.LogTrace("Starting RabbitMQ basic consume reply");
+            //this.Logger?.LogTrace("Starting RabbitMQ basic consume reply");
             try
             {
                 if (this._consumerChannelReply is null)

@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
@@ -92,7 +92,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public virtual void Initialize(CancellationToken cancel = default)
         {
-            this.Logger?.LogTrace("EventBusRabbitMq Initialize.");
+            //this.Logger?.LogTrace("EventBusRabbitMq Initialize.");
             this.ConsumerChannel =
                 new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         }
@@ -250,7 +250,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected virtual async ValueTask<bool> StartBasicConsume()
         {
-            this.Logger?.LogTrace("EventBusRabbitMq Starting RabbitMQ basic consume.");
+            //this.Logger?.LogTrace("EventBusRabbitMq Starting RabbitMQ basic consume.");
             try
             {
                 if (this.ConsumerChannel is null)
@@ -270,7 +270,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                         autoAck: false,
                         consumer: consumer);
 
-                    this.Logger?.LogInformation("EventBusRabbitMq StartBasicConsume done. Queue name: {0}, autoAck: {1}", this.QueueName, true);
+                    //this.Logger?.LogInformation("EventBusRabbitMq StartBasicConsume done. Queue name: {0}, autoAck: {1}", this.QueueName, true);
 
                     return true;
                 }
@@ -344,7 +344,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected virtual async ValueTask<IModel?> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
-            this.Logger?.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
+            //this.Logger?.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
 
             if (!this.PersistentConnection.IsConnected)
             {
