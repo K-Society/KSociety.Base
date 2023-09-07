@@ -2,9 +2,10 @@
 
 [![build status](https://img.shields.io/github/actions/workflow/status/K-Society/KSociety.Base/build.yml?branch=develop)](https://github.com/K-Society/KSociety.Base/actions/workflows/build.yml?query=branch%3Adevelop) [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.InfraSub.Shared)](https://www.nuget.org/profiles/K-Society)
 
+# K - Society Framework
 # KSociety.Base - Framework for microservices
 
-K-Society Base is a full stack framework for .NET Standard 2.1 application, ideal for implementing microservices.
+K-Society Base is a full stack framework is based on .NET to quickly build layered structure, ideal for implementing microservices.
 
 ## Introduction
 
@@ -34,7 +35,7 @@ Visual Studio 2022 with the following installed:
 
  * Run 'build.cmd' script
 
- ##### Uses your newly built KSociety.Base framework
+##### Uses your newly built KSociety.Base framework
 
 ### Examples
 

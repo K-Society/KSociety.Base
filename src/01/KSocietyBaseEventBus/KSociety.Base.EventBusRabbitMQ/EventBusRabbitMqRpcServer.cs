@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
@@ -48,7 +48,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public override void Initialize(CancellationToken cancel = default)
         {
-            this.Logger?.LogTrace("EventBusRabbitMqRpcServer Initialize.");
+            //this.Logger?.LogTrace("EventBusRabbitMqRpcServer Initialize.");
             this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
             this.ConsumerChannel =
                 new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
@@ -136,8 +136,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             var eventName = this.SubsManager.GetEventKey<T>();
             var eventNameResult = this.SubsManager.GetEventReplyKey<TR>();
-            this.Logger?.LogTrace("SubscribeRpcServer routing key: {0}, event name: {1}, event name result: {2}", routingKey,
-                eventName, eventNameResult);
+            //this.Logger?.LogTrace("SubscribeRpcServer routing key: {0}, event name: {1}, event name result: {2}", routingKey, eventName, eventNameResult);
             await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey)
                 .ConfigureAwait(false);
             this.SubsManager.AddSubscriptionRpcServer<T, TR, TH>(eventName + "." + routingKey,
@@ -205,7 +204,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override async ValueTask<bool> StartBasicConsume()
         {
-            this.Logger?.LogTrace("EventBusRabbitMqRpcServer Starting RabbitMQ basic consume.");
+            //this.Logger?.LogTrace("EventBusRabbitMqRpcServer Starting RabbitMQ basic consume.");
 
             try
             {
@@ -225,9 +224,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                         queue: this.QueueName,
                         autoAck: false,
                         consumer: consumer);
-                    this.Logger?.LogInformation(
-                        "EventBusRabbitMqRpcServer StartBasicConsume done. Queue name: {0}, autoAck: {1}", this.QueueName,
-                        false);
+                    //this.Logger?.LogInformation("EventBusRabbitMqRpcServer StartBasicConsume done. Queue name: {0}, autoAck: {1}", this.QueueName, false);
 
                     return true;
                 }
@@ -331,7 +328,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override async ValueTask<IModel?> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
-            this.Logger?.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", this.QueueName);
+            //this.Logger?.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", this.QueueName);
             if (!this.PersistentConnection.IsConnected)
             {
                 await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
@@ -367,7 +364,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async ValueTask<IModel?> CreateConsumerChannelReplyAsync(CancellationToken cancel = default)
         {
-            this.Logger?.LogTrace("CreateConsumerChannelReplyAsync queue name: {0}", this._queueNameReply);
+            //this.Logger?.LogTrace("CreateConsumerChannelReplyAsync queue name: {0}", this._queueNameReply);
             if (!this.PersistentConnection.IsConnected)
             {
                 await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);

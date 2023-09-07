@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
@@ -59,7 +59,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
 
             var eventName = this.SubsManager.GetEventKey<T>();
-            this.Logger?.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
+            //this.Logger?.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
             await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
             this.SubsManager.AddSubscription<T, TH>(eventName + "." + routingKey);
             await this.StartBasicConsume().ConfigureAwait(false);

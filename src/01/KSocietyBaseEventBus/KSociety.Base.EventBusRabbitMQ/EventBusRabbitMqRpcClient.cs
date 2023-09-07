@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
@@ -53,7 +53,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public override void Initialize(CancellationToken cancel = default)
         {
-            this.Logger?.LogTrace("EventBusRabbitMqRpcClient Initialize.");
+            //this.Logger?.LogTrace("EventBusRabbitMqRpcClient Initialize.");
             this._queueNameReply = this.QueueName + "_Reply";
             this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
             this.ConsumerChannel =
@@ -244,8 +244,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>
         {
             var eventNameResult = this.SubsManager.GetEventReplyKey<TIntegrationEventReply>();
-            this.Logger?.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey,
-                eventNameResult);
+            //this.Logger?.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
             await this.DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey);
             this.SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(eventNameResult + "." + replyRoutingKey);
             await this.StartBasicConsume().ConfigureAwait(false);
@@ -334,8 +333,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                         autoAck: true, //ToDo
                         consumer: consumer);
 
-                    this.Logger?.LogInformation(
-                        "EventBusRabbitMqRpcClient StartBasicConsume done. Queue name: {0}, autoAck: {1}", this._queueNameReply, true);
+                    //this.Logger?.LogInformation("EventBusRabbitMqRpcClient StartBasicConsume done. Queue name: {0}, autoAck: {1}", this._queueNameReply, true);
 
                     return true;
                 }
@@ -414,8 +412,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override async ValueTask<IModel?> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
-            this.Logger?.LogTrace(
-                "EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
+            //this.Logger?.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
             try
             {
                 if (!this.PersistentConnection.IsConnected)
