@@ -108,14 +108,29 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             try
             {
-                channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeType, this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+                if (this.EventBusParameters is
+                    {
+                        ExchangeDeclareParameters: { ExchangeAutoDelete: { }, ExchangeDurable: { } },
+                        QueueDeclareParameters: { }
+                    })
+                {
 
-                //var args = new Dictionary<string, object>
-                //{
-                //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
-                //};
 
-                channel?.QueueDeclare(this._queueNameReply, this.EventBusParameters.QueueDeclareParameters.QueueDurable, this.EventBusParameters.QueueDeclareParameters.QueueExclusive, this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
+                    channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable.Value,
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete.Value);
+
+                    //var args = new Dictionary<string, object>
+                    //{
+                    //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
+                    //};
+
+                    channel?.QueueDeclare(this._queueNameReply,
+                        this.EventBusParameters.QueueDeclareParameters.QueueDurable,
+                        this.EventBusParameters.QueueDeclareParameters.QueueExclusive,
+                        this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
+                }
             }
             catch (RabbitMQClientException rex)
             {
@@ -165,8 +180,15 @@ namespace KSociety.Base.EventBusRabbitMQ
                     {
                         this.QueueInitialize(channel);
 
-                        channel.QueueBind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
-                        channel.QueueBind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventNameResult);
+                        if (this.EventBusParameters is
+                            {
+                                ExchangeDeclareParameters: { ExchangeName: { } }
+                            })
+                        {
+
+                            channel.QueueBind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+                            channel.QueueBind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventNameResult);
+                        }
                     }
                 }
             }

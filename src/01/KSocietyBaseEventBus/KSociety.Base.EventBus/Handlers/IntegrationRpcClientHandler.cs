@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus.Handlers
 {
@@ -48,8 +48,12 @@ namespace KSociety.Base.EventBus.Handlers
         public virtual async ValueTask HandleReplyAsync(TIntegrationEventReply @integrationEventReply,
             CancellationToken cancel = default)
         {
-            this.Logger?.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}", "NotImplemented!",
-                @integrationEventReply.RoutingKey);
+            await Task.Run(() =>
+            {
+                this.Logger?.LogWarning("IntegrationRpcHandler HandleRpcAsync: {0}, routing key: {1}",
+                    "NotImplemented!",
+                    @integrationEventReply.RoutingKey);
+            }, cancel).ConfigureAwait(false);
         }
     }
 }

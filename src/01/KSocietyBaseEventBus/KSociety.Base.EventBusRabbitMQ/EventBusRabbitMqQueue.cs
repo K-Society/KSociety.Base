@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
@@ -74,23 +74,29 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (channel != null)
                 {
                     var routingKey = @event.RoutingKey;
-
-                    channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeType, this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
-
-                    using (var ms = new MemoryStream())
+                    if (this.EventBusParameters.ExchangeDeclareParameters is {ExchangeAutoDelete: { }, ExchangeDurable: { }})
                     {
-                        Serializer.Serialize(ms, @event);
-                        var body = ms.ToArray();
+                        channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable.Value,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete.Value);
 
-                        policy.Execute(() =>
+                        using (var ms = new MemoryStream())
                         {
-                            var properties = channel.CreateBasicProperties();
-                            properties.DeliveryMode = 1; //2 = persistent, write on disk
+                            Serializer.Serialize(ms, @event);
+                            var body = ms.ToArray();
 
-                            channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,
-                                true,
-                                properties, body);
-                        });
+                            policy.Execute(() =>
+                            {
+                                var properties = channel.CreateBasicProperties();
+                                properties.DeliveryMode = 1; //2 = persistent, write on disk
+
+                                channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                    routingKey,
+                                    true,
+                                    properties, body);
+                            });
+                        }
                     }
                 }
             }

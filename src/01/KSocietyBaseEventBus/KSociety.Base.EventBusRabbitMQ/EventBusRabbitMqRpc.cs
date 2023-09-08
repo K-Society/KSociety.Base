@@ -115,23 +115,30 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     var routingKey = @event.RoutingKey;
 
-                    channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeType, this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
-
-                    using (var ms = new MemoryStream())
+                    if (this.EventBusParameters.ExchangeDeclareParameters is {ExchangeAutoDelete: { }, ExchangeDurable: { }})
                     {
-                        Serializer.Serialize(ms, @event);
-                        var body = ms.ToArray();
+                        channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable.Value,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete.Value);
 
-                        policy.Execute(() =>
+                        using (var ms = new MemoryStream())
                         {
-                            var properties = channel.CreateBasicProperties();
-                            properties.DeliveryMode = 1; //2 = persistent, write on disk
-                            properties.CorrelationId = this._correlationId;
-                            properties.ReplyTo = this._queueNameReply;
-                            channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,
-                                true,
-                                properties, body);
-                        });
+                            Serializer.Serialize(ms, @event);
+                            var body = ms.ToArray();
+
+                            policy.Execute(() =>
+                            {
+                                var properties = channel.CreateBasicProperties();
+                                properties.DeliveryMode = 1; //2 = persistent, write on disk
+                                properties.CorrelationId = this._correlationId;
+                                properties.ReplyTo = this._queueNameReply;
+                                channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                    routingKey,
+                                    true,
+                                    properties, body);
+                            });
+                        }
                     }
                 }
             }
@@ -141,14 +148,28 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             try
             {
-                channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeType, this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable, this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+                if (this.EventBusParameters is
+                    {
+                        ExchangeDeclareParameters: {ExchangeAutoDelete: { }, ExchangeDurable: { }},
+                        QueueDeclareParameters: { }
+                    })
+                {
 
-                //var args = new Dictionary<string, object>
-                //{
-                //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
-                //};
 
-                channel?.QueueDeclare(this.QueueName, this.EventBusParameters.QueueDeclareParameters.QueueDurable, this.EventBusParameters.QueueDeclareParameters.QueueExclusive, this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
+                    channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable.Value,
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete.Value);
+
+                    //var args = new Dictionary<string, object>
+                    //{
+                    //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
+                    //};
+
+                    channel?.QueueDeclare(this.QueueName, this.EventBusParameters.QueueDeclareParameters.QueueDurable,
+                        this.EventBusParameters.QueueDeclareParameters.QueueExclusive,
+                        this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
+                }
             }
             catch (RabbitMQClientException rex)
             {
