@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Agent
 {
@@ -61,23 +61,23 @@ namespace KSociety.Base.Srv.Agent
                     agentConfiguration, loggerFactory);
         }
 
-        public virtual TImportRes ImportData(TImportReq request, CancellationToken cancellationToken = default)
+        public virtual TImportRes? ImportData(TImportReq request, CancellationToken cancellationToken = default)
         {
             return this._agentImport.ImportData(request, cancellationToken);
         }
 
-        public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq request,
+        public virtual async ValueTask<TImportRes?> ImportDataAsync(TImportReq request,
             CancellationToken cancellationToken = default)
         {
             return await this._agentImport.ImportDataAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
-        public virtual TExportRes ExportData(TExportReq request, CancellationToken cancellationToken = default)
+        public virtual TExportRes? ExportData(TExportReq request, CancellationToken cancellationToken = default)
         {
             return this._agentExport.ExportData(request, cancellationToken);
         }
 
-        public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq request,
+        public virtual async ValueTask<TExportRes?> ExportDataAsync(TExportReq request,
             CancellationToken cancellationToken = default)
         {
             return await this._agentExport.ExportDataAsync(request, cancellationToken).ConfigureAwait(false);
