@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Class
 {
@@ -30,12 +30,18 @@ namespace KSociety.Base.Infra.Shared.Class
             try
             {
                 var result = ReadCsv<TEntity>.Import(this.LoggerFactory, fileName);
-                if (!result.Any()) {return false;}
-                this.DeleteRange(this.FindAll());
+                if (result != null)
+                {
+                    if (!result.Any()) { return false; }
 
-                this.AddRange(result);
+                    this.DeleteRange(this.FindAll());
 
-                return true;
+                    this.AddRange(result);
+
+                    return true;
+                }
+
+                return false;
             }
             catch (Exception ex)
             {
@@ -52,12 +58,19 @@ namespace KSociety.Base.Infra.Shared.Class
             try
             {
                 var result = ReadCsv<TEntity>.Import(this.LoggerFactory, byteArray);
-                if (!result.Any()) {return false;}
-                this.DeleteRange(this.FindAll());
 
-                this.AddRange(result);
+                if (result != null)
+                {
+                    if (!result.Any()) { return false; }
 
-                return true;
+                    this.DeleteRange(this.FindAll());
+
+                    this.AddRange(result);
+
+                    return true;
+                }
+
+                return false;
             }
             catch (Exception ex)
             {

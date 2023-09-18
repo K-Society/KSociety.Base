@@ -105,12 +105,19 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (this.IsConnected)
                 {
-                    this._connection.ConnectionShutdown += this.OnConnectionShutdownAsync;
-                    this._connection.CallbackException += this.OnCallbackExceptionAsync;
-                    this._connection.ConnectionBlocked += this.OnConnectionBlockedAsync;
+                    if (this._connection != null)
+                    {
+                        this._connection.ConnectionShutdown += this.OnConnectionShutdownAsync;
+                        this._connection.CallbackException += this.OnCallbackExceptionAsync;
+                        this._connection.ConnectionBlocked += this.OnConnectionBlockedAsync;
 
-                    //this._logger?.LogInformation($"RabbitMQ persistent connection acquired a connection {this._connection.Endpoint.HostName} and is subscribed to failure events");
-                    output = true;
+                        //this._logger?.LogInformation($"RabbitMQ persistent connection acquired a connection {this._connection.Endpoint.HostName} and is subscribed to failure events");
+                        output = true;
+                    }
+                    else
+                    {
+                        output = false;
+                    }
                 }
                 else
                 {

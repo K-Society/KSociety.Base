@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Domain.Shared.Class
 {
@@ -7,49 +7,53 @@ namespace KSociety.Base.Domain.Shared.Class
 
     public abstract class ValueObject
     {
-        protected static bool EqualOperator(ValueObject left, ValueObject right)
+        protected static bool EqualOperator(ValueObject? left, ValueObject? right)
         {
-            if (ReferenceEquals(left, null) ^ ReferenceEquals(right, null))
+            if (left is null ^ right is null)
             {
                 return false;
             }
-
-            return ReferenceEquals(left, null) || left.Equals(right);
+            return ReferenceEquals(left, right);
         }
 
-        protected static bool NotEqualOperator(ValueObject left, ValueObject right)
+        protected static bool NotEqualOperator(ValueObject? left, ValueObject? right)
         {
             return !(EqualOperator(left, right));
         }
 
         protected abstract IEnumerable<object> GetAtomicValues();
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null || obj.GetType() != this.GetType())
             {
                 return false;
             }
 
-            ValueObject other = (ValueObject)obj;
-            IEnumerator<object> thisValues = this.GetAtomicValues().GetEnumerator();
-            IEnumerator<object> otherValues = other.GetAtomicValues().GetEnumerator();
-            while (thisValues.MoveNext() && otherValues.MoveNext())
+            var other = (ValueObject)obj;
+            using (var thisValues = this.GetAtomicValues().GetEnumerator())
             {
-                if (ReferenceEquals(thisValues.Current, null) ^
-                    ReferenceEquals(otherValues.Current, null))
+                using (var otherValues = other.GetAtomicValues().GetEnumerator())
                 {
-                    return false;
-                }
 
-                if (thisValues.Current != null &&
-                    !thisValues.Current.Equals(otherValues.Current))
-                {
-                    return false;
+                    while (thisValues.MoveNext() && otherValues.MoveNext())
+                    {
+                        if (thisValues.Current is null ^
+                            otherValues.Current is null)
+                        {
+                            return false;
+                        }
+
+                        if (thisValues.Current != null &&
+                            !thisValues.Current.Equals(otherValues.Current))
+                        {
+                            return false;
+                        }
+                    }
+
+                    return !thisValues.MoveNext() && !otherValues.MoveNext();
                 }
             }
-
-            return !thisValues.MoveNext() && !otherValues.MoveNext();
         }
 
         public override int GetHashCode()

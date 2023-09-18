@@ -1,4 +1,4 @@
-﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
@@ -15,7 +15,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         where TEntity : class
     {
 
-        public static TEntity[] Write(ILoggerFactory loggerFactory, string fileName)
+        public static TEntity[]? Write(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory.CreateLogger("WriteCsv");
 

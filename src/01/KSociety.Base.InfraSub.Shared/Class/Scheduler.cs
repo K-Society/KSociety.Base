@@ -1,9 +1,8 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.InfraSub.Shared.Class
 {
     using System;
-    using System.Threading.Tasks;
     using Quartz;
     using Quartz.Impl;
 
@@ -16,8 +15,8 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
         private DateTimeOffset _startTimeJob;
         private readonly ISchedulerFactory _schedulerFactJob;
-        private IScheduler _schedulerJob = null;
-        private IJobDetail _job;
+        private IScheduler? _schedulerJob = null;
+        private IJobDetail? _job;
         private readonly TimeSpan _timeInterval;
 
         public string Name { get; set; }
@@ -55,7 +54,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
         private async void GetSchedulerJobAsync(ISchedulerFactory isf)
         {
-            Task<IScheduler> t = isf.GetScheduler();
+            var t = isf.GetScheduler();
             this._schedulerJob = await t.ConfigureAwait(false);
         }
 
@@ -76,27 +75,40 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
         public void Pause()
         {
-            this._schedulerJob.PauseJob(this._job.Key);
+            if (this._job is null)
+            {
+                return;
+            }
+            this._schedulerJob?.PauseJob(this._job.Key);
         }
 
         public void Resume()
         {
-            this._schedulerJob.ResumeJob(this._job.Key);
+            if (this._job is null)
+            {
+                return;
+            }
+            this._schedulerJob?.ResumeJob(this._job.Key);
         }
 
         private async void StartJob<T>() where T : IJob
         {
+            if (this._schedulerJob is null)
+            {
+                return;
+            }
+
             this._startTimeJob = new DateTimeOffset(2008, 1, 1, 0, 0, 0, new TimeSpan(0, 0, 0));
 
             await this._schedulerJob.Start().ConfigureAwait(false);
 
             // define the job and tie it to our Job class
-            IJobDetail job = JobBuilder.Create<T>()
+            var job = JobBuilder.Create<T>()
                 .WithIdentity("myJob_" + this.Name, "group1_" + this.Name)
                 .Build();
 
             // Trigger the job to run now, and then every 5 seconds
-            ITrigger trigger = TriggerBuilder.Create()
+            var trigger = TriggerBuilder.Create()
                 .WithIdentity("myTrigger_" + this.Name, "group1_" + this.Name)
                 .StartAt(this._startTimeJob)
                 .WithSimpleSchedule(x => x
@@ -115,7 +127,12 @@ namespace KSociety.Base.InfraSub.Shared.Class
             // construct a scheduler factory
 
 
-            this._schedulerJob.Context.Put(name, jobData);
+            this._schedulerJob?.Context.Put(name, jobData);
+
+            if (this._schedulerJob is null)
+            {
+                return;
+            }
             // get a scheduler
             await this._schedulerJob.Start().ConfigureAwait(false);
 
@@ -126,7 +143,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
                 .Build();
 
             // Trigger the job to run now, and then every 5 seconds
-            ITrigger trigger = TriggerBuilder.Create()
+            var trigger = TriggerBuilder.Create()
                 .WithIdentity("myTrigger_" + this.Name, "group1_" + this.Name)
                 .StartAt(this._startTimeJob)
                 .WithSimpleSchedule(x => x
@@ -141,6 +158,10 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
         private async void StopJob()
         {
+            if (this._schedulerJob is null)
+            {
+                return;
+            }
             await this._schedulerJob.Standby().ConfigureAwait(false);
             await this._schedulerJob.Shutdown(waitForJobsToComplete: true).ConfigureAwait(false);
         }
