@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Shared.Class
 {
@@ -20,7 +20,7 @@ namespace KSociety.Base.Srv.Shared.Class
 
         #region IAsyncResult Members
 
-        public object AsyncState => this.Data;
+        public object? AsyncState => this.Data;
 
         public WaitHandle AsyncWaitHandle => throw new Exception("The method or operation is not implemented.");
 

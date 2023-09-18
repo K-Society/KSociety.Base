@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Class
 {
@@ -62,14 +62,24 @@ namespace KSociety.Base.Infra.Shared.Class
                 return null;
             }
 
+            if (this.DataBaseSet is null)
+            {
+                return null;
+            }
+
             var result = await this.DataBaseSet.AddAsync(entity, cancellationToken).ConfigureAwait(false);
             //Logger.LogTrace("RepositoryBase AddAsync: " + GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName + ")" + " State: " + result.State);
             return result;
                 
         }
 
-        public virtual void AddRange(IEnumerable<TEntity> entities)
+        public virtual void AddRange(IEnumerable<TEntity>? entities)
         {
+            if (entities is null)
+            {
+                return;
+            }
+
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
                 this.Logger.LogWarning("Database not exists!");
@@ -91,6 +101,10 @@ namespace KSociety.Base.Infra.Shared.Class
             }
             else
             {
+                if (this.DataBaseSet is null)
+                {
+                    return;
+                }
                 await this.DataBaseSet.AddRangeAsync(entities, cancellationToken).ConfigureAwait(false);
                 //Logger.LogTrace("RepositoryBase AddRangeAsync: " + GetType().FullName + "." +
                 //                System.Reflection.MethodBase.GetCurrentMethod()?.Name);
@@ -164,7 +178,7 @@ namespace KSociety.Base.Infra.Shared.Class
                 return null;
             }
 
-            IEnumerable<TEntity>? objects = this.DataBaseSet?.Where(@where).AsEnumerable();
+            var objects = this.DataBaseSet?.Where(@where).AsEnumerable();
             IEnumerable<EntityEntry<TEntity>?>? output = new List<EntityEntry<TEntity>>();
 
             if (objects is not null)
@@ -209,6 +223,10 @@ namespace KSociety.Base.Infra.Shared.Class
 
             try
             {
+                if (this.DataBaseSet is null)
+                {
+                    return null;
+                }
                 return filter is null
                     ? await this.DataBaseSet.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false)
                     : await this.DataBaseSet.FirstOrDefaultAsync(filter, cancellationToken).ConfigureAwait(false);
@@ -232,6 +250,10 @@ namespace KSociety.Base.Infra.Shared.Class
 
             try
             {
+                if (this.DataBaseSet is null)
+                {
+                    return null;
+                }
                 return filter is null
                     ? this.DataBaseSet.OrderBy(keySelector).LastOrDefault()
                     : this.DataBaseSet.OrderBy(keySelector).LastOrDefault(filter);
@@ -256,6 +278,10 @@ namespace KSociety.Base.Infra.Shared.Class
 
             try
             {
+                if (this.DataBaseSet is null)
+                {
+                    return null;
+                }
                 return filter is null
                     ? await this.DataBaseSet.OrderBy(keySelector).LastOrDefaultAsync(cancellationToken)
                         .ConfigureAwait(false)
@@ -303,6 +329,10 @@ namespace KSociety.Base.Infra.Shared.Class
 
             try
             {
+                if (this.DataBaseSet is null)
+                {
+                    return null;
+                }
                 return await this.DataBaseSet.FindAsync(keyObject, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -344,6 +374,11 @@ namespace KSociety.Base.Infra.Shared.Class
 
             try
             {
+                if (this.DataBaseSet is null)
+                {
+                    return null;
+                }
+
                 return filter is null
                     ? await this.DataBaseSet.CountAsync(cancellationToken).ConfigureAwait(false)
                     : await this.DataBaseSet.CountAsync(filter, cancellationToken).ConfigureAwait(false);

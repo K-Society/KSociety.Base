@@ -20,8 +20,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
     public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcServer
     {
-        private AsyncLazy<IModel?> _consumerChannelReply;
-        private string _queueNameReply;
+        private AsyncLazy<IModel?>? _consumerChannelReply;
+        private string? _queueNameReply;
 
         #region [Constructor]
 
@@ -81,11 +81,18 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (channel != null)
                 {
-                    channel.QueueUnbind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        eventName);
+                    if (!String.IsNullOrEmpty(this.QueueName) &&
+                        !String.IsNullOrEmpty(this._queueNameReply) &&
+                        !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                    {
+                        channel.QueueUnbind(this.QueueName,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                            eventName);
 
-                    channel.QueueUnbind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        eventName);
+                        channel.QueueUnbind(this._queueNameReply,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                            eventName);
+                    }
                 }
             }
 
@@ -95,13 +102,18 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
 
             this.QueueName = String.Empty;
-            (await this.ConsumerChannel)?.Close();
+            if (this.ConsumerChannel != null)
+            {
+                (await this.ConsumerChannel)?.Close();
+            }
 
             //ToDo
 
             this._queueNameReply = String.Empty;
-            (await this._consumerChannelReply)?.Close();
-
+            if (this._consumerChannelReply != null)
+            {
+                (await this._consumerChannelReply)?.Close();
+            }
         }
 
         protected override void QueueInitialize(IModel? channel)
@@ -270,19 +282,26 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 var props = eventArgs.BasicProperties;
                 var replyProps = this.ConsumerChannel?.Value.Result?.CreateBasicProperties();
-                replyProps.CorrelationId = props.CorrelationId;
-
-                var response = this.ProcessEventRpc(eventArgs.RoutingKey, eventName, eventArgs.Body);
-
-                if (response != null)
+                if (replyProps != null)
                 {
-                    var ms = new MemoryStream();
-                    Serializer.Serialize<IIntegrationEventReply>(ms, response);
-                    var body = ms.ToArray();
+                    replyProps.CorrelationId = props.CorrelationId;
 
-                    this._consumerChannelReply?.Value.Result.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, (string) response.RoutingKey,
-                        replyProps,
-                        body);
+                    var response = this.ProcessEventRpc(eventArgs.RoutingKey, eventName, eventArgs.Body);
+
+                    if (response != null)
+                    {
+                        var ms = new MemoryStream();
+                        Serializer.Serialize<IIntegrationEventReply>(ms, response);
+                        var body = ms.ToArray();
+                        if (!String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                        {
+                            this._consumerChannelReply?.Value.Result.BasicPublish(
+                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                (string)response.RoutingKey,
+                                replyProps,
+                                body);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -313,20 +332,31 @@ namespace KSociety.Base.EventBusRabbitMQ
             try
             {
                 var props = eventArgs.BasicProperties;
-                var replyProps = (await this.ConsumerChannel)?.CreateBasicProperties();
-                replyProps.CorrelationId = props.CorrelationId;
-
-                var response = await this.ProcessEventRpcAsync(eventArgs.RoutingKey, eventName, eventArgs.Body)
-                    .ConfigureAwait(false);
-
-                if (response != null)
+                if (this.ConsumerChannel != null)
                 {
-                    var ms = new MemoryStream();
-                    Serializer.Serialize<IIntegrationEventReply>(ms, response);
+                    var replyProps = (await this.ConsumerChannel)?.CreateBasicProperties();
+                    if (replyProps != null)
+                    {
+                        replyProps.CorrelationId = props.CorrelationId;
 
-                    var body = ms.ToArray();
-                    (await this._consumerChannelReply).BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        (string) response.RoutingKey, replyProps, body);
+                        var response = await this.ProcessEventRpcAsync(eventArgs.RoutingKey, eventName, eventArgs.Body)
+                            .ConfigureAwait(false);
+
+                        if (response != null)
+                        {
+                            var ms = new MemoryStream();
+                            Serializer.Serialize<IIntegrationEventReply>(ms, response);
+
+                            var body = ms.ToArray();
+                            if (this._consumerChannelReply != null &&
+                                !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                            {
+                                (await this._consumerChannelReply).BasicPublish(
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                    (string)response.RoutingKey, replyProps, body);
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -340,7 +370,10 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                (await this.ConsumerChannel)?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                if (this.ConsumerChannel != null)
+                {
+                    (await this.ConsumerChannel)?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                }
             }
             catch (Exception ex)
             {
@@ -363,7 +396,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 try
                 {
                     this.QueueInitialize(channel);
-                    channel?.BasicQos(0, 1, false);
+                    channel.BasicQos(0, 1, false);
                 }
                 catch (Exception ex)
                 {
@@ -399,14 +432,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                 try
                 {
                     this.QueueInitialize(channel);
-                    channel?.BasicQos(0, 1, false);
+                    channel.BasicQos(0, 1, false);
                 }
                 catch (Exception ex)
                 {
                     this.Logger?.LogError(ex, "CreateConsumerChannelReplyAsync: ");
                 }
 
-                channel.CallbackException += async (sender, ea) =>
+                channel.CallbackException += (sender, ea) =>
                 {
                     this.Logger?.LogError(ea.Exception, "CallbackException Rpc: ");
                     this._consumerChannelReply?.Value.Dispose();
@@ -504,7 +537,6 @@ namespace KSociety.Base.EventBusRabbitMQ
                             throw new ArgumentOutOfRangeException();
                     }
                 }
-
             }
             else
             {
@@ -548,7 +580,8 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     var eventType = this.SubsManager.GetEventTypeByName(routingKey);
                                     if (eventType is null)
                                     {
-                                        this.Logger?.LogError("ProcessEventRpcServer: eventType is null! {0}", routingKey);
+                                        this.Logger?.LogError("ProcessEventRpcServer: eventType is null! {0}",
+                                            routingKey);
                                         return null;
                                     }
 
@@ -596,7 +629,6 @@ namespace KSociety.Base.EventBusRabbitMQ
                             throw new ArgumentOutOfRangeException();
                     }
                 }
-
             }
             else
             {

@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Agent.Control
 {
@@ -25,9 +25,12 @@ namespace KSociety.Base.Srv.Agent.Control
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<IDatabaseControl>();
-
-                    return client.GetConnectionString(this.ConnectionOptions(cancellationToken)).Result;
+                    var client = this.Channel?.CreateGrpcService<IDatabaseControl>();
+                    var result = client?.GetConnectionString(this.ConnectionOptions(cancellationToken)).Result;
+                    if (result != null)
+                    {
+                        return result;
+                    }
                 }
             }
             catch (RpcException rex)
@@ -50,10 +53,16 @@ namespace KSociety.Base.Srv.Agent.Control
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<IDatabaseControlAsync>();
-                    var result = await client.GetConnectionStringAsync(this.ConnectionOptions(cancellationToken))
-                        .ConfigureAwait(false);
-                    return result.Result;
+                    var client = this.Channel?.CreateGrpcService<IDatabaseControlAsync>();
+                    if (client != null)
+                    {
+                        var result = await client.GetConnectionStringAsync(this.ConnectionOptions(cancellationToken))
+                            .ConfigureAwait(false);
+                        if (result?.Result != null)
+                        {
+                            return result.Result;
+                        }
+                    }
                 }
             }
             catch (RpcException rex)
@@ -76,9 +85,11 @@ namespace KSociety.Base.Srv.Agent.Control
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<IDatabaseControl>();
-
-                    return client.EnsureCreated(this.ConnectionOptions(cancellationToken)).Result;
+                    var client = this.Channel?.CreateGrpcService<IDatabaseControl>();
+                    if (client != null)
+                    {
+                        return client.EnsureCreated(this.ConnectionOptions(cancellationToken)).Result;
+                    }
                 }
             }
             catch (RpcException rex)
@@ -87,7 +98,7 @@ namespace KSociety.Base.Srv.Agent.Control
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "{0}.{1} - {2}", this.GetType().FullName,
+                this.Logger?.LogError(ex, "{0}.{1} - {2}", this.GetType().FullName,
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
@@ -101,12 +112,17 @@ namespace KSociety.Base.Srv.Agent.Control
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<IDatabaseControlAsync>();
+                    var client = this.Channel?.CreateGrpcService<IDatabaseControlAsync>();
 
-                    var result = await client.EnsureCreatedAsync(this.ConnectionOptions(cancellationToken))
-                        .ConfigureAwait(false);
-
-                    return result.Result;
+                    if (client != null)
+                    {
+                        var result = await client.EnsureCreatedAsync(this.ConnectionOptions(cancellationToken))
+                            .ConfigureAwait(false);
+                        if (result != null)
+                        {
+                            return result.Result;
+                        }
+                    }
                 }
             }
             catch (RpcException rex)
@@ -129,9 +145,11 @@ namespace KSociety.Base.Srv.Agent.Control
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<IDatabaseControl>();
-
-                    return client.EnsureDeleted(this.ConnectionOptions(cancellationToken)).Result;
+                    var client = this.Channel?.CreateGrpcService<IDatabaseControl>();
+                    if (client != null)
+                    {
+                        return client.EnsureDeleted(this.ConnectionOptions(cancellationToken)).Result;
+                    }
                 }
             }
             catch (RpcException rex)
@@ -154,12 +172,14 @@ namespace KSociety.Base.Srv.Agent.Control
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<IDatabaseControlAsync>();
+                    var client = this.Channel?.CreateGrpcService<IDatabaseControlAsync>();
+                    if (client != null)
+                    {
+                        var result = await client.EnsureDeletedAsync(this.ConnectionOptions(cancellationToken))
+                            .ConfigureAwait(false);
 
-                    var result = await client.EnsureDeletedAsync(this.ConnectionOptions(cancellationToken))
-                        .ConfigureAwait(false);
-
-                    return result.Result;
+                        return result.Result;
+                    }
                 }
             }
             catch (RpcException rex)
@@ -182,9 +202,8 @@ namespace KSociety.Base.Srv.Agent.Control
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<IDatabaseControl>();
-
-                    client.Migration(this.ConnectionOptions(cancellationToken));
+                    var client = this.Channel?.CreateGrpcService<IDatabaseControl>();
+                    client?.Migration(this.ConnectionOptions(cancellationToken));
                 }
             }
             catch (RpcException rex)
@@ -205,9 +224,11 @@ namespace KSociety.Base.Srv.Agent.Control
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<IDatabaseControlAsync>();
-
-                    await client.MigrationAsync(this.ConnectionOptions(cancellationToken)).ConfigureAwait(false);
+                    var client = this.Channel?.CreateGrpcService<IDatabaseControlAsync>();
+                    if (client != null)
+                    {
+                        await client.MigrationAsync(this.ConnectionOptions(cancellationToken)).ConfigureAwait(false);
+                    }
                 }
             }
             catch (RpcException rex)

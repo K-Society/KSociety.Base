@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Shared.Class
 {
@@ -63,8 +63,13 @@ namespace KSociety.Base.Srv.Shared.Class
                 var requestHandler = componentContext.Resolve(type);
                 var methodInfo = type.GetMethod("ExecuteAsync");
                 //logger.LogTrace("ExecuteAsync: " + openType.Name + " - " + " Request: " + typeof(TRequest).FullName + " Response: " + typeof(TResponse).FullName);
-                return await ((ValueTask<TResponse>)methodInfo?.Invoke(requestHandler,
-                    new[] {(object)request, cancellationToken})).ConfigureAwait(false);
+                if (methodInfo != null)
+                {
+                    return await ((ValueTask<TResponse>)methodInfo.Invoke(requestHandler,
+                        new[] {(object)request, cancellationToken})).ConfigureAwait(false);
+                }
+
+                throw new ArgumentNullException("methodInfo", "MethodInfo ExecuteAsync is null!");
             }
             catch (Exception ex)
             {
@@ -120,8 +125,13 @@ namespace KSociety.Base.Srv.Shared.Class
                 var requestHandler = componentContext.Resolve(type);
                 var methodInfo = type.GetMethod("ExecuteAsync");
                 //logger.LogTrace("ExecuteAsync: " + openType.Name + " - " + " Request: " + typeof(TRequest).FullName + " Response: " + typeof(TResponse).FullName);
-                return await ((ValueTask<TResponse>)methodInfo?.Invoke(requestHandler,
-                    new[] {(object)request, cancellationToken})).ConfigureAwait(false);
+                if (methodInfo != null)
+                {
+                    return await ((ValueTask<TResponse>)methodInfo.Invoke(requestHandler,
+                        new[] {(object)request, cancellationToken})).ConfigureAwait(false);
+                }
+
+                throw new ArgumentNullException("methodInfo", "MethodInfo ExecuteAsync is null!");
             }
             catch (Exception ex)
             {
@@ -285,8 +295,13 @@ namespace KSociety.Base.Srv.Shared.Class
                     var requestHandler = componentContext.Resolve(type);
                     var methodInfo = type.GetMethod("ExecuteAsync");
                     //logger.LogTrace("ExecuteAsync: " + openType.Name + " - " + " Response: " + typeof(TResponse).FullName);
-                    return await ((ValueTask<TResponse>)methodInfo?.Invoke(requestHandler,
-                        new[] {(object)cancellationToken})).ConfigureAwait(false);
+                    if (methodInfo != null)
+                    {
+                        return await ((ValueTask<TResponse>)methodInfo.Invoke(requestHandler,
+                            new[] {(object)cancellationToken})).ConfigureAwait(false);
+                    }
+
+                    throw new ArgumentNullException("methodInfo", "MethodInfo ExecuteAsync is null!");
                 }
                 catch (Exception ex)
                 {

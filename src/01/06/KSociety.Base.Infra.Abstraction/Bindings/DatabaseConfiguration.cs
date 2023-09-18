@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Abstraction.Bindings
 {
@@ -12,9 +12,9 @@ namespace KSociety.Base.Infra.Abstraction.Bindings
     public class DatabaseConfiguration : Module
     {
         private readonly DatabaseEngine _databaseEngine;
-        private readonly string _masterString;
+        private readonly string? _masterString;
         private readonly bool _debugFlag;
-        private readonly string _migrationsAssembly;
+        private readonly string? _migrationsAssembly;
         private readonly bool _lazyLoading;
 
         public DatabaseConfiguration(DatabaseEngine databaseEngine,

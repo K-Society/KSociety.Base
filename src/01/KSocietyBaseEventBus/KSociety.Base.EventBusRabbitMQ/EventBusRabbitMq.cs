@@ -30,7 +30,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public IIntegrationGeneralHandler? EventHandler { get; }
 
-        protected AsyncLazy<IModel?> ConsumerChannel;
+        protected AsyncLazy<IModel?>? ConsumerChannel;
         protected string? QueueName;
 
         #region [Constructor]
@@ -109,16 +109,24 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (channel != null)
                 {
-                    channel.QueueUnbind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        eventName);
-
-                    if (!this.SubsManager.IsEmpty)
+                    if (!String.IsNullOrEmpty(this.QueueName) &&
+                        !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
                     {
-                        return;
-                    }
+                        channel.QueueUnbind(this.QueueName,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                            eventName);
 
-                    this.QueueName = String.Empty;
-                    (await this.ConsumerChannel)?.Close();
+                        if (!this.SubsManager.IsEmpty)
+                        {
+                            return;
+                        }
+
+                        this.QueueName = String.Empty;
+                        if (this.ConsumerChannel != null)
+                        {
+                            (await this.ConsumerChannel)?.Close();
+                        }
+                    }
                 }
             }
         }
@@ -239,7 +247,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     this.QueueInitialize(channel);
 
-                    channel.QueueBind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+                    if (!String.IsNullOrEmpty(this.QueueName) &&
+                        !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                    {
+                        channel.QueueBind(this.QueueName,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+                    }
                 }
             }
         }
@@ -321,7 +334,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                this.ConsumerChannel.Value.Result?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                this.ConsumerChannel?.Value.Result?.BasicAck(eventArgs.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -349,7 +362,10 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                (await this.ConsumerChannel)?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                if (this.ConsumerChannel != null)
+                {
+                    (await this.ConsumerChannel)?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                }
             }
             catch (Exception ex)
             {
@@ -375,7 +391,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 channel.CallbackException += async (sender, ea) =>
                 {
-                    this.Logger?.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}", this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.QueueName);
+                    if (!String.IsNullOrEmpty(this.QueueName) &&
+                        !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                    {
+                        this.Logger?.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}",
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.QueueName);
+                    }
+
                     this.ConsumerChannel?.Value.Dispose();
                     this.ConsumerChannel = new AsyncLazy<IModel?>(async () =>
                         await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));

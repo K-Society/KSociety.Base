@@ -26,7 +26,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         private readonly ConcurrentDictionary<string, TaskCompletionSource<dynamic>> _callbackMapper =
             new ConcurrentDictionary<string, TaskCompletionSource<dynamic>>();
 
-        private string _queueNameReply;
+        private string? _queueNameReply;
 
         #region [Constructor]
 
@@ -81,8 +81,14 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             using (var channel = this.PersistentConnection.CreateModel())
             {
-                channel?.QueueUnbind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
-                channel?.QueueUnbind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName); //ToDo
+                if (!String.IsNullOrEmpty(this.QueueName) &&
+                    !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                {
+                    channel?.QueueUnbind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                        eventName);
+                    channel?.QueueUnbind(this._queueNameReply,
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName); //ToDo
+                }
             }
 
             if (!this.SubsManager.IsReplyEmpty)
@@ -92,8 +98,10 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             this._queueNameReply = String.Empty;
             this.QueueName = String.Empty;
-            (await this.ConsumerChannel)?.Close();
-
+            if (this.ConsumerChannel != null)
+            {
+                (await this.ConsumerChannel)?.Close();
+            }
         }
 
         public override async ValueTask Publish(IIntegrationEvent @event)
@@ -299,8 +307,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                     {
                         this.QueueInitialize(channel);
 
-                        channel.QueueBind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                            eventNameResult); //ToDo
+                        if (!String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                        {
+                            channel.QueueBind(this._queueNameReply,
+                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                eventNameResult); //ToDo
+                        }
                     }
                 }
             }

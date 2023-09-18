@@ -1,4 +1,4 @@
-﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
@@ -14,12 +14,17 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         where TEntity : class
         where TClassMap : ClassMap<TEntity>
     {
-        public static bool Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
+        public static bool Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity>? records)
         {
             var logger = loggerFactory.CreateLogger("ExportCsv");
 
             try
             {
+                if (records == null)
+                {
+                    return false;
+                }
+
                 using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
                 {
                     var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
@@ -37,12 +42,17 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         }
 
         public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName,
-            IEnumerable<TEntity> records)
+            IEnumerable<TEntity>? records)
         {
             var logger = loggerFactory.CreateLogger("ExportAsyncCsv");
 
             try
             {
+                if (records == null)
+                {
+                    return false;
+                }
+
                 using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
                 {
                     var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);

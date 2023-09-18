@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Agent
 {
@@ -93,10 +93,10 @@ namespace KSociety.Base.Srv.Agent
         /// <param name="propagationToken"></param>
         /// <param name="credentials"></param>
         /// <returns></returns>
-        protected virtual CallContext ConnectionOptions(Metadata headers = null,
+        protected virtual CallContext ConnectionOptions(Metadata? headers = null,
             DateTime? deadline = null, CancellationToken cancellationToken = default,
-            WriteOptions writeOptions = null, ContextPropagationToken propagationToken = null,
-            CallCredentials credentials = null)
+            WriteOptions? writeOptions = null, ContextPropagationToken? propagationToken = null,
+            CallCredentials? credentials = null)
         {
             var callOptions = new CallOptions(headers, deadline, cancellationToken, writeOptions, propagationToken,
                 credentials);

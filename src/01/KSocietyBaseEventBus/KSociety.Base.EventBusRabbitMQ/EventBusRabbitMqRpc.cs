@@ -22,8 +22,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
     public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
     {
-        private AsyncLazy<IModel?> _consumerChannelReply;
-        private string _queueNameReply;
+        private AsyncLazy<IModel?>? _consumerChannelReply;
+        private string? _queueNameReply;
 
         private readonly string _correlationId;
 
@@ -81,8 +81,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             using (var channel = this.PersistentConnection.CreateModel())
             {
-                channel.QueueUnbind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                    eventName);
+                if (!String.IsNullOrEmpty(this._queueNameReply) &&
+                    !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                {
+                    channel.QueueUnbind(this._queueNameReply,
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                        eventName);
+                }
             }
 
             if (!this.SubsManager.IsReplyEmpty)
@@ -91,7 +96,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
 
             this._queueNameReply = String.Empty;
-            (await this._consumerChannelReply)?.Close();
+            if (this._consumerChannelReply != null)
+            {
+                (await this._consumerChannelReply)?.Close();
+            }
         }
 
         public override async ValueTask Publish(IIntegrationEvent @event)
@@ -215,9 +223,17 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (channel != null)
                 {
                     this.QueueInitialize(channel);
-                    channel.QueueBind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
-                    channel.QueueBind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        eventNameResult);
+
+                    if (!String.IsNullOrEmpty(this.QueueName) &&
+                        !String.IsNullOrEmpty(this._queueNameReply) &&
+                        !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                    {
+                        channel.QueueBind(this.QueueName,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+                        channel.QueueBind(this._queueNameReply,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                            eventNameResult);
+                    }
                 }
             }
         }
@@ -322,26 +338,36 @@ namespace KSociety.Base.EventBusRabbitMQ
                 try
                 {
                     var props = eventArgs.BasicProperties;
-                    var replyProps = (await this.ConsumerChannel)?.CreateBasicProperties();
-                    replyProps.CorrelationId = props.CorrelationId;
-
-                    var response = await this.ProcessEventRpc(eventArgs.RoutingKey, eventName, eventArgs.Body)
-                        .ConfigureAwait(false);
-
-                    if (response != null)
+                    if (this.ConsumerChannel != null)
                     {
-                        var ms = new MemoryStream();
-                        Serializer.Serialize<IIntegrationEventReply>(ms, response);
-                        var body = ms.ToArray();
-                        (await this.ConsumerChannel)?.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                            (string) response.RoutingKey, replyProps, body);
+                        var replyProps = (await this.ConsumerChannel)?.CreateBasicProperties();
+                        if (replyProps != null)
+                        {
+                            replyProps.CorrelationId = props.CorrelationId;
+
+                            var response = await this.ProcessEventRpc(eventArgs.RoutingKey, eventName, eventArgs.Body)
+                                .ConfigureAwait(false);
+
+                            if (response != null)
+                            {
+                                var ms = new MemoryStream();
+                                Serializer.Serialize<IIntegrationEventReply>(ms, response);
+                                var body = ms.ToArray();
+                                if (!String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters
+                                        ?.ExchangeName))
+                                {
+                                    (await this.ConsumerChannel)?.BasicPublish(
+                                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                        (string)response.RoutingKey, replyProps, body);
+                                }
+                            }
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     this.Logger?.LogError(ex, "CreateConsumerChannel RPC Received: ");
                 }
-
             }
             catch (Exception ex)
             {
@@ -354,7 +380,11 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                (await this.ConsumerChannel)?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+
+                if (this.ConsumerChannel != null)
+                {
+                    (await this.ConsumerChannel)?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                }
             }
             catch (Exception ex)
             {
@@ -387,7 +417,10 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                (await this.ConsumerChannel)?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                if (this.ConsumerChannel != null)
+                {
+                    (await this.ConsumerChannel)?.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                }
             }
             catch (Exception ex)
             {
@@ -596,7 +629,6 @@ namespace KSociety.Base.EventBusRabbitMQ
                             throw new ArgumentOutOfRangeException();
                     }
                 }
-
             }
             else
             {

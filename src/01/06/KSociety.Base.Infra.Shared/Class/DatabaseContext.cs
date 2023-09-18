@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Class
 {
@@ -333,7 +333,10 @@ namespace KSociety.Base.Infra.Shared.Class
         {
             this.Logger?.LogTrace("MigrateAsync {0}", targetMigration);
             var migrator = this.Database.GetInfrastructure().GetService<IMigrator>();
-            await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
+            if (migrator is not null)
+            {
+                await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
+            }
         }
 
         public string? CreateScript()
@@ -358,6 +361,11 @@ namespace KSociety.Base.Infra.Shared.Class
             //var output = -1;
             try
             {
+                if (this._configuration is null)
+                {
+                    return null;
+                }
+
                 if (this._configuration.Logging)
                 {
                     var entries = this.ChangeTracker.Entries();
@@ -416,6 +424,11 @@ namespace KSociety.Base.Infra.Shared.Class
             //var output = -1;
             try
             {
+                if (this._configuration is null)
+                {
+                    return null;
+                }
+
                 if (this._configuration.Logging)
                 {
                     var entries = this.ChangeTracker.Entries();
