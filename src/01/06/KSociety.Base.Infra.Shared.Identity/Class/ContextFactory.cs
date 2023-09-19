@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Identity.Class
 {
@@ -49,12 +49,15 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
         public virtual TContext CreateDbContext(string[] args)
         {
             this._logger.LogTrace("ContextFactory CreateDbContext");
-            TContext output = null;
+            TContext? output = null;
             var dbEngine = DatabaseEngine.Sqlserver;
             var migrationsAssembly = String.Empty;
             var connectionString = String.Empty;
 
-            if (args.Length < 2) {return output;}
+            if (args.Length < 2)
+            {
+                throw new ArgumentNullException("TContext", "TContext is null at this point in the code!");
+            }
 
             if (args.Length > 0)
             {
@@ -77,21 +80,21 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
 
             if (args.Length >= 2)
             {
-                string connectionStringName = args[1];
+                var connectionStringName = args[1];
 
                 var config = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json")
                     .Build();
                 connectionString = config.GetConnectionString(connectionStringName);
-                this._logger.LogTrace(@"ContextFactory CreateDbContext connectionString: {0}", connectionString);
+                this._logger.LogTrace("ContextFactory CreateDbContext connectionString: {0}", connectionString);
             }
 
             if (args.Length >= 3)
             {
                 migrationsAssembly = args[2];
 
-                this._logger.LogTrace(@"ContextFactory CreateDbContext migrationsAssembly: {0}", migrationsAssembly);
+                this._logger.LogTrace("ContextFactory CreateDbContext migrationsAssembly: {0}", migrationsAssembly);
             }
 
             var optionBuilder = new DbContextOptionsBuilder<TContext>();
@@ -156,7 +159,12 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
                     throw new ArgumentOutOfRangeException();
             }
 
-            output = (TContext)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
+            output = (TContext?)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
+
+            if (output == null)
+            {
+                throw new ArgumentNullException("TContext", "TContext is null after instance activation!");
+            }
 
             return output;
         }

@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
@@ -19,7 +19,9 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
         public NpgsqlGenerator(
             ILoggerFactory loggerFactory,
             MigrationsSqlGeneratorDependencies dependencies,
+#pragma warning disable EF1001 // Internal EF Core API usage.
             INpgsqlSingletonOptions migrationsAnnotations)
+#pragma warning restore EF1001 // Internal EF Core API usage.
             : base(dependencies, migrationsAnnotations)
         {
             this._logger = loggerFactory.CreateLogger<NpgsqlGenerator>();

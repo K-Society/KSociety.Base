@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Host.Shared.Bindings
 {
@@ -29,7 +29,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
         where TEventBusParametersClass : EventBusParameters, new()
     {
         private readonly bool _debug;
-        private readonly string _brokerName;
+        private readonly string? _brokerName;
         private readonly EventBus.ExchangeType _exchangeType;
         private readonly bool _exchangeDurable;
         private readonly bool _exchangeAutoDelete;
@@ -37,14 +37,14 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
         private readonly bool _queueExclusive;
         private readonly bool _queueAutoDelete;
 
-        private readonly string _mqHostName;
-        private readonly string _mqUserName;
-        private readonly string _mqPassword;
+        private readonly string? _mqHostName;
+        private readonly string? _mqUserName;
+        private readonly string? _mqPassword;
 
         public MessageBroker(
-            string brokerName, EventBus.ExchangeType exchangeType,
+            string? brokerName, EventBus.ExchangeType exchangeType,
             bool exchangeDurable, bool exchangeAutoDelete,
-            string mqHostName, string mqUserName, string mqPassword, bool debug,
+            string? mqHostName, string? mqUserName, string? mqPassword, bool debug,
             bool queueDurable,
             bool queueExclusive,
             bool queueAutoDelete)
@@ -67,18 +67,30 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
         public MessageBroker(Class.MessageBrokerOptions messageBroker, bool debug = false)
         {
             this._debug = debug;
-            this._brokerName = messageBroker.ExchangeDeclareParameters.BrokerName;
-            this._exchangeType = messageBroker.ExchangeDeclareParameters.ExchangeType;
-            this._exchangeDurable = messageBroker.ExchangeDeclareParameters.ExchangeDurable;
-            this._exchangeAutoDelete = messageBroker.ExchangeDeclareParameters.ExchangeAutoDelete;
+            if (messageBroker.ExchangeDeclareParameters != null)
+            {
+                if (!String.IsNullOrEmpty(messageBroker.ExchangeDeclareParameters.BrokerName))
+                {
+                    this._brokerName = messageBroker.ExchangeDeclareParameters.BrokerName;
+                }
+                this._exchangeType = messageBroker.ExchangeDeclareParameters.ExchangeType;
+                this._exchangeDurable = messageBroker.ExchangeDeclareParameters.ExchangeDurable;
+                this._exchangeAutoDelete = messageBroker.ExchangeDeclareParameters.ExchangeAutoDelete;
+            }
 
-            this._queueDurable = messageBroker.QueueDeclareParameters.QueueDurable;
-            this._queueExclusive = messageBroker.QueueDeclareParameters.QueueExclusive;
-            this._queueAutoDelete = messageBroker.QueueDeclareParameters.QueueAutoDelete;
+            if (messageBroker.QueueDeclareParameters != null)
+            {
+                this._queueDurable = messageBroker.QueueDeclareParameters.QueueDurable;
+                this._queueExclusive = messageBroker.QueueDeclareParameters.QueueExclusive;
+                this._queueAutoDelete = messageBroker.QueueDeclareParameters.QueueAutoDelete;
+            }
 
-            this._mqHostName = messageBroker.ConnectionFactory.MqHostName;
-            this._mqUserName = messageBroker.ConnectionFactory.MqUserName;
-            this._mqPassword = messageBroker.ConnectionFactory.MqPassword;
+            if (messageBroker.ConnectionFactory != null)
+            {
+                this._mqHostName = messageBroker.ConnectionFactory.MqHostName;
+                this._mqUserName = messageBroker.ConnectionFactory.MqUserName;
+                this._mqPassword = messageBroker.ConnectionFactory.MqPassword;
+            }
         }
 
         protected override void Load(ContainerBuilder builder)

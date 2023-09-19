@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Dto
 {
@@ -10,13 +10,17 @@ namespace KSociety.Base.Srv.Dto
     public class PagedList<T>
         : ObjectList<T> where T : IObject
     {
-        [ProtoMember(1)] public int TotalRows { get; set; }
+        [ProtoMember(1)]
+        public int TotalRows { get; set; }
 
-        [ProtoMember(2)] public int PageNumber { get; set; }
+        [ProtoMember(2)]
+        public int PageNumber { get; set; }
 
-        [ProtoMember(3)] public int PageSize { get; set; }
+        [ProtoMember(3)]
+        public int PageSize { get; set; }
 
-        [ProtoMember(4)] public int TotalPages { get; set; }
+        [ProtoMember(4)]
+        public int TotalPages { get; set; }
 
         public bool PreviousPage
         {

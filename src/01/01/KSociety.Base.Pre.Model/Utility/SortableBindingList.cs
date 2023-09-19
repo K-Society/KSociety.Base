@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Pre.Model.Utility
 {
@@ -19,7 +19,7 @@ namespace KSociety.Base.Pre.Model.Utility
     {
         private bool _isSorted;
         private ListSortDirection _sortDirection = ListSortDirection.Ascending;
-        private PropertyDescriptor _sortProperty;
+        private PropertyDescriptor? _sortProperty;
 
         /// <inheritdoc />
         /// <summary>
@@ -61,7 +61,7 @@ namespace KSociety.Base.Pre.Model.Utility
         /// <summary>
         /// Gets the property descriptor that is used for sorting the list if sorting is implemented in a derived class; otherwise, returns null
         /// </summary>
-        protected override PropertyDescriptor SortPropertyCore => this._sortProperty;
+        protected override PropertyDescriptor? SortPropertyCore => this._sortProperty;
 
         /// <inheritdoc />
         /// <summary>
@@ -111,8 +111,8 @@ namespace KSociety.Base.Pre.Model.Utility
 
         private int OnComparison(T lhs, T rhs)
         {
-            object lhsValue = lhs == null ? null : this._sortProperty.GetValue(lhs);
-            object rhsValue = rhs == null ? null : this._sortProperty.GetValue(rhs);
+            var lhsValue = lhs == null ? null : this._sortProperty?.GetValue(lhs);
+            var rhsValue = rhs == null ? null : this._sortProperty?.GetValue(rhs);
             if (lhsValue == null)
             {
                 return (rhsValue == null) ? 0 : -1; //nulls are equal

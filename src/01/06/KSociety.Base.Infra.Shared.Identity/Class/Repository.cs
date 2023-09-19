@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Identity.Class
 {
@@ -68,16 +68,20 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             try
             {
                 var result = ReadCsv<TEntity>.Import(this.LoggerFactory, byteArray);
-                if (!result.Any())
+                if (result != null)
                 {
-                    return false;
+                    if (!result.Any())
+                    {
+                        return false;
+                    }
+
+                    this.DeleteRange(this.FindAll());
+
+                    this.AddRange(result);
+
+                    return true;
                 }
-
-                this.DeleteRange(this.FindAll());
-
-                this.AddRange(result);
-
-                return true;
+                return false;
             }
             catch (Exception ex)
             {
@@ -100,9 +104,9 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
                 this.DeleteRange(this.FindAll());
                 //Logger.LogTrace("DeleteRange OK.");
                 await foreach (var entity in ReadCsv<TEntity>.ImportAsync(this.LoggerFactory, fileName, cancellationToken)
-                                   .ConfigureAwait(false).WithCancellation(cancellationToken).ConfigureAwait(false))
+                                   .ConfigureAwait(false).ConfigureAwait(false))
                 {
-                    var result = await this.AddAsync(entity, cancellationToken).ConfigureAwait(false);
+                    var unused = await this.AddAsync(entity, cancellationToken).ConfigureAwait(false);
                     //Logger.LogTrace("AddAsync OK. " + result.Entity.GetType().Name);
                 }
 
@@ -128,7 +132,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
                 this.DeleteRange(this.FindAll());
 
                 await foreach (var entity in ReadCsv<TEntity>.ImportAsync(this.LoggerFactory, byteArray, cancellationToken)
-                                   .ConfigureAwait(false).WithCancellation(cancellationToken).ConfigureAwait(false))
+                                   .ConfigureAwait(false).ConfigureAwait(false))
                 {
                     await this.AddAsync(entity, cancellationToken).ConfigureAwait(false);
                 }

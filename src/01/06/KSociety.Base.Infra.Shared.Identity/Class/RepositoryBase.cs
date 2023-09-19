@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Identity.Class
 {
@@ -82,6 +82,11 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
                 return null;
             }
 
+            if (this.DataBaseSet is null)
+            {
+                return null;
+            }
+
             var result = await this.DataBaseSet.AddAsync(entity, cancellationToken).ConfigureAwait(false);
             this.Logger.LogTrace("RepositoryBase AddAsync: " + this.GetType().FullName + "." +
                                  System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + entity.GetType().FullName +
@@ -89,8 +94,13 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             return result;
         }
 
-        public virtual void AddRange(IEnumerable<TEntity> entities)
+        public virtual void AddRange(IEnumerable<TEntity>? entities)
         {
+            if (entities is null)
+            {
+                return;
+            }
+
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
                 this.Logger.LogWarning("Database not exists!");
@@ -113,6 +123,11 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             }
             else
             {
+                if (this.DataBaseSet is null)
+                {
+                    return;
+                }
+
                 await this.DataBaseSet.AddRangeAsync(entities, cancellationToken).ConfigureAwait(false);
                 this.Logger.LogTrace("RepositoryBase AddRangeAsync: " + this.GetType().FullName + "." +
                                      System.Reflection.MethodBase.GetCurrentMethod()?.Name);
@@ -164,7 +179,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             return result;
         }
 
-        public virtual void DeleteRange(IEnumerable<TEntity> entities)
+        public virtual void DeleteRange(IEnumerable<TEntity>? entities)
         {
             if (!this.Exists.HasValue || !this.Exists.Value)
             {
@@ -179,7 +194,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             }
         }
 
-        public virtual IEnumerable<EntityEntry<TEntity>> Delete(Expression<Func<TEntity, bool>> where)
+        public virtual IEnumerable<EntityEntry<TEntity>?>? Delete(Expression<Func<TEntity, bool>> where)
         {
             //Logger.LogTrace("RepositoryBase Delete: " + GetType().FullName + "." +
             //                System.Reflection.MethodBase.GetCurrentMethod()?.Name + "(" + where.GetType().FullName +
@@ -190,11 +205,15 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
                 return null;
             }
 
-            IEnumerable<TEntity> objects = this.DataBaseSet.Where(@where).AsEnumerable();
-            IEnumerable<EntityEntry<TEntity>> output = new List<EntityEntry<TEntity>>();
-            foreach (var obj in objects)
+            var objects = this.DataBaseSet?.Where(@where).AsEnumerable();
+            IEnumerable<EntityEntry<TEntity>?>? output = new List<EntityEntry<TEntity>>();
+
+            if (objects is not null)
             {
-                output.Append(this.DataBaseSet.Remove(obj));
+                foreach (var obj in objects)
+                {
+                    output = output?.Append(this.DataBaseSet?.Remove(obj));
+                }
             }
 
             return output;
@@ -232,6 +251,11 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
 
             try
             {
+                if (this.DataBaseSet is null)
+                {
+                    return null;
+                }
+
                 return filter is null
                     ? await this.DataBaseSet.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false)
                     : await this.DataBaseSet.FirstOrDefaultAsync(filter, cancellationToken).ConfigureAwait(false);
@@ -279,6 +303,11 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
 
             try
             {
+                if (this.DataBaseSet is null)
+                {
+                    return null;
+                }
+
                 return filter is null
                     ? await this.DataBaseSet.OrderBy(keySelector).LastOrDefaultAsync(cancellationToken)
                         .ConfigureAwait(false)
@@ -319,6 +348,11 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
                 this.Logger.LogWarning("Database not exists!");
                 return null;
             }
+
+            if (this.DataBaseSet is null)
+            {
+                return null;
+            }
             return await this.DataBaseSet.FindAsync(keyObject).ConfigureAwait(false);
         }
 
@@ -354,6 +388,11 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             
             try
             {
+                if (this.DataBaseSet is null)
+                {
+                    return null;
+                }
+
                 if (filter is null)
                 {
                     return await this.DataBaseSet.CountAsync(cancellationToken).ConfigureAwait(false);
@@ -454,49 +493,49 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             }
         }
 
-        public void ImportCsv(string fileName)
-        {
-            this.Logger.LogTrace("RepositoryBase ImportCsv: " + this.GetType().FullName + "." +
-                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            var result = ReadCsv<TEntity>.Import(this.LoggerFactory, fileName);
-            if (!result.Any())
-            {
-                return;
-            }
+        //public void ImportCsv(string fileName)
+        //{
+        //    this.Logger.LogTrace("RepositoryBase ImportCsv: " + this.GetType().FullName + "." +
+        //                         System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        //    var result = ReadCsv<TEntity>.Import(this.LoggerFactory, fileName);
+        //    if (!result.Any())
+        //    {
+        //        return;
+        //    }
 
-            this.DeleteRange(this.FindAll());
+        //    this.DeleteRange(this.FindAll());
 
-            this.AddRange(result);
-        }
+        //    this.AddRange(result);
+        //}
 
-        public async ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
-        {
-            this.Logger.LogTrace("RepositoryBase ImportCsvAsync: " + this.GetType().FullName + "." +
-                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            var result = ReadCsv<TEntity>.ImportAsync(this.LoggerFactory, fileName, cancellationToken);
+        //public async ValueTask ImportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+        //{
+        //    this.Logger.LogTrace("RepositoryBase ImportCsvAsync: " + this.GetType().FullName + "." +
+        //                         System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        //    var result = ReadCsv<TEntity>.ImportAsync(this.LoggerFactory, fileName, cancellationToken);
 
-            this.DeleteRange(this.FindAll());
+        //    this.DeleteRange(this.FindAll());
 
-            await foreach (var entity in result.WithCancellation(cancellationToken).ConfigureAwait(false))
-            {
-                await this.AddAsync(entity, cancellationToken).ConfigureAwait(false);
-            }
+        //    await foreach (var entity in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+        //    {
+        //        await this.AddAsync(entity, cancellationToken).ConfigureAwait(false);
+        //    }
 
-        }
+        //}
 
-        public void ExportCsv(string fileName)
-        {
-            this.Logger.LogTrace("RepositoryBase ExportCsv: " + this.GetType().FullName + "." +
-                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            WriteCsv<TEntity>.Export(this.LoggerFactory, fileName, this.FindAll());
-        }
+        //public void ExportCsv(string fileName)
+        //{
+        //    this.Logger.LogTrace("RepositoryBase ExportCsv: " + this.GetType().FullName + "." +
+        //                         System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        //    WriteCsv<TEntity>.Export(this.LoggerFactory, fileName, this.FindAll());
+        //}
 
-        public async ValueTask ExportCsvAsync(string fileName, CancellationToken cancellationToken = default)
-        {
-            this.Logger.LogTrace("RepositoryBase ExportCsvAsync: " + this.GetType().FullName + "." +
-                                 System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-            await WriteCsv<TEntity>.ExportAsync(this.LoggerFactory, fileName, this.FindAll()).ConfigureAwait(false);
-        }
+        //public async ValueTask ExportCsvAsync(string fileName, CancellationToken cancellationToken = default)
+        //{
+        //    this.Logger.LogTrace("RepositoryBase ExportCsvAsync: " + this.GetType().FullName + "." +
+        //                         System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+        //    await WriteCsv<TEntity>.ExportAsync(this.LoggerFactory, fileName, this.FindAll()).ConfigureAwait(false);
+        //}
 
         public void Dispose()
         {
