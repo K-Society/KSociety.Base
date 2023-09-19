@@ -21,7 +21,9 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             ILoggerFactory loggerFactory,
             MigrationsSqlGeneratorDependencies dependencies,
             ICommandBatchPreparer commandBatchPreparer,
+#pragma warning disable EF1001 // Internal EF Core API usage.
             IMySqlOptions options)
+#pragma warning restore EF1001 // Internal EF Core API usage.
             : base(dependencies, commandBatchPreparer, options)
         {
             this._logger = loggerFactory.CreateLogger<MySqlGenerator>();

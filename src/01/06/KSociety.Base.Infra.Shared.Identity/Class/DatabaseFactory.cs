@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Identity.Class
 {
@@ -25,8 +25,8 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
         where TRoleClaim : IdentityRoleClaim<TKey>, new()
         where TUserToken : IdentityUserToken<TKey>, new()
     {
-        private IUserStore<TUser> _userStore;
-        private IRoleStore<TRole> _roleStore;
+        private IUserStore<TUser>? _userStore;
+        private IRoleStore<TRole>? _roleStore;
 
         public DatabaseFactory(TLoggerFactory loggerFactory, TConfiguration configuration)
             : base(loggerFactory, configuration)
@@ -34,7 +34,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
 
         }
 
-        public IUserStore<TUser> GetUserStore()
+        public IUserStore<TUser>? GetUserStore()
         {
             if (this._userStore != null)
             {
@@ -46,7 +46,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             return this._userStore;
         }
 
-        public IRoleStore<TRole> GetRoleStore()
+        public IRoleStore<TRole>? GetRoleStore()
         {
             if (this._roleStore != null)
             {
@@ -58,36 +58,36 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             return this._roleStore;
         }
 
-        private IUserStore<TUser> CreateUserStore()
+        private IUserStore<TUser>? CreateUserStore()
         {
-            IUserStore<TUser> output = null;
+            IUserStore<TUser>? output = null;
             try
             {
                 output =
-                    (UserStore<TUser, TRole, TContext, TKey, TUserClaim, TUserRole, TUserLogin, TUserToken, TRoleClaim>)
+                    (UserStore<TUser, TRole, TContext, TKey, TUserClaim, TUserRole, TUserLogin, TUserToken, TRoleClaim>?)
                     Activator.CreateInstance(
                         typeof(UserStore<TUser, TRole, TContext, TKey, TUserClaim, TUserRole, TUserLogin, TUserToken,
                             TRoleClaim>), this.Get(), null);
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "CreateUserStore: ");
+                this.Logger?.LogError(ex, "CreateUserStore: ");
             }
 
             return output;
         }
 
-        private IRoleStore<TRole> CreateRoleStore()
+        private IRoleStore<TRole>? CreateRoleStore()
         {
-            IRoleStore<TRole> output = null;
+            IRoleStore<TRole>? output = null;
             try
             {
-                output = (RoleStore<TRole, TContext, TKey, TUserRole, TRoleClaim>)Activator.CreateInstance(
+                output = (RoleStore<TRole, TContext, TKey, TUserRole, TRoleClaim>?)Activator.CreateInstance(
                     typeof(RoleStore<TRole, TContext, TKey, TUserRole, TRoleClaim>), this.Get(), null);
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "CreateRoleStore: ");
+                this.Logger?.LogError(ex, "CreateRoleStore: ");
             }
 
             return output;

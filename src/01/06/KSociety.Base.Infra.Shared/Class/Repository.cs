@@ -92,9 +92,9 @@ namespace KSociety.Base.Infra.Shared.Class
                 this.DeleteRange(this.FindAll());
                 //Logger.LogTrace("DeleteRange OK.");
                 await foreach (var entity in ReadCsv<TEntity>.ImportAsync(this.LoggerFactory, fileName, cancellationToken)
-                                   .ConfigureAwait(false).WithCancellation(cancellationToken).ConfigureAwait(false))
+                                   .ConfigureAwait(false).ConfigureAwait(false))
                 {
-                    var result = await this.AddAsync(entity, cancellationToken).ConfigureAwait(false);
+                    var unused = await this.AddAsync(entity, cancellationToken).ConfigureAwait(false);
                     //Logger.LogTrace("AddAsync OK. " + result.Entity.GetType().Name);
                 }
 

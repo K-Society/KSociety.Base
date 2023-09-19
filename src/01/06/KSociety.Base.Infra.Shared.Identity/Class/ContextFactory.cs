@@ -49,12 +49,15 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
         public virtual TContext CreateDbContext(string[] args)
         {
             this._logger.LogTrace("ContextFactory CreateDbContext");
-            TContext output = null;
+            TContext? output = null;
             var dbEngine = DatabaseEngine.Sqlserver;
             var migrationsAssembly = String.Empty;
             var connectionString = String.Empty;
 
-            if (args.Length < 2) {return output;}
+            if (args.Length < 2)
+            {
+                throw new ArgumentNullException("TContext", "TContext is null at this point in the code!");
+            }
 
             if (args.Length > 0)
             {
@@ -156,7 +159,12 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
                     throw new ArgumentOutOfRangeException();
             }
 
-            output = (TContext)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
+            output = (TContext?)Activator.CreateInstance(typeof(TContext), optionBuilder.Options);
+
+            if (output == null)
+            {
+                throw new ArgumentNullException("TContext", "TContext is null after instance activation!");
+            }
 
             return output;
         }
