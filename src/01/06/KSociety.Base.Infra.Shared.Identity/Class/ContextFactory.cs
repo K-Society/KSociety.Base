@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Identity.Class
 {
@@ -77,21 +77,21 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
 
             if (args.Length >= 2)
             {
-                string connectionStringName = args[1];
+                var connectionStringName = args[1];
 
                 var config = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json")
                     .Build();
                 connectionString = config.GetConnectionString(connectionStringName);
-                this._logger.LogTrace(@"ContextFactory CreateDbContext connectionString: {0}", connectionString);
+                this._logger.LogTrace("ContextFactory CreateDbContext connectionString: {0}", connectionString);
             }
 
             if (args.Length >= 3)
             {
                 migrationsAssembly = args[2];
 
-                this._logger.LogTrace(@"ContextFactory CreateDbContext migrationsAssembly: {0}", migrationsAssembly);
+                this._logger.LogTrace("ContextFactory CreateDbContext migrationsAssembly: {0}", migrationsAssembly);
             }
 
             var optionBuilder = new DbContextOptionsBuilder<TContext>();
