@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Agent
 {
@@ -29,112 +29,123 @@ namespace KSociety.Base.Srv.Agent
 
         }
 
-        public virtual async ValueTask<TAddRes> AddAsync(TAddReq addItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TAddRes?> AddAsync(TAddReq addItem, CancellationToken cancellationToken = default)
         {
-            TAddRes output = default;
+            TAddRes? output = default;
             try
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel?.CreateGrpcService<TCommandAsync>();
+                    if (client != null)
+                    {
+                        var result = await client.AddAsync(addItem, this.ConnectionOptions(cancellationToken))
+                            .ConfigureAwait(false);
 
-                    var result = await client.AddAsync(addItem, this.ConnectionOptions(cancellationToken))
-                        .ConfigureAwait(false);
-
-                    output = result;
+                        output = result;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
 
-        public virtual async ValueTask<TUpdateRes> UpdateAsync(TUpdateReq updateItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TUpdateRes?> UpdateAsync(TUpdateReq updateItem, CancellationToken cancellationToken = default)
         {
-            TUpdateRes output = default;
+            TUpdateRes? output = default;
             try
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel?.CreateGrpcService<TCommandAsync>();
+                    if (client != null)
+                    {
+                        var result = await client.UpdateAsync(updateItem, this.ConnectionOptions(cancellationToken))
+                            .ConfigureAwait(false);
 
-                    var result = await client.UpdateAsync(updateItem, this.ConnectionOptions(cancellationToken))
-                        .ConfigureAwait(false);
-
-                    output = result;
+                        output = result;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
 
-        public virtual async ValueTask<TCopyRes> CopyAsync(TCopyReq copyItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TCopyRes?> CopyAsync(TCopyReq copyItem, CancellationToken cancellationToken = default)
         {
-            TCopyRes output = default;
+            TCopyRes? output = default;
             try
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel?.CreateGrpcService<TCommandAsync>();
+                    if (client != null)
+                    {
+                        var result = await client.CopyAsync(copyItem, this.ConnectionOptions(cancellationToken))
+                            .ConfigureAwait(false);
 
-                    var result = await client.CopyAsync(copyItem, this.ConnectionOptions(cancellationToken))
-                        .ConfigureAwait(false);
-
-                    output = result;
+                        output = result;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
 
-        public virtual async ValueTask<TModifyFieldRes> ModifyFieldAsync(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TModifyFieldRes?> ModifyFieldAsync(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default)
         {
-            TModifyFieldRes output = default;
+            TModifyFieldRes? output = default;
             try
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel?.CreateGrpcService<TCommandAsync>();
+                    if (client != null)
+                    {
+                        var result = await client
+                            .ModifyFieldAsync(modifyFieldItem, this.ConnectionOptions(cancellationToken))
+                            .ConfigureAwait(false);
 
-                    var result = await client.ModifyFieldAsync(modifyFieldItem, this.ConnectionOptions(cancellationToken))
-                        .ConfigureAwait(false);
-
-                    output = result;
+                        output = result;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }
 
-        public virtual async ValueTask<TRemoveRes> RemoveAsync(TRemoveReq removeItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TRemoveRes?> RemoveAsync(TRemoveReq removeItem, CancellationToken cancellationToken = default)
         {
-            TRemoveRes output = default;
+            TRemoveRes? output = default;
             try
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel?.CreateGrpcService<TCommandAsync>();
+                    if (client != null)
+                    {
+                        var result = await client.RemoveAsync(removeItem, this.ConnectionOptions(cancellationToken))
+                            .ConfigureAwait(false);
 
-                    var result = await client.RemoveAsync(removeItem, this.ConnectionOptions(cancellationToken))
-                        .ConfigureAwait(false);
-
-                    output = result;
+                        output = result;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             }
             return output;
         }

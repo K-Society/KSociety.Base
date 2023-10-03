@@ -1,4 +1,4 @@
-﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
@@ -17,7 +17,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         where TClass : class
     {
 
-        public static TClass[] Read(ILoggerFactory loggerFactory, string fileName)
+        public static TClass[]? Read(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ReadCsv");
             var csvFileName = @"." + fileName + @".csv";
@@ -46,7 +46,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, string fileName)
+        public static IEnumerable<TClass>? Import(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -67,7 +67,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        public static IEnumerable<TClass>? Import(ILoggerFactory loggerFactory, byte[] byteArray)
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -91,7 +91,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+            //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
             using (var streamReader = new StreamReader(fileName))
             {
@@ -109,7 +109,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+            //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
             using (var streamReader = new StreamReader(new MemoryStream(byteArray)))
             {

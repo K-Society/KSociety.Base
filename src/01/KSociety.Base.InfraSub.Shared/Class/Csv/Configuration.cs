@@ -1,4 +1,4 @@
-﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
@@ -25,12 +25,12 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             GetConstructor = GetConstructor
         };
 
-        private static bool ShouldUseConstructorParameters(Type type)
+        private static bool ShouldUseConstructorParameters(Type _)
         {
             return true;
         }
 
-        private static ConstructorInfo GetConstructor(GetConstructorArgs args)
+        private static ConstructorInfo? GetConstructor(GetConstructorArgs args)
         {
             try
             {

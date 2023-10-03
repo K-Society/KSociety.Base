@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Identity.Class
 {
@@ -29,14 +29,14 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
         where TUserToken : IdentityUserToken<TKey>, new()
     {
         protected readonly
-            ILogger<DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>
+            ILogger<DatabaseContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>>?
             Logger;
 
-        protected static ILoggerFactory LoggerFactory;
+        protected static ILoggerFactory? LoggerFactory;
 
-        private IDbContextTransaction _transaction;
-        private bool _debug = false;
-        private readonly IDatabaseConfiguration _configuration;
+        private IDbContextTransaction? _transaction;
+        private bool _debug;
+        private readonly IDatabaseConfiguration? _configuration;
 
         public DatabaseContext(DbContextOptions option)
             : base(option)
@@ -218,7 +218,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                this.Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
             }
 
             return output;
@@ -233,7 +233,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                this.Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
             }
 
             return output;
@@ -248,7 +248,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                this.Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
             }
 
             return output;
@@ -263,7 +263,7 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
+                this.Logger?.LogError(ex.Source + " " + ex.Message + " " + ex.StackTrace);
             }
 
             return output;
@@ -272,24 +272,29 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
         public void Migrate(string? targetMigration = null)
         {
             var migrator = this.Database.GetInfrastructure().GetService<IMigrator>();
-            migrator.Migrate(targetMigration);
+            migrator?.Migrate(targetMigration);
         }
 
         public async ValueTask MigrateAsync(string? targetMigration = null,
             CancellationToken cancellationToken = default)
         {
             var migrator = this.Database.GetInfrastructure().GetService<IMigrator>();
-            await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
+            //await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
 
             //Database.Mi
+
+            if (migrator is not null)
+            {
+                await migrator.MigrateAsync(targetMigration, cancellationToken).ConfigureAwait(false);
+            }
         }
 
-        public string CreateScript()
+        public string? CreateScript()
         {
             //var migratorAssembly = Database.GetInfrastructure().GetService<IMigrationsAssembly>();
             //migratorAssembly.Assembly.FullName
             var migrator = this.Database.GetInfrastructure().GetService<IMigrator>();
-            return migrator.GenerateScript();
+            return migrator?.GenerateScript();
         }
 
         public virtual void BeginTransaction()
@@ -396,16 +401,17 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
         {
             try
             {
-                this._transaction.Commit();
+                this._transaction?.Commit();
             }
             finally
             {
-                this._transaction.Dispose();
+                this._transaction?.Dispose();
             }
         }
 
         public async ValueTask CommitTransactionAsync(CancellationToken cancellationToken = default)
         {
+            if (this._transaction == null) { return; }
             try
             {
                 await this._transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
@@ -418,12 +424,13 @@ namespace KSociety.Base.Infra.Shared.Identity.Class
 
         public virtual void Rollback()
         {
-            this._transaction.Rollback();
-            this._transaction.Dispose();
+            this._transaction?.Rollback();
+            this._transaction?.Dispose();
         }
 
         public virtual async ValueTask RollbackAsync(CancellationToken cancellationToken = default)
         {
+            if (this._transaction == null) { return; }
             await this._transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
             await this._transaction.DisposeAsync().ConfigureAwait(false);
         }

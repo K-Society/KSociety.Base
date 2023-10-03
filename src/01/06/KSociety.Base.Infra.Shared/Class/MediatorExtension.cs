@@ -1,4 +1,4 @@
-﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Class
 {
@@ -16,13 +16,13 @@ namespace KSociety.Base.Infra.Shared.Class
                 .Entries<BaseEntity>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
 
-            var domainEvents = domainEntities
-                .SelectMany(x => x.Entity.DomainEvents)
+            var entityEntries = domainEntities.ToList();
+            var domainEvents = entityEntries
+                .SelectMany(x => x.Entity.DomainEvents ?? Enumerable.Empty<INotification>())
                 .ToList();
 
-            domainEntities.ToList()
+            entityEntries
                 .ForEach(entity => entity.Entity.ClearDomainEvents());
-
 
             foreach (var domainEvent in domainEvents)
             {
@@ -37,11 +37,12 @@ namespace KSociety.Base.Infra.Shared.Class
                 .Entries<BaseEntity>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
 
-            var domainEvents = domainEntities
-                .SelectMany(x => x.Entity.DomainEvents)
+            var entityEntries = domainEntities.ToList();
+            var domainEvents = entityEntries
+                .SelectMany(x => x.Entity.DomainEvents ?? Enumerable.Empty<INotification>())
                 .ToList();
 
-            domainEntities.ToList()
+            entityEntries
                 .ForEach(entity => entity.Entity.ClearDomainEvents());
 
             var tasks = domainEvents

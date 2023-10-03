@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 {
@@ -21,7 +21,9 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
             ILoggerFactory loggerFactory,
             MigrationsSqlGeneratorDependencies dependencies,
             ICommandBatchPreparer commandBatchPreparer,
+#pragma warning disable EF1001 // Internal EF Core API usage.
             IMySqlOptions options)
+#pragma warning restore EF1001 // Internal EF Core API usage.
             : base(dependencies, commandBatchPreparer, options)
         {
             this._logger = loggerFactory.CreateLogger<MySqlGenerator>();
@@ -31,7 +33,7 @@ namespace KSociety.Base.Infra.Shared.Class.SqlGenerator
 
         protected override void Generate(
             MigrationOperation operation,
-            IModel model,
+            IModel? model,
             MigrationCommandListBuilder builder)
         {
             try

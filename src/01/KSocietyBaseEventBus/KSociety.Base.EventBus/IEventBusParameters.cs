@@ -1,4 +1,4 @@
-﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus
 {
@@ -10,16 +10,16 @@ namespace KSociety.Base.EventBus
         /// <summary>
         /// The debug flag property.
         /// </summary>
-        bool Debug { get; set; }
+        bool? Debug { get; set; }
 
         /// <summary>
         /// The ExchangeDeclare parameters set property.
         /// </summary>
-        IExchangeDeclareParameters ExchangeDeclareParameters { get; set; }
+        IExchangeDeclareParameters? ExchangeDeclareParameters { get; set; }
 
         /// <summary>
         /// The QueueDeclare parameters set property.
         /// </summary>
-        IQueueDeclareParameters QueueDeclareParameters { get; set; }
+        IQueueDeclareParameters? QueueDeclareParameters { get; set; }
     }
 }
