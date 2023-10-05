@@ -15,8 +15,19 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
         private DateTimeOffset _startTimeJob;
         private readonly ISchedulerFactory _schedulerFactJob;
-        private IScheduler? _schedulerJob = null;
-        private IJobDetail? _job;
+
+        #if NETSTANDARD2_0
+
+        private IScheduler _schedulerJob = null;
+        private IJobDetail _job;
+
+        #elif NETSTANDARD2_1
+
+        private IScheduler _schedulerJob = null;
+        private IJobDetail _job;
+
+        #endif
+
         private readonly TimeSpan _timeInterval;
 
         public string Name { get; set; }

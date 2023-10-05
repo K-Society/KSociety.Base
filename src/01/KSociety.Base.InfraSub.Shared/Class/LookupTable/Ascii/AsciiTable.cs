@@ -267,23 +267,23 @@ namespace KSociety.Base.InfraSub.Shared.Class.LookupTable.Ascii
             {0xFF, new AsciiCodes(0xFF, "­ÿ", "Latin small letter y with diaeresis")}
         };
 
-        public static string? GetSymbol(byte hexByte)
+        public static string GetSymbol(byte hexByte)
         {
             if (AsciiMap.TryGetValue(hexByte, out var value))
             {
                 return value.Symbol;
             }
 
-            return null;
+            return String.Empty;
         }
 
-        public static string? GetSymbol(byte[] buffer)
+        public static string GetSymbol(byte[] buffer)
         {
             var output = String.Empty;
             if (buffer.Length > 0)
             {
                 var length = buffer.Length;
-                var symbolArray = new string?[length];
+                var symbolArray = new string[length];
                 const string separator = " ";
 
                 for (var i = 0; i < length; i++)

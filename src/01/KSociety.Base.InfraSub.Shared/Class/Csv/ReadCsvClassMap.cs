@@ -10,16 +10,21 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    #if NETSTANDARD2_1
     using System.Runtime.CompilerServices;
     using System.Threading;
     using System.Threading.Tasks;
+    #endif
 
     public static class ReadCsvClassMap<TEntity, TClassMap>
         where TEntity : class
         where TClassMap : ClassMap<TEntity>
     {
-
-        public static TEntity[]? Read(ILoggerFactory loggerFactory, string fileName)
+        #if NETSTANDARD2_0
+        public static TEntity[] Read(ILoggerFactory loggerFactory, string fileName)
+        #elif NETSTANDARD2_1
+        public static TEntity[] Read(ILoggerFactory loggerFactory, string fileName)
+        #endif
         {
             var logger = loggerFactory?.CreateLogger("ReadCsv");
             var csvFileName = @"." + fileName + @".csv";
@@ -49,7 +54,11 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TEntity>? Import(ILoggerFactory loggerFactory, string fileName)
+        #if NETSTANDARD2_0
+        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, string fileName)
+        #elif NETSTANDARD2_1
+        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, string fileName)
+        #endif
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -71,7 +80,11 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TEntity>? Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        #if NETSTANDARD2_0
+        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        #elif NETSTANDARD2_1
+        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        #endif
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -92,10 +105,12 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IAsyncEnumerable<TEntity>? ImportAsync(ILoggerFactory loggerFactory, string fileName)
+        #if NETSTANDARD2_1
+
+        public static IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-            IAsyncEnumerable<TEntity>? output = null;
+            IAsyncEnumerable<TEntity> output = null;
 
             try
             {
@@ -131,5 +146,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
                 }
             }
         }
+
+        #endif
     }
 }

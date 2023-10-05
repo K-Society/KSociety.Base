@@ -2,8 +2,19 @@
 
 namespace KSociety.Base.InfraSub.Shared.Interface
 {
+    #if NETSTANDARD2_0
+
     public interface IExport
     {
-        string? FileName { get; set; }
+        string FileName { get; set; }
     }
+
+    #elif NETSTANDARD2_1
+
+    public interface IExport
+    {
+        string FileName { get; set; }
+    }
+
+    #endif
 }

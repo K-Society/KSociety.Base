@@ -7,7 +7,10 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
     public static class ProcessUtil
     {
-        public static Process? PriorProcess()
+
+        #if NETSTANDARD2_0
+
+        public static Process PriorProcess()
         {
             var current = Process.GetCurrentProcess();
             var process = Process.GetProcessesByName(current.ProcessName);
@@ -15,5 +18,19 @@ namespace KSociety.Base.InfraSub.Shared.Class
                 current.MainModule != null && p.MainModule != null && p.Id != current.Id &&
                 p.MainModule.FileName == current.MainModule.FileName);
         }
+
+        #elif NETSTANDARD2_1
+
+        public static Process PriorProcess()
+        {
+            var current = Process.GetCurrentProcess();
+            var process = Process.GetProcessesByName(current.ProcessName);
+            return process.FirstOrDefault(p =>
+                current.MainModule != null && p.MainModule != null && p.Id != current.Id &&
+                p.MainModule.FileName == current.MainModule.FileName);
+        }
+
+        #endif
+
     }
 }

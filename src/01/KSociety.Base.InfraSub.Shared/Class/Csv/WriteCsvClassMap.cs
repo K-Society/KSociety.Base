@@ -14,7 +14,12 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         where TEntity : class
         where TClassMap : ClassMap<TEntity>
     {
-        public static bool Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity>? records)
+
+        #if NETSTANDARD2_0
+        public static bool Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
+        #elif NETSTANDARD2_1
+        public static bool Export(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
+        #endif
         {
             var logger = loggerFactory.CreateLogger("ExportCsv");
 
@@ -41,8 +46,11 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return false;
         }
 
-        public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName,
-            IEnumerable<TEntity>? records)
+        #if NETSTANDARD2_0
+        public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
+        #elif NETSTANDARD2_1
+        public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
+        #endif
         {
             var logger = loggerFactory.CreateLogger("ExportAsyncCsv");
 
