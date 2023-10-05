@@ -20,11 +20,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         where TEntity : class
         where TClassMap : ClassMap<TEntity>
     {
-        #if NETSTANDARD2_0
         public static TEntity[] Read(ILoggerFactory loggerFactory, string fileName)
-        #elif NETSTANDARD2_1
-        public static TEntity[] Read(ILoggerFactory loggerFactory, string fileName)
-        #endif
         {
             var logger = loggerFactory?.CreateLogger("ReadCsv");
             var csvFileName = @"." + fileName + @".csv";
@@ -54,11 +50,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        #if NETSTANDARD2_0
         public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, string fileName)
-        #elif NETSTANDARD2_1
-        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, string fileName)
-        #endif
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -80,11 +72,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        #if NETSTANDARD2_0
         public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, byte[] byteArray)
-        #elif NETSTANDARD2_1
-        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, byte[] byteArray)
-        #endif
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 

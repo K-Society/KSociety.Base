@@ -4,23 +4,10 @@ namespace KSociety.Base.InfraSub.Shared.Interface
 {
     using System;
 
-    #if NETSTANDARD2_0
-
     public interface IModifyField
     {
         Guid Id { get; set; }
         string FieldName { get; set; }
         string Value { get; set; }
     }
-
-    #elif NETSTANDARD2_1
-
-    public interface IModifyField
-    {
-        Guid Id { get; set; }
-        string FieldName { get; set; }
-        string Value { get; set; }
-    }
-
-    #endif
 }
