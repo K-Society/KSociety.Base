@@ -9,15 +9,20 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    #if NETSTANDARD2_1
     using System.Runtime.CompilerServices;
     using System.Threading;
     using System.Threading.Tasks;
+    #endif
 
     public static class ReadCsv<TClass>
         where TClass : class
     {
-
-        public static TClass[]? Read(ILoggerFactory loggerFactory, string fileName)
+        #if NETSTANDARD2_0
+        public static TClass[] Read(ILoggerFactory loggerFactory, string fileName)
+        #elif NETSTANDARD2_1
+        public static TClass[] Read(ILoggerFactory loggerFactory, string fileName)
+        #endif
         {
             var logger = loggerFactory?.CreateLogger("ReadCsv");
             var csvFileName = @"." + fileName + @".csv";
@@ -46,7 +51,11 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TClass>? Import(ILoggerFactory loggerFactory, string fileName)
+        #if NETSTANDARD2_0
+        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, string fileName)
+        #elif NETSTANDARD2_1
+        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, string fileName)
+        #endif
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -67,7 +76,11 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TClass>? Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        #if NETSTANDARD2_0
+        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        #elif NETSTANDARD2_1
+        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        #endif
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -87,6 +100,8 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
             return null;
         }
+
+        #if NETSTANDARD2_1
 
         public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -122,5 +137,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
                 }
             }
         }
+
+        #endif
     }
 }

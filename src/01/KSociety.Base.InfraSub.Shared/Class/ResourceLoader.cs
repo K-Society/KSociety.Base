@@ -9,44 +9,48 @@ namespace KSociety.Base.InfraSub.Shared.Class
     {
         public static string LoadFileFromResource(Assembly assembly, string fileResourceName, string fileName)
         {
-            using var stream = assembly.GetManifestResourceStream(fileResourceName);
-            var data = new BinaryReader(stream).ReadBytes((int)stream.Length);
-
-            var assemblyPath = Path.GetDirectoryName(assembly.Location);
-            var tempFilePath = Path.Combine(assemblyPath, fileName);
-
-            if (File.Exists(tempFilePath))
+            using (var stream = assembly.GetManifestResourceStream(fileResourceName))
             {
-                File.Delete(tempFilePath);
-                File.WriteAllBytes(tempFilePath, data);
-            }
-            else
-            {
-                File.WriteAllBytes(tempFilePath, data);
-            }
+                var data = new BinaryReader(stream).ReadBytes((int)stream.Length);
 
-            return tempFilePath;
+                var assemblyPath = Path.GetDirectoryName(assembly.Location);
+                var tempFilePath = Path.Combine(assemblyPath, fileName);
+
+                if (File.Exists(tempFilePath))
+                {
+                    File.Delete(tempFilePath);
+                    File.WriteAllBytes(tempFilePath, data);
+                }
+                else
+                {
+                    File.WriteAllBytes(tempFilePath, data);
+                }
+
+                return tempFilePath;
+            }
         }
 
         public static string LoadFileFromResourceToTemp(Assembly assembly, string fileResourceName, string fileName)
         {
-            using var stream = assembly.GetManifestResourceStream(fileResourceName);
-            var data = new BinaryReader(stream).ReadBytes((int)stream.Length);
-
-            var assemblyPath = Path.GetTempPath();
-            var tempFilePath = Path.Combine(assemblyPath, fileName);
-
-            if (File.Exists(tempFilePath))
+            using (var stream = assembly.GetManifestResourceStream(fileResourceName))
             {
-                File.Delete(tempFilePath);
-                File.WriteAllBytes(tempFilePath, data);
-            }
-            else
-            {
-                File.WriteAllBytes(tempFilePath, data);
-            }
+                var data = new BinaryReader(stream).ReadBytes((int)stream.Length);
 
-            return tempFilePath;
+                var assemblyPath = Path.GetTempPath();
+                var tempFilePath = Path.Combine(assemblyPath, fileName);
+
+                if (File.Exists(tempFilePath))
+                {
+                    File.Delete(tempFilePath);
+                    File.WriteAllBytes(tempFilePath, data);
+                }
+                else
+                {
+                    File.WriteAllBytes(tempFilePath, data);
+                }
+
+                return tempFilePath;
+            }
         }
     }
 }
