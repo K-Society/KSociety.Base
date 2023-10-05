@@ -14,11 +14,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
     public class WriteCsv<TEntity>
         where TEntity : class
     {
-        #if NETSTANDARD2_0
         public static TEntity[] Write(ILoggerFactory loggerFactory, string fileName)
-        #elif NETSTANDARD2_1
-        public static TEntity[] Write(ILoggerFactory loggerFactory, string fileName)
-        #endif
         {
             var logger = loggerFactory.CreateLogger("WriteCsv");
 
