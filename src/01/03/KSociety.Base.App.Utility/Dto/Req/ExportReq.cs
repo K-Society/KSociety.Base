@@ -10,7 +10,7 @@ namespace KSociety.Base.App.Utility.Dto.Req
     public class ExportReq : IRequest, IExport
     {
         [ProtoMember(1)]
-        public string? FileName { get; set; }
+        public string FileName { get; set; }
 
         public ExportReq() { }
 

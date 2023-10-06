@@ -11,9 +11,9 @@ namespace KSociety.Base.Srv.Agent
         ///<inheritdoc/>
         public bool DebugFlag { get; }
 
-        public string? Token { get; }
+        public string Token { get; }
 
-        public AgentConfiguration(string connectionUrl, bool debugFlag, string? token = null)
+        public AgentConfiguration(string connectionUrl, bool debugFlag, string token = null)
         {
             this.ConnectionUrl = connectionUrl;
             this.DebugFlag = debugFlag;

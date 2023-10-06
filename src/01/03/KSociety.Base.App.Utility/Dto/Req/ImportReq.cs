@@ -10,10 +10,10 @@ namespace KSociety.Base.App.Utility.Dto.Req
     public class ImportReq : IRequest, IImport
     {
         [ProtoMember(1)]
-        public string? FileName { get; set; }
+        public string FileName { get; set; }
 
         [ProtoMember(2)]
-        public byte[]? ByteArray { get; set; }
+        public byte[] ByteArray { get; set; }
 
         public ImportReq() { }
 

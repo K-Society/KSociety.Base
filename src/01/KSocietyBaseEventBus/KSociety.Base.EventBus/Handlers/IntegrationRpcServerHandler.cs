@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus.Handlers
 {
@@ -16,23 +16,23 @@ namespace KSociety.Base.EventBus.Handlers
         where TIntegrationEvent : IIntegrationEventRpc
         where TIntegrationEventReply : IIntegrationEventReply
     {
-        protected readonly ILogger<IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>>? Logger;
+        protected readonly ILogger<IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>> Logger;
 
         #region [Constructors]
 
-        public IntegrationRpcServerHandler(ILoggerFactory? loggerFactory = default)
+        public IntegrationRpcServerHandler(ILoggerFactory loggerFactory = default)
             : base(loggerFactory)
         {
             this.Logger = this.LoggerFactory?.CreateLogger<IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>>();
         }
 
-        public IntegrationRpcServerHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default)
+        public IntegrationRpcServerHandler(ILoggerFactory loggerFactory = default, IComponentContext componentContext = default)
             : base(loggerFactory, componentContext)
         {
             this.Logger = this.LoggerFactory?.CreateLogger<IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>>();
         }
 
-        public IntegrationRpcServerHandler(ILogger<IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>>? logger = default, IComponentContext? componentContext = default)
+        public IntegrationRpcServerHandler(ILogger<IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>> logger = default, IComponentContext componentContext = default)
             : base(componentContext)
         {
             this.Logger = logger;

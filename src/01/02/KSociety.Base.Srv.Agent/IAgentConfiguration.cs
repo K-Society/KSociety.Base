@@ -17,6 +17,6 @@ namespace KSociety.Base.Srv.Agent
         /// </summary>
         bool DebugFlag { get; }
 
-        string? Token { get; }
+        string Token { get; }
     }
 }

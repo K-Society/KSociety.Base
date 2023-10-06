@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus.Handlers
 {
@@ -17,28 +17,28 @@ namespace KSociety.Base.EventBus.Handlers
         where TIntegrationEvent : IIntegrationEvent
         where TIntegrationEventReply : IIntegrationEventReply
     {
-        protected readonly ILogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>? Logger;
+        protected readonly ILogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>> Logger;
 
         public BufferBlock<TIntegrationEventReply> Queue { get; }
         public bool IsEmpty => this.Queue.Count == 0;
 
         #region [Constructors]
 
-        public IntegrationRpcHandler(ILoggerFactory? loggerFactory = default)
+        public IntegrationRpcHandler(ILoggerFactory loggerFactory = default)
             : base(loggerFactory)
         {
             this.Logger = this.LoggerFactory?.CreateLogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>();
             this.Queue = new BufferBlock<TIntegrationEventReply>();
         }
 
-        public IntegrationRpcHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default)
+        public IntegrationRpcHandler(ILoggerFactory loggerFactory = default, IComponentContext componentContext = default)
             : base(loggerFactory, componentContext)
         {
             this.Logger = this.LoggerFactory?.CreateLogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>();
             this.Queue = new BufferBlock<TIntegrationEventReply>();
         }
 
-        public IntegrationRpcHandler(ILogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>? logger = default, IComponentContext? componentContext = default)
+        public IntegrationRpcHandler(ILogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>> logger = default, IComponentContext componentContext = default)
             : base(componentContext)
         {
             this.Logger = logger;

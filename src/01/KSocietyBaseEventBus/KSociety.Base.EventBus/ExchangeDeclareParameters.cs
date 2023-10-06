@@ -6,13 +6,13 @@ namespace KSociety.Base.EventBus
     public class ExchangeDeclareParameters : IExchangeDeclareParameters
     {
         ///<inheritdoc/>
-        public string? BrokerName { get; set; }
+        public string BrokerName { get; set; }
 
         ///<inheritdoc/>
-        public string? ExchangeType { get; set; }
+        public string ExchangeType { get; set; }
 
         ///<inheritdoc/>
-        public string? ExchangeName
+        public string ExchangeName
         {
             get
             {
@@ -21,10 +21,10 @@ namespace KSociety.Base.EventBus
         }
 
         ///<inheritdoc/>
-        public bool? ExchangeDurable { get; set; }
+        public bool ExchangeDurable { get; set; }
 
         ///<inheritdoc/>
-        public bool? ExchangeAutoDelete { get; set; }
+        public bool ExchangeAutoDelete { get; set; }
 
         public ExchangeDeclareParameters() { }
 

@@ -7,7 +7,7 @@ namespace KSociety.Base.Domain.Shared.Class
 
     public abstract class ValueObject
     {
-        protected static bool EqualOperator(ValueObject? left, ValueObject? right)
+        protected static bool EqualOperator(ValueObject left, ValueObject right)
         {
             if (left is null ^ right is null)
             {
@@ -16,14 +16,14 @@ namespace KSociety.Base.Domain.Shared.Class
             return ReferenceEquals(left, right);
         }
 
-        protected static bool NotEqualOperator(ValueObject? left, ValueObject? right)
+        protected static bool NotEqualOperator(ValueObject left, ValueObject right)
         {
             return !(EqualOperator(left, right));
         }
 
         protected abstract IEnumerable<object> GetAtomicValues();
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             if (obj == null || obj.GetType() != this.GetType())
             {

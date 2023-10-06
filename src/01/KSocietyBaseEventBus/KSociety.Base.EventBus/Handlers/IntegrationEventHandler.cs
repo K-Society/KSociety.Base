@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus.Handlers
 {
@@ -14,23 +14,23 @@ namespace KSociety.Base.EventBus.Handlers
         IIntegrationEventHandler<TIntegrationEvent>
         where TIntegrationEvent : IIntegrationEvent
     {
-        protected readonly ILogger<IntegrationEventHandler<TIntegrationEvent>>? Logger;
+        protected readonly ILogger<IntegrationEventHandler<TIntegrationEvent>> Logger;
 
         #region [Constructors]
 
-        public IntegrationEventHandler(ILoggerFactory? loggerFactory = default)
+        public IntegrationEventHandler(ILoggerFactory loggerFactory = default)
             : base(loggerFactory)
         {
             this.Logger = this.LoggerFactory?.CreateLogger<IntegrationEventHandler<TIntegrationEvent>>();
         }
 
-        public IntegrationEventHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default) 
+        public IntegrationEventHandler(ILoggerFactory loggerFactory = default, IComponentContext componentContext = default) 
             : base(loggerFactory, componentContext)
         {
             this.Logger = this.LoggerFactory?.CreateLogger<IntegrationEventHandler<TIntegrationEvent>>();
         }
 
-        public IntegrationEventHandler(ILogger<IntegrationEventHandler<TIntegrationEvent>>? logger = default, IComponentContext? componentContext = default)
+        public IntegrationEventHandler(ILogger<IntegrationEventHandler<TIntegrationEvent>> logger = default, IComponentContext componentContext = default)
             : base(componentContext)
         {
             this.Logger = logger;

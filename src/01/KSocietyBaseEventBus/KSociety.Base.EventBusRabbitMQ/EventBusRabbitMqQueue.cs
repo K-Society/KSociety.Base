@@ -23,18 +23,18 @@ namespace KSociety.Base.EventBusRabbitMQ
         #region [Constructor]
 
         public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null)
+            string queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
 
         }
 
         public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection,
-            IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
+            string queueName = null, ILogger<EventBusRabbitMq> logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
 
@@ -42,7 +42,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public IIntegrationQueueHandler<T>? GetIntegrationQueueHandler<T, TH>()
+        public IIntegrationQueueHandler<T> GetIntegrationQueueHandler<T, TH>()
             where T : IIntegrationEvent
             where TH : IIntegrationQueueHandler<T>
         {
@@ -74,12 +74,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (channel != null)
                 {
                     var routingKey = @event.RoutingKey;
-                    if (this.EventBusParameters.ExchangeDeclareParameters is {ExchangeAutoDelete: { }, ExchangeDurable: { }})
+                    if (this.EventBusParameters.ExchangeDeclareParameters != null)
                     {
                         channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                             this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable.Value,
-                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete.Value);
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
                         using (var ms = new MemoryStream())
                         {
