@@ -71,11 +71,11 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
             try
             {
-                #if NETSTANDARD2_0
+                //#if NETSTANDARD2_0
                 using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
-                #elif NETSTANDARD2_1
-                await using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
-                #endif
+                //#elif NETSTANDARD2_1
+                //await using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
+                //#endif
                 {
                     var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
 
