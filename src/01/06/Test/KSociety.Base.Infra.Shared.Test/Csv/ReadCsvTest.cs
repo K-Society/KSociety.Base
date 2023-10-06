@@ -1,12 +1,11 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Infra.Shared.Test.Csv;
-using KSociety.Base.Infra.Shared.Csv;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using InfraSub.Shared.Class.Csv;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 public class ReadCsvTest

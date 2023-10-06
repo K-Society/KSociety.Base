@@ -2,19 +2,15 @@
 
 namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
-    using CsvHelper;
-    using CsvHelper.Configuration;
-    using Microsoft.Extensions.Logging;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    #if NETSTANDARD2_1
-    using System.Runtime.CompilerServices;
     using System.Threading;
-    using System.Threading.Tasks;
-    #endif
+    using CsvHelper;
+    using CsvHelper.Configuration;
+    using Microsoft.Extensions.Logging;
 
     public static class ReadCsvClassMap<TEntity, TClassMap>
         where TEntity : class
@@ -93,7 +89,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        #if NETSTANDARD2_1
+        //#if NETSTANDARD2_1
 
         public static IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
@@ -117,8 +113,8 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return output;
         }
 
-        public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
-            [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
+            /*[EnumeratorCancellation]*/ CancellationToken cancellationToken = default)
         {
             //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
@@ -127,14 +123,14 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
                 reader.Context.RegisterClassMap<TClassMap>();
                 var result = reader.GetRecordsAsync<TEntity>(cancellationToken);
-
-                await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
-                {
-                    yield return item;
-                }
+                return result;
+                //await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+                //{
+                //    yield return item;
+                //}
             }
         }
 
-        #endif
+        //#endif
     }
 }
