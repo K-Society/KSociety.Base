@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Domain.Shared.Class
 {
@@ -22,7 +22,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// </summary>
         /// <param name="fieldName">Domain entiy field name.</param>
         /// <param name="value">New value of the domaint entiy field.</param>
-        public void ModifyField(string fieldName, string? value)
+        public void ModifyField(string fieldName, string value)
         {
             this.Logger?.LogTrace("ModifyField Entity: {0}.{1} - {2} - {3}", this.GetType().FullName,
                 MethodBase.GetCurrentMethod()?.Name,
@@ -36,7 +36,7 @@ namespace KSociety.Base.Domain.Shared.Class
                 {
                     //Console.WriteLine("1 " + field.Name);
                     var t = Nullable.GetUnderlyingType(field.PropertyType) ?? field.PropertyType;
-                    object? safeValue = null;
+                    object safeValue = null;
 
                     //If is byte[]
                     if (t == typeof(byte[]))
@@ -96,7 +96,7 @@ namespace KSociety.Base.Domain.Shared.Class
             }
         }
 
-        private void AddEntityModifyFieldEvent(string fieldName, string? fieldValue)
+        private void AddEntityModifyFieldEvent(string fieldName, string fieldValue)
         {
             var entityModifyField = new EntityModifyField(fieldName, fieldValue);
 

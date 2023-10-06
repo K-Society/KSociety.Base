@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Domain.Shared.Class
 {
@@ -16,11 +16,11 @@ namespace KSociety.Base.Domain.Shared.Class
     /// </remarks>
     public abstract class BaseEntity : DisposableObject
     {
-        private List<INotification>? _domainEvents;
-        public IReadOnlyCollection<INotification>? DomainEvents => this._domainEvents?.AsReadOnly();
+        private List<INotification> _domainEvents;
+        public IReadOnlyCollection<INotification> DomainEvents => this._domainEvents?.AsReadOnly();
 
-        public ILoggerFactory? LoggerFactory;
-        public ILogger? Logger;
+        public ILoggerFactory LoggerFactory;
+        public ILogger Logger;
 
         /// <summary>
         /// Add the <see cref="ILoggerFactory"/> to the domain base entity and convert it to <see cref="ILogger"/>.

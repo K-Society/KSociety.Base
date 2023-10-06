@@ -24,21 +24,21 @@ namespace KSociety.Base.EventBusRabbitMQ
     {
         protected readonly bool Debug;
         protected readonly IRabbitMqPersistentConnection PersistentConnection;
-        protected readonly ILogger<EventBusRabbitMq>? Logger;
+        protected readonly ILogger<EventBusRabbitMq> Logger;
         protected readonly IEventBusSubscriptionsManager SubsManager;
         protected readonly IEventBusParameters EventBusParameters;
 
-        public IIntegrationGeneralHandler? EventHandler { get; }
+        public IIntegrationGeneralHandler EventHandler { get; }
 
-        protected AsyncLazy<IModel?>? ConsumerChannel;
-        protected string? QueueName;
+        protected AsyncLazy<IModel> ConsumerChannel;
+        protected string QueueName;
 
         #region [Constructor]
 
         private EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection,
-            IEventBusSubscriptionsManager? subsManager,
+            IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null)
+            string queueName = null)
         {
             this.Debug = eventBusParameters.Debug.HasValue && eventBusParameters.Debug.Value;
             
@@ -50,40 +50,48 @@ namespace KSociety.Base.EventBusRabbitMQ
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null) : this(persistentConnection, subsManager, eventBusParameters, queueName)
+            string queueName = null) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
             this.Logger = loggerFactory.CreateLogger<EventBusRabbitMq>();
             this.EventHandler = eventHandler;
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            IEventBusSubscriptionsManager? subsManager,
+            IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null) : this(persistentConnection, subsManager, eventBusParameters, queueName)
+            string queueName = null) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
             this.Logger = loggerFactory.CreateLogger<EventBusRabbitMq>();
             this.EventHandler = null;
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection,
-            IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default) : this(persistentConnection, subsManager, eventBusParameters, queueName)
+            string queueName = null, ILogger<EventBusRabbitMq> logger = default) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
-            this.Logger ??= new NullLogger<EventBusRabbitMq>();
+            //this.Logger ??= new NullLogger<EventBusRabbitMq>();
+            if (this.Logger == null)
+            {
+                this.Logger = new NullLogger<EventBusRabbitMq>();
+            }
             this.Logger = logger;
 
             this.EventHandler = eventHandler;
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection,
-            IEventBusSubscriptionsManager? subsManager,
+            IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default) : this(persistentConnection, subsManager, eventBusParameters, queueName)
+            string queueName = null, ILogger<EventBusRabbitMq> logger = default) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
-            this.Logger ??= new NullLogger<EventBusRabbitMq>();
+            //this.Logger ??= new NullLogger<EventBusRabbitMq>();
+            if (this.Logger == null)
+            {
+                this.Logger = new NullLogger<EventBusRabbitMq>();
+            }
             this.Logger = logger;
 
             this.EventHandler = null;
@@ -95,7 +103,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             //this.Logger?.LogTrace("EventBusRabbitMq Initialize.");
             this.ConsumerChannel =
-                new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         }
 
         private async void SubsManager_OnEventRemoved(object sender, string eventName)
@@ -153,12 +161,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                     if (channel != null)
                     {
                         var routingKey = @event.RoutingKey;
-                        if (this.EventBusParameters.ExchangeDeclareParameters is {ExchangeAutoDelete: { }, ExchangeDurable: { }})
+                        if (this.EventBusParameters.ExchangeDeclareParameters != null)
                         {
                             channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                                 this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable.Value,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete.Value);
+                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
                             using (var ms = new MemoryStream())
                             {
@@ -185,16 +193,16 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual void QueueInitialize(IModel? channel)
+        protected virtual void QueueInitialize(IModel channel)
         {
             try
             {
-                if (this.EventBusParameters is {ExchangeDeclareParameters: {ExchangeAutoDelete: { }, ExchangeDurable: { }}, QueueDeclareParameters: { }})
+                if (this.EventBusParameters != null)
                 {
                     channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                         this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable.Value,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete.Value);
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
                     //var args = new Dictionary<string, object>
                     //{
                     //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
@@ -373,7 +381,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual async ValueTask<IModel?> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        protected virtual async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             //this.Logger?.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
 
@@ -399,7 +407,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     }
 
                     this.ConsumerChannel?.Value.Dispose();
-                    this.ConsumerChannel = new AsyncLazy<IModel?>(async () =>
+                    this.ConsumerChannel = new AsyncLazy<IModel>(async () =>
                         await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
                     await this.StartBasicConsume().ConfigureAwait(false);
                 };

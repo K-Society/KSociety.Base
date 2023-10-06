@@ -14,23 +14,23 @@ namespace KSociety.Base.EventBus.Handlers
         : IntegrationGeneralHandler, IIntegrationRpcClientHandler<TIntegrationEventReply>
         where TIntegrationEventReply : IIntegrationEventReply
     {
-        protected readonly ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>? Logger;
+        protected readonly ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>> Logger;
 
         #region [Constructors]
 
-        public IntegrationRpcClientHandler(ILoggerFactory? loggerFactory = default)
+        public IntegrationRpcClientHandler(ILoggerFactory loggerFactory = default)
             : base(loggerFactory)
         {
             this.Logger = this.LoggerFactory?.CreateLogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>();
         }
 
-        public IntegrationRpcClientHandler(ILoggerFactory? loggerFactory = default, IComponentContext? componentContext = default)
+        public IntegrationRpcClientHandler(ILoggerFactory loggerFactory = default, IComponentContext componentContext = default)
             : base(loggerFactory, componentContext)
         {
             this.Logger = this.LoggerFactory?.CreateLogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>();
         }
 
-        public IntegrationRpcClientHandler(ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>>? logger = default, IComponentContext? componentContext = default)
+        public IntegrationRpcClientHandler(ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>> logger = default, IComponentContext componentContext = default)
             : base(componentContext)
         {
             this.Logger = logger;

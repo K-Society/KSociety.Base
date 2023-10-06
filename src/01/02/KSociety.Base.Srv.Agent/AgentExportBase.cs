@@ -20,10 +20,10 @@ namespace KSociety.Base.Srv.Agent
 
         }
 
-        public virtual TExportRes? ExportData(TExportReq request,
+        public virtual TExportRes ExportData(TExportReq request,
             CancellationToken cancellationToken = default)
         {
-            TExportRes? output = default;
+            TExportRes output = default;
             try
             {
                 using (this.Channel)

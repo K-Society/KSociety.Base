@@ -29,9 +29,9 @@ namespace KSociety.Base.Srv.Agent
 
         }
 
-        public virtual async ValueTask<TAddRes?> AddAsync(TAddReq addItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TAddRes> AddAsync(TAddReq addItem, CancellationToken cancellationToken = default)
         {
-            TAddRes? output = default;
+            TAddRes output = default;
             try
             {
                 using (this.Channel)
@@ -53,9 +53,9 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public virtual async ValueTask<TUpdateRes?> UpdateAsync(TUpdateReq updateItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TUpdateRes> UpdateAsync(TUpdateReq updateItem, CancellationToken cancellationToken = default)
         {
-            TUpdateRes? output = default;
+            TUpdateRes output = default;
             try
             {
                 using (this.Channel)
@@ -77,9 +77,9 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public virtual async ValueTask<TCopyRes?> CopyAsync(TCopyReq copyItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TCopyRes> CopyAsync(TCopyReq copyItem, CancellationToken cancellationToken = default)
         {
-            TCopyRes? output = default;
+            TCopyRes output = default;
             try
             {
                 using (this.Channel)
@@ -101,9 +101,9 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public virtual async ValueTask<TModifyFieldRes?> ModifyFieldAsync(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TModifyFieldRes> ModifyFieldAsync(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default)
         {
-            TModifyFieldRes? output = default;
+            TModifyFieldRes output = default;
             try
             {
                 using (this.Channel)
@@ -126,9 +126,9 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public virtual async ValueTask<TRemoveRes?> RemoveAsync(TRemoveReq removeItem, CancellationToken cancellationToken = default)
+        public virtual async ValueTask<TRemoveRes> RemoveAsync(TRemoveReq removeItem, CancellationToken cancellationToken = default)
         {
-            TRemoveRes? output = default;
+            TRemoveRes output = default;
             try
             {
                 using (this.Channel)

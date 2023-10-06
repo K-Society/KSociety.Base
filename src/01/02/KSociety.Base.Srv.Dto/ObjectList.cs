@@ -12,7 +12,7 @@ namespace KSociety.Base.Srv.Dto
     public class ObjectList<T> : InfraSub.Shared.Interface.IList<T> where T : IObject
     {
         [ProtoMember(1)]
-        public List<T>? List
+        public List<T> List
         {
             get;
             set;
