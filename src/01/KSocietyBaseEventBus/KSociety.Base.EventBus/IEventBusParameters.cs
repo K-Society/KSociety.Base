@@ -10,7 +10,7 @@ namespace KSociety.Base.EventBus
         /// <summary>
         /// The debug flag property.
         /// </summary>
-        bool? Debug { get; set; }
+        bool Debug { get; set; }
 
         /// <summary>
         /// The ExchangeDeclare parameters set property.

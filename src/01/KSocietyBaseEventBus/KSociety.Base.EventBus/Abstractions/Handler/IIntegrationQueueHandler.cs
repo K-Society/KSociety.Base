@@ -18,6 +18,6 @@ namespace KSociety.Base.EventBus.Abstractions.Handler
 
         ValueTask<bool> Enqueue(TIntegrationEvent @integrationEvent, CancellationToken cancel = default);
 
-        //IAsyncEnumerable<TIntegrationEvent> Dequeue([EnumeratorCancellation] CancellationToken cancel = default);
+        IAsyncEnumerable<TIntegrationEvent> Dequeue([EnumeratorCancellation] CancellationToken cancel = default);
     }
 }
