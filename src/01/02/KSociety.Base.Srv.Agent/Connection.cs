@@ -28,6 +28,10 @@ namespace KSociety.Base.Srv.Agent
                     //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                     //};
                     //var httpClient = new HttpClient(httpClientHandler);
+                    if (this._agentConfiguration.ConnectionUrl is null)
+                    {
+                        return null;
+                    }
                     return GrpcChannel.ForAddress(this._agentConfiguration.ConnectionUrl, new GrpcChannelOptions
                     {
                         MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB

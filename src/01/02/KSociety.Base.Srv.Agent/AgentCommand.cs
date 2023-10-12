@@ -102,9 +102,9 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public virtual TModifyFieldRes ModifyField(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default)
+        public virtual TModifyFieldRes? ModifyField(TModifyFieldReq modifyFieldItem, CancellationToken cancellationToken = default)
         {
-            TModifyFieldRes output = default;
+            TModifyFieldRes? output = default;
             try
             {
                 using (this.Channel)
@@ -126,9 +126,9 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public virtual TRemoveRes Remove(TRemoveReq removeItem, CancellationToken cancellationToken = default)
+        public virtual TRemoveRes? Remove(TRemoveReq removeItem, CancellationToken cancellationToken = default)
         {
-            TRemoveRes output = default;
+            TRemoveRes? output = default;
             try
             {
                 using (this.Channel)

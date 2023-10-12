@@ -204,8 +204,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (this.EventBusParameters != null)
                 {
-                    channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                    channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName,
+                        this.EventBusParameters.ExchangeDeclareParameters?.ExchangeType,
                         this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
                         this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
                     //var args = new Dictionary<string, object>
