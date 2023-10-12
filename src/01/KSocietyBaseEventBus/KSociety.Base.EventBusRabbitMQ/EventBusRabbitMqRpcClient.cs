@@ -26,24 +26,24 @@ namespace KSociety.Base.EventBusRabbitMQ
         private readonly ConcurrentDictionary<string, TaskCompletionSource<dynamic>> _callbackMapper =
             new ConcurrentDictionary<string, TaskCompletionSource<dynamic>>();
 
-        private string? _queueNameReply;
+        private string _queueNameReply;
 
         #region [Constructor]
 
         public EventBusRabbitMqRpcClient(IRabbitMqPersistentConnection persistentConnection,
             ILoggerFactory loggerFactory,
-            IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null)
+            string queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
 
         }
 
         public EventBusRabbitMqRpcClient(IRabbitMqPersistentConnection persistentConnection,
-            IIntegrationGeneralHandler? eventHandler, IEventBusSubscriptionsManager? subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
+            string queueName = null, ILogger<EventBusRabbitMq> logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
 
@@ -57,10 +57,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             this._queueNameReply = this.QueueName + "_Reply";
             this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
             this.ConsumerChannel =
-                new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         }
 
-        public IIntegrationRpcClientHandler<TIntegrationEventReply>? GetIntegrationRpcClientHandler<
+        public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<
             TIntegrationEventReply>()
             where TIntegrationEventReply : IIntegrationEventReply
         {
@@ -128,13 +128,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (channel != null)
                 {
                     var routingKey = @event.RoutingKey;
-                    if (this.EventBusParameters.ExchangeDeclareParameters is
-                        {ExchangeAutoDelete: { }, ExchangeDurable: { }})
+                    if (this.EventBusParameters.ExchangeDeclareParameters != null)
                     {
                         channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                             this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable.Value,
-                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete.Value);
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
                         using (var ms = new MemoryStream())
                         {
@@ -188,13 +187,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                     if (channel != null)
                     {
                         var routingKey = @event.RoutingKey;
-                        if (this.EventBusParameters.ExchangeDeclareParameters is
-                            {ExchangeAutoDelete: { }, ExchangeDurable: { }})
+                        if (this.EventBusParameters.ExchangeDeclareParameters != null)
                         {
                             channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                                 this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable.Value,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete.Value);
+                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
                             using (var ms = new MemoryStream())
                             {
@@ -233,20 +231,16 @@ namespace KSociety.Base.EventBusRabbitMQ
             return default;
         }
 
-        protected override void QueueInitialize(IModel? channel)
+        protected override void QueueInitialize(IModel channel)
         {
             try
             {
-                if (this.EventBusParameters is
-                    {
-                        ExchangeDeclareParameters: {ExchangeAutoDelete: { }, ExchangeDurable: { }},
-                        QueueDeclareParameters: { }
-                    })
+                if (this.EventBusParameters != null)
                 {
                     channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                         this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable.Value,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete.Value);
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
                     //var args = new Dictionary<string, object>
                     //{
@@ -450,7 +444,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             //ConsumerChannel?.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
         }
 
-        protected override async ValueTask<IModel?> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        protected override async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             //this.Logger?.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
             try
@@ -469,7 +463,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     {
                         this.Logger?.LogError(ea.Exception, "CallbackException: ");
                         this.ConsumerChannel?.Value.Dispose();
-                        this.ConsumerChannel = new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel));
+                        this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel));
                         await this.StartBasicConsume().ConfigureAwait(false);
                     };
 

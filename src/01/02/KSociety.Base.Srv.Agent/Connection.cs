@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Agent
 {
@@ -28,6 +28,10 @@ namespace KSociety.Base.Srv.Agent
                     //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                     //};
                     //var httpClient = new HttpClient(httpClientHandler);
+                    if (this._agentConfiguration.ConnectionUrl is null)
+                    {
+                        return null;
+                    }
                     return GrpcChannel.ForAddress(this._agentConfiguration.ConnectionUrl, new GrpcChannelOptions
                     {
                         MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB

@@ -12,9 +12,9 @@ namespace KSociety.Base.Srv.Agent
 
     public class AuthenticatedConnection
     {
-        protected readonly ILogger<Connection> Logger;
+        protected readonly ILogger<Connection>? Logger;
 
-        public GrpcChannel Channel
+        public GrpcChannel? Channel
         {
             get
             {
@@ -48,7 +48,7 @@ namespace KSociety.Base.Srv.Agent
                 }
                 catch (RpcException rex)
                 {
-                    this.Logger.LogError(rex, "Channel: ");
+                    this.Logger?.LogError(rex, "Channel: ");
                 }
 
                 return null;
@@ -93,10 +93,10 @@ namespace KSociety.Base.Srv.Agent
         /// <param name="propagationToken"></param>
         /// <param name="credentials"></param>
         /// <returns></returns>
-        protected virtual CallContext ConnectionOptions(Metadata? headers = null,
+        protected virtual CallContext ConnectionOptions(Metadata headers = null,
             DateTime? deadline = null, CancellationToken cancellationToken = default,
-            WriteOptions? writeOptions = null, ContextPropagationToken? propagationToken = null,
-            CallCredentials? credentials = null)
+            WriteOptions writeOptions = null, ContextPropagationToken propagationToken = null,
+            CallCredentials credentials = null)
         {
             var callOptions = new CallOptions(headers, deadline, cancellationToken, writeOptions, propagationToken,
                 credentials);

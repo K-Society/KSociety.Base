@@ -37,7 +37,12 @@ namespace KSociety.Base.EventBusRabbitMQ
         public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMqPersistentConnection>? logger = default)
         :this(connectionFactory)
         {
-            logger ??= new NullLogger<DefaultRabbitMqPersistentConnection>();
+            //logger ??= new NullLogger<DefaultRabbitMqPersistentConnection>();
+
+            if (logger == null)
+            {
+                logger = new NullLogger<DefaultRabbitMqPersistentConnection>();
+            }
             this._logger = logger;
         }
 
@@ -50,7 +55,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public bool IsConnected => this._connection is {IsOpen: true} && !this.Disposed;
+        public bool IsConnected => this._connection?.IsOpen == true && !this.Disposed;
 
         public IModel? CreateModel()
         {

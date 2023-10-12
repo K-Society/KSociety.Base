@@ -9,7 +9,7 @@ namespace KSociety.Base.Srv.Dto
     public class ListKeyValuePair<TKey, TValue>
     {
         [ProtoMember(1)]
-        public List<KeyValuePair<TKey, TValue>>? List
+        public List<KeyValuePair<TKey, TValue>> List
         {
             get;
             set;

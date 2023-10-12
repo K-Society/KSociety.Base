@@ -8,7 +8,7 @@ namespace KSociety.Base.Pre.Model.Utility
 
     public class ObjectBindingList<T> : BindingList<T> where T : IObject
     {
-        public SynchronizationContext? SynchronizationContext { private get; set; }
+        public SynchronizationContext SynchronizationContext { private get; set; }
 
         /// <inheritdoc />
         /// <summary>

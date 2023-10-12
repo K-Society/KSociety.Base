@@ -13,7 +13,7 @@ namespace KSociety.Base.App.Utility.Dto.Req
         public string? FileName { get; set; }
 
         [ProtoMember(2)]
-        public byte[]? ByteArray { get; set; }
+        public byte[] ByteArray { get; set; }
 
         public ImportReq() { }
 

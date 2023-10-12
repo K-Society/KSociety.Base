@@ -9,7 +9,7 @@ K-Society Base is a full stack framework is based on .NET to quickly build layer
 
 ## Introduction
 
-KSociety.Base is a .NET Standard 2.1 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
+KSociety.Base is a .NET Standard 2.0 framework that can be used to create a clean design by enforcing single responsibility and separation of concerns.
 Its advanced features are ideal for Domain Driven Design (DDD), Command Query Responsibilty Segragation (CQRS) and Event Sourcing, is an open sourse 
 .NET framework and represents the basic infrastructure. The whole framework is divided into layers listed below.
 

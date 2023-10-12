@@ -2,9 +2,6 @@
 
 namespace KSociety.Base.InfraSub.Shared.Class.Csv
 {
-    using CsvHelper;
-    using CsvHelper.Configuration;
-    using Microsoft.Extensions.Logging;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -13,12 +10,14 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
     using System.Runtime.CompilerServices;
     using System.Threading;
     using System.Threading.Tasks;
+    using CsvHelper;
+    using CsvHelper.Configuration;
+    using Microsoft.Extensions.Logging;
 
     public static class ReadCsvClassMap<TEntity, TClassMap>
         where TEntity : class
         where TClassMap : ClassMap<TEntity>
     {
-
         public static TEntity[]? Read(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ReadCsv");
@@ -92,10 +91,12 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
+        //#if NETSTANDARD2_1
+
         public static IAsyncEnumerable<TEntity>? ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-            IAsyncEnumerable<TEntity>? output = null;
+            IAsyncEnumerable<TEntity> output = null;
 
             try
             {
@@ -124,12 +125,14 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
                 reader.Context.RegisterClassMap<TClassMap>();
                 var result = reader.GetRecordsAsync<TEntity>(cancellationToken);
-
-                await foreach (var item in result.WithCancellation(cancellationToken).ConfigureAwait(false))
+                //return result;
+                await foreach (var item in result.ConfigureAwait(false))
                 {
                     yield return item;
                 }
             }
         }
+
+        //#endif
     }
 }

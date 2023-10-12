@@ -10,7 +10,7 @@ namespace KSociety.Base.Srv.Agent
         /// <summary>
         /// The connection url.
         /// </summary>
-        string ConnectionUrl { get; }
+        string? ConnectionUrl { get; }
 
         /// <summary>
         /// The debug flag.

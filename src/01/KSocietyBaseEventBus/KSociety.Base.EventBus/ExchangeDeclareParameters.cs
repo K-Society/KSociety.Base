@@ -21,10 +21,10 @@ namespace KSociety.Base.EventBus
         }
 
         ///<inheritdoc/>
-        public bool? ExchangeDurable { get; set; }
+        public bool ExchangeDurable { get; set; }
 
         ///<inheritdoc/>
-        public bool? ExchangeAutoDelete { get; set; }
+        public bool ExchangeAutoDelete { get; set; }
 
         public ExchangeDeclareParameters() { }
 

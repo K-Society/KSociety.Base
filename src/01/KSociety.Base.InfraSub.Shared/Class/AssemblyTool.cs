@@ -1,9 +1,8 @@
-﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.InfraSub.Shared.Class
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -21,7 +20,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
         {
             var assemblyLibPath = AppDomain.CurrentDomain.BaseDirectory;
 
-            List<string> assemblyLibList = Directory.EnumerateFiles(assemblyLibPath, "*.dll",
+            var assemblyLibList = Directory.EnumerateFiles(assemblyLibPath, "*.dll",
                     SearchOption.TopDirectoryOnly)
                 .Where(filePath => Path.GetFileName(filePath).StartsWith("KSociety"))
                 .ToList();
@@ -38,7 +37,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
         {
             var assemblyLibPath = AppDomain.CurrentDomain.BaseDirectory;
 
-            List<string> assemblyLibList = Directory.EnumerateFiles(assemblyLibPath, "*.dll",
+            var assemblyLibList = Directory.EnumerateFiles(assemblyLibPath, "*.dll",
                     SearchOption.TopDirectoryOnly)
                 .Where(filePath => Path.GetFileName(filePath).StartsWith(startWith))
                 .ToList();

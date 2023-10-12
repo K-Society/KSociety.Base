@@ -20,7 +20,7 @@ namespace KSociety.Base.Srv.Shared.Class
 
         #region IAsyncResult Members
 
-        public object? AsyncState => this.Data;
+        public object AsyncState => this.Data;
 
         public WaitHandle AsyncWaitHandle => throw new Exception("The method or operation is not implemented.");
 

@@ -25,11 +25,11 @@ namespace KSociety.Base.EventBus
         /// <summary>
         /// The Exchange durable flag property.
         /// </summary>
-        bool? ExchangeDurable { get; set; }
+        bool ExchangeDurable { get; set; }
 
         /// <summary>
         /// The Exchange auto delete flag property.
         /// </summary>
-        bool? ExchangeAutoDelete { get; set; }
+        bool ExchangeAutoDelete { get; set; }
     }
 }

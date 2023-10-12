@@ -6,7 +6,7 @@ namespace KSociety.Base.EventBus
     public class EventBusParameters : IEventBusParameters
     {
         ///<inheritdoc/>
-        public bool? Debug { get; set; }
+        public bool Debug { get; set; }
 
         ///<inheritdoc/>
         public IExchangeDeclareParameters? ExchangeDeclareParameters { get; set; }

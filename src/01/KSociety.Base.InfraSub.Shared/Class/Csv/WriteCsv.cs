@@ -14,7 +14,6 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
     public class WriteCsv<TEntity>
         where TEntity : class
     {
-
         public static TEntity[]? Write(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory.CreateLogger("WriteCsv");
@@ -50,11 +49,13 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
             try
             {
-                using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-                var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
+                using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
+                {
+                    var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
 
-                writer.WriteRecords(records);
-                return true;
+                    writer.WriteRecords(records);
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -64,19 +65,24 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return false;
         }
 
-        public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName,
-            IEnumerable<TEntity> records)
+        public static async ValueTask<bool> ExportAsync(ILoggerFactory loggerFactory, string fileName, IEnumerable<TEntity> records)
         {
             var logger = loggerFactory.CreateLogger("ExportAsyncCsv");
 
             try
             {
-                await using var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-                var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
+                //#if NETSTANDARD2_0
+                using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
+                //#elif NETSTANDARD2_1
+                //await using (var streamWriter = new StreamWriter(fileName, false, System.Text.Encoding.UTF8))
+                //#endif
+                {
+                    var writer = new CsvWriter(streamWriter, Configuration.CsvConfigurationWrite);
 
-                await writer.WriteRecordsAsync(records).ConfigureAwait(false);
+                    await writer.WriteRecordsAsync(records).ConfigureAwait(false);
 
-                return true;
+                    return true;
+                }
             }
             catch (Exception ex)
             {

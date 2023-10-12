@@ -12,9 +12,9 @@ namespace KSociety.Base.Infra.Abstraction.Bindings
     public class DatabaseConfiguration : Module
     {
         private readonly DatabaseEngine _databaseEngine;
-        private readonly string? _masterString;
+        private readonly string _masterString;
         private readonly bool _debugFlag;
-        private readonly string? _migrationsAssembly;
+        private readonly string _migrationsAssembly;
         private readonly bool _lazyLoading;
 
         public DatabaseConfiguration(DatabaseEngine databaseEngine,
