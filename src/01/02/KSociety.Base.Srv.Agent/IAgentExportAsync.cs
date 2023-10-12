@@ -9,6 +9,6 @@ namespace KSociety.Base.Srv.Agent
         where TExportReq : class
         where TExportRes : class
     {
-        ValueTask<TExportRes> ExportDataAsync(TExportReq exportReq, CancellationToken cancellationToken = default);
+        ValueTask<TExportRes?> ExportDataAsync(TExportReq exportReq, CancellationToken cancellationToken = default);
     }
 }

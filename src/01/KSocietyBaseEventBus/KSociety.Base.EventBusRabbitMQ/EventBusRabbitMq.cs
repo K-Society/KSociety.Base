@@ -40,10 +40,12 @@ namespace KSociety.Base.EventBusRabbitMQ
             IEventBusParameters eventBusParameters,
             string? queueName = null)
         {
-            if (eventBusParameters.Debug != null)
-            {
-                this.Debug = eventBusParameters.Debug.Value;
-            }
+            //if (eventBusParameters.Debug != null)
+            //{
+            //    this.Debug = eventBusParameters.Debug.Value;
+            //}
+
+            this.Debug = eventBusParameters.Debug;
 
             this.EventBusParameters = eventBusParameters;
             this.PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
@@ -202,8 +204,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (this.EventBusParameters != null)
                 {
-                    channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                    channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName,
+                        this.EventBusParameters.ExchangeDeclareParameters?.ExchangeType,
                         this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
                         this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
                     //var args = new Dictionary<string, object>

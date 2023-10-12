@@ -12,9 +12,9 @@ namespace KSociety.Base.Srv.Agent
 
     public class AuthenticatedConnection
     {
-        protected readonly ILogger<Connection> Logger;
+        protected readonly ILogger<Connection>? Logger;
 
-        public GrpcChannel Channel
+        public GrpcChannel? Channel
         {
             get
             {
@@ -48,7 +48,7 @@ namespace KSociety.Base.Srv.Agent
                 }
                 catch (RpcException rex)
                 {
-                    this.Logger.LogError(rex, "Channel: ");
+                    this.Logger?.LogError(rex, "Channel: ");
                 }
 
                 return null;

@@ -9,6 +9,6 @@ namespace KSociety.Base.Srv.Agent
         where TImportReq : class
         where TImportRes : class
     {
-        ValueTask<TImportRes> ImportDataAsync(TImportReq importReq, CancellationToken cancellationToken = default);
+        ValueTask<TImportRes?> ImportDataAsync(TImportReq importReq, CancellationToken cancellationToken = default);
     }
 }

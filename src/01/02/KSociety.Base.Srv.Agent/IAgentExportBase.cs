@@ -8,6 +8,6 @@ namespace KSociety.Base.Srv.Agent
         where TExportReq : class
         where TExportRes : class
     {
-        TExportRes ExportData(TExportReq exportReq, CancellationToken cancellationToken = default);
+        TExportRes? ExportData(TExportReq exportReq, CancellationToken cancellationToken = default);
     }
 }
