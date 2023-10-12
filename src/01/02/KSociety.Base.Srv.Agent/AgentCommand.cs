@@ -30,9 +30,9 @@ namespace KSociety.Base.Srv.Agent
 
         }
 
-        public virtual TAddRes Add(TAddReq addItem, CancellationToken cancellationToken = default)
+        public virtual TAddRes? Add(TAddReq addItem, CancellationToken cancellationToken = default)
         {
-            TAddRes output = default;
+            TAddRes? output = default;
             try
             {
                 using (this.Channel)
@@ -54,9 +54,9 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public virtual TUpdateRes Update(TUpdateReq updateItem, CancellationToken cancellationToken = default)
+        public virtual TUpdateRes? Update(TUpdateReq updateItem, CancellationToken cancellationToken = default)
         {
-            TUpdateRes output = default;
+            TUpdateRes? output = default;
             try
             {
                 using (this.Channel)
@@ -78,9 +78,9 @@ namespace KSociety.Base.Srv.Agent
             return output;
         }
 
-        public virtual TCopyRes Copy(TCopyReq copyItem, CancellationToken cancellationToken = default)
+        public virtual TCopyRes? Copy(TCopyReq copyItem, CancellationToken cancellationToken = default)
         {
-            TCopyRes output = default;
+            TCopyRes? output = default;
             try
             {
                 using (this.Channel)

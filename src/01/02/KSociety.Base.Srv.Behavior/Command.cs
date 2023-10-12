@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Behavior
 {
@@ -45,28 +45,28 @@ namespace KSociety.Base.Srv.Behavior
             this.CommandHandler = commandHandler;
         }
 
-        public virtual TAddRes Add(TAddReq request, CallContext context = default)
+        public virtual TAddRes? Add(TAddReq request, CallContext context = default)
         {
             return this.CommandHandler.ExecuteWithResponse<TAddReq, TAddRes>(this.LoggerFactory, this.ComponentContext, request);
         }
 
-        public virtual TUpdateRes Update(TUpdateReq request, CallContext context = default)
+        public virtual TUpdateRes? Update(TUpdateReq request, CallContext context = default)
         {
             return this.CommandHandler.ExecuteWithResponse<TUpdateReq, TUpdateRes>(this.LoggerFactory, this.ComponentContext, request);
         }
 
-        public virtual TCopyRes Copy(TCopyReq request, CallContext context = default)
+        public virtual TCopyRes? Copy(TCopyReq request, CallContext context = default)
         {
             return this.CommandHandler.ExecuteWithResponse<TCopyReq, TCopyRes>(this.LoggerFactory, this.ComponentContext, request);
         }
 
-        public virtual TModifyFieldRes ModifyField(TModifyFieldReq request, CallContext context = default)
+        public virtual TModifyFieldRes? ModifyField(TModifyFieldReq request, CallContext context = default)
         {
             return this.CommandHandler.ExecuteWithResponse<TModifyFieldReq, TModifyFieldRes>(this.LoggerFactory, this.ComponentContext,
                 request);
         }
 
-        public virtual TRemoveRes Remove(TRemoveReq request, CallContext context = default)
+        public virtual TRemoveRes? Remove(TRemoveReq request, CallContext context = default)
         {
             return this.CommandHandler.ExecuteWithResponse<TRemoveReq, TRemoveRes>(this.LoggerFactory, this.ComponentContext, request);
         }

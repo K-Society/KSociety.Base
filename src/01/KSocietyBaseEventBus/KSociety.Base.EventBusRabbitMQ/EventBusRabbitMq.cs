@@ -40,10 +40,12 @@ namespace KSociety.Base.EventBusRabbitMQ
             IEventBusParameters eventBusParameters,
             string? queueName = null)
         {
-            if (eventBusParameters.Debug != null)
-            {
-                this.Debug = eventBusParameters.Debug.Value;
-            }
+            //if (eventBusParameters.Debug != null)
+            //{
+            //    this.Debug = eventBusParameters.Debug.Value;
+            //}
+
+            this.Debug = eventBusParameters.Debug;
 
             this.EventBusParameters = eventBusParameters;
             this.PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));

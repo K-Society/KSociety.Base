@@ -21,10 +21,10 @@ namespace KSociety.Base.Srv.Agent
 
         }
 
-        public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq request,
+        public virtual async ValueTask<TExportRes?> ExportDataAsync(TExportReq request,
             CancellationToken cancellationToken = default)
         {
-            TExportRes output = default;
+            TExportRes? output = default;
             try
             {
                 using (this.Channel)

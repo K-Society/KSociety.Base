@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Behavior
 {
@@ -28,7 +28,7 @@ namespace KSociety.Base.Srv.Behavior
             this.CommandHandler = commandHandler;
         }
 
-        public virtual TExportRes ExportData(TExportReq exportReq, CallContext context = default)
+        public virtual TExportRes? ExportData(TExportReq exportReq, CallContext context = default)
         {
             return this.CommandHandler.ExecuteWithResponse<TExportReq, TExportRes>(this.LoggerFactory, this.ComponentContext,
                 exportReq);

@@ -21,10 +21,10 @@ namespace KSociety.Base.Srv.Agent
 
         }
 
-        public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq request,
+        public virtual async ValueTask<TImportRes?> ImportDataAsync(TImportReq request,
             CancellationToken cancellationToken = default)
         {
-            TImportRes output = default;
+            TImportRes? output = default;
             try
             {
                 using (this.Channel)
