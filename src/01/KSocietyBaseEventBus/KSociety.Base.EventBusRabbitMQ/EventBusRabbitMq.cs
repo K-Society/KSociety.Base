@@ -23,25 +23,28 @@ namespace KSociety.Base.EventBusRabbitMQ
     public class EventBusRabbitMq : DisposableObject, IEventBus
     {
         protected readonly bool Debug;
-        protected readonly IRabbitMqPersistentConnection PersistentConnection;
-        protected readonly ILogger<EventBusRabbitMq> Logger;
-        protected readonly IEventBusSubscriptionsManager SubsManager;
-        protected readonly IEventBusParameters EventBusParameters;
+        protected readonly IRabbitMqPersistentConnection? PersistentConnection;
+        protected readonly ILogger<EventBusRabbitMq>? Logger;
+        protected readonly IEventBusSubscriptionsManager? SubsManager;
+        protected readonly IEventBusParameters? EventBusParameters;
 
-        public IIntegrationGeneralHandler EventHandler { get; }
+        public IIntegrationGeneralHandler? EventHandler { get; }
 
-        protected AsyncLazy<IModel> ConsumerChannel;
-        protected string QueueName;
+        protected AsyncLazy<IModel>? ConsumerChannel;
+        protected string? QueueName;
 
         #region [Constructor]
 
         private EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection,
             IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null)
+            string? queueName = null)
         {
-            this.Debug = eventBusParameters.Debug;
-            
+            if (eventBusParameters.Debug != null)
+            {
+                this.Debug = eventBusParameters.Debug.Value;
+            }
+
             this.EventBusParameters = eventBusParameters;
             this.PersistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
             this.SubsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
@@ -52,7 +55,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null) : this(persistentConnection, subsManager, eventBusParameters, queueName)
+            string? queueName = null) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
             this.Logger = loggerFactory.CreateLogger<EventBusRabbitMq>();
             this.EventHandler = eventHandler;
@@ -61,7 +64,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null) : this(persistentConnection, subsManager, eventBusParameters, queueName)
+            string? queueName = null) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
             this.Logger = loggerFactory.CreateLogger<EventBusRabbitMq>();
             this.EventHandler = null;
@@ -70,7 +73,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null, ILogger<EventBusRabbitMq> logger = default) : this(persistentConnection, subsManager, eventBusParameters, queueName)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
             //this.Logger ??= new NullLogger<EventBusRabbitMq>();
             if (this.Logger == null)
@@ -85,7 +88,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection,
             IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null, ILogger<EventBusRabbitMq> logger = default) : this(persistentConnection, subsManager, eventBusParameters, queueName)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
             //this.Logger ??= new NullLogger<EventBusRabbitMq>();
             if (this.Logger == null)

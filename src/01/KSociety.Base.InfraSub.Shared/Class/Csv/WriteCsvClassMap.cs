@@ -35,7 +35,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             }
             catch (Exception ex)
             {
-                logger?.LogError(ex, "WriteCsv: ");
+                logger.LogError(ex, "WriteCsv: ");
             }
 
             return false;
@@ -63,7 +63,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             }
             catch (Exception ex)
             {
-                logger?.LogError(ex, "WriteCsv: ");
+                logger.LogError(ex, "WriteCsv: ");
             }
 
             return false;

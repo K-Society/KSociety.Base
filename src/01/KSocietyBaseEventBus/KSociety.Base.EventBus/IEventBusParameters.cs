@@ -10,16 +10,16 @@ namespace KSociety.Base.EventBus
         /// <summary>
         /// The debug flag property.
         /// </summary>
-        bool Debug { get; set; }
+        bool? Debug { get; set; }
 
         /// <summary>
         /// The ExchangeDeclare parameters set property.
         /// </summary>
-        IExchangeDeclareParameters ExchangeDeclareParameters { get; set; }
+        IExchangeDeclareParameters? ExchangeDeclareParameters { get; set; }
 
         /// <summary>
         /// The QueueDeclare parameters set property.
         /// </summary>
-        IQueueDeclareParameters QueueDeclareParameters { get; set; }
+        IQueueDeclareParameters? QueueDeclareParameters { get; set; }
     }
 }

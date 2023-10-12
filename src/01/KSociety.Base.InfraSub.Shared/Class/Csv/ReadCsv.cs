@@ -7,6 +7,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using System.Threading;
     using CsvHelper;
     using Microsoft.Extensions.Logging;
@@ -14,7 +15,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
     public static class ReadCsv<TClass>
         where TClass : class
     {
-        public static TClass[] Read(ILoggerFactory loggerFactory, string fileName)
+        public static TClass[]? Read(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ReadCsv");
             var csvFileName = @"." + fileName + @".csv";
@@ -43,7 +44,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, string fileName)
+        public static IEnumerable<TClass>? Import(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -64,9 +65,9 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        public static IEnumerable<TClass>? Import(ILoggerFactory loggerFactory, byte[] byteArray)
         {
-            var logger = loggerFactory?.CreateLogger("ImportCsv");
+            var logger = loggerFactory.CreateLogger("ImportCsv");
 
             try
             {
@@ -89,7 +90,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
         //public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName,
         //    [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        public static IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName, CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
@@ -100,7 +101,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
                 var result = reader.GetRecordsAsync<TClass>(cancellationToken); //.GetAsyncEnumerator(cancellationToken);
 
 
-                return result;
+                //return result;
                 //try
                 //{
                 //    while (await result.MoveNextAsync())
@@ -117,17 +118,17 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
                 //return result;
 
-                //await foreach (var item in result)
-                //{
-                //    //return item;
-                //    yield return item;
-                //}
+                await foreach (var item in result)
+                {
+                    //return item;
+                    yield return item;
+                }
             }
         }
 
         //public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
         //    [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        public static IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
@@ -136,12 +137,10 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
                 var result = reader.GetRecordsAsync<TClass>(cancellationToken);
 
-                return result;
-
-                //await foreach (var item in result)
-                //{
-                //    yield return item;
-                //}
+                await foreach (var item in result)
+                {
+                    yield return item;
+                }
             }
         }
 
