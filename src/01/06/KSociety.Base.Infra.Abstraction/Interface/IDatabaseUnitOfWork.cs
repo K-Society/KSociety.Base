@@ -12,13 +12,13 @@ namespace KSociety.Base.Infra.Abstraction.Interface
         /// GetConnectionString
         /// </summary>
         /// <returns></returns>
-        string GetConnectionString();
+        string? GetConnectionString();
 
         /// <summary>
         /// GetConnectionStringAsync
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default);
+        ValueTask<string?> GetConnectionStringAsync(CancellationToken cancellationToken = default);
     }
 }

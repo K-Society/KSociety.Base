@@ -25,7 +25,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null)
+            string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
 
@@ -34,7 +34,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public EventBusRabbitMqQueue(IRabbitMqPersistentConnection persistentConnection,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null, ILogger<EventBusRabbitMq> logger = default)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
 
@@ -42,7 +42,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public IIntegrationQueueHandler<T> GetIntegrationQueueHandler<T, TH>()
+        public IIntegrationQueueHandler<T>? GetIntegrationQueueHandler<T, TH>()
             where T : IIntegrationEvent
             where TH : IIntegrationQueueHandler<T>
         {

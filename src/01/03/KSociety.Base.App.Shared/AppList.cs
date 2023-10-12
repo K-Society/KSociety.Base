@@ -11,7 +11,7 @@ namespace KSociety.Base.App.Shared
     {
         /// <inheritdoc/>
         [ProtoMember(1)]
-        public List<T> List
+        public List<T>? List
         {
             get;
             set;
