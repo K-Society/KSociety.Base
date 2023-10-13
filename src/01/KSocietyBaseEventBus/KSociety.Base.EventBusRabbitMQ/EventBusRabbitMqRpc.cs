@@ -22,8 +22,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
     public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
     {
-        private AsyncLazy<IModel> _consumerChannelReply;
-        private string _queueNameReply;
+        private AsyncLazy<IModel>? _consumerChannelReply;
+        private string? _queueNameReply;
 
         private readonly string _correlationId;
 
@@ -32,7 +32,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public EventBusRabbitMqRpc(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null)
+            string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
             this._correlationId = Guid.NewGuid().ToString();
@@ -41,7 +41,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public EventBusRabbitMqRpc(IRabbitMqPersistentConnection persistentConnection,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null, ILogger<EventBusRabbitMq> logger = default)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
             this._correlationId = Guid.NewGuid().ToString();
@@ -60,7 +60,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
         }
 
-        public IIntegrationRpcHandler<T, TR> GetIntegrationRpcHandler<T, TR>()
+        public IIntegrationRpcHandler<T, TR>? GetIntegrationRpcHandler<T, TR>()
             where T : IIntegrationEvent
             where TR : IIntegrationEventReply
         {

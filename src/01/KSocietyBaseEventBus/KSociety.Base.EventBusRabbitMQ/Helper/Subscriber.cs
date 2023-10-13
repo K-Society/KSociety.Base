@@ -14,8 +14,8 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
     public class Subscriber
     {
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<EventBusRabbitMq> _loggerEventBusRabbitMq;
+        private readonly ILoggerFactory? _loggerFactory;
+        private readonly ILogger<EventBusRabbitMq>? _loggerEventBusRabbitMq;
         private readonly IEventBusParameters _eventBusParameters;
         public IRabbitMqPersistentConnection PersistentConnection { get; }
         public ConcurrentDictionary<string, IEventBus> EventBus { get; } = new ConcurrentDictionary<string, IEventBus>();
@@ -36,8 +36,8 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         public Subscriber(
             IConnectionFactory connectionFactory,
             IEventBusParameters eventBusParameters,
-            ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default,
-            ILogger<DefaultRabbitMqPersistentConnection> loggerDefaultRabbitMqPersistentConnection = default)
+            ILogger<EventBusRabbitMq>? loggerEventBusRabbitMq = default,
+            ILogger<DefaultRabbitMqPersistentConnection>? loggerDefaultRabbitMqPersistentConnection = default)
         {
             this._eventBusParameters = eventBusParameters;
 
@@ -70,7 +70,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         public Subscriber(
             IRabbitMqPersistentConnection persistentConnection,
             IEventBusParameters eventBusParameters,
-            ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default)
+            ILogger<EventBusRabbitMq>? loggerEventBusRabbitMq = default)
         {
             this._eventBusParameters = eventBusParameters;
 
@@ -118,7 +118,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            IEventBus eventBus = null;
+            IEventBus? eventBus = null;
 
             if (this._loggerFactory != null)
             {
@@ -159,7 +159,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            IEventBus eventBus = null;
+            IEventBus? eventBus = null;
 
             if (this._loggerFactory != null)
             {
@@ -200,7 +200,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            IEventBus eventBus = null;
+            IEventBus? eventBus = null;
 
             if (this._loggerFactory != null)
             {
@@ -234,7 +234,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            IEventBus eventBus = null;
+            IEventBus? eventBus = null;
 
             if (this._loggerFactory != null)
             {
@@ -270,7 +270,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            IEventBus eventBus = null;
+            IEventBus? eventBus = null;
 
             if (this._loggerFactory != null)
             {

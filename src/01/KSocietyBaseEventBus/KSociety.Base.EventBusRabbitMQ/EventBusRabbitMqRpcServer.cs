@@ -20,8 +20,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
     public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcServer
     {
-        private AsyncLazy<IModel> _consumerChannelReply;
-        private string _queueNameReply;
+        private AsyncLazy<IModel>? _consumerChannelReply;
+        private string? _queueNameReply;
 
         #region [Constructor]
 
@@ -29,7 +29,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             ILoggerFactory loggerFactory,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null)
+            string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
 
@@ -38,7 +38,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public EventBusRabbitMqRpcServer(IRabbitMqPersistentConnection persistentConnection,
             IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null, ILogger<EventBusRabbitMq> logger = default)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
 
@@ -58,7 +58,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
         }
 
-        public IIntegrationRpcServerHandler<T, TR> GetIntegrationRpcServerHandler<T, TR>()
+        public IIntegrationRpcServerHandler<T, TR>? GetIntegrationRpcServerHandler<T, TR>()
             where T : IIntegrationEventRpc
             where TR : IIntegrationEventReply
         {

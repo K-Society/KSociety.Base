@@ -8,11 +8,11 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
     public interface IEventBusRpcClient : IEventBus
     {
-        Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event,
+        Task<TIntegrationEventReply>? CallAsync<TIntegrationEventReply>(IIntegrationEvent @event,
             CancellationToken cancellationToken = default)
             where TIntegrationEventReply : IIntegrationEventReply;
 
-        IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
+        IIntegrationRpcClientHandler<TIntegrationEventReply>? GetIntegrationRpcClientHandler<TIntegrationEventReply>()
             where TIntegrationEventReply : IIntegrationEventReply;
 
         ValueTask SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
