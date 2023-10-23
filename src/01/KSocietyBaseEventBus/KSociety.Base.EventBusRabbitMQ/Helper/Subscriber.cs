@@ -227,7 +227,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             }
         }
 
-        public void SubscribeTyped(string eventBusName, string queueName = null)
+        public void SubscribeTyped(string eventBusName, string? queueName = null)
         {
             if (this.EventBus.ContainsKey(eventBusName))
             {

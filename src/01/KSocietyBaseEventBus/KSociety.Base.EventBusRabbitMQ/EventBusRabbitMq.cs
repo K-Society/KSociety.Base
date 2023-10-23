@@ -36,7 +36,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         #region [Constructor]
 
         private EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection,
-            IEventBusSubscriptionsManager subsManager,
+            IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null)
         {
@@ -55,7 +55,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
@@ -64,7 +64,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            IEventBusSubscriptionsManager subsManager,
+            IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
@@ -73,7 +73,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null, ILogger<EventBusRabbitMq>? logger = default) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
@@ -88,7 +88,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         }
 
         protected EventBusRabbitMq(IRabbitMqPersistentConnection persistentConnection,
-            IEventBusSubscriptionsManager subsManager,
+            IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null, ILogger<EventBusRabbitMq>? logger = default) : this(persistentConnection, subsManager, eventBusParameters, queueName)
         {
@@ -235,16 +235,16 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TH : IIntegrationEventHandler<T>
         {
 
-            var eventName = this.SubsManager.GetEventKey<T>();
+            var eventName = this.SubsManager?.GetEventKey<T>();
             await this.DoInternalSubscription(eventName).ConfigureAwait(false);
-            this.SubsManager.AddSubscription<T, TH>();
+            this.SubsManager?.AddSubscription<T, TH>();
             await this.StartBasicConsume().ConfigureAwait(false);
         }
 
         protected async ValueTask DoInternalSubscription(string eventName)
         {
-            var containsKey = this.SubsManager.HasSubscriptionsForEvent(eventName);
-            if (containsKey)
+            var containsKey = this.SubsManager?.HasSubscriptionsForEvent(eventName);
+            if (containsKey.HasValue && containsKey.Value)
             {
                 return;
             }
@@ -278,7 +278,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             where T : IIntegrationEvent
             where TH : IIntegrationEventHandler<T>
         {
-            this.SubsManager.RemoveSubscription<T, TH>();
+            this.SubsManager?.RemoveSubscription<T, TH>();
         }
 
         #endregion
@@ -329,7 +329,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected virtual void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)
         {
-            string[] result = eventArgs.RoutingKey.Split('.');
+            var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
 
             try
@@ -357,7 +357,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected virtual async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
         {
-            string[] result = eventArgs.RoutingKey.Split('.');
+            var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
 
             try

@@ -19,7 +19,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         #region [Constructor]
 
         public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
@@ -28,7 +28,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         }
 
         public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection,
-            ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
@@ -44,7 +44,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TH : IDynamicIntegrationEventHandler
         {
             await this.DoInternalSubscription(eventName).ConfigureAwait(false);
-            this.SubsManager.AddDynamicSubscription<TH>(eventName);
+            this.SubsManager?.AddDynamicSubscription<TH>(eventName);
             await this.StartBasicConsume().ConfigureAwait(false);
         }
 
@@ -55,7 +55,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         public void UnsubscribeDynamic<TH>(string eventName)
             where TH : IDynamicIntegrationEventHandler
         {
-            this.SubsManager.RemoveDynamicSubscription<TH>(eventName);
+            this.SubsManager?.RemoveDynamicSubscription<TH>(eventName);
         }
 
         #endregion

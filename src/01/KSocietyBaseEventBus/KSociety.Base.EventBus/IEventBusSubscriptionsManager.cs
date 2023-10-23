@@ -218,14 +218,14 @@ namespace KSociety.Base.EventBus
         /// </summary>
         /// <param name="eventName"></param>
         /// <returns></returns>
-        Type GetEventTypeByName(string eventName);
+        Type? GetEventTypeByName(string eventName);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="eventName"></param>
         /// <returns></returns>
-        Type GetEventReplyTypeByName(string eventName);
+        Type? GetEventReplyTypeByName(string eventName);
 
         /// <summary>
         /// 

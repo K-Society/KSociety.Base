@@ -32,7 +32,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public EventBusRabbitMqRpcClient(IRabbitMqPersistentConnection persistentConnection,
             ILoggerFactory loggerFactory,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
@@ -41,7 +41,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         }
 
         public EventBusRabbitMqRpcClient(IRabbitMqPersistentConnection persistentConnection,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
             string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
@@ -273,10 +273,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TIntegrationEventReply : IIntegrationEventReply
             where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>
         {
-            var eventNameResult = this.SubsManager.GetEventReplyKey<TIntegrationEventReply>();
+            var eventNameResult = this.SubsManager?.GetEventReplyKey<TIntegrationEventReply>();
             //this.Logger?.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
             await this.DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey);
-            this.SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(eventNameResult + "." + replyRoutingKey);
+            this.SubsManager?.AddSubscriptionRpcClient<TIntegrationEventReply, TH>(eventNameResult + "." + replyRoutingKey);
             await this.StartBasicConsume().ConfigureAwait(false);
         }
 
@@ -284,8 +284,8 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             try
             {
-                var containsKey = this.SubsManager.HasSubscriptionsForEvent(eventNameResult);
-                if (containsKey)
+                var containsKey = this.SubsManager?.HasSubscriptionsForEvent(eventNameResult);
+                if (containsKey.HasValue && containsKey.Value)
                 {
                     return;
                 }
@@ -328,7 +328,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TIntegrationEventReply : IIntegrationEventReply
             where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>
         {
-            this.SubsManager.RemoveSubscriptionRpcClient<TIntegrationEventReply, TH>(routingKey);
+            this.SubsManager?.RemoveSubscriptionRpcClient<TIntegrationEventReply, TH>(routingKey);
         }
 
         #endregion
@@ -385,7 +385,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)
         {
-            string[] result = eventArgs.RoutingKey.Split('.');
+            var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
 
             try
@@ -484,7 +484,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             if (this.SubsManager.HasSubscriptionsForEventReply(routingKey))
             {
-                var subscriptions = this.SubsManager.GetHandlersForEventReply(routingKey);
+                var subscriptions = this.SubsManager?.GetHandlersForEventReply(routingKey);
                 if (!subscriptions.Any())
                 {
                     this.Logger?.LogError("ProcessEventReply subscriptions no items! {0}", routingKey);
@@ -513,7 +513,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     //    return;
                                     //}
 
-                                    var eventResultType = this.SubsManager.GetEventReplyTypeByName(routingKey);
+                                    var eventResultType = this.SubsManager?.GetEventReplyTypeByName(routingKey);
                                     if (eventResultType is null)
                                     {
                                         this.Logger?.LogError("ProcessEventReplyClient: eventResultType is null! {0}",
