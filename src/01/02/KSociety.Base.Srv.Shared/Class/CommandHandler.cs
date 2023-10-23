@@ -22,24 +22,24 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="componentContext"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public TResponse ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory,
+        public TResponse? ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequestList request)
             where TRequest : IRequest, new()
             where TRequestList : IAppList<TRequest>, new()
-            where TResponse : IResponse, new()
+            where TResponse : class, IResponse, new()
         {
             var logger = loggerFactory.CreateLogger<CommandHandler>();
             return ExecutingListWithResponse<TRequest, TRequestList, TResponse>(logger, componentContext, request);
         }
 
-        private static TResponse ExecutingListWithResponse<TRequest, TRequestList, TResponse>(
+        private static TResponse? ExecutingListWithResponse<TRequest, TRequestList, TResponse>(
             ILogger logger,
             IComponentContext componentContext,
             TRequestList request
         )
             where TRequest : IRequest, new()
             where TRequestList : IAppList<TRequest>, new()
-            where TResponse : IResponse, new()
+            where TResponse : class, IResponse, new()
         {
             var openType = typeof(IRequestListHandlerWithResponse<,,>); // Generic open type.
             var type = openType.MakeGenericType(typeof(TRequest), typeof(TRequestList),
@@ -84,22 +84,22 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="componentContext"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public TResponse ExecuteWithResponse<TRequest, TResponse>(ILoggerFactory loggerFactory,
+        public TResponse? ExecuteWithResponse<TRequest, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequest request)
             where TRequest : IRequest, new()
-            where TResponse : IResponse, new()
+            where TResponse : class, IResponse, new()
         {
             var logger = loggerFactory.CreateLogger<CommandHandler>();
             return ExecutingWithResponse<TRequest, TResponse>(logger, componentContext, request);
         }
 
-        private static TResponse ExecutingWithResponse<TRequest, TResponse>(
+        private static TResponse? ExecutingWithResponse<TRequest, TResponse>(
             ILogger logger,
             IComponentContext componentContext,
             TRequest request
         )
             where TRequest : IRequest, new()
-            where TResponse : IResponse, new()
+            where TResponse : class, IResponse, new()
         {
             var openType = typeof(IRequestHandlerWithResponse<,>); // Generic open type.
             var type = openType.MakeGenericType(typeof(TRequest), typeof(TResponse)); // Type is your runtime type.
@@ -240,16 +240,16 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="loggerFactory"></param>
         /// <param name="componentContext"></param>
         /// <returns></returns>
-        public TResponse ExecuteWithResponse<TResponse>(ILoggerFactory loggerFactory,
+        public TResponse? ExecuteWithResponse<TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext)
-            where TResponse : IResponse, new()
+            where TResponse : class, IResponse, new()
         {
             var logger = loggerFactory.CreateLogger<CommandHandler>();
             return ExecutingWithResponse<TResponse>(logger, componentContext);
         }
 
-        private static TResponse ExecutingWithResponse<TResponse>(ILogger logger, IComponentContext componentContext)
-            where TResponse : IResponse, new()
+        private static TResponse? ExecutingWithResponse<TResponse>(ILogger logger, IComponentContext componentContext)
+            where TResponse : class, IResponse, new()
         {
             try
             {

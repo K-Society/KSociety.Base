@@ -25,12 +25,12 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<TResponse> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(
+        public async ValueTask<TResponse?> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(
             ILoggerFactory loggerFactory, IComponentContext componentContext, TRequestList request,
             CancellationToken cancellationToken = default)
             where TRequest : IRequest, new()
             where TRequestList : IAppList<TRequest>, new()
-            where TResponse : IResponse, new()
+            where TResponse : class, IResponse, new()
         {
             var logger = loggerFactory.CreateLogger<CommandHandlerAsync>();
             return await ExecutingListWithResponseAsync<TRequest, TRequestList, TResponse>(logger, componentContext,
@@ -91,24 +91,24 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<TResponse> ExecuteWithResponseAsync<TRequest, TResponse>(ILoggerFactory loggerFactory,
+        public async ValueTask<TResponse?> ExecuteWithResponseAsync<TRequest, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequest request, CancellationToken cancellationToken = default)
             where TRequest : IRequest, new()
-            where TResponse : IResponse, new()
+            where TResponse : class, IResponse, new()
         {
             var logger = loggerFactory.CreateLogger<CommandHandlerAsync>();
             return await ExecutingWithResponseAsync<TRequest, TResponse>(logger, componentContext, request,
                 cancellationToken).ConfigureAwait(false);
         }
 
-        private static async ValueTask<TResponse> ExecutingWithResponseAsync<TRequest, TResponse>(
+        private static async ValueTask<TResponse?> ExecutingWithResponseAsync<TRequest, TResponse>(
             ILogger logger,
             IComponentContext componentContext,
             TRequest request,
             CancellationToken cancellationToken = default
         )
             where TRequest : IRequest, new()
-            where TResponse : IResponse, new()
+            where TResponse : class, IResponse, new()
         {
             var openType = typeof(IRequestHandlerWithResponseAsync<,>); // Generic open type.
             var type = openType.MakeGenericType(typeof(TRequest), typeof(TResponse)); // Type is your runtime type.
@@ -266,18 +266,18 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="componentContext"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<TResponse> ExecuteWithResponseAsync<TResponse>(ILoggerFactory loggerFactory,
+        public async ValueTask<TResponse?> ExecuteWithResponseAsync<TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, CancellationToken cancellationToken = default)
-            where TResponse : IResponse, new()
+            where TResponse : class, IResponse, new()
         {
             var logger = loggerFactory.CreateLogger<CommandHandlerAsync>();
             return await ExecutingWithResponseAsync<TResponse>(logger, componentContext, cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        private static async ValueTask<TResponse> ExecutingWithResponseAsync<TResponse>(ILogger logger,
+        private static async ValueTask<TResponse?> ExecutingWithResponseAsync<TResponse>(ILogger logger,
             IComponentContext componentContext, CancellationToken cancellationToken = default)
-            where TResponse : IResponse, new()
+            where TResponse : class, IResponse, new()
         {
             try
             {

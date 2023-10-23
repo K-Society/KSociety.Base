@@ -14,9 +14,9 @@ namespace KSociety.Base.App.Shared
     public interface IRequestListHandlerWithResponseAsync<in TRequest, in TRequestList, TResponse>
         where TRequest : IRequest
         where TRequestList : IAppList<TRequest>
-        where TResponse : IResponse
+        where TResponse : class, IResponse
     {
-        ValueTask<TResponse> ExecuteAsync(TRequestList request, CancellationToken cancellationToken = default);
+        ValueTask<TResponse?> ExecuteAsync(TRequestList request, CancellationToken cancellationToken = default);
     }
 
     /// <summary>
@@ -26,9 +26,9 @@ namespace KSociety.Base.App.Shared
     /// <typeparam name="TResponse">A type that inherits from the <see cref="IResponse"/> interface.</typeparam>
     public interface IRequestHandlerWithResponseAsync<in TRequest, TResponse>
         where TRequest : IRequest
-        where TResponse : IResponse
+        where TResponse : class, IResponse
     {
-        ValueTask<TResponse> ExecuteAsync(TRequest request, CancellationToken cancellationToken = default);
+        ValueTask<TResponse?> ExecuteAsync(TRequest request, CancellationToken cancellationToken = default);
     }
 
     /// <summary>
@@ -46,9 +46,9 @@ namespace KSociety.Base.App.Shared
     /// </summary>
     /// <typeparam name="TResponse">A type that inherits from the <see cref="IResponse"/> interface.</typeparam>
     public interface IRequestHandlerWithResponseAsync<TResponse>
-        where TResponse : IResponse
+        where TResponse : class, IResponse
     {
-        ValueTask<TResponse> ExecuteAsync(CancellationToken cancellationToken = default);
+        ValueTask<TResponse?> ExecuteAsync(CancellationToken cancellationToken = default);
     }
 
     /// <summary>

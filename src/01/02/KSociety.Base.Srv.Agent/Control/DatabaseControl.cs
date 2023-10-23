@@ -43,7 +43,7 @@ namespace KSociety.Base.Srv.Agent.Control
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
-            return String.Empty;
+            return null;
         }
 
         public async ValueTask<string?> GetConnectionStringAsync(CancellationToken cancellationToken = default)

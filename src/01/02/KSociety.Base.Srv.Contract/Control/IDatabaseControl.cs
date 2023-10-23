@@ -1,4 +1,4 @@
-﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Contract.Control
 {
@@ -10,15 +10,15 @@ namespace KSociety.Base.Srv.Contract.Control
     public interface IDatabaseControl
     {
         [Operation]
-        EnsureCreated EnsureCreated(CallContext context = default);
+        EnsureCreated? EnsureCreated(CallContext context = default);
 
         [Operation]
-        EnsureDeleted EnsureDeleted(CallContext context = default);
+        EnsureDeleted? EnsureDeleted(CallContext context = default);
 
         [Operation]
         void Migration(CallContext context = default);
 
         [Operation]
-        ConnectionString GetConnectionString(CallContext context = default);
+        ConnectionString? GetConnectionString(CallContext context = default);
     }
 }
