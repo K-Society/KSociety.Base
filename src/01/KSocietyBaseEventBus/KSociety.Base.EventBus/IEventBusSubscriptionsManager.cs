@@ -204,7 +204,7 @@ namespace KSociety.Base.EventBus
         /// </summary>
         /// <param name="eventName"></param>
         /// <returns></returns>
-        bool HasSubscriptionsForEvent(string eventName);
+        bool HasSubscriptionsForEvent(string? eventName);
 
         /// <summary>
         /// 

@@ -424,7 +424,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected override async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        protected override async ValueTask<IModel?> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             if (!this.PersistentConnection.IsConnected)
             {

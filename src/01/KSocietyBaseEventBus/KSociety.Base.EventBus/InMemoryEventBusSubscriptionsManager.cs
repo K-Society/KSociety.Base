@@ -540,9 +540,14 @@ namespace KSociety.Base.EventBus
         }
 
         ///<inheritdoc/>
-        public bool HasSubscriptionsForEvent(string eventName)
+        public bool HasSubscriptionsForEvent(string? eventName)
         {
-            return this._handlers.ContainsKey(eventName);
+            if (eventName != null)
+            {
+                return this._handlers.ContainsKey(eventName);
+            }
+
+            return false;
         }
 
         ///<inheritdoc/>

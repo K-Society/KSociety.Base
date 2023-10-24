@@ -113,12 +113,12 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async void SubsManager_OnEventRemoved(object sender, string eventName)
         {
-            if (!this.PersistentConnection.IsConnected)
+            if (this.PersistentConnection is {IsConnected: false})
             {
                 await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
             }
 
-            using (var channel = this.PersistentConnection.CreateModel())
+            using (var channel = this.PersistentConnection?.CreateModel())
             {
                 if (channel != null)
                 {
@@ -148,7 +148,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             try
             {
-                if (!this.PersistentConnection.IsConnected)
+                if (this.PersistentConnection is { IsConnected: false })
                 {
                     await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
                 }
@@ -161,7 +161,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                         this.Logger?.LogWarning(ex, "Publish: ");
                     });
 
-                using (var channel = this.PersistentConnection.CreateModel())
+                using (var channel = this.PersistentConnection?.CreateModel())
                 {
                     if (channel != null)
                     {
@@ -241,7 +241,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             await this.StartBasicConsume().ConfigureAwait(false);
         }
 
-        protected async ValueTask DoInternalSubscription(string eventName)
+        protected async ValueTask DoInternalSubscription(string? eventName)
         {
             var containsKey = this.SubsManager?.HasSubscriptionsForEvent(eventName);
             if (containsKey.HasValue && containsKey.Value)
@@ -386,7 +386,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        protected virtual async ValueTask<IModel?> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             //this.Logger?.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
 
