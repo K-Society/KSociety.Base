@@ -1,4 +1,4 @@
-﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Shared.Interface
 {
@@ -23,11 +23,11 @@ namespace KSociety.Base.Srv.Shared.Interface
         /// <param name="componentContext"><see cref="IComponentContext"/></param>
         /// <param name="request">A type that inherits from the <see cref="IRequest"/> interface.</param>
         /// <returns>A type that inherits from the <see cref="IResponse"/> interface.</returns>
-        TResponse ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory,
+        TResponse? ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequestList request)
             where TRequest : IRequest, new()
             where TRequestList : IAppList<TRequest>, new()
-            where TResponse : IResponse, new();
+            where TResponse : class, IResponse, new();
 
         #endregion
 
@@ -42,10 +42,10 @@ namespace KSociety.Base.Srv.Shared.Interface
         /// <param name="componentContext"><see cref="IComponentContext"/></param>
         /// <param name="request">A type that inherits from the <see cref="IRequest"/> interface.</param>
         /// <returns>A type that inherits from the <see cref="IResponse"/> interface.</returns>
-        TResponse ExecuteWithResponse<TRequest, TResponse>(ILoggerFactory loggerFactory,
+        TResponse? ExecuteWithResponse<TRequest, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequest request)
             where TRequest : IRequest, new()
-            where TResponse : IResponse, new();
+            where TResponse : class, IResponse, new();
 
         #endregion
 
@@ -89,8 +89,8 @@ namespace KSociety.Base.Srv.Shared.Interface
         /// <param name="loggerFactory"><see cref="ILoggerFactory"/></param>
         /// <param name="componentContext"><see cref="IComponentContext"/></param>
         /// <returns>A type that inherits from the <see cref="IResponse"/> interface.</returns>
-        TResponse ExecuteWithResponse<TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext)
-            where TResponse : IResponse, new();
+        TResponse? ExecuteWithResponse<TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext)
+            where TResponse : class, IResponse, new();
 
         #endregion
     }

@@ -10,13 +10,18 @@
 
   <!-- .NET 6.0 -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.23" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.25" />
   </ItemGroup>
 
   <!-- .NET 7.0 -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.14" />
   </ItemGroup>
+
+  <!-- .NET 8.0 -->
+  <!--<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
+  </ItemGroup>-->
 
   <ItemGroup>
     <ProjectReference Include="..\KSociety.Base.Infra.Shared\KSociety.Base.Infra.Shared.csproj" />

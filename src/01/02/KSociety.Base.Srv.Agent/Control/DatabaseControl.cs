@@ -26,7 +26,7 @@ namespace KSociety.Base.Srv.Agent.Control
                 using (this.Channel)
                 {
                     var client = this.Channel?.CreateGrpcService<IDatabaseControl>();
-                    var result = client?.GetConnectionString(this.ConnectionOptions(cancellationToken)).Result;
+                    var result = client?.GetConnectionString(this.ConnectionOptions(cancellationToken))?.Result;
                     if (result != null)
                     {
                         return result;
@@ -43,7 +43,7 @@ namespace KSociety.Base.Srv.Agent.Control
                     System.Reflection.MethodBase.GetCurrentMethod()?.Name, ex.Source);
             }
 
-            return String.Empty;
+            return null;
         }
 
         public async ValueTask<string?> GetConnectionStringAsync(CancellationToken cancellationToken = default)
@@ -88,7 +88,9 @@ namespace KSociety.Base.Srv.Agent.Control
                     var client = this.Channel?.CreateGrpcService<IDatabaseControl>();
                     if (client != null)
                     {
-                        return client.EnsureCreated(this.ConnectionOptions(cancellationToken)).Result;
+                        var result = client.EnsureCreated(this.ConnectionOptions(cancellationToken))?.Result;
+
+                        return result != null && result.Value;
                     }
                 }
             }
@@ -148,7 +150,8 @@ namespace KSociety.Base.Srv.Agent.Control
                     var client = this.Channel?.CreateGrpcService<IDatabaseControl>();
                     if (client != null)
                     {
-                        return client.EnsureDeleted(this.ConnectionOptions(cancellationToken)).Result;
+                        var result = client.EnsureDeleted(this.ConnectionOptions(cancellationToken))?.Result;
+                        return result != null && result.Value;
                     }
                 }
             }
@@ -178,7 +181,10 @@ namespace KSociety.Base.Srv.Agent.Control
                         var result = await client.EnsureDeletedAsync(this.ConnectionOptions(cancellationToken))
                             .ConfigureAwait(false);
 
-                        return result.Result;
+                        if (result != null)
+                        {
+                            return result.Result;
+                        }
                     }
                 }
             }
