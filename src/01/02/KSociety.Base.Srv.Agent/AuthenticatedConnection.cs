@@ -38,13 +38,17 @@ namespace KSociety.Base.Srv.Agent
                     //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                     //};
                     //var httpClient = new HttpClient(httpClientHandler);
-                    return GrpcChannel.ForAddress(this._agentConfiguration.ConnectionUrl, new GrpcChannelOptions
+                    var agentConfigurationConnectionUrl = this._agentConfiguration.ConnectionUrl;
+                    if (agentConfigurationConnectionUrl != null)
                     {
-                        MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB
-                        MaxSendMessageSize = null, // 2 * 1024 * 1024 // 2 MB
+                        return GrpcChannel.ForAddress(agentConfigurationConnectionUrl, new GrpcChannelOptions
+                        {
+                            MaxReceiveMessageSize = null, // 5 * 1024 * 1024, // 5 MB
+                            MaxSendMessageSize = null, // 2 * 1024 * 1024 // 2 MB
 
-                        Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
-                    });
+                            Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+                        });
+                    }
                 }
                 catch (RpcException rex)
                 {
@@ -93,10 +97,10 @@ namespace KSociety.Base.Srv.Agent
         /// <param name="propagationToken"></param>
         /// <param name="credentials"></param>
         /// <returns></returns>
-        protected virtual CallContext ConnectionOptions(Metadata headers = null,
+        protected virtual CallContext ConnectionOptions(Metadata? headers = null,
             DateTime? deadline = null, CancellationToken cancellationToken = default,
-            WriteOptions writeOptions = null, ContextPropagationToken propagationToken = null,
-            CallCredentials credentials = null)
+            WriteOptions? writeOptions = null, ContextPropagationToken? propagationToken = null,
+            CallCredentials? credentials = null)
         {
             var callOptions = new CallOptions(headers, deadline, cancellationToken, writeOptions, propagationToken,
                 credentials);

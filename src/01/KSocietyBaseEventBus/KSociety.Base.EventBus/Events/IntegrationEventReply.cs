@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus.Events
 {
@@ -16,7 +16,8 @@ namespace KSociety.Base.EventBus.Events
         [ProtoMember(2), CompatibilityLevel(CompatibilityLevel.Level200)]
         public DateTime CreationDate { get; set; }
 
-        [ProtoMember(3)] public string RoutingKey { get; set; }
+        [ProtoMember(3)]
+        public string RoutingKey { get; set; }
 
         public IntegrationEventReply()
         {
@@ -34,7 +35,7 @@ namespace KSociety.Base.EventBus.Events
 
         public string GetTypeName()
         {
-            string[] result = this.RoutingKey.Split('.');
+            var result = this.RoutingKey.Split('.');
             return result.Length > 1 ? result[0] : this.RoutingKey;
         }
     }

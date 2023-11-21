@@ -11,9 +11,9 @@ namespace KSociety.Base.App.Shared
     public interface IRequestListHandlerWithResponse<in TRequest, in TRequestList, out TResponse>
         where TRequest : IRequest
         where TRequestList : IAppList<TRequest>
-        where TResponse : IResponse
+        where TResponse : class, IResponse
     {
-        TResponse Execute(TRequestList request);
+        TResponse? Execute(TRequestList request);
     }
 
     /// <summary>
@@ -23,9 +23,9 @@ namespace KSociety.Base.App.Shared
     /// <typeparam name="TResponse">A type that inherits from the <see cref="IResponse"/> interface.</typeparam>
     public interface IRequestHandlerWithResponse<in TRequest, out TResponse>
         where TRequest : IRequest
-        where TResponse : IResponse
+        where TResponse : class, IResponse
     {
-        TResponse Execute(TRequest request);
+        TResponse? Execute(TRequest request);
     }
 
     /// <summary>
@@ -43,9 +43,9 @@ namespace KSociety.Base.App.Shared
     /// </summary>
     /// <typeparam name="TResponse">A type that inherits from the <see cref="IResponse"/> interface.</typeparam>
     public interface IRequestHandlerWithResponse<out TResponse>
-        where TResponse : IResponse
+        where TResponse : class, IResponse
     {
-        TResponse Execute();
+        TResponse? Execute();
     }
 
     /// <summary>

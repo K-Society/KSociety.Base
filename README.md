@@ -64,11 +64,11 @@ The service layer.
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
-| [KSociety.Base.Srv.Agent](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/02/KSociety.Base.Srv.Agent) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Agent)](https://www.nuget.org/packages/KSociety.Base.Srv.Agent) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Agent) |
-| [KSociety.Base.Srv.Behavior](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/02/KSociety.Base.Srv.Behavior) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Behavior)](https://www.nuget.org/packages/KSociety.Base.Srv.Behavior) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Behavior) |
-| [KSociety.Base.Srv.Contract](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/02/KSociety.Society.Base.Srv.Contract) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Contract)](https://www.nuget.org/packages/KSociety.Base.Srv.Contract) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Contract) |
-| [KSociety.Base.Srv.Dto](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/02/KSociety.Base.Srv.Dto) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Dto)](https://www.nuget.org/packages/KSociety.Base.Srv.Dto) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Dto) |
-| [KSociety.Base.Srv.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/02/KSociety.Base.Srv.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Shared)](https://www.nuget.org/packages/KSociety.Base.Srv.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Shared) |
+| [KSociety.Base.Srv.Agent](https://github.com/K-Society/KSociety.Base/tree/master/src/01/02/KSociety.Base.Srv.Agent) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Agent)](https://www.nuget.org/packages/KSociety.Base.Srv.Agent) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Agent) |
+| [KSociety.Base.Srv.Behavior](https://github.com/K-Society/KSociety.Base/tree/master/src/01/02/KSociety.Base.Srv.Behavior) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Behavior)](https://www.nuget.org/packages/KSociety.Base.Srv.Behavior) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Behavior) |
+| [KSociety.Base.Srv.Contract](https://github.com/K-Society/KSociety.Base/tree/master/src/01/02/KSociety.Society.Base.Srv.Contract) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Contract)](https://www.nuget.org/packages/KSociety.Base.Srv.Contract) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Contract) |
+| [KSociety.Base.Srv.Dto](https://github.com/K-Society/KSociety.Base/tree/master/src/01/02/KSociety.Base.Srv.Dto) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Dto)](https://www.nuget.org/packages/KSociety.Base.Srv.Dto) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Dto) |
+| [KSociety.Base.Srv.Shared](https://github.com/K-Society/KSociety.Base/tree/master/src/01/02/KSociety.Base.Srv.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Srv.Shared)](https://www.nuget.org/packages/KSociety.Base.Srv.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Srv.Shared) |
 
 ### 2.1 Service - Host (KSociety.Base.Srv.Host.*)
 Contains the autofac modules.
@@ -83,8 +83,8 @@ Contains the abstraction of the request handlers.
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
-| [KSociety.Base.App.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/03/KSociety.Base.App.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.App.Shared)](https://www.nuget.org/packages/KSociety.Base.App.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.App.Shared) |
-| [KSociety.Base.App.Utility](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/03/KSociety.Base.App.Utility) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.App.Utility)](https://www.nuget.org/packages/KSociety.Base.App.Utility) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.App.Utility) |
+| [KSociety.Base.App.Shared](https://github.com/K-Society/KSociety.Base/tree/master/src/01/03/KSociety.Base.App.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.App.Shared)](https://www.nuget.org/packages/KSociety.Base.App.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.App.Shared) |
+| [KSociety.Base.App.Utility](https://github.com/K-Society/KSociety.Base/tree/master/src/01/03/KSociety.Base.App.Utility) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.App.Utility)](https://www.nuget.org/packages/KSociety.Base.App.Utility) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.App.Utility) |
 
 ### 4. Business
 | GitHub Repository | NuGet | Download |
@@ -95,7 +95,7 @@ The domain layer.
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
-| [KSociety.Base.Domain.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/05/KSociety.Base.Domain.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Domain.Shared)](https://www.nuget.org/packages/KSociety.Base.Domain.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Domain.Shared) |
+| [KSociety.Base.Domain.Shared](https://github.com/K-Society/KSociety.Base/tree/master/src/01/05/KSociety.Base.Domain.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Domain.Shared)](https://www.nuget.org/packages/KSociety.Base.Domain.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Domain.Shared) |
 
 ### 6. Infrastructure (KSociety.Base.Infra.*)
 The infrastructure layer, data access layer (DAL).
@@ -108,16 +108,16 @@ Supported databases:
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
-| [KSociety.Base.Infra.Abstraction](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/06/KSociety.Base.Infra.Abstraction) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Infra.Abstraction)](https://www.nuget.org/packages/KSociety.Base.Infra.Abstraction) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Infra.Abstraction) |
-| [KSociety.Base.Infra.Shared](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/06/KSociety.Base.Infra.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Infra.Shared)](https://www.nuget.org/packages/KSociety.Base.Infra.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Infra.Shared) |
+| [KSociety.Base.Infra.Abstraction](https://github.com/K-Society/KSociety.Base/tree/master/src/01/06/KSociety.Base.Infra.Abstraction) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Infra.Abstraction)](https://www.nuget.org/packages/KSociety.Base.Infra.Abstraction) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Infra.Abstraction) |
+| [KSociety.Base.Infra.Shared](https://github.com/K-Society/KSociety.Base/tree/masterp/src/01/06/KSociety.Base.Infra.Shared) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.Infra.Shared)](https://www.nuget.org/packages/KSociety.Base.Infra.Shared) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.Infra.Shared) |
 
 ### EventBus (KSociety.Base.*)
 The event bus abstraction and [RbbitMQ](https://www.rabbitmq.com/) implementation.
 
 | GitHub Repository | NuGet | Download |
 | ------------- | ------------- | ------------- |
-| [KSociety.Base.EventBus](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/KSocietyBaseEventBus/KSociety.Base.EventBus) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.EventBus)](https://www.nuget.org/packages/KSociety.Base.EventBus) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.EventBus) |
-| [KSociety.Base.EventBusRabbitMQ](https://github.com/K-Society/KSociety.Base/tree/develop/src/01/KSocietyBaseEventBus/KSociety.Base.EventBusRabbitMQ) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.EventBusRabbitMQ)](https://www.nuget.org/packages/KSociety.Base.EventBusRabbitMQ) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.EventBusRabbitMQ) |
+| [KSociety.Base.EventBus](https://github.com/K-Society/KSociety.Base/tree/master/src/01/KSocietyBaseEventBus/KSociety.Base.EventBus) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.EventBus)](https://www.nuget.org/packages/KSociety.Base.EventBus) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.EventBus) |
+| [KSociety.Base.EventBusRabbitMQ](https://github.com/K-Society/KSociety.Base/tree/master/src/01/KSocietyBaseEventBus/KSociety.Base.EventBusRabbitMQ) | [![NuGet](https://img.shields.io/nuget/v/KSociety.Base.EventBusRabbitMQ)](https://www.nuget.org/packages/KSociety.Base.EventBusRabbitMQ) | ![NuGet](https://img.shields.io/nuget/dt/KSociety.Base.EventBusRabbitMQ) |
 
 ### InfrastructureSub (KSociety.Base.InfraSub.*)
 The generic shared library.

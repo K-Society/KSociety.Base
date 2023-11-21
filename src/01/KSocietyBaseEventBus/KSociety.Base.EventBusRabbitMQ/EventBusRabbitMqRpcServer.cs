@@ -20,25 +20,25 @@ namespace KSociety.Base.EventBusRabbitMQ
 
     public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcServer
     {
-        private AsyncLazy<IModel> _consumerChannelReply;
-        private string _queueNameReply;
+        private AsyncLazy<IModel>? _consumerChannelReply;
+        private string? _queueNameReply;
 
         #region [Constructor]
 
         public EventBusRabbitMqRpcServer(IRabbitMqPersistentConnection persistentConnection,
             ILoggerFactory loggerFactory,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null)
+            string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
 
         }
 
         public EventBusRabbitMqRpcServer(IRabbitMqPersistentConnection persistentConnection,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null, ILogger<EventBusRabbitMq> logger = default)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
 
@@ -58,7 +58,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
         }
 
-        public IIntegrationRpcServerHandler<T, TR> GetIntegrationRpcServerHandler<T, TR>()
+        public IIntegrationRpcServerHandler<T, TR>? GetIntegrationRpcServerHandler<T, TR>()
             where T : IIntegrationEventRpc
             where TR : IIntegrationEventReply
         {
@@ -157,12 +157,12 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcServerHandler<T, TR>
         {
-            var eventName = this.SubsManager.GetEventKey<T>();
-            var eventNameResult = this.SubsManager.GetEventReplyKey<TR>();
+            var eventName = this.SubsManager?.GetEventKey<T>();
+            var eventNameResult = this.SubsManager?.GetEventReplyKey<TR>();
             //this.Logger?.LogTrace("SubscribeRpcServer routing key: {0}, event name: {1}, event name result: {2}", routingKey, eventName, eventNameResult);
             await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey)
                 .ConfigureAwait(false);
-            this.SubsManager.AddSubscriptionRpcServer<T, TR, TH>(eventName + "." + routingKey,
+            this.SubsManager?.AddSubscriptionRpcServer<T, TR, TH>(eventName + "." + routingKey,
                 eventNameResult + "." + routingKey);
             await this.StartBasicConsume().ConfigureAwait(false);
         }
@@ -171,8 +171,8 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             try
             {
-                var containsKey = this.SubsManager.HasSubscriptionsForEvent(eventName);
-                if (containsKey)
+                var containsKey = this.SubsManager?.HasSubscriptionsForEvent(eventName);
+                if (containsKey.HasValue && containsKey.Value)
                 {
                     return;
                 }
@@ -215,7 +215,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TH : IIntegrationRpcServerHandler<T, TR>
             where TR : IIntegrationEventReply
         {
-            this.SubsManager.RemoveSubscriptionRpcServer<T, TR, TH>(routingKey);
+            this.SubsManager?.RemoveSubscriptionRpcServer<T, TR, TH>(routingKey);
         }
 
         #endregion
@@ -373,7 +373,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected override async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        protected override async ValueTask<IModel?> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             //this.Logger?.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", this.QueueName);
             if (!this.PersistentConnection.IsConnected)
@@ -409,7 +409,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             return null;
         }
 
-        private async ValueTask<IModel> CreateConsumerChannelReplyAsync(CancellationToken cancel = default)
+        private async ValueTask<IModel?> CreateConsumerChannelReplyAsync(CancellationToken cancel = default)
         {
             //this.Logger?.LogTrace("CreateConsumerChannelReplyAsync queue name: {0}", this._queueNameReply);
             if (!this.PersistentConnection.IsConnected)
@@ -446,10 +446,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             return null;
         }
 
-        private dynamic ProcessEventRpc(string routingKey, string eventName, ReadOnlyMemory<byte> message,
+        private dynamic? ProcessEventRpc(string routingKey, string eventName, ReadOnlyMemory<byte> message,
             CancellationToken cancel = default)
         {
-            dynamic output = null;
+            dynamic? output = null;
 
             if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {
@@ -538,10 +538,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             return output;
         } //ProcessEventRpc.
 
-        private async ValueTask<dynamic> ProcessEventRpcAsync(string routingKey, string eventName,
+        private async ValueTask<dynamic?> ProcessEventRpcAsync(string routingKey, string eventName,
             ReadOnlyMemory<byte> message, CancellationToken cancel = default)
         {
-            dynamic output = null;
+            dynamic? output = null;
 
             if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {

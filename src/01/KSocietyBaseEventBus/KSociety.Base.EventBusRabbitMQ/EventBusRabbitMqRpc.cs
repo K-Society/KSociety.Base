@@ -22,26 +22,26 @@ namespace KSociety.Base.EventBusRabbitMQ
 
     public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
     {
-        private AsyncLazy<IModel> _consumerChannelReply;
-        private string _queueNameReply;
+        private AsyncLazy<IModel>? _consumerChannelReply;
+        private string? _queueNameReply;
 
         private readonly string _correlationId;
 
         #region [Constructor]
 
         public EventBusRabbitMqRpc(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null)
+            string? queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
             this._correlationId = Guid.NewGuid().ToString();
         }
 
         public EventBusRabbitMqRpc(IRabbitMqPersistentConnection persistentConnection,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
             IEventBusParameters eventBusParameters,
-            string queueName = null, ILogger<EventBusRabbitMq> logger = default)
+            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
             this._correlationId = Guid.NewGuid().ToString();
@@ -60,7 +60,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
         }
 
-        public IIntegrationRpcHandler<T, TR> GetIntegrationRpcHandler<T, TR>()
+        public IIntegrationRpcHandler<T, TR>? GetIntegrationRpcHandler<T, TR>()
             where T : IIntegrationEvent
             where TR : IIntegrationEventReply
         {
@@ -192,19 +192,19 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TR : IIntegrationEventReply
             where TH : IIntegrationRpcHandler<T, TR>
         {
-            var eventName = this.SubsManager.GetEventKey<T>();
-            var eventNameResult = this.SubsManager.GetEventReplyKey<TR>();
+            var eventName = this.SubsManager?.GetEventKey<T>();
+            var eventNameResult = this.SubsManager?.GetEventReplyKey<TR>();
             //this.Logger?.LogDebug("SubscribeRpc: eventName: {0}.{1} eventNameResult: {2}.{3}", eventName, routingKey, eventNameResult, routingKey);
             await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey);
-            this.SubsManager.AddSubscriptionRpc<T, TR, TH>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
+            this.SubsManager?.AddSubscriptionRpc<T, TR, TH>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
             await this.StartBasicConsume().ConfigureAwait(false);
             await this.StartBasicConsumeReply().ConfigureAwait(false);
         }
 
         private async ValueTask DoInternalSubscriptionRpc(string eventName, string eventNameResult)
         {
-            var containsKey = this.SubsManager.HasSubscriptionsForEvent(eventName);
-            if (containsKey)
+            var containsKey = this.SubsManager?.HasSubscriptionsForEvent(eventName);
+            if (containsKey.HasValue && containsKey.Value)
             {
                 return;
             }
@@ -243,7 +243,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TH : IIntegrationRpcHandler<T, TR>
             where TR : IIntegrationEventReply
         {
-            this.SubsManager.RemoveSubscriptionRpc<T, TR, TH>(routingKey);
+            this.SubsManager?.RemoveSubscriptionRpc<T, TR, TH>(routingKey);
         }
 
         #endregion
@@ -326,7 +326,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
         {
-            string[] result = eventArgs.RoutingKey.Split('.');
+            var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
 
             try
@@ -390,7 +390,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async Task ConsumerReceivedReply(object sender, BasicDeliverEventArgs eventArgs)
         {
-            string[] result = eventArgs.RoutingKey.Split('.');
+            var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
 
             try
@@ -424,7 +424,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected override async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        protected override async ValueTask<IModel?> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             if (!this.PersistentConnection.IsConnected)
             {
@@ -452,7 +452,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             return null;
         }
 
-        private async ValueTask<IModel> CreateConsumerChannelReplyAsync(CancellationToken cancel = default)
+        private async ValueTask<IModel?> CreateConsumerChannelReplyAsync(CancellationToken cancel = default)
         {
             if (!this.PersistentConnection.IsConnected)
             {
@@ -549,10 +549,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        private async ValueTask<dynamic> ProcessEventRpc(string routingKey, string eventName,
+        private async ValueTask<dynamic?> ProcessEventRpc(string routingKey, string eventName,
             ReadOnlyMemory<byte> message, CancellationToken cancel = default)
         {
-            dynamic output = null;
+            dynamic? output = null;
 
             if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {

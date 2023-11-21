@@ -1,4 +1,4 @@
-﻿// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.Srv.Shared.Interface
 {
@@ -12,21 +12,21 @@ namespace KSociety.Base.Srv.Shared.Interface
     {
         #region [ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>]
 
-        ValueTask<TResponse> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(
+        ValueTask<TResponse?> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(
             ILoggerFactory loggerFactory, IComponentContext componentContext, TRequestList request,
             CancellationToken cancellationToken = default)
             where TRequest : IRequest, new()
             where TRequestList : IAppList<TRequest>, new()
-            where TResponse : IResponse, new();
+            where TResponse : class, IResponse, new();
 
         #endregion
 
         #region [Execute<TRequest, TResponse>]
 
-        ValueTask<TResponse> ExecuteWithResponseAsync<TRequest, TResponse>(ILoggerFactory loggerFactory,
+        ValueTask<TResponse?> ExecuteWithResponseAsync<TRequest, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequest request, CancellationToken cancellationToken = default)
             where TRequest : IRequest, new()
-            where TResponse : IResponse, new();
+            where TResponse : class, IResponse, new();
 
         #endregion
 
@@ -47,9 +47,9 @@ namespace KSociety.Base.Srv.Shared.Interface
 
         #region [Execute<TResponse>]
 
-        ValueTask<TResponse> ExecuteWithResponseAsync<TResponse>(ILoggerFactory loggerFactory,
+        ValueTask<TResponse?> ExecuteWithResponseAsync<TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, CancellationToken cancellationToken = default)
-            where TResponse : IResponse, new();
+            where TResponse : class, IResponse, new();
 
         #endregion
     }

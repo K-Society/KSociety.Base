@@ -37,8 +37,6 @@ namespace KSociety.Base.EventBusRabbitMQ
         public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMqPersistentConnection>? logger = default)
         :this(connectionFactory)
         {
-            //logger ??= new NullLogger<DefaultRabbitMqPersistentConnection>();
-
             if (logger == null)
             {
                 logger = new NullLogger<DefaultRabbitMqPersistentConnection>();
