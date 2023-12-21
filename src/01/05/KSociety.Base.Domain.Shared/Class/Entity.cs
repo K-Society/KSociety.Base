@@ -11,17 +11,11 @@ namespace KSociety.Base.Domain.Shared.Class
     /// <inheritdoc/>
     public class Entity : BaseEntity
     {
-        #region [Constructor]
-
-
-        #endregion
-
-
         /// <summary>
         /// Modify the value of the domain entity field.
         /// </summary>
-        /// <param name="fieldName">Domain entiy field name.</param>
-        /// <param name="value">New value of the domaint entiy field.</param>
+        /// <param name="fieldName">Domain entity field name.</param>
+        /// <param name="value">New value of the domain entity field.</param>
         public void ModifyField(string fieldName, string value)
         {
             this.Logger?.LogTrace("ModifyField Entity: {0}.{1} - {2} - {3}", this.GetType().FullName,
@@ -36,12 +30,12 @@ namespace KSociety.Base.Domain.Shared.Class
                 {
                     //Console.WriteLine("1 " + field.Name);
                     var t = Nullable.GetUnderlyingType(field.PropertyType) ?? field.PropertyType;
-                    object safeValue = null;
+                    object? safeValue = null;
 
                     //If is byte[]
                     if (t == typeof(byte[]))
                     {
-                        if (value != null)
+                        if (!String.IsNullOrEmpty(value))
                         {
                             var splitResult = value.Split('-');
 
@@ -76,7 +70,7 @@ namespace KSociety.Base.Domain.Shared.Class
                         //Console.WriteLine("2");
                         //safeValue = (value == null) ? null : Convert.ChangeType(value, t);
 
-                        safeValue = (value == null)
+                        safeValue = (String.IsNullOrEmpty(value))
                             ? null
                             : TypeDescriptor.GetConverter(t).ConvertFromInvariantString(value);
                     }
