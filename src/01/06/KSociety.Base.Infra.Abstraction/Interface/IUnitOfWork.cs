@@ -63,7 +63,7 @@ namespace KSociety.Base.Infra.Abstraction.Interface
         /// <returns></returns>
         ValueTask MigrateAsync(string? targetMigration = null, CancellationToken cancellationToken = default);
 
-        string CreateScript();
+        string? CreateScript();
 
         /// <summary>
         /// BeginTransaction
