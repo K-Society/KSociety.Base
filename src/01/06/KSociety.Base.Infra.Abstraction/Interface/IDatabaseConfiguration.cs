@@ -10,9 +10,9 @@ namespace KSociety.Base.Infra.Abstraction.Interface
     public interface IDatabaseConfiguration
     {
         DatabaseEngine DatabaseEngine { get; }
-        string ConnectionString { get; }
+        string? ConnectionString { get; }
         bool Logging { get; }
-        string MigrationsAssembly { get; }
+        string? MigrationsAssembly { get; }
         bool LazyLoading { get; }
         string ToString();
     }
