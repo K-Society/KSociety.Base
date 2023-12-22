@@ -20,7 +20,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
     public sealed class EventBusRabbitMqRpcServer : EventBusRabbitMq, IEventBusRpcServer
     {
-        private AsyncLazy<IModel>? _consumerChannelReply;
+        private AsyncLazy<IModel?>? _consumerChannelReply;
         private string? _queueNameReply;
 
         #region [Constructor]
@@ -51,11 +51,11 @@ namespace KSociety.Base.EventBusRabbitMQ
             //this.Logger?.LogTrace("EventBusRabbitMqRpcServer Initialize.");
             this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
             this.ConsumerChannel =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+                new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
             this._queueNameReply = this.QueueName + "_Reply";
 
             this._consumerChannelReply =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
+                new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
         }
 
         public IIntegrationRpcServerHandler<T, TR>? GetIntegrationRpcServerHandler<T, TR>()
@@ -267,7 +267,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)
         {
-            string[] result = eventArgs.RoutingKey.Split('.');
+            var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
 
             try
@@ -318,7 +318,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected override async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
         {
-            string[] result = eventArgs.RoutingKey.Split('.');
+            var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
 
             try
@@ -399,7 +399,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     this.Logger?.LogError(ea.Exception, "CallbackException: ");
                     this.ConsumerChannel?.Value.Dispose();
-                    this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel));
+                    this.ConsumerChannel = new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel));
                     await this.StartBasicConsume().ConfigureAwait(false);
                 };
 
@@ -436,7 +436,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     this.Logger?.LogError(ea.Exception, "CallbackException Rpc: ");
                     this._consumerChannelReply?.Value.Dispose();
                     this._consumerChannelReply =
-                        new AsyncLazy<IModel>(async () =>
+                        new AsyncLazy<IModel?>(async () =>
                             await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
                 };
 

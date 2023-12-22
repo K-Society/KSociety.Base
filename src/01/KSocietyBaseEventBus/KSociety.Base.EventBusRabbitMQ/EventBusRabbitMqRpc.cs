@@ -22,7 +22,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
     public sealed class EventBusRabbitMqRpc : EventBusRabbitMq, IEventBusRpc
     {
-        private AsyncLazy<IModel>? _consumerChannelReply;
+        private AsyncLazy<IModel?>? _consumerChannelReply;
         private string? _queueNameReply;
 
         private readonly string _correlationId;
@@ -54,10 +54,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             //this.Logger?.LogTrace("EventBusRabbitMqRpc Initialize.");
             this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
             this.ConsumerChannel =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+                new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
             this._queueNameReply = this.QueueName + "_Reply";
             this._consumerChannelReply =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
+                new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
         }
 
         public IIntegrationRpcHandler<T, TR>? GetIntegrationRpcHandler<T, TR>()
@@ -442,7 +442,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     this.Logger?.LogError(ea.Exception, "CallbackException: ");
                     this.ConsumerChannel?.Value.Dispose();
-                    this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+                    this.ConsumerChannel = new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
                     await this.StartBasicConsume().ConfigureAwait(false);
                 };
 
@@ -470,7 +470,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     this.Logger?.LogError(ea.Exception, "CallbackException Rpc: ");
                     this._consumerChannelReply?.Value.Dispose();
                     this._consumerChannelReply =
-                        new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
+                        new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
                     await this.StartBasicConsumeReply().ConfigureAwait(false);
                 };
 

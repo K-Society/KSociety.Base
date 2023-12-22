@@ -96,7 +96,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         public static IAsyncEnumerable<TEntity>? ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-            IAsyncEnumerable<TEntity> output = null;
+            IAsyncEnumerable<TEntity>? output = null;
 
             try
             {
