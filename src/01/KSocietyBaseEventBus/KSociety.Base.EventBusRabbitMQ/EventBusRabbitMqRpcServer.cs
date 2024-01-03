@@ -83,17 +83,22 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     if (!String.IsNullOrEmpty(this.QueueName) &&
                         !String.IsNullOrEmpty(this._queueNameReply) &&
-                        !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                        !String.IsNullOrEmpty(this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName))
                     {
                         channel.QueueUnbind(this.QueueName,
-                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                            this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName,
                             eventName);
 
                         channel.QueueUnbind(this._queueNameReply,
-                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                            this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName,
                             eventName);
                     }
                 }
+            }
+
+            if (this.SubsManager is null)
+            {
+                return;
             }
 
             if (!this.SubsManager.IsReplyEmpty)
@@ -124,8 +129,8 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
 
 
-                    channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                    channel?.ExchangeDeclare(this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName,
+                        this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeType,
                         this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
                         this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
@@ -188,7 +193,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     {
                         this.QueueInitialize(channel);
 
-                        if (this.EventBusParameters != null)
+                        if (this.EventBusParameters != null && this.EventBusParameters.ExchangeDeclareParameters != null)
                         {
                             channel.QueueBind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
                             channel.QueueBind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventNameResult);
@@ -285,10 +290,10 @@ namespace KSociety.Base.EventBusRabbitMQ
                         var ms = new MemoryStream();
                         Serializer.Serialize<IIntegrationEventReply>(ms, response);
                         var body = ms.ToArray();
-                        if (!String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                        if (!String.IsNullOrEmpty(this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName))
                         {
                             this._consumerChannelReply?.Value.Result.BasicPublish(
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName,
                                 (string)response.RoutingKey,
                                 replyProps,
                                 body);
@@ -341,10 +346,10 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                             var body = ms.ToArray();
                             if (this._consumerChannelReply != null &&
-                                !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                                !String.IsNullOrEmpty(this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName))
                             {
                                 (await this._consumerChannelReply).BasicPublish(
-                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                    this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName,
                                     (string)response.RoutingKey, replyProps, body);
                             }
                         }
@@ -451,6 +456,11 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             dynamic? output = null;
 
+            if (this.SubsManager is null)
+            {
+                return null;
+            }
+
             if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {
                 var subscriptions = this.SubsManager.GetHandlersForEvent(routingKey);
@@ -543,6 +553,11 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             dynamic? output = null;
 
+            if (this.SubsManager is null)
+            {
+                return null;
+            }
+
             if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {
                 var subscriptions = this.SubsManager.GetHandlersForEvent(routingKey);
@@ -592,7 +607,6 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         var concreteType =
                                             typeof(IIntegrationRpcServerHandler<,>).MakeGenericType(eventType,
                                                 eventReplyType);
-
                                         output = await ((dynamic)concreteType.GetMethod("HandleRpcAsync")
                                                 .Invoke(this.EventHandler, new[] {integrationEvent, cancel}))
                                             .ConfigureAwait(false);
