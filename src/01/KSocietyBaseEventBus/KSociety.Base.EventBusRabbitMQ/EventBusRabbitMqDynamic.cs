@@ -63,6 +63,11 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected override async ValueTask ProcessEvent(string routingKey, string eventName,
             ReadOnlyMemory<byte> message, CancellationToken cancel = default)
         {
+            if (this.SubsManager is null)
+            {
+                return;
+            }
+
             if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {
                 if (this._autofac != null)

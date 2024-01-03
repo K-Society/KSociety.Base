@@ -56,6 +56,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public override async ValueTask Publish(IIntegrationEvent @event)
         {
+            if (this.PersistentConnection is null)
+            {
+                return;
+            }
+
             if (!this.PersistentConnection.IsConnected)
             {
                 await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
@@ -74,7 +79,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (channel != null)
                 {
                     var routingKey = @event.RoutingKey;
-                    if (this.EventBusParameters.ExchangeDeclareParameters != null)
+                    if (this.EventBusParameters?.ExchangeDeclareParameters != null)
                     {
                         channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                             this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
@@ -130,6 +135,11 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected override async ValueTask ProcessEvent(string routingKey, string eventName,
             ReadOnlyMemory<byte> message, CancellationToken cancel = default)
         {
+            if (this.SubsManager is null)
+            {
+                return;
+            }
+
             if (this.SubsManager.HasSubscriptionsForEvent(routingKey))
             {
                 var subscriptions = this.SubsManager.GetHandlersForEvent(routingKey);
@@ -153,9 +163,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         var integrationEvent = Serializer.Deserialize(eventType, ms);
                                         var concreteType =
                                             typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
-                                        await ((ValueTask<bool>)concreteType.GetMethod("Enqueue")
-                                                .Invoke(this.EventHandler, new[] {integrationEvent, cancel}))
-                                            .ConfigureAwait(false);
+
+                                        var enqueue = concreteType.GetMethod("Enqueue");
+                                        if (enqueue != null)
+                                        {
+                                            await ((ValueTask<bool>)enqueue
+                                                    .Invoke(this.EventHandler, new[] {integrationEvent, cancel}))
+                                                .ConfigureAwait(false);
+                                        }
                                     }
                                 }
                             }
