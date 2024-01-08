@@ -55,7 +55,11 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             //this.Logger?.LogTrace("EventBusRabbitMqRpcClient Initialize.");
             this._queueNameReply = this.QueueName + "_Reply";
-            this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
+            if (this.SubsManager != null)
+            {
+                this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
+            }
+
             this.ConsumerChannel =
                 new AsyncLazy<IModel?>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
         }
@@ -74,6 +78,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async void SubsManager_OnEventReplyRemoved(object sender, string eventName)
         {
+            if (this.PersistentConnection is null)
+            {
+                return;
+            }
+
             if (!this.PersistentConnection.IsConnected)
             {
                 await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
@@ -82,13 +91,18 @@ namespace KSociety.Base.EventBusRabbitMQ
             using (var channel = this.PersistentConnection.CreateModel())
             {
                 if (!String.IsNullOrEmpty(this.QueueName) &&
-                    !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters?.ExchangeName))
+                    !String.IsNullOrEmpty(this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName))
                 {
-                    channel?.QueueUnbind(this.QueueName, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                    channel?.QueueUnbind(this.QueueName, this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName,
                         eventName);
                     channel?.QueueUnbind(this._queueNameReply,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName); //ToDo
+                        this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName, eventName); //ToDo
                 }
+            }
+
+            if (this.SubsManager is null)
+            {
+                return;
             }
 
             if (!this.SubsManager.IsReplyEmpty)
@@ -106,6 +120,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public override async ValueTask Publish(IIntegrationEvent @event)
         {
+            if (this.PersistentConnection is null)
+            {
+                return;
+            }
+
             if (!this.PersistentConnection.IsConnected)
             {
                 await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
@@ -128,7 +147,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (channel != null)
                 {
                     var routingKey = @event.RoutingKey;
-                    if (this.EventBusParameters.ExchangeDeclareParameters != null)
+                    if (this.EventBusParameters?.ExchangeDeclareParameters != null)
                     {
                         channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                             this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
@@ -164,6 +183,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
+                if (this.PersistentConnection is null)
+                {
+                    return default;
+                }
+
                 if (!this.PersistentConnection.IsConnected)
                 {
                     await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
@@ -187,7 +211,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     if (channel != null)
                     {
                         var routingKey = @event.RoutingKey;
-                        if (this.EventBusParameters.ExchangeDeclareParameters != null)
+                        if (this.EventBusParameters?.ExchangeDeclareParameters != null)
                         {
                             channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                                 this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
@@ -237,8 +261,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (this.EventBusParameters != null)
                 {
-                    channel?.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                    channel?.ExchangeDeclare(this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeName,
+                        this.EventBusParameters?.ExchangeDeclareParameters?.ExchangeType,
                         this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
                         this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
 
@@ -449,6 +473,11 @@ namespace KSociety.Base.EventBusRabbitMQ
             //this.Logger?.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
             try
             {
+                if (this.PersistentConnection is null)
+                {
+                    return null;
+                }
+
                 if (!this.PersistentConnection.IsConnected)
                 {
                     await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
@@ -482,6 +511,11 @@ namespace KSociety.Base.EventBusRabbitMQ
             TaskCompletionSource<dynamic> tcs,
             CancellationToken cancel = default)
         {
+            if (this.SubsManager is null)
+            {
+                return;
+            }
+
             if (this.SubsManager.HasSubscriptionsForEventReply(routingKey))
             {
                 var subscriptions = this.SubsManager?.GetHandlersForEventReply(routingKey);
