@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
-    <PackageReference Include="CsvHelper" Version="30.0.1" />   
+    <PackageReference Include="CsvHelper" Version="30.0.3" />   
     <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />   
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.4" />

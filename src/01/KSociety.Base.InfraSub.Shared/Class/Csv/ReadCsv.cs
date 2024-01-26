@@ -98,7 +98,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             {
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
-                var result = reader.GetRecordsAsync<TClass>(cancellationToken); //.GetAsyncEnumerator(cancellationToken);
+                var result = reader.GetRecords<TClass>(); //.GetAsyncEnumerator(cancellationToken);
 
 
                 //return result;
@@ -118,7 +118,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
                 //return result;
 
-                await foreach (var item in result)
+                foreach (var item in result)
                 {
                     //return item;
                     yield return item;
@@ -135,9 +135,9 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             using (var streamReader = new StreamReader(new MemoryStream(byteArray)))
             {
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-                var result = reader.GetRecordsAsync<TClass>(cancellationToken);
+                var result = reader.GetRecords<TClass>();
 
-                await foreach (var item in result)
+                foreach (var item in result)
                 {
                     yield return item;
                 }

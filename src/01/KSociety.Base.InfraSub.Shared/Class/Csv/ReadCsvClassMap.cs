@@ -93,10 +93,10 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
         //#if NETSTANDARD2_1
 
-        public static IAsyncEnumerable<TEntity>? ImportAsync(ILoggerFactory loggerFactory, string fileName)
+        public static IEnumerable<TEntity>? ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-            IAsyncEnumerable<TEntity>? output = null;
+            IEnumerable<TEntity>? output = null;
 
             try
             {
@@ -104,7 +104,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
                 {
                     var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
                     reader.Context.RegisterClassMap<TClassMap>();
-                    output = reader.GetRecordsAsync<TEntity>();
+                    output = reader.GetRecords<TEntity>();
                 }
             }
             catch (Exception ex)
@@ -124,9 +124,9 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             {
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
                 reader.Context.RegisterClassMap<TClassMap>();
-                var result = reader.GetRecordsAsync<TEntity>(cancellationToken);
+                var result = reader.GetRecords<TEntity>();
                 //return result;
-                await foreach (var item in result.ConfigureAwait(false))
+                foreach (var item in result)
                 {
                     yield return item;
                 }
