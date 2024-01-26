@@ -2,29 +2,29 @@
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Net.Sockets;
+    using System.Threading;
+    using System.Threading.Tasks;
     using EventBus;
     using EventBus.Abstractions;
-    using KSociety.Base.EventBus.Abstractions.EventBus;
     using EventBus.Abstractions.Handler;
     using InfraSub.Shared.Class;
+    using KSociety.Base.EventBus.Abstractions.EventBus;
     using Microsoft.Extensions.Logging;
     using Polly;
     using ProtoBuf;
     using RabbitMQ.Client;
     using RabbitMQ.Client.Events;
     using RabbitMQ.Client.Exceptions;
-    using System;
-    using System.Collections.Concurrent;
-    using System.IO;
-    using System.Linq;
-    using System.Net.Sockets;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     public sealed class EventBusRabbitMqRpcClient : EventBusRabbitMq, IEventBusRpcClient
     {
-        private readonly ConcurrentDictionary<string, TaskCompletionSource<dynamic>> _callbackMapper =
-            new ConcurrentDictionary<string, TaskCompletionSource<dynamic>>();
+        private readonly Dictionary<string, TaskCompletionSource<dynamic>> _callbackMapper =
+            new Dictionary<string, TaskCompletionSource<dynamic>>();
 
         private string? _queueNameReply;
 
@@ -140,7 +140,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             var correlationId = Guid.NewGuid().ToString();
 
             var tcs = new TaskCompletionSource<dynamic>(TaskCreationOptions.RunContinuationsAsynchronously);
-            this._callbackMapper.TryAdd(correlationId, tcs);
+            this._callbackMapper.Add(correlationId, tcs);
 
             using (var channel = this.PersistentConnection.CreateModel())
             {
@@ -204,7 +204,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 var correlationId = Guid.NewGuid().ToString();
 
                 var tcs = new TaskCompletionSource<dynamic>(TaskCreationOptions.RunContinuationsAsynchronously);
-                this._callbackMapper.TryAdd(correlationId, tcs);
+                this._callbackMapper.Add(correlationId, tcs);
 
                 using (var channel = this.PersistentConnection.CreateModel())
                 {
@@ -241,7 +241,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     }
                 }
 
-                cancellationToken.Register(() => this._callbackMapper.TryRemove(correlationId, out var tmp));
+                cancellationToken.Register(() => this._callbackMapper.Remove(correlationId));
 
                 var result = await tcs.Task.ConfigureAwait(false);
 
@@ -414,13 +414,23 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
-                if (!this._callbackMapper.TryRemove(eventArgs.BasicProperties.CorrelationId,
-                        out var tcs))
-                {
-                    return;
-                }
+                //if (!this._callbackMapper.Remove(eventArgs.BasicProperties.CorrelationId, out var tcs))
+                //{
+                //    return;
+                //}
 
-                this.ProcessEventReply(eventArgs.RoutingKey, eventName, eventArgs.Body, tcs);
+                if (this._callbackMapper.TryGetValue(eventArgs.BasicProperties.CorrelationId, out var value))
+                {
+                    this._callbackMapper.Remove(eventArgs.BasicProperties.CorrelationId);
+                    if (value != null)
+                    {
+                        this.ProcessEventReply(eventArgs.RoutingKey, eventName, eventArgs.Body, value);
+                    }
+                    else
+                    {
+                        this.Logger?.LogError("ConsumerReceived: value null!");
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -440,21 +450,19 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
-                if (!this._callbackMapper.TryRemove(eventArgs.BasicProperties.CorrelationId,
-                        out var tcs))
+                if (this._callbackMapper.TryGetValue(eventArgs.BasicProperties.CorrelationId, out var value))
                 {
-                    this.Logger?.LogWarning("ConsumerReceivedAsync TryRemove: {0}", eventArgs.BasicProperties.CorrelationId);
-                    return;
-                }
-
-                if (tcs != null)
-                {
-                    await this.ProcessEventReplyAsync(eventArgs.RoutingKey, eventName, eventArgs.Body, tcs)
-                        .ConfigureAwait(false);
-                }
-                else
-                {
-                    this.Logger?.LogError("ConsumerReceivedAsync: cts null!");
+                    this._callbackMapper.Remove(eventArgs.BasicProperties.CorrelationId);
+                    //this.ProcessEventReply(eventArgs.RoutingKey, eventName, eventArgs.Body, value);
+                    if (value != null)
+                    {
+                        await this.ProcessEventReplyAsync(eventArgs.RoutingKey, eventName, eventArgs.Body, value)
+                            .ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        this.Logger?.LogError("ConsumerReceivedAsync: value null!");
+                    }
                 }
             }
             catch (Exception ex)
