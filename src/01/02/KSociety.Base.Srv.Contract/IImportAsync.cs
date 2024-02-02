@@ -12,6 +12,6 @@ namespace KSociety.Base.Srv.Contract
         where TImportRes : class
     {
         [Operation]
-        ValueTask<TImportRes?> ImportDataAsync(TImportReq importReq, CallContext context = default);
+        ValueTask<TImportRes> ImportDataAsync(TImportReq importReq, CallContext context = default);
     }
 }

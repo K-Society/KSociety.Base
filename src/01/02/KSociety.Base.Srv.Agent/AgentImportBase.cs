@@ -20,10 +20,10 @@ namespace KSociety.Base.Srv.Agent
 
         }
 
-        public virtual TImportRes? ImportData(TImportReq request,
+        public virtual TImportRes ImportData(TImportReq request,
             CancellationToken cancellationToken = default)
         {
-            TImportRes? output = default;
+            TImportRes output = default;
             try
             {
                 using (this.Channel)

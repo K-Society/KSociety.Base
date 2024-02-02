@@ -61,12 +61,12 @@ namespace KSociety.Base.Srv.Behavior
                 new ExportAsync<TExportReq, TExportRes>(loggerFactory, componentContext, commandHandlerAsync);
         }
 
-        public virtual async ValueTask<TImportRes?> ImportDataAsync(TImportReq importReq, CallContext context = default)
+        public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq importReq, CallContext context = default)
         {
             return await this._importAsync.ImportDataAsync(importReq, context).ConfigureAwait(false);
         }
 
-        public virtual async ValueTask<TExportRes?> ExportDataAsync(TExportReq exportReq, CallContext context = default)
+        public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq exportReq, CallContext context = default)
         {
             return await this._exportAsync.ExportDataAsync(exportReq, context).ConfigureAwait(false);
         }

@@ -8,6 +8,6 @@ namespace KSociety.Base.Srv.Agent
         where TImportReq : class
         where TImportRes : class
     {
-        TImportRes? ImportData(TImportReq importReq, CancellationToken cancellationToken = default);
+        TImportRes ImportData(TImportReq importReq, CancellationToken cancellationToken = default);
     }
 }

@@ -11,6 +11,6 @@ namespace KSociety.Base.Srv.Contract
         where TImportRes : class
     {
         [Operation]
-        TImportRes? ImportData(TImportReq importReq, CallContext context = default);
+        TImportRes ImportData(TImportReq importReq, CallContext context = default);
     }
 }

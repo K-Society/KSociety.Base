@@ -15,8 +15,8 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
         private DateTimeOffset _startTimeJob;
         private readonly ISchedulerFactory _schedulerFactJob;
-        private IScheduler? _schedulerJob = null;
-        private IJobDetail? _job;
+        private IScheduler _schedulerJob = null;
+        private IJobDetail _job;
         private readonly TimeSpan _timeInterval;
 
         public string Name { get; set; }

@@ -28,7 +28,7 @@ namespace KSociety.Base.Srv.Behavior
             this.CommandHandler = commandHandler;
         }
 
-        public virtual TImportRes? ImportData(TImportReq importReq, CallContext context = default)
+        public virtual TImportRes ImportData(TImportReq importReq, CallContext context = default)
         {
             return this.CommandHandler.ExecuteWithResponse<TImportReq, TImportRes>(this.LoggerFactory, this.ComponentContext,
                 importReq);

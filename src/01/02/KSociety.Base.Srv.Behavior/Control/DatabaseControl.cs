@@ -28,13 +28,13 @@ namespace KSociety.Base.Srv.Behavior.Control
             this._logger = this._loggerFactory.CreateLogger<DatabaseControl>();
         }
 
-        public EnsureCreated? EnsureCreated(CallContext context = default)
+        public EnsureCreated EnsureCreated(CallContext context = default)
         {
             this._logger.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return this._commandHandler.ExecuteWithResponse<EnsureCreated>(this._loggerFactory, this._componentContext);
         }
 
-        public EnsureDeleted? EnsureDeleted(CallContext context = default)
+        public EnsureDeleted EnsureDeleted(CallContext context = default)
         {
             this._logger.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return this._commandHandler.ExecuteWithResponse<EnsureDeleted>(this._loggerFactory, this._componentContext);
@@ -46,7 +46,7 @@ namespace KSociety.Base.Srv.Behavior.Control
             this._commandHandler.Execute(this._loggerFactory, this._componentContext, "MigrationReqHdlr");
         }
 
-        public ConnectionString? GetConnectionString(CallContext context = default)
+        public ConnectionString GetConnectionString(CallContext context = default)
         {
             this._logger.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return this._commandHandler.ExecuteWithResponse<ConnectionString>(this._loggerFactory, this._componentContext);

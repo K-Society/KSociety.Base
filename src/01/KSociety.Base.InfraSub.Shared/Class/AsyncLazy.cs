@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.InfraSub.Shared.Class
 {
@@ -14,7 +14,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
         }
 
         public AsyncLazy(Func<Task<T>> taskFactory) :
-            base(() => Task.Factory.StartNew(() => taskFactory()).Unwrap())
+            base(() => Task.Factory.StartNew(taskFactory).Unwrap())
         {
         }
 

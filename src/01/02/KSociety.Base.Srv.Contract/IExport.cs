@@ -11,6 +11,6 @@ namespace KSociety.Base.Srv.Contract
         where TExportRes : class
     {
         [Operation]
-        TExportRes? ExportData(TExportReq exportReq, CallContext context = default);
+        TExportRes ExportData(TExportReq exportReq, CallContext context = default);
     }
 }

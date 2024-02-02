@@ -15,7 +15,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
     public static class ReadCsv<TClass>
         where TClass : class
     {
-        public static TClass[]? Read(ILoggerFactory loggerFactory, string fileName)
+        public static TClass[] Read(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ReadCsv");
             var csvFileName = @"." + fileName + @".csv";
@@ -44,7 +44,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TClass>? Import(ILoggerFactory loggerFactory, string fileName)
+        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -65,7 +65,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TClass>? Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        public static IEnumerable<TClass> Import(ILoggerFactory loggerFactory, byte[] byteArray)
         {
             var logger = loggerFactory.CreateLogger("ImportCsv");
 
@@ -121,9 +121,12 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
                 foreach (var item in result)
                 {
                     //return item;
-                    yield return item;
+                    //yield return item;
+                    return (IAsyncEnumerable<TClass>) item;
                 }
             }
+
+            return null;
         }
 
         //public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
@@ -139,9 +142,12 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
                 foreach (var item in result)
                 {
-                    yield return item;
+                    //yield return item;
+                    return (IAsyncEnumerable<TClass>) item;
                 }
             }
+
+            return null;
         }
 
         //#endif

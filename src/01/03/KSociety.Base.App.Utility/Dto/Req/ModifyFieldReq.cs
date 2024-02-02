@@ -14,10 +14,10 @@ namespace KSociety.Base.App.Utility.Dto.Req
         public Guid Id { get; set; }
 
         [ProtoMember(2)]
-        public string? FieldName { get; set; }
+        public string FieldName { get; set; }
 
         [ProtoMember(3)]
-        public string? Value { get; set; }
+        public string Value { get; set; }
 
         public ModifyFieldReq() { }
 

@@ -29,7 +29,7 @@ namespace KSociety.Base.Srv.Behavior
             this.CommandHandlerAsync = commandHandlerAsync;
         }
 
-        public virtual async ValueTask<TImportRes?> ImportDataAsync(TImportReq importReq, CallContext context = default)
+        public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq importReq, CallContext context = default)
         {
             return await this.CommandHandlerAsync
                 .ExecuteWithResponseAsync<TImportReq, TImportRes>(this.LoggerFactory, this.ComponentContext, importReq,

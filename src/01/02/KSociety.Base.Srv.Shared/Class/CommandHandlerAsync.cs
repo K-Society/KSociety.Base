@@ -25,7 +25,7 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<TResponse?> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(
+        public async ValueTask<TResponse> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(
             ILoggerFactory loggerFactory, IComponentContext componentContext, TRequestList request,
             CancellationToken cancellationToken = default)
             where TRequest : IRequest, new()
@@ -91,7 +91,7 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<TResponse?> ExecuteWithResponseAsync<TRequest, TResponse>(ILoggerFactory loggerFactory,
+        public async ValueTask<TResponse> ExecuteWithResponseAsync<TRequest, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequest request, CancellationToken cancellationToken = default)
             where TRequest : IRequest, new()
             where TResponse : class, IResponse, new()
@@ -101,7 +101,7 @@ namespace KSociety.Base.Srv.Shared.Class
                 cancellationToken).ConfigureAwait(false);
         }
 
-        private static async ValueTask<TResponse?> ExecutingWithResponseAsync<TRequest, TResponse>(
+        private static async ValueTask<TResponse> ExecutingWithResponseAsync<TRequest, TResponse>(
             ILogger logger,
             IComponentContext componentContext,
             TRequest request,
@@ -266,7 +266,7 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="componentContext"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<TResponse?> ExecuteWithResponseAsync<TResponse>(ILoggerFactory loggerFactory,
+        public async ValueTask<TResponse> ExecuteWithResponseAsync<TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, CancellationToken cancellationToken = default)
             where TResponse : class, IResponse, new()
         {
@@ -275,7 +275,7 @@ namespace KSociety.Base.Srv.Shared.Class
                 .ConfigureAwait(false);
         }
 
-        private static async ValueTask<TResponse?> ExecutingWithResponseAsync<TResponse>(ILogger logger,
+        private static async ValueTask<TResponse> ExecutingWithResponseAsync<TResponse>(ILogger logger,
             IComponentContext componentContext, CancellationToken cancellationToken = default)
             where TResponse : class, IResponse, new()
         {

@@ -1,95 +1,106 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
-namespace KSociety.Base.EventBus.Test.TestEventBus;
-using System.Threading;
-using KSociety.Base.EventBus.Abstractions.EventBus;
-using IntegrationEvent.Event;
-using IntegrationEvent.EventHandling;
-using EventBusRabbitMQ;
-using Xunit;
-
-public class TestEventBusRpc : Test
+namespace KSociety.Base.EventBus.Test.TestEventBus
 {
-    private IEventBusRpcClient _eventBusRpcClient;
-    private IEventBusRpcServer _eventBusRpcServer;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using KSociety.Base.EventBus.Abstractions.EventBus;
+    using IntegrationEvent.Event;
+    using IntegrationEvent.EventHandling;
+    using EventBusRabbitMQ;
+    using Xunit;
 
-    public TestEventBusRpc()
+    public class TestEventBusRpc : Test
     {
+        private IEventBusRpcClient _eventBusRpcClient;
+        private IEventBusRpcServer _eventBusRpcServer;
 
-        ;
-        new Thread(() =>
+        public TestEventBusRpc()
         {
-            Thread.CurrentThread.IsBackground = true;
-            this.StartServer();
-        }).Start();
 
-        //Thread client = new Thread(StartClient);
-        //StartServer();
-
-        //new Thread(StartClient).Start();
-        //StartServer();
-        this.StartClient();
-            
-    }
-
-    private void StartServer()
-    {
-        //_eventBusRpcServer = new EventBusRabbitMqRpcServer(PersistentConnection, LoggerFactory,
-        //    new TestRpcServerHandler(LoggerFactory, ComponentContext), null, EventBusParameters, "ServerTest", CancellationToken.None);
-        //_eventBusRpcServer.SubscribeRpcServer<TestIntegrationEventRpc, TestIntegrationEventReply, TestRpcServerHandler>("pippo.server");
-
-    }
-
-    private void StartClient()
-    {
-        //_eventBusRpcClient = new EventBusRabbitMqRpcClient(PersistentConnection, LoggerFactory,
-        //    new TestRpcClientHandler(LoggerFactory, ComponentContext), null, EventBusParameters, "ClientTest", CancellationToken.None);
-        //_eventBusRpcClient.SubscribeRpcClient<TestIntegrationEventReply, TestRpcClientHandler>("pippo.client");
-    }
-
-    [Fact]
-    public async void SendData()
-    {
-        const string expectedName1 = "SuperPippo1";
-        const string expectedName2 = "SuperPippo2";
-        const string expectedName3 = "SuperPippo3";
-
-        TestIntegrationEventReply result1 = null;
-        TestIntegrationEventReply result2 = null;
-        TestIntegrationEventReply result3 = null;
-
-        for (int i = 0; i < 1; i++)
-        {
             ;
-            result1 = await this._eventBusRpcClient
-                .CallAsync<TestIntegrationEventReply>(new TestIntegrationEventRpc("pippo.server", "pippo.client",
-                    expectedName1, null));
-            //.ConfigureAwait(false);
-            ; 
-            //result2 = await _eventBusRpcClient
-            //    .CallAsync<TestIntegrationEventReply>(new TestIntegrationEventRpc("pippo.server", "pippo.client",
-            //        expectedName2, null))
-            //    .ConfigureAwait(false);
-            //;
-            //result3 = await _eventBusRpcClient
-            //    .CallAsync<TestIntegrationEventReply>(new TestIntegrationEventRpc("pippo.server", "pippo.client",
-            //        expectedName3, null))
-            //    .ConfigureAwait(false);
-            //;
+            //new Thread(async() =>
+            //{
+            //    Thread.CurrentThread.IsBackground = true;
+            //    await this.StartServer();
+            //}).Start();
+
+            //Thread client = new Thread(StartClient);
+            //StartServer();
+
+            //new Thread(StartClient).Start();
+            this.StartServer();
+            //this.StartClient();
+
+
+
         }
 
-        ;
-        Assert.NotNull(result1);
-        Assert.NotEmpty(result1.TestName);
-        Assert.Equal(expectedName1, result1.TestName);
-        //;
-        //Assert.NotNull(result2);
-        //Assert.NotEmpty(result2.TestName);
-        //Assert.Equal(expectedName2, result2.TestName);
-        //;
-        //Assert.NotNull(result3);
-        //Assert.NotEmpty(result3.TestName);
-        //Assert.Equal(expectedName3, result3.TestName);
-        //;
+        private async ValueTask StartServer()
+        {
+            this._eventBusRpcServer = new EventBusRabbitMqRpcServer(this.PersistentConnection, this.LoggerFactory,
+                new TestRpcServerHandler(this.LoggerFactory, this.ComponentContext), null, this.EventBusParameters,
+                "ServerTest");
+            this._eventBusRpcServer.Initialize();
+            await this._eventBusRpcServer.SubscribeRpcServer<TestIntegrationEventRpc, TestIntegrationEventReply, TestRpcServerHandler>("pippo.server");
+
+        }
+
+        private async void StartClient()
+        {
+            this._eventBusRpcClient = new EventBusRabbitMqRpcClient(this.PersistentConnection, this.LoggerFactory,
+                new TestRpcClientHandler(this.LoggerFactory, this.ComponentContext), null, this.EventBusParameters,
+                "ClientTest");
+            this._eventBusRpcClient.Initialize();
+            await this._eventBusRpcClient.SubscribeRpcClient<TestIntegrationEventReply, TestRpcClientHandler>("pippo.client");
+        }
+
+        [Fact]
+        public async void SendData()
+        {
+
+            await Task.Delay(500000);
+            const string expectedName1 = "SuperPippo1";
+            //const string expectedName2 = "SuperPippo2";
+            //const string expectedName3 = "SuperPippo3";
+
+            TestIntegrationEventReply result1 = null;
+            //TestIntegrationEventReply result2 = null;
+            //TestIntegrationEventReply result3 = null;
+
+            for (var i = 0; i < 1; i++)
+            {
+                ;
+                result1 = await this._eventBusRpcClient
+                    .CallAsync<TestIntegrationEventReply>(new TestIntegrationEventRpc("pippo.server", "pippo.client",
+                        expectedName1, null));
+                //.ConfigureAwait(false);
+                ;
+                //result2 = await _eventBusRpcClient
+                //    .CallAsync<TestIntegrationEventReply>(new TestIntegrationEventRpc("pippo.server", "pippo.client",
+                //        expectedName2, null))
+                //    .ConfigureAwait(false);
+                //;
+                //result3 = await _eventBusRpcClient
+                //    .CallAsync<TestIntegrationEventReply>(new TestIntegrationEventRpc("pippo.server", "pippo.client",
+                //        expectedName3, null))
+                //    .ConfigureAwait(false);
+                //;
+            }
+
+            ;
+            Assert.NotNull(result1);
+            Assert.NotEmpty(result1.TestName);
+            Assert.Equal(expectedName1, result1.TestName);
+            //;
+            //Assert.NotNull(result2);
+            //Assert.NotEmpty(result2.TestName);
+            //Assert.Equal(expectedName2, result2.TestName);
+            //;
+            //Assert.NotNull(result3);
+            //Assert.NotEmpty(result3.TestName);
+            //Assert.Equal(expectedName3, result3.TestName);
+            //;
+        }
     }
 }

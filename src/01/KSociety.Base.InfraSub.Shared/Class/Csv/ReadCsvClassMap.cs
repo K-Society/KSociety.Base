@@ -18,7 +18,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         where TEntity : class
         where TClassMap : ClassMap<TEntity>
     {
-        public static TEntity[]? Read(ILoggerFactory loggerFactory, string fileName)
+        public static TEntity[] Read(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ReadCsv");
             var csvFileName = @"." + fileName + @".csv";
@@ -48,7 +48,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TEntity>? Import(ILoggerFactory loggerFactory, string fileName)
+        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -70,7 +70,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TEntity>? Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, byte[] byteArray)
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -93,10 +93,10 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
         //#if NETSTANDARD2_1
 
-        public static IEnumerable<TEntity>? ImportAsync(ILoggerFactory loggerFactory, string fileName)
+        public static IEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-            IEnumerable<TEntity>? output = null;
+            IEnumerable<TEntity> output = null;
 
             try
             {
@@ -128,9 +128,12 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
                 //return result;
                 foreach (var item in result)
                 {
-                    yield return item;
+                    //yield return item;
+                    return (IAsyncEnumerable<TEntity>) item;
                 }
             }
+
+            return null;
         }
 
         //#endif

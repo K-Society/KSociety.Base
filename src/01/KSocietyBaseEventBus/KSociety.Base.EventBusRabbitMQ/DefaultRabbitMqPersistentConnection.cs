@@ -19,8 +19,8 @@ namespace KSociety.Base.EventBusRabbitMQ
         : DisposableObject, IRabbitMqPersistentConnection
     {
         private readonly IConnectionFactory _connectionFactory;
-        private readonly ILogger<DefaultRabbitMqPersistentConnection>? _logger;
-        private IConnection? _connection;
+        private readonly ILogger<DefaultRabbitMqPersistentConnection> _logger;
+        private IConnection _connection;
 
         private readonly SemaphoreSlim _connectionLock = new SemaphoreSlim(1, 1);
         private readonly CancellationTokenSource _closeTokenSource = new CancellationTokenSource();
@@ -34,7 +34,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             this._closeToken = this._closeTokenSource.Token;
         }
 
-        public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMqPersistentConnection>? logger = default)
+        public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMqPersistentConnection> logger = default)
         :this(connectionFactory)
         {
             if (logger == null)
@@ -55,7 +55,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public bool IsConnected => this._connection?.IsOpen == true && !this.Disposed;
 
-        public IModel? CreateModel()
+        public IModel CreateModel()
         {
             if (!this.IsConnected)
             {

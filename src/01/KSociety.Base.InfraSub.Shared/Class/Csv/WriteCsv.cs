@@ -14,7 +14,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
     public class WriteCsv<TEntity>
         where TEntity : class
     {
-        public static TEntity[]? Write(ILoggerFactory loggerFactory, string fileName)
+        public static TEntity[] Write(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory.CreateLogger("WriteCsv");
 
