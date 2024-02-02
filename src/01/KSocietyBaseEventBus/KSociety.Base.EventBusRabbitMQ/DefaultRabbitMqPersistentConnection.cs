@@ -2,7 +2,7 @@
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
-    using InfraSub.Shared.Class;
+    using KSociety.Base.EventBusRabbitMQ.Helper;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
     using Polly;
@@ -16,7 +16,7 @@ namespace KSociety.Base.EventBusRabbitMQ
     using System.Threading.Tasks;
 
     public class DefaultRabbitMqPersistentConnection
-        : DisposableObject, IRabbitMqPersistentConnection
+        : Disposable, IRabbitMqPersistentConnection
     {
         private readonly IConnectionFactory _connectionFactory;
         private readonly ILogger<DefaultRabbitMqPersistentConnection> _logger;
@@ -53,7 +53,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public bool IsConnected => this._connection?.IsOpen == true && !this.Disposed;
+        public bool IsConnected => this._connection?.IsOpen == true && !this.IsDisposed;
 
         public IModel CreateModel()
         {
@@ -65,17 +65,28 @@ namespace KSociety.Base.EventBusRabbitMQ
             return this._connection?.CreateModel();
         }
 
-        protected override void DisposeManagedResources()
+        
+        #region [Dispose]
+
+        /// <inheritdoc/>
+        protected override void Dispose(bool disposing)
         {
-            try
+            if (disposing)
             {
-                this._connection?.Dispose();
+                try
+                {
+                    this._connection?.Dispose();
+                }
+                catch (IOException ex)
+                {
+                    this._logger?.LogError(ex, "Dispose: ");
+                }
             }
-            catch (IOException ex)
-            {
-                this._logger?.LogError(ex, "DisposeManagedResources: ");
-            }
+
+            base.Dispose(disposing);
         }
+
+        #endregion
 
         public async ValueTask<bool> TryConnectAsync()
         {
@@ -139,7 +150,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async void OnConnectionBlockedAsync(object sender, ConnectionBlockedEventArgs e)
         {
-            if (this.Disposed)
+            if (this.IsDisposed)
             {
                 return;
             }
@@ -150,7 +161,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async void OnCallbackExceptionAsync(object sender, CallbackExceptionEventArgs e)
         {
-            if (this.Disposed)
+            if (this.IsDisposed)
             {
                 return;
             }
@@ -161,7 +172,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         private async void OnConnectionShutdownAsync(object sender, ShutdownEventArgs reason)
         {
-            if (this.Disposed)
+            if (this.IsDisposed)
             {
                 return;
             }

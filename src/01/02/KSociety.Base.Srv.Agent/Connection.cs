@@ -41,11 +41,11 @@ namespace KSociety.Base.Srv.Agent
                 }
                 catch (RpcException rex)
                 {
-                    this.Logger?.LogError(rex, "Channel null! ");
+                    this.Logger.LogError(rex, "Channel null! ");
                 }
                 catch (Exception ex)
                 {
-                    this.Logger?.LogError(ex, "Channel null! ");
+                    this.Logger.LogError(ex, "Channel null! ");
                 }
 
                 return null;
@@ -64,7 +64,7 @@ namespace KSociety.Base.Srv.Agent
 
             if (this.DebugFlag)
             {
-                this.Logger?.LogTrace(@"Grpc Agent Connection for: {0}", this._agentConfiguration.ConnectionUrl);
+                this.Logger.LogTrace(@"Grpc Agent Connection for: {0}", this._agentConfiguration.ConnectionUrl);
             }
         }
 

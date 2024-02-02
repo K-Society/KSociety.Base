@@ -115,8 +115,28 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return output;
         }
 
-        public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
-            [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        //public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
+        //    [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        //{
+        //    //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+
+        //    using (var streamReader = new StreamReader(new MemoryStream(byteArray)))
+        //    {
+        //        var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+        //        reader.Context.RegisterClassMap<TClassMap>();
+        //        var result = reader.GetRecords<TEntity>();
+        //        //return result;
+        //        foreach (var item in result)
+        //        {
+        //            //yield return item;
+        //            return (IAsyncEnumerable<TEntity>) item;
+        //        }
+        //    }
+
+        //    return null;
+        //}
+
+        public static IEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, CancellationToken cancellationToken = default)
         {
             //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
@@ -124,16 +144,9 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             {
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
                 reader.Context.RegisterClassMap<TClassMap>();
-                var result = reader.GetRecords<TEntity>();
-                //return result;
-                foreach (var item in result)
-                {
-                    //yield return item;
-                    return (IAsyncEnumerable<TEntity>) item;
-                }
-            }
+                return reader.GetRecords<TEntity>();
 
-            return null;
+            }
         }
 
         //#endif

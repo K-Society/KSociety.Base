@@ -40,8 +40,8 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName,
-                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
+                    System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
 
             return output;

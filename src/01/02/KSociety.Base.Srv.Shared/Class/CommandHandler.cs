@@ -63,7 +63,7 @@ namespace KSociety.Base.Srv.Shared.Class
                 }
 
                 throw new ArgumentNullException("methodInfo", "MethodInfo Execute is null!");
-                //return (TResponse)methodInfo?.Invoke(requestHandler, new[] {(object)request});
+                //return (TResponse)methodInfo.Invoke(requestHandler, new[] {(object)request});
             }
             catch (Exception ex)
             {
@@ -161,7 +161,7 @@ namespace KSociety.Base.Srv.Shared.Class
                     var requestHandler = componentContext.ResolveNamed<IRequestHandler>(serviceName);
                     var methodInfo = type.GetMethod("Execute");
                     //logger.LogTrace("Execute: " + type.Name + " - " + serviceName + " Response: void");
-                    methodInfo?.Invoke(requestHandler, null);
+                    methodInfo.Invoke(requestHandler, null);
                 }
                 catch (Exception ex)
                 {
@@ -214,7 +214,7 @@ namespace KSociety.Base.Srv.Shared.Class
                     var requestHandler = componentContext.Resolve(type);
                     var methodInfo = type.GetMethod("Execute");
                     //logger.LogTrace("Execute: " + openType.Name + " - " + " Request: " + typeof(TRequest).FullName + " Response: void");
-                    methodInfo?.Invoke(requestHandler, new[] {(object)request});
+                    methodInfo.Invoke(requestHandler, new[] {(object)request});
                 }
                 catch (Exception ex)
                 {

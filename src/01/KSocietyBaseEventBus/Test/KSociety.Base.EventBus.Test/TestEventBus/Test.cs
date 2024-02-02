@@ -14,13 +14,13 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
     {
         protected const bool ExchangeAutoDelete = true;
         protected const bool QueueAutoDelete = true;
-        protected ILoggerFactory LoggerFactory;
-        protected IConnectionFactory ConnectionFactory;
-        protected IRabbitMqPersistentConnection PersistentConnection;
-        protected IEventBusParameters EventBusParameters;
+        protected readonly ILoggerFactory LoggerFactory;
+        protected readonly IConnectionFactory ConnectionFactory;
+        protected readonly IRabbitMqPersistentConnection PersistentConnection;
+        protected readonly IEventBusParameters EventBusParameters;
         private readonly IExchangeDeclareParameters _exchangeDeclareParameters;
         private readonly IQueueDeclareParameters _queueDeclareParameters;
-        protected IComponentContext ComponentContext;
+        protected readonly IComponentContext ComponentContext;
         protected IEventBus EventBus;
         //protected readonly IEventBusRpcServer _eventBusRpcServer;
 

@@ -443,12 +443,12 @@ namespace KSociety.Base.EventBus
 
         private void RaiseOnEventRemoved(string eventName)
         {
-            this.OnEventRemoved?.Invoke(this, eventName);
+            this.OnEventRemoved.Invoke(this, eventName);
         }
 
         private void RaiseOnEventReplyRemoved(string eventName)
         {
-            this.OnEventReplyRemoved?.Invoke(this, eventName);
+            this.OnEventReplyRemoved.Invoke(this, eventName);
         }
 
         private SubscriptionInfo FindDynamicSubscriptionToRemove<TH>(string eventName)
@@ -542,7 +542,7 @@ namespace KSociety.Base.EventBus
         ///<inheritdoc/>
         public bool HasSubscriptionsForEvent(string eventName)
         {
-            if (eventName != null)
+            if (!String.IsNullOrEmpty(eventName))
             {
                 return this._handlers.ContainsKey(eventName);
             }

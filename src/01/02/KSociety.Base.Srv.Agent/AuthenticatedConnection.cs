@@ -52,7 +52,7 @@ namespace KSociety.Base.Srv.Agent
                 }
                 catch (RpcException rex)
                 {
-                    this.Logger?.LogError(rex, "Channel: ");
+                    this.Logger.LogError(rex, "Channel: ");
                 }
 
                 return null;

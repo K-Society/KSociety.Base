@@ -79,29 +79,30 @@ namespace KSociety.Base.EventBus.Handlers
         //        }
         //    }
         //}
+
         //ToDo
-        public virtual async IAsyncEnumerable<TIntegrationEvent> Dequeue(
-            [EnumeratorCancellation] CancellationToken cancel = default)
-        {
-            while (!cancel.IsCancellationRequested)
-            {
-                var result = default(TIntegrationEvent);
-                try
-                {
-                    result = await this.Queue.ReceiveAsync(cancel).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    this.Logger?.LogError(ex, "Dequeue: ");
-                }
+        //public virtual async IAsyncEnumerable<TIntegrationEvent> Dequeue(
+        //    [EnumeratorCancellation] CancellationToken cancel = default)
+        //{
+        //    while (!cancel.IsCancellationRequested)
+        //    {
+        //        var result = default(TIntegrationEvent);
+        //        try
+        //        {
+        //            result = await this.Queue.ReceiveAsync(cancel).ConfigureAwait(false);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            this.Logger?.LogError(ex, "Dequeue: ");
+        //        }
 
-                if (result != null)
-                {
-                    return (IAsyncEnumerable<TIntegrationEvent>) result;
-                }
-            }
+        //        if (result != null)
+        //        {
+        //            return (IAsyncEnumerable<TIntegrationEvent>) result;
+        //        }
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
     }
 }

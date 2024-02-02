@@ -9,6 +9,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
     using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Threading;
+    using System.Threading.Tasks;
     using CsvHelper;
     using Microsoft.Extensions.Logging;
 
@@ -90,7 +91,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
         //public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName,
         //    [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static IEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, string fileName, CancellationToken cancellationToken = default)
         {
             //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
@@ -98,7 +99,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             {
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
 
-                var result = reader.GetRecords<TClass>(); //.GetAsyncEnumerator(cancellationToken);
+                return reader.GetRecords<TClass>(); //.GetAsyncEnumerator(cancellationToken);
 
 
                 //return result;
@@ -118,36 +119,36 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
                 //return result;
 
-                foreach (var item in result)
-                {
-                    //return item;
-                    //yield return item;
-                    return (IAsyncEnumerable<TClass>) item;
-                }
+                //foreach (var item in result)
+                //{
+                //    //return item;
+                //    //yield return item;
+                //    return (IAsyncEnumerable<TClass>) item;
+                //}
             }
 
-            return null;
+            //return null;
         }
 
         //public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
         //    [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        public static async IAsyncEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static IEnumerable<TClass> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, CancellationToken cancellationToken = default)
         {
             //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
             using (var streamReader = new StreamReader(new MemoryStream(byteArray)))
             {
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
-                var result = reader.GetRecords<TClass>();
+                return reader.GetRecords<TClass>();
 
-                foreach (var item in result)
-                {
-                    //yield return item;
-                    return (IAsyncEnumerable<TClass>) item;
-                }
+                //foreach (var item in result)
+                //{
+                //    //yield return item;
+                //    return (IAsyncEnumerable<TClass>)item;
+                //}
             }
 
-            return null;
+            //return null;
         }
 
         //#endif

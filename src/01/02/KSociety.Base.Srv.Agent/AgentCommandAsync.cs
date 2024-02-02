@@ -36,7 +36,7 @@ namespace KSociety.Base.Srv.Agent
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel?.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
                     if (client != null)
                     {
                         var result = await client.AddAsync(addItem, this.ConnectionOptions(cancellationToken))
@@ -48,7 +48,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
             return output;
         }
@@ -60,7 +60,7 @@ namespace KSociety.Base.Srv.Agent
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel?.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
                     if (client != null)
                     {
                         var result = await client.UpdateAsync(updateItem, this.ConnectionOptions(cancellationToken))
@@ -72,7 +72,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
             return output;
         }
@@ -84,7 +84,7 @@ namespace KSociety.Base.Srv.Agent
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel?.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
                     if (client != null)
                     {
                         var result = await client.CopyAsync(copyItem, this.ConnectionOptions(cancellationToken))
@@ -96,7 +96,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
             return output;
         }
@@ -108,7 +108,7 @@ namespace KSociety.Base.Srv.Agent
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel?.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
                     if (client != null)
                     {
                         var result = await client
@@ -121,7 +121,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
             return output;
         }
@@ -133,7 +133,7 @@ namespace KSociety.Base.Srv.Agent
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel?.CreateGrpcService<TCommandAsync>();
+                    var client = this.Channel.CreateGrpcService<TCommandAsync>();
                     if (client != null)
                     {
                         var result = await client.RemoveAsync(removeItem, this.ConnectionOptions(cancellationToken))
@@ -145,7 +145,7 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
             return output;
         }

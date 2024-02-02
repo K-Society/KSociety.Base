@@ -28,7 +28,7 @@ namespace KSociety.Base.Srv.Agent
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel?.CreateGrpcService<TExport>();
+                    var client = this.Channel.CreateGrpcService<TExport>();
                     if (client != null)
                     {
                         var result = client.ExportData(request, this.ConnectionOptions(cancellationToken));
@@ -39,8 +39,8 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName,
-                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
+                    System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
 
             return output;

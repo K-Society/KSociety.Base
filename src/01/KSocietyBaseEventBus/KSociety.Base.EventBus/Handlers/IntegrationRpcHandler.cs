@@ -27,14 +27,14 @@ namespace KSociety.Base.EventBus.Handlers
         public IntegrationRpcHandler(ILoggerFactory loggerFactory = default)
             : base(loggerFactory)
         {
-            this.Logger = this.LoggerFactory?.CreateLogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>();
+            this.Logger = this.LoggerFactory.CreateLogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>();
             this.Queue = new BufferBlock<TIntegrationEventReply>();
         }
 
         public IntegrationRpcHandler(ILoggerFactory loggerFactory = default, IComponentContext componentContext = default)
             : base(loggerFactory, componentContext)
         {
-            this.Logger = this.LoggerFactory?.CreateLogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>();
+            this.Logger = this.LoggerFactory.CreateLogger<IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>>();
             this.Queue = new BufferBlock<TIntegrationEventReply>();
         }
 
@@ -49,14 +49,14 @@ namespace KSociety.Base.EventBus.Handlers
 
         public virtual TIntegrationEventReply HandleRpc(TIntegrationEvent @event, CancellationToken cancel = default)
         {
-            this.Logger?.LogWarning("IntegrationRpcHandler HandleRpc: NotImplemented!");
+            this.Logger.LogWarning("IntegrationRpcHandler HandleRpc: NotImplemented!");
             throw new NotImplementedException();
         }
 
         public virtual ValueTask<TIntegrationEventReply> HandleRpcAsync(TIntegrationEvent @event,
             CancellationToken cancel = default)
         {
-            this.Logger?.LogWarning("IntegrationRpcHandler HandleRpcAsync: NotImplemented!");
+            this.Logger.LogWarning("IntegrationRpcHandler HandleRpcAsync: NotImplemented!");
             throw new NotImplementedException();
         }
 

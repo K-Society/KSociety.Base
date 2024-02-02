@@ -17,7 +17,7 @@ namespace KSociety.Base.Domain.Shared.Class
     public abstract class BaseEntity : DisposableObject
     {
         private List<INotification> _domainEvents;
-        public IReadOnlyCollection<INotification> DomainEvents => this._domainEvents?.AsReadOnly();
+        public IReadOnlyCollection<INotification> DomainEvents => this._domainEvents.AsReadOnly();
 
         public ILoggerFactory LoggerFactory;
         public ILogger Logger;
@@ -71,7 +71,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// <param name="eventItem"><see cref="INotification"/></param>
         public void RemoveDomainEvent(INotification eventItem)
         {
-            this._domainEvents?.Remove(eventItem);
+            this._domainEvents.Remove(eventItem);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace KSociety.Base.Domain.Shared.Class
         /// </summary>
         public void ClearDomainEvents()
         {
-            this._domainEvents?.Clear();
+            this._domainEvents.Clear();
         }
     }
 }

@@ -14,25 +14,39 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
     {
         private IEventBusRpcClient _eventBusRpcClient;
         private IEventBusRpcServer _eventBusRpcServer;
+        private IEventBusRpc _eventBusRpc;
 
         public TestEventBusRpc()
         {
 
             ;
-            //new Thread(async() =>
-            //{
-            //    Thread.CurrentThread.IsBackground = true;
-            //    await this.StartServer();
-            //}).Start();
+            new Thread(async () =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                await this.StartServer().ConfigureAwait(false);
+            }).Start();
 
             //Thread client = new Thread(StartClient);
             //StartServer();
 
             //new Thread(StartClient).Start();
-            this.StartServer();
-            //this.StartClient();
+            //this.StartServer();
+            this.StartClient();
+
+            //this.StartRpc();
 
 
+
+        }
+
+        private async ValueTask StartRpc()
+        {
+            this._eventBusRpc = new EventBusRabbitMqRpc(
+                this.PersistentConnection, this.LoggerFactory,
+                new TestRpcHandler(this.LoggerFactory, this.ComponentContext), null, this.EventBusParameters,
+                "RpcTest");
+            this._eventBusRpc.Initialize();
+            await this._eventBusRpc.SubscribeRpc<TestIntegrationEventRpc, TestIntegrationEventReply, TestRpcHandler>("pippo.rpc");
 
         }
 
@@ -59,7 +73,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
         public async void SendData()
         {
 
-            await Task.Delay(500000);
+            //await Task.Delay(500000);
             const string expectedName1 = "SuperPippo1";
             //const string expectedName2 = "SuperPippo2";
             //const string expectedName3 = "SuperPippo3";
