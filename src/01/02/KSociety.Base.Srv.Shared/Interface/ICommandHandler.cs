@@ -23,7 +23,7 @@ namespace KSociety.Base.Srv.Shared.Interface
         /// <param name="componentContext"><see cref="IComponentContext"/></param>
         /// <param name="request">A type that inherits from the <see cref="IRequest"/> interface.</param>
         /// <returns>A type that inherits from the <see cref="IResponse"/> interface.</returns>
-        TResponse? ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory,
+        TResponse ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequestList request)
             where TRequest : IRequest, new()
             where TRequestList : IAppList<TRequest>, new()
@@ -42,7 +42,7 @@ namespace KSociety.Base.Srv.Shared.Interface
         /// <param name="componentContext"><see cref="IComponentContext"/></param>
         /// <param name="request">A type that inherits from the <see cref="IRequest"/> interface.</param>
         /// <returns>A type that inherits from the <see cref="IResponse"/> interface.</returns>
-        TResponse? ExecuteWithResponse<TRequest, TResponse>(ILoggerFactory loggerFactory,
+        TResponse ExecuteWithResponse<TRequest, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequest request)
             where TRequest : IRequest, new()
             where TResponse : class, IResponse, new();
@@ -89,7 +89,7 @@ namespace KSociety.Base.Srv.Shared.Interface
         /// <param name="loggerFactory"><see cref="ILoggerFactory"/></param>
         /// <param name="componentContext"><see cref="IComponentContext"/></param>
         /// <returns>A type that inherits from the <see cref="IResponse"/> interface.</returns>
-        TResponse? ExecuteWithResponse<TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext)
+        TResponse ExecuteWithResponse<TResponse>(ILoggerFactory loggerFactory, IComponentContext componentContext)
             where TResponse : class, IResponse, new();
 
         #endregion

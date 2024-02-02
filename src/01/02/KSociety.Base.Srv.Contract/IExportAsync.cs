@@ -12,6 +12,6 @@ namespace KSociety.Base.Srv.Contract
         where TExportRes : class
     {
         [Operation]
-        ValueTask<TExportRes?> ExportDataAsync(TExportReq exportReq, CallContext context = default);
+        ValueTask<TExportRes> ExportDataAsync(TExportReq exportReq, CallContext context = default);
     }
 }

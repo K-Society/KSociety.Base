@@ -16,7 +16,7 @@ namespace KSociety.Base.App.Shared
         where TRequestList : IAppList<TRequest>
         where TResponse : class, IResponse
     {
-        ValueTask<TResponse?> ExecuteAsync(TRequestList request, CancellationToken cancellationToken = default);
+        ValueTask<TResponse> ExecuteAsync(TRequestList request, CancellationToken cancellationToken = default);
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ namespace KSociety.Base.App.Shared
         where TRequest : IRequest
         where TResponse : class, IResponse
     {
-        ValueTask<TResponse?> ExecuteAsync(TRequest request, CancellationToken cancellationToken = default);
+        ValueTask<TResponse> ExecuteAsync(TRequest request, CancellationToken cancellationToken = default);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ namespace KSociety.Base.App.Shared
     public interface IRequestHandlerWithResponseAsync<TResponse>
         where TResponse : class, IResponse
     {
-        ValueTask<TResponse?> ExecuteAsync(CancellationToken cancellationToken = default);
+        ValueTask<TResponse> ExecuteAsync(CancellationToken cancellationToken = default);
     }
 
     /// <summary>

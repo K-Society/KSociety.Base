@@ -14,36 +14,36 @@ namespace KSociety.Base.EventBusRabbitMQ
         #region [Constructor]
 
         public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null)
+            string queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
 
         }
 
         public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            IEventBusSubscriptionsManager? subsManager,
+            IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null)
+            string queueName = null)
             : base(persistentConnection, loggerFactory, subsManager, eventBusParameters, queueName)
         {
 
         }
 
         public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection,
-            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
+            IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
+            string queueName = null, ILogger<EventBusRabbitMq> logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
 
         }
 
         public EventBusRabbitMqTyped(IRabbitMqPersistentConnection persistentConnection,
-            IEventBusSubscriptionsManager? subsManager,
+            IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
+            string queueName = null, ILogger<EventBusRabbitMq> logger = default)
             : base(persistentConnection, subsManager, eventBusParameters, queueName, logger)
         {
 

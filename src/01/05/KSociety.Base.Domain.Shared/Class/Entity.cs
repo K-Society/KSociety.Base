@@ -30,7 +30,7 @@ namespace KSociety.Base.Domain.Shared.Class
                 {
                     //Console.WriteLine("1 " + field.Name);
                     var t = Nullable.GetUnderlyingType(field.PropertyType) ?? field.PropertyType;
-                    object? safeValue = null;
+                    object safeValue = null;
 
                     //If is byte[]
                     if (t == typeof(byte[]))

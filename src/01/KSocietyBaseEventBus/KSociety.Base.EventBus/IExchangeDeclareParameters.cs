@@ -10,17 +10,17 @@ namespace KSociety.Base.EventBus
         /// <summary>
         /// The Broker name property.
         /// </summary>
-        string? BrokerName { get; set; }
+        string BrokerName { get; set; }
 
         /// <summary>
         /// The Exchange type property.
         /// </summary>
-        string? ExchangeType { get; set; }
+        string ExchangeType { get; set; }
 
         /// <summary>
         /// The Exchange name property.
         /// </summary>
-        string? ExchangeName { get; }
+        string ExchangeName { get; }
 
         /// <summary>
         /// The Exchange durable flag property.

@@ -18,7 +18,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
         where TEntity : class
         where TClassMap : ClassMap<TEntity>
     {
-        public static TEntity[]? Read(ILoggerFactory loggerFactory, string fileName)
+        public static TEntity[] Read(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ReadCsv");
             var csvFileName = @"." + fileName + @".csv";
@@ -48,7 +48,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TEntity>? Import(ILoggerFactory loggerFactory, string fileName)
+        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -70,7 +70,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return null;
         }
 
-        public static IEnumerable<TEntity>? Import(ILoggerFactory loggerFactory, byte[] byteArray)
+        public static IEnumerable<TEntity> Import(ILoggerFactory loggerFactory, byte[] byteArray)
         {
             var logger = loggerFactory?.CreateLogger("ImportCsv");
 
@@ -93,10 +93,10 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
 
         //#if NETSTANDARD2_1
 
-        public static IEnumerable<TEntity>? ImportAsync(ILoggerFactory loggerFactory, string fileName)
+        public static IEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, string fileName)
         {
             var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
-            IEnumerable<TEntity>? output = null;
+            IEnumerable<TEntity> output = null;
 
             try
             {
@@ -115,8 +115,28 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return output;
         }
 
-        public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
-            [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        //public static async IAsyncEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray,
+        //    [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        //{
+        //    //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
+
+        //    using (var streamReader = new StreamReader(new MemoryStream(byteArray)))
+        //    {
+        //        var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
+        //        reader.Context.RegisterClassMap<TClassMap>();
+        //        var result = reader.GetRecords<TEntity>();
+        //        //return result;
+        //        foreach (var item in result)
+        //        {
+        //            //yield return item;
+        //            return (IAsyncEnumerable<TEntity>) item;
+        //        }
+        //    }
+
+        //    return null;
+        //}
+
+        public static IEnumerable<TEntity> ImportAsync(ILoggerFactory loggerFactory, byte[] byteArray, CancellationToken cancellationToken = default)
         {
             //var logger = loggerFactory?.CreateLogger("ImportAsyncCsv");
 
@@ -124,12 +144,8 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             {
                 var reader = new CsvReader(streamReader, Configuration.CsvConfiguration);
                 reader.Context.RegisterClassMap<TClassMap>();
-                var result = reader.GetRecords<TEntity>();
-                //return result;
-                foreach (var item in result)
-                {
-                    yield return item;
-                }
+                return reader.GetRecords<TEntity>();
+
             }
         }
 

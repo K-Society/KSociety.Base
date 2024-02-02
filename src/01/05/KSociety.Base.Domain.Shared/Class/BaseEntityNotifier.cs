@@ -8,7 +8,7 @@ namespace KSociety.Base.Domain.Shared.Class
     public class BaseEntityNotifier
         : BaseEntity
     {
-        protected INotifierMediatorService? NotifierMediatorService;
+        protected INotifierMediatorService NotifierMediatorService;
 
         #region [Constructor]
 

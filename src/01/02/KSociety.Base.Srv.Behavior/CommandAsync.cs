@@ -46,28 +46,28 @@ namespace KSociety.Base.Srv.Behavior
             this.CommandHandlerAsync = commandHandlerAsync;
         }
 
-        public virtual async ValueTask<TAddRes?> AddAsync(TAddReq request, CallContext context = default)
+        public virtual async ValueTask<TAddRes> AddAsync(TAddReq request, CallContext context = default)
         {
             return await this.CommandHandlerAsync
                 .ExecuteWithResponseAsync<TAddReq, TAddRes>(this.LoggerFactory, this.ComponentContext, request,
                     context.CancellationToken).ConfigureAwait(false);
         }
 
-        public virtual async ValueTask<TUpdateRes?> UpdateAsync(TUpdateReq request, CallContext context = default)
+        public virtual async ValueTask<TUpdateRes> UpdateAsync(TUpdateReq request, CallContext context = default)
         {
             return await this.CommandHandlerAsync
                 .ExecuteWithResponseAsync<TUpdateReq, TUpdateRes>(this.LoggerFactory, this.ComponentContext, request,
                     context.CancellationToken).ConfigureAwait(false);
         }
 
-        public virtual async ValueTask<TCopyRes?> CopyAsync(TCopyReq request, CallContext context = default)
+        public virtual async ValueTask<TCopyRes> CopyAsync(TCopyReq request, CallContext context = default)
         {
             return await this.CommandHandlerAsync
                 .ExecuteWithResponseAsync<TCopyReq, TCopyRes>(this.LoggerFactory, this.ComponentContext, request,
                     context.CancellationToken).ConfigureAwait(false);
         }
 
-        public virtual async ValueTask<TModifyFieldRes?> ModifyFieldAsync(TModifyFieldReq request,
+        public virtual async ValueTask<TModifyFieldRes> ModifyFieldAsync(TModifyFieldReq request,
             CallContext context = default)
         {
             return await this.CommandHandlerAsync
@@ -75,7 +75,7 @@ namespace KSociety.Base.Srv.Behavior
                     context.CancellationToken).ConfigureAwait(false);
         }
 
-        public virtual async ValueTask<TRemoveRes?> RemoveAsync(TRemoveReq request, CallContext context = default)
+        public virtual async ValueTask<TRemoveRes> RemoveAsync(TRemoveReq request, CallContext context = default)
         {
             return await this.CommandHandlerAsync
                 .ExecuteWithResponseAsync<TRemoveReq, TRemoveRes>(this.LoggerFactory, this.ComponentContext, request,

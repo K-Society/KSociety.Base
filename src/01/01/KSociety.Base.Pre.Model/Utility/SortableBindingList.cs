@@ -19,7 +19,7 @@ namespace KSociety.Base.Pre.Model.Utility
     {
         private bool _isSorted;
         private ListSortDirection _sortDirection = ListSortDirection.Ascending;
-        private PropertyDescriptor? _sortProperty;
+        private PropertyDescriptor _sortProperty;
 
         /// <inheritdoc />
         /// <summary>
@@ -61,7 +61,7 @@ namespace KSociety.Base.Pre.Model.Utility
         /// <summary>
         /// Gets the property descriptor that is used for sorting the list if sorting is implemented in a derived class; otherwise, returns null
         /// </summary>
-        protected override PropertyDescriptor? SortPropertyCore => this._sortProperty;
+        protected override PropertyDescriptor SortPropertyCore => this._sortProperty;
 
         /// <inheritdoc />
         /// <summary>

@@ -19,18 +19,18 @@ namespace KSociety.Base.EventBusRabbitMQ
         #region [Constructor]
 
         public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection, ILoggerFactory loggerFactory,
-            ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
+            ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null)
+            string queueName = null)
             : base(persistentConnection, loggerFactory, eventHandler, subsManager, eventBusParameters, queueName)
         {
             this._autofac = autofac;
         }
 
         public EventBusRabbitMqDynamic(IRabbitMqPersistentConnection persistentConnection,
-            ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager? subsManager,
+            ILifetimeScope autofac, IIntegrationGeneralHandler eventHandler, IEventBusSubscriptionsManager subsManager,
             IEventBusParameters eventBusParameters,
-            string? queueName = null, ILogger<EventBusRabbitMq>? logger = default)
+            string queueName = null, ILogger<EventBusRabbitMq> logger = default)
             : base(persistentConnection, eventHandler, subsManager, eventBusParameters, queueName, logger)
         {
             this._autofac = autofac;

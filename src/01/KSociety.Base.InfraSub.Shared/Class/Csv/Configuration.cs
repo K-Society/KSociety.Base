@@ -30,7 +30,7 @@ namespace KSociety.Base.InfraSub.Shared.Class.Csv
             return true;
         }
 
-        private static ConstructorInfo? GetConstructor(GetConstructorArgs args)
+        private static ConstructorInfo GetConstructor(GetConstructorArgs args)
         {
             try
             {

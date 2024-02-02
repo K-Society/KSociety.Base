@@ -10,15 +10,15 @@ namespace KSociety.Base.Srv.Contract.Control
     public interface IDatabaseControl
     {
         [Operation]
-        EnsureCreated? EnsureCreated(CallContext context = default);
+        EnsureCreated EnsureCreated(CallContext context = default);
 
         [Operation]
-        EnsureDeleted? EnsureDeleted(CallContext context = default);
+        EnsureDeleted EnsureDeleted(CallContext context = default);
 
         [Operation]
         void Migration(CallContext context = default);
 
         [Operation]
-        ConnectionString? GetConnectionString(CallContext context = default);
+        ConnectionString GetConnectionString(CallContext context = default);
     }
 }

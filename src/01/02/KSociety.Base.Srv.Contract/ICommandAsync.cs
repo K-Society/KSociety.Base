@@ -25,18 +25,18 @@ namespace KSociety.Base.Srv.Contract
         where TRemoveRes : class
     {
         [Operation]
-        ValueTask<TAddRes?> AddAsync(TAddReq request, CallContext context = default);
+        ValueTask<TAddRes> AddAsync(TAddReq request, CallContext context = default);
 
         [Operation]
-        ValueTask<TUpdateRes?> UpdateAsync(TUpdateReq request, CallContext context = default);
+        ValueTask<TUpdateRes> UpdateAsync(TUpdateReq request, CallContext context = default);
 
         [Operation]
-        ValueTask<TCopyRes?> CopyAsync(TCopyReq request, CallContext context = default);
+        ValueTask<TCopyRes> CopyAsync(TCopyReq request, CallContext context = default);
 
         [Operation]
-        ValueTask<TModifyFieldRes?> ModifyFieldAsync(TModifyFieldReq request, CallContext context = default);
+        ValueTask<TModifyFieldRes> ModifyFieldAsync(TModifyFieldReq request, CallContext context = default);
 
         [Operation]
-        ValueTask<TRemoveRes?> RemoveAsync(TRemoveReq request, CallContext context = default);
+        ValueTask<TRemoveRes> RemoveAsync(TRemoveReq request, CallContext context = default);
     }
 }
