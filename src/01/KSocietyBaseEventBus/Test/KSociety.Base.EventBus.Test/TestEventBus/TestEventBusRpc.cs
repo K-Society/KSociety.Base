@@ -9,21 +9,28 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
     using IntegrationEvent.EventHandling;
     using EventBusRabbitMQ;
     using Xunit;
+    using KSociety.Base.EventBusRabbitMQ.Helper;
 
     public class TestEventBusRpc : Test
     {
         private IEventBusRpcClient _eventBusRpcClient;
         private IEventBusRpcServer _eventBusRpcServer;
         private IEventBusRpc _eventBusRpc;
+        public Subscriber Subscriber { get; }
 
         public TestEventBusRpc()
         {
 
-            ;
+            this.Subscriber = new Subscriber(this.LoggerFactory, this.PersistentConnection, this.EventBusParameters);
+
+            //this.Subscriber.
             new Thread(async () =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                await this.StartServer().ConfigureAwait(false);
+                //await this.StartServer().ConfigureAwait(false);
+                await this.Subscriber
+                    .SubscribeServer<TestRpcServerHandler, TestIntegrationEventRpc, TestIntegrationEventReply>("TestBus", "ServerTest", "pippo.server", new TestRpcServerHandler(this.LoggerFactory, this.ComponentContext))
+                    .ConfigureAwait(false);
             }).Start();
 
             //Thread client = new Thread(StartClient);
@@ -31,11 +38,13 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
 
             //new Thread(StartClient).Start();
             //this.StartServer();
-            this.StartClient();
+            //this.StartClient();
 
             //this.StartRpc();
 
-
+            //this.Subscriber
+            //    .SubscribeClient<TestRpcClientHandler, TestIntegrationEventReply>("TestBus", "ClientTest", "pippo.client", new TestRpcClientHandler(this.LoggerFactory, this.ComponentContext))
+            //    .ConfigureAwait(false);
 
         }
 
@@ -73,7 +82,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
         public async void SendData()
         {
 
-            //await Task.Delay(500000);
+            await Task.Delay(500000);
             const string expectedName1 = "SuperPippo1";
             //const string expectedName2 = "SuperPippo2";
             //const string expectedName3 = "SuperPippo3";
@@ -85,9 +94,15 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
             for (var i = 0; i < 1; i++)
             {
                 ;
-                result1 = await this._eventBusRpcClient
-                    .CallAsync<TestIntegrationEventReply>(new TestIntegrationEventRpc("pippo.server", "pippo.client",
-                        expectedName1, null));
+                //result1 = await this._eventBusRpcClient
+                //    .CallAsync<TestIntegrationEventReply>(new TestIntegrationEventRpc("pippo.server", "pippo.client",
+                //        expectedName1, null));
+
+
+                result1 = await ((IEventBusRpcClient)this.Subscriber.EventBus["TestBus_Client"])
+                    .CallAsync<TestIntegrationEventReply>(
+                        new TestIntegrationEventRpc("pippo.server", "pippo.client", expectedName1, null))
+                    .ConfigureAwait(false);
                 //.ConfigureAwait(false);
                 ;
                 //result2 = await _eventBusRpcClient
