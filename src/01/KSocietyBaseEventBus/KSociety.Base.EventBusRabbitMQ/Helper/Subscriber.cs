@@ -3,7 +3,6 @@
 namespace KSociety.Base.EventBusRabbitMQ.Helper
 {
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using EventBus;
     using EventBus.Abstractions;

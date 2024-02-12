@@ -181,7 +181,6 @@ namespace KSociety.Base.EventBusRabbitMQ
             CancellationToken cancellationToken = default)
             where TIntegrationEventReply : IIntegrationEventReply
         {
-
             try
             {
                 if (this.PersistentConnection is null)
@@ -205,7 +204,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 var correlationId = Guid.NewGuid().ToString();
 
                 var tcs = new TaskCompletionSource<dynamic>(TaskCreationOptions.RunContinuationsAsynchronously);
-                this._callbackMapper.TryAdd(correlationId, tcs);
+                var addResult = this._callbackMapper.TryAdd(correlationId, tcs);
 
                 using (var channel = this.PersistentConnection.CreateModel())
                 {
@@ -232,21 +231,23 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     properties.CorrelationId = correlationId;
                                     properties.ReplyTo = this._queueNameReply; //ToDo
 
-                                    channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                                        routingKey,
-                                        true, properties,
-                                        body);
+                                    channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,true, properties, body);
                                 });
                             }
                         }
                     }
                 }
 
-                cancellationToken.Register(() => this._callbackMapper.TryRemove(correlationId, out var tmp));
+                //cancellationToken.Register(() => this._callbackMapper.TryRemove(correlationId, out var tmp));
+                cancellationToken.Register(() => this.HandleResponse(correlationId, cancellationToken));
 
                 var result = await tcs.Task.ConfigureAwait(false);
 
                 return (TIntegrationEventReply)result;
+            }
+            catch (TaskCanceledException)
+            {
+                this.Logger.LogWarning("CallAsync: {0}", "No response in time.");
             }
             catch (Exception ex)
             {
@@ -254,6 +255,23 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
 
             return default;
+        }
+
+        private void HandleResponse(string correlationId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (this._callbackMapper.TryGetValue(correlationId, out var value))
+                {
+                    var trySetCancelled = value.TrySetCanceled(cancellationToken);
+
+                    var tryRemoveResult = this._callbackMapper.TryRemove(correlationId, out var tmp);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "HandleResponse: ");
+            }
         }
 
         protected override void QueueInitialize(IModel channel)
