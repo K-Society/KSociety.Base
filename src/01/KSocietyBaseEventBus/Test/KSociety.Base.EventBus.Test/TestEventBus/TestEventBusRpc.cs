@@ -2,6 +2,7 @@
 
 namespace KSociety.Base.EventBus.Test.TestEventBus
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using KSociety.Base.EventBus.Abstractions.EventBus;
@@ -24,14 +25,14 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
             this.Subscriber = new Subscriber(this.LoggerFactory, this.PersistentConnection, this.EventBusParameters);
 
             //this.Subscriber.
-            new Thread(async () =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-                //await this.StartServer().ConfigureAwait(false);
-                await this.Subscriber
-                    .SubscribeServer<TestRpcServerHandler, TestIntegrationEventRpc, TestIntegrationEventReply>("TestBus", "ServerTest", "pippo.server", new TestRpcServerHandler(this.LoggerFactory, this.ComponentContext))
-                    .ConfigureAwait(false);
-            }).Start();
+            //new Thread(async () =>
+            //{
+            //    Thread.CurrentThread.IsBackground = true;
+            //    //await this.StartServer().ConfigureAwait(false);
+            //    await this.Subscriber
+            //        .SubscribeServer<TestRpcServerHandler, TestIntegrationEventRpc, TestIntegrationEventReply>("TestBus", "ServerTest", "pippo.server", new TestRpcServerHandler(this.LoggerFactory, this.ComponentContext))
+            //        .ConfigureAwait(false);
+            //}).Start();
 
             //Thread client = new Thread(StartClient);
             //StartServer();
@@ -42,9 +43,9 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
 
             //this.StartRpc();
 
-            //this.Subscriber
-            //    .SubscribeClient<TestRpcClientHandler, TestIntegrationEventReply>("TestBus", "ClientTest", "pippo.client", new TestRpcClientHandler(this.LoggerFactory, this.ComponentContext))
-            //    .ConfigureAwait(false);
+            this.Subscriber
+                .SubscribeClient<TestRpcClientHandler, TestIntegrationEventReply>("TestBus", "ClientTest", "pippo.client", new TestRpcClientHandler(this.LoggerFactory, this.ComponentContext))
+                .ConfigureAwait(false);
 
         }
 
@@ -82,7 +83,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
         public async void SendData()
         {
 
-            await Task.Delay(500000);
+            //await Task.Delay(500000);
             const string expectedName1 = "SuperPippo1";
             //const string expectedName2 = "SuperPippo2";
             //const string expectedName3 = "SuperPippo3";
@@ -90,19 +91,26 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
             TestIntegrationEventReply result1 = null;
             //TestIntegrationEventReply result2 = null;
             //TestIntegrationEventReply result3 = null;
-
+            var source = new CancellationTokenSource();
+            //CancellationToken token = source.Token;
             for (var i = 0; i < 1; i++)
             {
-                ;
                 //result1 = await this._eventBusRpcClient
                 //    .CallAsync<TestIntegrationEventReply>(new TestIntegrationEventRpc("pippo.server", "pippo.client",
                 //        expectedName1, null));
 
+                try
+                {
+                    source.CancelAfter(5000);
+                    result1 = await ((IEventBusRpcClient)this.Subscriber.EventBus["TestBus_Client"])
+                        .CallAsync<TestIntegrationEventReply>(
+                            new TestIntegrationEventRpc("pippo.server", "pippo.client", expectedName1, null), source.Token);
+                }
+                catch (Exception)
+                {
+                    ;
+                }
 
-                result1 = await ((IEventBusRpcClient)this.Subscriber.EventBus["TestBus_Client"])
-                    .CallAsync<TestIntegrationEventReply>(
-                        new TestIntegrationEventRpc("pippo.server", "pippo.client", expectedName1, null))
-                    .ConfigureAwait(false);
                 //.ConfigureAwait(false);
                 ;
                 //result2 = await _eventBusRpcClient
