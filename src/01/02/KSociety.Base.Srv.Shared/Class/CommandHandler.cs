@@ -22,7 +22,7 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="componentContext"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public TResponse? ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory,
+        public TResponse ExecuteListWithResponse<TRequest, TRequestList, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequestList request)
             where TRequest : IRequest, new()
             where TRequestList : IAppList<TRequest>, new()
@@ -32,7 +32,7 @@ namespace KSociety.Base.Srv.Shared.Class
             return ExecutingListWithResponse<TRequest, TRequestList, TResponse>(logger, componentContext, request);
         }
 
-        private static TResponse? ExecutingListWithResponse<TRequest, TRequestList, TResponse>(
+        private static TResponse ExecutingListWithResponse<TRequest, TRequestList, TResponse>(
             ILogger logger,
             IComponentContext componentContext,
             TRequestList request
@@ -63,7 +63,7 @@ namespace KSociety.Base.Srv.Shared.Class
                 }
 
                 throw new ArgumentNullException("methodInfo", "MethodInfo Execute is null!");
-                //return (TResponse)methodInfo?.Invoke(requestHandler, new[] {(object)request});
+                //return (TResponse)methodInfo.Invoke(requestHandler, new[] {(object)request});
             }
             catch (Exception ex)
             {
@@ -84,7 +84,7 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="componentContext"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public TResponse? ExecuteWithResponse<TRequest, TResponse>(ILoggerFactory loggerFactory,
+        public TResponse ExecuteWithResponse<TRequest, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequest request)
             where TRequest : IRequest, new()
             where TResponse : class, IResponse, new()
@@ -93,7 +93,7 @@ namespace KSociety.Base.Srv.Shared.Class
             return ExecutingWithResponse<TRequest, TResponse>(logger, componentContext, request);
         }
 
-        private static TResponse? ExecutingWithResponse<TRequest, TResponse>(
+        private static TResponse ExecutingWithResponse<TRequest, TResponse>(
             ILogger logger,
             IComponentContext componentContext,
             TRequest request
@@ -161,7 +161,7 @@ namespace KSociety.Base.Srv.Shared.Class
                     var requestHandler = componentContext.ResolveNamed<IRequestHandler>(serviceName);
                     var methodInfo = type.GetMethod("Execute");
                     //logger.LogTrace("Execute: " + type.Name + " - " + serviceName + " Response: void");
-                    methodInfo?.Invoke(requestHandler, null);
+                    methodInfo.Invoke(requestHandler, null);
                 }
                 catch (Exception ex)
                 {
@@ -214,7 +214,7 @@ namespace KSociety.Base.Srv.Shared.Class
                     var requestHandler = componentContext.Resolve(type);
                     var methodInfo = type.GetMethod("Execute");
                     //logger.LogTrace("Execute: " + openType.Name + " - " + " Request: " + typeof(TRequest).FullName + " Response: void");
-                    methodInfo?.Invoke(requestHandler, new[] {(object)request});
+                    methodInfo.Invoke(requestHandler, new[] {(object)request});
                 }
                 catch (Exception ex)
                 {
@@ -240,7 +240,7 @@ namespace KSociety.Base.Srv.Shared.Class
         /// <param name="loggerFactory"></param>
         /// <param name="componentContext"></param>
         /// <returns></returns>
-        public TResponse? ExecuteWithResponse<TResponse>(ILoggerFactory loggerFactory,
+        public TResponse ExecuteWithResponse<TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext)
             where TResponse : class, IResponse, new()
         {
@@ -248,7 +248,7 @@ namespace KSociety.Base.Srv.Shared.Class
             return ExecutingWithResponse<TResponse>(logger, componentContext);
         }
 
-        private static TResponse? ExecutingWithResponse<TResponse>(ILogger logger, IComponentContext componentContext)
+        private static TResponse ExecutingWithResponse<TResponse>(ILogger logger, IComponentContext componentContext)
             where TResponse : class, IResponse, new()
         {
             try

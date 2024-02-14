@@ -2,7 +2,7 @@
 
 namespace KSociety.Base.EventBusRabbitMQ.Helper
 {
-    using System.Collections.Generic;
+    using System.Collections.Concurrent;
     using System.Threading.Tasks;
     using EventBus;
     using EventBus.Abstractions;
@@ -14,11 +14,11 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
     public class Subscriber
     {
-        private readonly ILoggerFactory? _loggerFactory;
-        private readonly ILogger<EventBusRabbitMq>? _loggerEventBusRabbitMq;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger<EventBusRabbitMq> _loggerEventBusRabbitMq;
         private readonly IEventBusParameters _eventBusParameters;
         public IRabbitMqPersistentConnection PersistentConnection { get; }
-        public Dictionary<string, IEventBus> EventBus { get; } = new Dictionary<string, IEventBus>();
+        public ConcurrentDictionary<string, IEventBus> EventBus { get; } = new ConcurrentDictionary<string, IEventBus>();
 
         #region [Constructor]
 
@@ -36,8 +36,8 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         public Subscriber(
             IConnectionFactory connectionFactory,
             IEventBusParameters eventBusParameters,
-            ILogger<EventBusRabbitMq>? loggerEventBusRabbitMq = default,
-            ILogger<DefaultRabbitMqPersistentConnection>? loggerDefaultRabbitMqPersistentConnection = default)
+            ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default,
+            ILogger<DefaultRabbitMqPersistentConnection> loggerDefaultRabbitMqPersistentConnection = default)
         {
             this._eventBusParameters = eventBusParameters;
 
@@ -70,7 +70,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         public Subscriber(
             IRabbitMqPersistentConnection persistentConnection,
             IEventBusParameters eventBusParameters,
-            ILogger<EventBusRabbitMq>? loggerEventBusRabbitMq = default)
+            ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default)
         {
             this._eventBusParameters = eventBusParameters;
 
@@ -118,7 +118,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            IEventBus? eventBus = null;
+            IEventBus eventBus = null;
 
             if (this._loggerFactory != null)
             {
@@ -137,15 +137,14 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            //if (this.EventBus.TryAdd(eventBusName + "_Client", eventBus))
-            //{
-            this.EventBus.Add(eventBusName + "_Client", eventBus);
+            if (this.EventBus.TryAdd(eventBusName + "_Client", eventBus))
+            {
                 ((IEventBusRpcClient)this.EventBus[eventBusName + "_Client"]).Initialize();
 
                 await ((IEventBusRpcClient)this.EventBus[eventBusName + "_Client"])
                     .SubscribeRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(replyRoutingKey)
                     .ConfigureAwait(false);
-            //}
+            }
         }
 
         public async ValueTask SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
@@ -160,7 +159,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            IEventBus? eventBus = null;
+            IEventBus eventBus = null;
 
             if (this._loggerFactory != null)
             {
@@ -180,15 +179,14 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            //if (this.EventBus.TryAdd(eventBusName + "_Server", eventBus))
-            //{
-                this.EventBus.Add(eventBusName + "_Server", eventBus);
+            if (this.EventBus.TryAdd(eventBusName + "_Server", eventBus))
+            {
                 ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"]).Initialize();
 
                 await ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"])
                     .SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply,
                         TIntegrationRpcServerHandler>(routingKey).ConfigureAwait(false);
-            //}
+            }
         }
 
         public async ValueTask SubscribeTyped<TIntegrationEventHandler, TIntegrationEvent>(
@@ -202,7 +200,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            IEventBus? eventBus = null;
+            IEventBus eventBus = null;
 
             if (this._loggerFactory != null)
             {
@@ -220,24 +218,23 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            //if (this.EventBus.TryAdd(eventBusName, eventBus))
-            //{
-                this.EventBus.Add(eventBusName, eventBus);
+            if (this.EventBus.TryAdd(eventBusName, eventBus))
+            {
                 ((IEventBusTyped)this.EventBus[eventBusName]).Initialize();
 
                 await ((IEventBusTyped)this.EventBus[eventBusName])
                     .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey).ConfigureAwait(false);
-            //}
+            }
         }
 
-        public void SubscribeTyped(string eventBusName, string? queueName = null)
+        public void SubscribeTyped(string eventBusName, string queueName = null)
         {
             if (this.EventBus.ContainsKey(eventBusName))
             {
                 return;
             }
 
-            IEventBus? eventBus = null;
+            IEventBus eventBus = null;
 
             if (this._loggerFactory != null)
             {
@@ -255,11 +252,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            //if (this.EventBus.TryAdd(eventBusName, eventBus))
-            //{
-                this.EventBus.Add(eventBusName, eventBus);
+            if (this.EventBus.TryAdd(eventBusName, eventBus))
+            {
                 ((IEventBusTyped)this.EventBus[eventBusName]).Initialize();
-            //}
+            }
         }
 
         public void SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
@@ -274,7 +270,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            IEventBus? eventBus = null;
+            IEventBus eventBus = null;
 
             if (this._loggerFactory != null)
             {
@@ -292,11 +288,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return;
             }
 
-            //if (this.EventBus.TryAdd(eventBusName, eventBus))
-            //{
-                this.EventBus.Add(eventBusName, eventBus);
+            if (this.EventBus.TryAdd(eventBusName, eventBus))
+            {
                 ((IEventBusQueue)this.EventBus[eventBusName]).Initialize();
-            //}
+            }
         }
     }
 }

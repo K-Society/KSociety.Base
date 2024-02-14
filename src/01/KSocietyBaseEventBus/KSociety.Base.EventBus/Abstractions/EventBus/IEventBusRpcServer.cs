@@ -7,7 +7,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
     public interface IEventBusRpcServer : IEventBusBase
     {
-        IIntegrationRpcServerHandler<T, TR>? GetIntegrationRpcServerHandler<T, TR>()
+        IIntegrationRpcServerHandler<T, TR> GetIntegrationRpcServerHandler<T, TR>()
             where T : IIntegrationEventRpc
             where TR : IIntegrationEventReply;
 

@@ -18,7 +18,7 @@ namespace KSociety.Base.Srv.Agent.Control
 
         }
 
-        public string? GetConnectionString(CancellationToken cancellationToken = default)
+        public string GetConnectionString(CancellationToken cancellationToken = default)
         {
             this.Logger?.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try
@@ -46,7 +46,7 @@ namespace KSociety.Base.Srv.Agent.Control
             return null;
         }
 
-        public async ValueTask<string?> GetConnectionStringAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<string> GetConnectionStringAsync(CancellationToken cancellationToken = default)
         {
             this.Logger?.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             try

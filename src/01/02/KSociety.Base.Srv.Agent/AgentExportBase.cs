@@ -20,15 +20,15 @@ namespace KSociety.Base.Srv.Agent
 
         }
 
-        public virtual TExportRes? ExportData(TExportReq request,
+        public virtual TExportRes ExportData(TExportReq request,
             CancellationToken cancellationToken = default)
         {
-            TExportRes? output = default;
+            TExportRes output = default;
             try
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel?.CreateGrpcService<TExport>();
+                    var client = this.Channel.CreateGrpcService<TExport>();
 
                     if (client != null)
                     {
@@ -40,8 +40,8 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName,
-                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
+                    System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
 
             return output;

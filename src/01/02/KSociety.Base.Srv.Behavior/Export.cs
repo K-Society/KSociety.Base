@@ -28,7 +28,7 @@ namespace KSociety.Base.Srv.Behavior
             this.CommandHandler = commandHandler;
         }
 
-        public virtual TExportRes? ExportData(TExportReq exportReq, CallContext context = default)
+        public virtual TExportRes ExportData(TExportReq exportReq, CallContext context = default)
         {
             return this.CommandHandler.ExecuteWithResponse<TExportReq, TExportRes>(this.LoggerFactory, this.ComponentContext,
                 exportReq);

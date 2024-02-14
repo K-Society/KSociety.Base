@@ -12,7 +12,7 @@ namespace KSociety.Base.Srv.Shared.Interface
     {
         #region [ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>]
 
-        ValueTask<TResponse?> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(
+        ValueTask<TResponse> ExecuteListWithResponseAsync<TRequest, TRequestList, TResponse>(
             ILoggerFactory loggerFactory, IComponentContext componentContext, TRequestList request,
             CancellationToken cancellationToken = default)
             where TRequest : IRequest, new()
@@ -23,7 +23,7 @@ namespace KSociety.Base.Srv.Shared.Interface
 
         #region [Execute<TRequest, TResponse>]
 
-        ValueTask<TResponse?> ExecuteWithResponseAsync<TRequest, TResponse>(ILoggerFactory loggerFactory,
+        ValueTask<TResponse> ExecuteWithResponseAsync<TRequest, TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, TRequest request, CancellationToken cancellationToken = default)
             where TRequest : IRequest, new()
             where TResponse : class, IResponse, new();
@@ -47,7 +47,7 @@ namespace KSociety.Base.Srv.Shared.Interface
 
         #region [Execute<TResponse>]
 
-        ValueTask<TResponse?> ExecuteWithResponseAsync<TResponse>(ILoggerFactory loggerFactory,
+        ValueTask<TResponse> ExecuteWithResponseAsync<TResponse>(ILoggerFactory loggerFactory,
             IComponentContext componentContext, CancellationToken cancellationToken = default)
             where TResponse : class, IResponse, new();
 

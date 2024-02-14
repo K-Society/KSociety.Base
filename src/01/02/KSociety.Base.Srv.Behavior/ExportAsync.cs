@@ -29,7 +29,7 @@ namespace KSociety.Base.Srv.Behavior
             this.CommandHandlerAsync = commandHandlerAsync;
         }
 
-        public virtual async ValueTask<TExportRes?> ExportDataAsync(TExportReq exportReq, CallContext context = default)
+        public virtual async ValueTask<TExportRes> ExportDataAsync(TExportReq exportReq, CallContext context = default)
         {
             return await this.CommandHandlerAsync
                 .ExecuteWithResponseAsync<TExportReq, TExportRes>(this.LoggerFactory, this.ComponentContext, exportReq,

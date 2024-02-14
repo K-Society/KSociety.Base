@@ -29,7 +29,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
         where TEventBusParametersClass : EventBusParameters, new()
     {
         private readonly bool _debug;
-        private readonly string? _brokerName;
+        private readonly string _brokerName;
         private readonly EventBus.ExchangeType _exchangeType;
         private readonly bool _exchangeDurable;
         private readonly bool _exchangeAutoDelete;
@@ -37,14 +37,14 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
         private readonly bool _queueExclusive;
         private readonly bool _queueAutoDelete;
 
-        private readonly string? _mqHostName;
-        private readonly string? _mqUserName;
-        private readonly string? _mqPassword;
+        private readonly string _mqHostName;
+        private readonly string _mqUserName;
+        private readonly string _mqPassword;
 
         public MessageBroker(
-            string? brokerName, EventBus.ExchangeType exchangeType,
+            string brokerName, EventBus.ExchangeType exchangeType,
             bool exchangeDurable, bool exchangeAutoDelete,
-            string? mqHostName, string? mqUserName, string? mqPassword, bool debug,
+            string mqHostName, string mqUserName, string mqPassword, bool debug,
             bool queueDurable,
             bool queueExclusive,
             bool queueAutoDelete)

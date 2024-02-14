@@ -29,7 +29,7 @@ namespace KSociety.Base.Srv.Behavior.Control
             this._logger = this._loggerFactory.CreateLogger<DatabaseControlAsync>();
         }
 
-        public async ValueTask<EnsureCreated?> EnsureCreatedAsync(CallContext context = default)
+        public async ValueTask<EnsureCreated> EnsureCreatedAsync(CallContext context = default)
         {
             this._logger.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return await this._commandHandlerAsync
@@ -37,7 +37,7 @@ namespace KSociety.Base.Srv.Behavior.Control
                 .ConfigureAwait(false);
         }
 
-        public async ValueTask<EnsureDeleted?> EnsureDeletedAsync(CallContext context = default)
+        public async ValueTask<EnsureDeleted> EnsureDeletedAsync(CallContext context = default)
         {
             this._logger.LogTrace("{0}.{1}", this.GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return await this._commandHandlerAsync
@@ -53,7 +53,7 @@ namespace KSociety.Base.Srv.Behavior.Control
                 .ConfigureAwait(false);
         }
 
-        public async ValueTask<ConnectionString?> GetConnectionStringAsync(CallContext context = default)
+        public async ValueTask<ConnectionString> GetConnectionStringAsync(CallContext context = default)
         {
             this._logger.LogTrace(this.GetType().FullName + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
             return await this._commandHandlerAsync

@@ -21,15 +21,15 @@ namespace KSociety.Base.Srv.Agent
 
         }
 
-        public virtual async ValueTask<TImportRes?> ImportDataAsync(TImportReq request,
+        public virtual async ValueTask<TImportRes> ImportDataAsync(TImportReq request,
             CancellationToken cancellationToken = default)
         {
-            TImportRes? output = default;
+            TImportRes output = default;
             try
             {
                 using (this.Channel)
                 {
-                    var client = this.Channel?.CreateGrpcService<TImportAsync>();
+                    var client = this.Channel.CreateGrpcService<TImportAsync>();
 
                     if (client != null)
                     {
@@ -42,8 +42,8 @@ namespace KSociety.Base.Srv.Agent
             }
             catch (Exception ex)
             {
-                this.Logger?.LogError(ex, "{0}.{1}", this.GetType().FullName,
-                    System.Reflection.MethodBase.GetCurrentMethod()?.Name);
+                this.Logger.LogError(ex, "{0}.{1}", this.GetType().FullName,
+                    System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
 
             return output;

@@ -7,7 +7,7 @@ namespace KSociety.Base.InfraSub.Shared.Class
 
     public static class ProcessUtil
     {
-        public static Process? PriorProcess()
+        public static Process PriorProcess()
         {
             var current = Process.GetCurrentProcess();
             var process = Process.GetProcessesByName(current.ProcessName);

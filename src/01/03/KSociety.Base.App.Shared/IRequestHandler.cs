@@ -13,7 +13,7 @@ namespace KSociety.Base.App.Shared
         where TRequestList : IAppList<TRequest>
         where TResponse : class, IResponse
     {
-        TResponse? Execute(TRequestList request);
+        TResponse Execute(TRequestList request);
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ namespace KSociety.Base.App.Shared
         where TRequest : IRequest
         where TResponse : class, IResponse
     {
-        TResponse? Execute(TRequest request);
+        TResponse Execute(TRequest request);
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace KSociety.Base.App.Shared
     public interface IRequestHandlerWithResponse<out TResponse>
         where TResponse : class, IResponse
     {
-        TResponse? Execute();
+        TResponse Execute();
     }
 
     /// <summary>

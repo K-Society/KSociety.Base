@@ -24,18 +24,18 @@ namespace KSociety.Base.Srv.Contract
         where TRemoveRes : class
     {
         [Operation]
-        TAddRes? Add(TAddReq request, CallContext context = default);
+        TAddRes Add(TAddReq request, CallContext context = default);
 
         [Operation]
-        TUpdateRes? Update(TUpdateReq request, CallContext context = default);
+        TUpdateRes Update(TUpdateReq request, CallContext context = default);
 
         [Operation]
-        TCopyRes? Copy(TCopyReq request, CallContext context = default);
+        TCopyRes Copy(TCopyReq request, CallContext context = default);
 
         [Operation]
-        TModifyFieldRes? ModifyField(TModifyFieldReq request, CallContext context = default);
+        TModifyFieldRes ModifyField(TModifyFieldReq request, CallContext context = default);
 
         [Operation]
-        TRemoveRes? Remove(TRemoveReq request, CallContext context = default);
+        TRemoveRes Remove(TRemoveReq request, CallContext context = default);
     }
 }
