@@ -46,8 +46,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public void InitializeServer<TIntegrationEvent, TIntegrationEventReply>(CancellationToken cancel = default)
-            where TIntegrationEvent : IIntegrationEvent, new()
+        public void InitializeServer<TIntegrationEventRpc, TIntegrationEventReply>(CancellationToken cancel = default)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcServer Initialize.");
@@ -57,7 +57,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
 
             this.ConsumerChannel =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelServerAsync<TIntegrationEvent, TIntegrationEventReply>(cancel).ConfigureAwait(false));
+                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelServerAsync<TIntegrationEventRpc, TIntegrationEventReply>(cancel).ConfigureAwait(false));
             this._queueNameReply = this.QueueName + "_Reply";
 
             this._consumerChannelReply =
@@ -298,8 +298,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        protected async ValueTask<bool> StartBasicConsumeServer<TIntegrationEvent, TIntegrationEventReply>()
-            where TIntegrationEvent : IIntegrationEvent, new()
+        protected async ValueTask<bool> StartBasicConsumeServer<TIntegrationEventRpc, TIntegrationEventReply>()
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcServer Starting RabbitMQ basic consume.");
@@ -316,7 +316,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     var consumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
 
-                    consumer.Received += this.ConsumerReceivedServerAsync<TIntegrationEvent, TIntegrationEventReply>;
+                    consumer.Received += this.ConsumerReceivedServerAsync<TIntegrationEventRpc, TIntegrationEventReply>;
 
                     (await this.ConsumerChannel).BasicConsume(
                         queue: this.QueueName,
@@ -337,8 +337,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             return false;
         }
 
-        protected void ConsumerReceivedServer<TIntegrationEvent, TIntegrationEventReply>(object sender, BasicDeliverEventArgs eventArgs)
-            where TIntegrationEvent : IIntegrationEvent, new()
+        protected void ConsumerReceivedServer<TIntegrationEventRpc, TIntegrationEventReply>(object sender, BasicDeliverEventArgs eventArgs)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
             var result = eventArgs.RoutingKey.Split('.');
@@ -352,7 +352,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     replyProps.CorrelationId = props.CorrelationId;
 
-                    var response = this.ProcessEventRpc<TIntegrationEvent, TIntegrationEventReply>(eventArgs.RoutingKey, eventName, eventArgs.Body);
+                    var response = this.ProcessEventRpc<TIntegrationEventRpc, TIntegrationEventReply>(eventArgs.RoutingKey, eventName, eventArgs.Body);
 
                     if (response != null)
                     {
@@ -390,8 +390,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected async Task ConsumerReceivedServerAsync<TIntegrationEvent, TIntegrationEventReply>(object sender, BasicDeliverEventArgs eventArgs)
-            where TIntegrationEvent : IIntegrationEvent, new()
+        protected async Task ConsumerReceivedServerAsync<TIntegrationEventRpc, TIntegrationEventReply>(object sender, BasicDeliverEventArgs eventArgs)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
             var result = eventArgs.RoutingKey.Split('.');
@@ -407,7 +407,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     {
                         replyProps.CorrelationId = props.CorrelationId;
 
-                        var response = await this.ProcessEventRpcAsync<TIntegrationEvent, TIntegrationEventReply>(eventArgs.RoutingKey, eventName, eventArgs.Body)
+                        var response = await this.ProcessEventRpcAsync<TIntegrationEventRpc, TIntegrationEventReply>(eventArgs.RoutingKey, eventName, eventArgs.Body)
                             .ConfigureAwait(false);
 
                         if (response != null)
@@ -450,8 +450,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected async ValueTask<IModel> CreateConsumerChannelServerAsync<TIntegrationEvent, TIntegrationEventReply>(CancellationToken cancel = default)
-            where TIntegrationEvent : IIntegrationEvent, new()
+        protected async ValueTask<IModel> CreateConsumerChannelServerAsync<TIntegrationEventRpc, TIntegrationEventReply>(CancellationToken cancel = default)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", this.QueueName);
@@ -478,8 +478,8 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     this.Logger.LogError(ea.Exception, "CallbackException: ");
                     this.ConsumerChannel.Value.Dispose();
-                    this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelServerAsync<TIntegrationEvent, TIntegrationEventReply>(cancel).ConfigureAwait(false));
-                    await this.StartBasicConsumeServer<TIntegrationEvent, TIntegrationEventReply>().ConfigureAwait(false);
+                    this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelServerAsync<TIntegrationEventRpc, TIntegrationEventReply>(cancel).ConfigureAwait(false));
+                    await this.StartBasicConsumeServer<TIntegrationEventRpc, TIntegrationEventReply>().ConfigureAwait(false);
                 };
 
                 return channel;
@@ -527,8 +527,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         //private dynamic ProcessEventRpc(string routingKey, string eventName, ReadOnlyMemory<byte> message,
         //    CancellationToken cancel = default)
-        private TIntegrationEventReply ProcessEventRpc<TIntegrationEvent, TIntegrationEventReply>(string routingKey, string eventName, ReadOnlyMemory<byte> message, CancellationToken cancel = default)
-            where TIntegrationEvent : IIntegrationEvent, new()
+        private TIntegrationEventReply ProcessEventRpc<TIntegrationEventRpc, TIntegrationEventReply>(string routingKey, string eventName, ReadOnlyMemory<byte> message, CancellationToken cancel = default)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
             TIntegrationEventReply output = default;
@@ -582,7 +582,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     using (var ms = new MemoryStream(message.ToArray()))
                                     {
                                         //var integrationEvent = Serializer.Deserialize(eventType, ms);
-                                        var integrationEvent = Serializer.Deserialize<TIntegrationEvent>(ms);
+                                        var integrationEvent = Serializer.Deserialize<TIntegrationEventRpc>(ms);
                                         var concreteType =
                                             typeof(IIntegrationRpcServerHandler<,>).MakeGenericType(eventType,
                                                 eventReplyType);
@@ -627,8 +627,8 @@ namespace KSociety.Base.EventBusRabbitMQ
         } //ProcessEventRpc.
         //where TR : IIntegrationEventReply
         //private async ValueTask<dynamic> ProcessEventRpcAsync(string routingKey, string eventName, ReadOnlyMemory<byte> message, CancellationToken cancel = default)
-        private async ValueTask<TIntegrationEventReply> ProcessEventRpcAsync<TIntegrationEvent, TIntegrationEventReply>(string routingKey, string eventName, ReadOnlyMemory<byte> message, CancellationToken cancel = default)
-            where TIntegrationEvent : IIntegrationEvent, new()
+        private async ValueTask<TIntegrationEventReply> ProcessEventRpcAsync<TIntegrationEventRpc, TIntegrationEventReply>(string routingKey, string eventName, ReadOnlyMemory<byte> message, CancellationToken cancel = default)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
             TIntegrationEventReply output = default;
@@ -683,7 +683,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     using (var ms = new MemoryStream(message.ToArray()))
                                     {
                                         //var integrationEvent = Serializer.Deserialize(eventType, ms);
-                                        var integrationEvent = Serializer.Deserialize<TIntegrationEvent>(ms);
+                                        var integrationEvent = Serializer.Deserialize<TIntegrationEventRpc>(ms);
 
                                         var concreteType =
                                             typeof(IIntegrationRpcServerHandler<,>).MakeGenericType(eventType, eventReplyType);
