@@ -52,124 +52,124 @@ namespace KSociety.Base.EventBus
         #region [AddSubscription]
 
         ///<inheritdoc/>
-        public void AddDynamicSubscription<TH>(string routingKey)
-            where TH : IDynamicIntegrationEventHandler
+        public void AddDynamicSubscription<TDynamicIntegrationEventHandler>(string routingKey)
+            where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler
         {
-            this.DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Dynamic);
+            this.DoAddSubscription(typeof(TDynamicIntegrationEventHandler), routingKey, SubscriptionManagerType.Dynamic);
         }
 
         ///<inheritdoc/>
-        public void AddSubscription<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+        public void AddSubscription<TIntegrationEvent, TIntegrationEventHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
-            var routingKey = this.GetEventKey<T>();
-            this.DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Typed);
+            var routingKey = this.GetEventKey<TIntegrationEvent>();
+            this.DoAddSubscription(typeof(TIntegrationEventHandler), routingKey, SubscriptionManagerType.Typed);
             //this._eventTypes.TryAdd(routingKey, typeof(T));
             if (!this._eventTypes.ContainsKey(routingKey))
             {
-                this._eventTypes.Add(routingKey, typeof(T));
+                this._eventTypes.Add(routingKey, typeof(TIntegrationEvent));
             }
         }
 
         ///<inheritdoc/>
-        public void AddSubscription<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+        public void AddSubscription<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
-            this.DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Typed);
+            this.DoAddSubscription(typeof(TIntegrationEventHandler), routingKey, SubscriptionManagerType.Typed);
             //this._eventTypes.TryAdd(routingKey, typeof(T));
             if (!this._eventTypes.ContainsKey(routingKey))
             {
-                this._eventTypes.Add(routingKey, typeof(T));
+                this._eventTypes.Add(routingKey, typeof(TIntegrationEvent));
             }
         }
 
         ///<inheritdoc/>
-        public void AddSubscriptionQueue<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationQueueHandler<T>
+        public void AddSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>
         {
-            this.DoAddSubscription(typeof(TH), routingKey, SubscriptionManagerType.Queue);
+            this.DoAddSubscription(typeof(TIntegrationQueueHandler), routingKey, SubscriptionManagerType.Queue);
             //this._eventTypes.TryAdd(routingKey, typeof(T));
             if (!this._eventTypes.ContainsKey(routingKey))
             {
-                this._eventTypes.Add(routingKey, typeof(T));
+                this._eventTypes.Add(routingKey, typeof(TIntegrationEvent));
             }
         }
 
         ///<inheritdoc/>
-        public void AddSubscriptionRpc<T, TR, TH>(string routingKey, string routingReplyKey)
-            where T : IIntegrationEvent
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcHandler<T, TR>
+        public void AddSubscriptionRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey, string routingReplyKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
         {
-            this.DoAddSubscriptionReply(typeof(TH), routingKey, SubscriptionManagerType.Rpc, routingReplyKey);
+            this.DoAddSubscriptionReply(typeof(TIntegrationRpcHandler), routingKey, SubscriptionManagerType.Rpc, routingReplyKey);
 
             //this._eventTypes.TryAdd(routingKey, typeof(T));
 
             if (!this._eventTypes.ContainsKey(routingKey))
             {
-                this._eventTypes.Add(routingKey, typeof(T));
+                this._eventTypes.Add(routingKey, typeof(TIntegrationEvent));
             }
 
             //this._eventTypes.TryAdd(routingReplyKey, typeof(T));
 
             if (!this._eventTypes.ContainsKey(routingReplyKey))
             {
-                this._eventTypes.Add(routingReplyKey, typeof(T));
+                this._eventTypes.Add(routingReplyKey, typeof(TIntegrationEvent));
             }
 
             //this._eventReplyTypes.TryAdd(routingReplyKey, typeof(TR));
 
             if (!this._eventReplyTypes.ContainsKey(routingReplyKey))
             {
-                this._eventReplyTypes.Add(routingReplyKey, typeof(TR));
+                this._eventReplyTypes.Add(routingReplyKey, typeof(TIntegrationEventReply));
             }
 
             //this._eventReplyTypes.TryAdd(routingKey, typeof(TR));
 
             if (!this._eventReplyTypes.ContainsKey(routingKey))
             {
-                this._eventReplyTypes.Add(routingKey, typeof(TR));
+                this._eventReplyTypes.Add(routingKey, typeof(TIntegrationEventReply));
             }
         }
 
         ///<inheritdoc/>
-        public void AddSubscriptionRpcClient<TR, TH>(string routingReplyKey)
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcClientHandler<TR>
+        public void AddSubscriptionRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(string routingReplyKey)
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         {
-            this.DoAddSubscription(typeof(TH), routingReplyKey, SubscriptionManagerType.RpcClient);
+            this.DoAddSubscription(typeof(TIntegrationRpcClientHandler), routingReplyKey, SubscriptionManagerType.RpcClient);
 
             //this._eventReplyTypes.TryAdd(routingReplyKey, typeof(TR));
 
             if (!this._eventReplyTypes.ContainsKey(routingReplyKey))
             {
-                this._eventReplyTypes.Add(routingReplyKey, typeof(TR));
+                this._eventReplyTypes.Add(routingReplyKey, typeof(TIntegrationEventReply));
             }
         }
 
         ///<inheritdoc/>
-        public void AddSubscriptionRpcServer<T, TR, TH>(string routingKey, string routingReplyKey)
-            where T : IIntegrationEventRpc
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcServerHandler<T, TR>
+        public void AddSubscriptionRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey, string routingReplyKey)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>
         {
-            this.DoAddSubscriptionReply(typeof(TH), routingKey, SubscriptionManagerType.RpcServer, routingReplyKey);
+            this.DoAddSubscriptionReply(typeof(TIntegrationRpcServerHandler), routingKey, SubscriptionManagerType.RpcServer, routingReplyKey);
 
             //this._eventTypes.TryAdd(routingKey, typeof(T));
 
             if (!this._eventTypes.ContainsKey(routingKey))
             {
-                this._eventTypes.Add(routingKey, typeof(T));
+                this._eventTypes.Add(routingKey, typeof(TIntegrationEventRpc));
             }
 
             //this._eventReplyTypes.TryAdd(routingKey, typeof(TR));
 
             if (!this._eventReplyTypes.ContainsKey(routingKey))
             {
-                this._eventReplyTypes.Add(routingKey, typeof(TR));
+                this._eventReplyTypes.Add(routingKey, typeof(TIntegrationEventReply));
             }
         }
 
@@ -302,76 +302,76 @@ namespace KSociety.Base.EventBus
         #region [RemoveSubscription]
 
         ///<inheritdoc/>
-        public void RemoveDynamicSubscription<TH>(string routingKey)
-            where TH : IDynamicIntegrationEventHandler
+        public void RemoveDynamicSubscription<TDynamicIntegrationEventHandler>(string routingKey)
+            where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler
         {
-            var handlerToRemove = this.FindDynamicSubscriptionToRemove<TH>(routingKey);
+            var handlerToRemove = this.FindDynamicSubscriptionToRemove<TDynamicIntegrationEventHandler>(routingKey);
             this.DoRemoveHandler(routingKey, handlerToRemove);
         }
 
         ///<inheritdoc/>
-        public void RemoveSubscription<T, TH>()
-            where TH : IIntegrationEventHandler<T>
-            where T : IIntegrationEvent
+        public void RemoveSubscription<TIntegrationEvent, TIntegrationEventHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
-            var handlerToRemove = this.FindSubscriptionToRemove<T, TH>();
-            var eventName = this.GetEventKey<T>();
+            var handlerToRemove = this.FindSubscriptionToRemove<TIntegrationEvent, TIntegrationEventHandler>();
+            var eventName = this.GetEventKey<TIntegrationEvent>();
             this.DoRemoveHandler(eventName, handlerToRemove);
         }
 
         ///<inheritdoc/>
-        public void RemoveSubscription<T, TH>(string routingKey)
-            where TH : IIntegrationEventHandler<T>
-            where T : IIntegrationEvent
+        public void RemoveSubscription<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
-            var eventName = this.GetEventKey<T>();
-            var handlerToRemove = this.FindSubscriptionToRemove<T, TH>(eventName + "." + routingKey);
+            var eventName = this.GetEventKey<TIntegrationEvent>();
+            var handlerToRemove = this.FindSubscriptionToRemove<TIntegrationEvent, TIntegrationEventHandler>(eventName + "." + routingKey);
 
             this.DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
         }
 
         ///<inheritdoc/>
-        public void RemoveSubscriptionQueue<T, TH>(string routingKey)
-            where TH : IIntegrationQueueHandler<T>
-            where T : IIntegrationEvent
+        public void RemoveSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>
         {
-            var eventName = this.GetEventKey<T>();
-            var handlerToRemove = this.FindSubscriptionQueueToRemove<T, TH>(eventName + "." + routingKey);
+            var eventName = this.GetEventKey<TIntegrationEvent>();
+            var handlerToRemove = this.FindSubscriptionQueueToRemove<TIntegrationEvent, TIntegrationQueueHandler>(eventName + "." + routingKey);
             this.DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
         }
 
         ///<inheritdoc/>
-        public void RemoveSubscriptionRpc<T, TR, TH>(string routingKey)
-            where TH : IIntegrationRpcHandler<T, TR>
-            where T : IIntegrationEvent
-            where TR : IIntegrationEventReply
+        public void RemoveSubscriptionRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
         {
-            var eventName = this.GetEventKey<T>();
-            var eventNameResult = this.GetEventReplyKey<TR>();
-            var handlerToRemove = this.FindSubscriptionRpcToRemove<T, TR, TH>(eventName + "." + routingKey);
-            var handlerToRemoveReply = this.FindSubscriptionRpcToRemoveReply<T, TR, TH>(eventNameResult + "." + routingKey);
+            var eventName = this.GetEventKey<TIntegrationEvent>();
+            var eventNameResult = this.GetEventReplyKey<TIntegrationEventReply>();
+            var handlerToRemove = this.FindSubscriptionRpcToRemove<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(eventName + "." + routingKey);
+            var handlerToRemoveReply = this.FindSubscriptionRpcToRemoveReply<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(eventNameResult + "." + routingKey);
             this.DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
             this.DoRemoveHandlerReply(eventNameResult + "." + routingKey, handlerToRemoveReply);
         }
 
         ///<inheritdoc/>
-        public void RemoveSubscriptionRpcClient<TR, TH>(string routingKey)
-            where TH : IIntegrationRpcClientHandler<TR>
-            where TR : IIntegrationEventReply
+        public void RemoveSubscriptionRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(string routingKey)
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         {
-            var eventNameResult = this.GetEventReplyKey<TR>();
-            var handlerToRemoveReply = this.FindSubscriptionRpcClientToRemoveReply<TR, TH>(eventNameResult + "." + routingKey);
+            var eventNameResult = this.GetEventReplyKey<TIntegrationEventReply>();
+            var handlerToRemoveReply = this.FindSubscriptionRpcClientToRemoveReply<TIntegrationEventReply, TIntegrationRpcClientHandler>(eventNameResult + "." + routingKey);
             this.DoRemoveHandlerReply(eventNameResult + "." + routingKey, handlerToRemoveReply);
         }
 
         ///<inheritdoc/>
-        public void RemoveSubscriptionRpcServer<T, TR, TH>(string routingKey)
-            where TH : IIntegrationRpcServerHandler<T, TR>
-            where T : IIntegrationEventRpc
-            where TR : IIntegrationEventReply
+        public void RemoveSubscriptionRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>
         {
-            var eventName = this.GetEventKey<T>();
-            var handlerToRemove = this.FindSubscriptionRpcServerToRemove<T, TR, TH>(eventName + "." + routingKey);
+            var eventName = this.GetEventKey<TIntegrationEventRpc>();
+            var handlerToRemove = this.FindSubscriptionRpcServerToRemove<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(eventName + "." + routingKey);
             this.DoRemoveHandler(eventName + "." + routingKey, handlerToRemove);
         }
 
@@ -416,16 +416,16 @@ namespace KSociety.Base.EventBus
         #endregion
 
         ///<inheritdoc/>
-        public IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : IIntegrationEvent
+        public IEnumerable<SubscriptionInfo> GetHandlersForEvent<TIntegrationEvent>() where TIntegrationEvent : IIntegrationEvent, new()
         {
-            var key = this.GetEventKey<T>();
+            var key = this.GetEventKey<TIntegrationEvent>();
             return this.GetHandlersForEvent(key);
         }
 
         ///<inheritdoc/>
-        public IEnumerable<SubscriptionInfo> GetHandlersForEventReply<TR>() where TR : IIntegrationEventReply
+        public IEnumerable<SubscriptionInfo> GetHandlersForEventReply<TIntegrationEventReply>() where TIntegrationEventReply : IIntegrationEventReply, new()
         {
-            var key = this.GetEventReplyKey<TR>();
+            var key = this.GetEventReplyKey<TIntegrationEventReply>();
             return this.GetHandlersForEventReply(key);
         }
 
@@ -443,71 +443,71 @@ namespace KSociety.Base.EventBus
 
         private void RaiseOnEventRemoved(string eventName)
         {
-            this.OnEventRemoved.Invoke(this, eventName);
+            this.OnEventRemoved?.Invoke(this, eventName);
         }
 
         private void RaiseOnEventReplyRemoved(string eventName)
         {
-            this.OnEventReplyRemoved.Invoke(this, eventName);
+            this.OnEventReplyRemoved?.Invoke(this, eventName);
         }
 
-        private SubscriptionInfo FindDynamicSubscriptionToRemove<TH>(string eventName)
-            where TH : IDynamicIntegrationEventHandler
+        private SubscriptionInfo FindDynamicSubscriptionToRemove<TDynamicIntegrationEventHandler>(string eventName)
+            where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler
         {
-            return this.DoFindSubscriptionToRemove(eventName, typeof(TH));
+            return this.DoFindSubscriptionToRemove(eventName, typeof(TDynamicIntegrationEventHandler));
         }
 
-        private SubscriptionInfo FindSubscriptionToRemove<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+        private SubscriptionInfo FindSubscriptionToRemove<TIntegrationEvent, TIntegrationEventHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
-            var eventName = this.GetEventKey<T>();
-            return this.DoFindSubscriptionToRemove(eventName, typeof(TH));
+            var eventName = this.GetEventKey<TIntegrationEvent>();
+            return this.DoFindSubscriptionToRemove(eventName, typeof(TIntegrationEventHandler));
         }
 
-        private SubscriptionInfo FindSubscriptionToRemove<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+        private SubscriptionInfo FindSubscriptionToRemove<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
-            return this.DoFindSubscriptionToRemove(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemove(routingKey, typeof(TIntegrationEventHandler));
         }
 
-        private SubscriptionInfo FindSubscriptionQueueToRemove<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationQueueHandler<T>
+        private SubscriptionInfo FindSubscriptionQueueToRemove<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>
         {
-            return this.DoFindSubscriptionToRemove(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemove(routingKey, typeof(TIntegrationQueueHandler));
         }
 
-        private SubscriptionInfo FindSubscriptionRpcToRemove<T, TR, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcHandler<T, TR>
+        private SubscriptionInfo FindSubscriptionRpcToRemove<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
         {
-            return this.DoFindSubscriptionToRemove(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemove(routingKey, typeof(TIntegrationRpcHandler));
         }
 
-        private SubscriptionInfo FindSubscriptionRpcToRemoveReply<T, TR, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcHandler<T, TR>
+        private SubscriptionInfo FindSubscriptionRpcToRemoveReply<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
         {
-            return this.DoFindSubscriptionToRemoveReply(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemoveReply(routingKey, typeof(TIntegrationRpcHandler));
         }
 
-        private SubscriptionInfo FindSubscriptionRpcClientToRemoveReply<TR, TH>(string routingKey)
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcClientHandler<TR>
+        private SubscriptionInfo FindSubscriptionRpcClientToRemoveReply<TIntegrationEventReply, TIntegrationRpcClientHandler>(string routingKey)
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         {
-            return this.DoFindSubscriptionToRemove(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemove(routingKey, typeof(TIntegrationRpcClientHandler));
         }
 
-        private SubscriptionInfo FindSubscriptionRpcServerToRemove<T, TR, TH>(string routingKey)
-            where T : IIntegrationEventRpc
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcServerHandler<T, TR>
+        private SubscriptionInfo FindSubscriptionRpcServerToRemove<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>
         {
-            return this.DoFindSubscriptionToRemove(routingKey, typeof(TH));
+            return this.DoFindSubscriptionToRemove(routingKey, typeof(TIntegrationRpcServerHandler));
         }
 
         private SubscriptionInfo DoFindSubscriptionToRemove(string eventName, Type handlerType)
@@ -525,17 +525,17 @@ namespace KSociety.Base.EventBus
         }
 
         ///<inheritdoc/>
-        public bool HasSubscriptionsForEvent<T>() where T : IIntegrationEvent
+        public bool HasSubscriptionsForEvent<TIntegrationEvent>() where TIntegrationEvent : IIntegrationEvent, new()
         {
-            var key = this.GetEventKey<T>();
+            var key = this.GetEventKey<TIntegrationEvent>();
             return this.HasSubscriptionsForEvent(key);
         }
 
         ///<inheritdoc/>
-        public bool HasSubscriptionsForEventReply<TR>() where TR : IIntegrationEventReply
+        public bool HasSubscriptionsForEventReply<TIntegrationEventReply>() where TIntegrationEventReply : IIntegrationEventReply, new()
         {
 
-            var key = this.GetEventReplyKey<TR>();
+            var key = this.GetEventReplyKey<TIntegrationEventReply>();
             return this.HasSubscriptionsForEventReply(key);
         }
 
@@ -569,15 +569,15 @@ namespace KSociety.Base.EventBus
         }
 
         ///<inheritdoc/>
-        public string GetEventKey<T>()
+        public string GetEventKey<TIntegrationEvent>()
         {
-            return typeof(T).Name;
+            return typeof(TIntegrationEvent).Name;
         }
 
         ///<inheritdoc/>
-        public string GetEventReplyKey<TR>()
+        public string GetEventReplyKey<TIntegrationEventReply>()
         {
-            return typeof(TR).Name;
+            return typeof(TIntegrationEventReply).Name;
         }
     }
 }

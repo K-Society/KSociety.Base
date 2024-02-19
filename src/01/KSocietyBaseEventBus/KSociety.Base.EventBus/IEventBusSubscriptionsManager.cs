@@ -38,75 +38,75 @@ namespace KSociety.Base.EventBus
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="TDynamicIntegrationEventHandler"></typeparam>
         /// <param name="routingKey"></param>
-        void AddDynamicSubscription<TH>(string routingKey)
-            where TH : IDynamicIntegrationEventHandler;
+        void AddDynamicSubscription<TDynamicIntegrationEventHandler>(string routingKey)
+            where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TH"></typeparam>
-        void AddSubscription<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
+        /// <typeparam name="TIntegrationEvent"></typeparam>
+        /// <typeparam name="TIntegrationEventHandler"></typeparam>
+        void AddSubscription<TIntegrationEvent, TIntegrationEventHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="TIntegrationEvent"></typeparam>
+        /// <typeparam name="TIntegrationEventHandler"></typeparam>
         /// <param name="routingKey"></param>
-        void AddSubscription<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
+        void AddSubscription<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="TIntegrationEvent"></typeparam>
+        /// <typeparam name="TIntegrationQueueHandler"></typeparam>
         /// <param name="routingKey"></param>
-        void AddSubscriptionQueue<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationQueueHandler<T>;
+        void AddSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TR"></typeparam>
-        /// <typeparam name="TH"></typeparam>
-        /// <param name="routingKey"></param>
-        /// <param name="routingReplyKey"></param>
-        void AddSubscriptionRpc<T, TR, TH>(string routingKey, string routingReplyKey)
-            where T : IIntegrationEvent
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcHandler<T, TR>;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TR"></typeparam>
-        /// <typeparam name="TH"></typeparam>
-        /// <param name="routingReplyKey"></param>
-        void AddSubscriptionRpcClient<TR, TH>(string routingReplyKey)
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcClientHandler<TR>;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TR"></typeparam>
-        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="TIntegrationEvent"></typeparam>
+        /// <typeparam name="TIntegrationEventReply"></typeparam>
+        /// <typeparam name="TIntegrationRpcHandler"></typeparam>
         /// <param name="routingKey"></param>
         /// <param name="routingReplyKey"></param>
-        void AddSubscriptionRpcServer<T, TR, TH>(string routingKey, string routingReplyKey)
-            where T : IIntegrationEventRpc
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcServerHandler<T, TR>;
+        void AddSubscriptionRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey, string routingReplyKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TIntegrationEventReply"></typeparam>
+        /// <typeparam name="TIntegrationRpcClientHandler"></typeparam>
+        /// <param name="routingReplyKey"></param>
+        void AddSubscriptionRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(string routingReplyKey)
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TIntegrationEventRpc"></typeparam>
+        /// <typeparam name="TIntegrationEventReply"></typeparam>
+        /// <typeparam name="TIntegrationRpcServerHandler"></typeparam>
+        /// <param name="routingKey"></param>
+        /// <param name="routingReplyKey"></param>
+        void AddSubscriptionRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey, string routingReplyKey)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>;
 
         #endregion
 
@@ -115,89 +115,89 @@ namespace KSociety.Base.EventBus
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TH"></typeparam>
-        void RemoveSubscription<T, TH>()
-            where TH : IIntegrationEventHandler<T>
-            where T : IIntegrationEvent;
+        /// <typeparam name="TIntegrationEvent"></typeparam>
+        /// <typeparam name="TIntegrationEventHandler"></typeparam>
+        void RemoveSubscription<TIntegrationEvent, TIntegrationEventHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="TIntegrationEvent"></typeparam>
+        /// <typeparam name="TIntegrationEventHandler"></typeparam>
         /// <param name="routingKey"></param>
-        void RemoveSubscription<T, TH>(string routingKey)
-            where TH : IIntegrationEventHandler<T>
-            where T : IIntegrationEvent;
+        void RemoveSubscription<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="TIntegrationEvent"></typeparam>
+        /// <typeparam name="TIntegrationQueueHandler"></typeparam>
         /// <param name="routingKey"></param>
-        void RemoveSubscriptionQueue<T, TH>(string routingKey)
-            where TH : IIntegrationQueueHandler<T>
-            where T : IIntegrationEvent;
+        void RemoveSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TR"></typeparam>
-        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="TIntegrationEvent"></typeparam>
+        /// <typeparam name="TIntegrationEventReply"></typeparam>
+        /// <typeparam name="TIntegrationRpcHandler"></typeparam>
         /// <param name="routingKey"></param>
-        void RemoveSubscriptionRpc<T, TR, TH>(string routingKey)
-            where TH : IIntegrationRpcHandler<T, TR>
-            where T : IIntegrationEvent
-            where TR : IIntegrationEventReply;
+        void RemoveSubscriptionRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TR"></typeparam>
-        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="TIntegrationEventReply"></typeparam>
+        /// <typeparam name="TIntegrationRpcClientHandler"></typeparam>
         /// <param name="routingKey"></param>
-        void RemoveSubscriptionRpcClient<TR, TH>(string routingKey)
-            where TH : IIntegrationRpcClientHandler<TR>
-            where TR : IIntegrationEventReply;
+        void RemoveSubscriptionRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(string routingKey)
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TR"></typeparam>
-        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="TIntegrationEventRpc"></typeparam>
+        /// <typeparam name="TIntegrationEventReply"></typeparam>
+        /// <typeparam name="TIntegrationRpcServerHandler"></typeparam>
         /// <param name="routingKey"></param>
-        void RemoveSubscriptionRpcServer<T, TR, TH>(string routingKey)
-            where TH : IIntegrationRpcServerHandler<T, TR>
-            where T : IIntegrationEventRpc
-            where TR : IIntegrationEventReply;
+        void RemoveSubscriptionRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TH"></typeparam>
+        /// <typeparam name="TDynamicIntegrationEventHandler"></typeparam>
         /// <param name="routingKey"></param>
-        void RemoveDynamicSubscription<TH>(string routingKey)
-            where TH : IDynamicIntegrationEventHandler;
+        void RemoveDynamicSubscription<TDynamicIntegrationEventHandler>(string routingKey)
+            where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler;
 
         #endregion
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TIntegrationEvent"></typeparam>
         /// <returns></returns>
-        bool HasSubscriptionsForEvent<T>() where T : IIntegrationEvent;
+        bool HasSubscriptionsForEvent<TIntegrationEvent>() where TIntegrationEvent : IIntegrationEvent, new();
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TR"></typeparam>
+        /// <typeparam name="TIntegrationEventReply"></typeparam>
         /// <returns></returns>
-        bool HasSubscriptionsForEventReply<TR>() where TR : IIntegrationEventReply;
+        bool HasSubscriptionsForEventReply<TIntegrationEventReply>() where TIntegrationEventReply : IIntegrationEventReply, new();
 
         /// <summary>
         /// 
@@ -240,16 +240,16 @@ namespace KSociety.Base.EventBus
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TIntegrationEvent"></typeparam>
         /// <returns></returns>
-        IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : IIntegrationEvent;
+        IEnumerable<SubscriptionInfo> GetHandlersForEvent<TIntegrationEvent>() where TIntegrationEvent : IIntegrationEvent, new();
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TR"></typeparam>
+        /// <typeparam name="TIntegrationEventReply"></typeparam>
         /// <returns></returns>
-        IEnumerable<SubscriptionInfo> GetHandlersForEventReply<TR>() where TR : IIntegrationEventReply;
+        IEnumerable<SubscriptionInfo> GetHandlersForEventReply<TIntegrationEventReply>() where TIntegrationEventReply : IIntegrationEventReply, new();
 
         /// <summary>
         /// 
@@ -268,15 +268,15 @@ namespace KSociety.Base.EventBus
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TIntegrationEvent"></typeparam>
         /// <returns></returns>
-        string GetEventKey<T>();
+        string GetEventKey<TIntegrationEvent>();
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TR"></typeparam>
+        /// <typeparam name="TIntegrationEventReply"></typeparam>
         /// <returns></returns>
-        string GetEventReplyKey<TR>();
+        string GetEventReplyKey<TIntegrationEventReply>();
     }
 }
