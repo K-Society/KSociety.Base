@@ -101,7 +101,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
 
                 try
                 {
-                    source.CancelAfter(1000000);
+                    source.CancelAfter(100000);
                     result1 =
                         await ((IEventBusRpcClient<TestIntegrationEventReply>)this.Subscriber
                             .EventBus["TestBus_Client"]).CallAsync(new TestIntegrationEventRpc("pippo.server", "pippo.client", expectedName1, null), source.Token);
