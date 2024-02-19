@@ -8,7 +8,7 @@ namespace KSociety.Base.EventBus.Events
 
     ///<inheritdoc cref="IIntegrationEventReply"/>
     [ProtoContract]
-    public abstract class IntegrationEventReply : IIntegrationEventReply
+    public class IntegrationEventReply : IIntegrationEventReply
     {
         [ProtoMember(1), CompatibilityLevel(CompatibilityLevel.Level200)]
         public Guid Id { get; set; }

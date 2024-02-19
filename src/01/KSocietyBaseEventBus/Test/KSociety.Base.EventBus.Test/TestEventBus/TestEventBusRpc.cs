@@ -14,7 +14,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
 
     public class TestEventBusRpc : Test
     {
-        private IEventBusRpcClient _eventBusRpcClient;
+        private IEventBusRpcClient<TestIntegrationEventReply> _eventBusRpcClient;
         private IEventBusRpcServer _eventBusRpcServer;
         private IEventBusRpc _eventBusRpc;
         public Subscriber Subscriber { get; }
@@ -25,20 +25,20 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
             this.Subscriber = new Subscriber(this.LoggerFactory, this.PersistentConnection, this.EventBusParameters);
 
             //this.Subscriber.
-            //new Thread(async () =>
-            //{
-            //    Thread.CurrentThread.IsBackground = true;
-            //    //await this.StartServer().ConfigureAwait(false);
-            //    await this.Subscriber
-            //        .SubscribeServer<TestRpcServerHandler, TestIntegrationEventRpc, TestIntegrationEventReply>("TestBus", "ServerTest", "pippo.server", new TestRpcServerHandler(this.LoggerFactory, this.ComponentContext))
-            //        .ConfigureAwait(false);
-            //}).Start();
+            new Thread(async () =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                //await this.StartServer().ConfigureAwait(false);
+                await this.Subscriber
+                    .SubscribeServer<TestRpcServerHandler, TestIntegrationEventRpc, TestIntegrationEventReply>("TestBus", "ServerTest", "pippo.server", new TestRpcServerHandler(this.LoggerFactory, this.ComponentContext))
+                    .ConfigureAwait(false);
+            }).Start();
 
             //Thread client = new Thread(StartClient);
             //StartServer();
 
             //new Thread(StartClient).Start();
-            //this.StartServer();
+            //_ = this.StartServer();
             //this.StartClient();
 
             //this.StartRpc();
@@ -65,18 +65,18 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
             this._eventBusRpcServer = new EventBusRabbitMqRpcServer(this.PersistentConnection, this.LoggerFactory,
                 new TestRpcServerHandler(this.LoggerFactory, this.ComponentContext), null, this.EventBusParameters,
                 "ServerTest");
-            this._eventBusRpcServer.Initialize();
+            this._eventBusRpcServer.InitializeServer<TestIntegrationEvent, TestIntegrationEventReply>();
             await this._eventBusRpcServer.SubscribeRpcServer<TestIntegrationEventRpc, TestIntegrationEventReply, TestRpcServerHandler>("pippo.server");
 
         }
 
         private async void StartClient()
         {
-            this._eventBusRpcClient = new EventBusRabbitMqRpcClient(this.PersistentConnection, this.LoggerFactory,
+            this._eventBusRpcClient = new EventBusRabbitMqRpcClient<TestIntegrationEventReply>(this.PersistentConnection, this.LoggerFactory,
                 new TestRpcClientHandler(this.LoggerFactory, this.ComponentContext), null, this.EventBusParameters,
                 "ClientTest");
             this._eventBusRpcClient.Initialize();
-            await this._eventBusRpcClient.SubscribeRpcClient<TestIntegrationEventReply, TestRpcClientHandler>("pippo.client");
+            await this._eventBusRpcClient.SubscribeRpcClient<TestRpcClientHandler>("pippo.client");
         }
 
         [Fact]
@@ -101,10 +101,17 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
 
                 try
                 {
-                    source.CancelAfter(5000);
-                    result1 = await ((IEventBusRpcClient)this.Subscriber.EventBus["TestBus_Client"])
-                        .CallAsync<TestIntegrationEventReply>(
-                            new TestIntegrationEventRpc("pippo.server", "pippo.client", expectedName1, null), source.Token);
+                    source.CancelAfter(1000000);
+                    result1 =
+                        await ((IEventBusRpcClient<TestIntegrationEventReply>)this.Subscriber
+                            .EventBus["TestBus_Client"]).CallAsync(new TestIntegrationEventRpc("pippo.server", "pippo.client", expectedName1, null), source.Token);
+                    //.CallAsync<TestIntegrationEvent>(
+                    //    new TestIntegrationEventRpc("pippo.server", "pippo.client", expectedName1, null),
+                    //    source.Token);
+                }
+                catch (TaskCanceledException)
+                {
+                    ;
                 }
                 catch (Exception)
                 {

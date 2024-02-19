@@ -42,11 +42,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public IIntegrationQueueHandler<T> GetIntegrationQueueHandler<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationQueueHandler<T>
+        public IIntegrationQueueHandler<TIntegrationEvent> GetIntegrationQueueHandler<TIntegrationEvent, TIntegrationQueueHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>
         {
-            if (this.EventHandler is IIntegrationQueueHandler<T> queue)
+            if (this.EventHandler is IIntegrationQueueHandler<TIntegrationEvent> queue)
             {
                 return queue;
             }
@@ -109,13 +109,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask SubscribeQueue<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationQueueHandler<T>
+        public async ValueTask SubscribeQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>
         {
-            var eventName = this.SubsManager?.GetEventKey<T>();
+            var eventName = this.SubsManager?.GetEventKey<TIntegrationEvent>();
             await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
-            this.SubsManager?.AddSubscriptionQueue<T, TH>(eventName + "." + routingKey);
+            this.SubsManager?.AddSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(eventName + "." + routingKey);
             await this.StartBasicConsume().ConfigureAwait(false);
         }
 
@@ -123,11 +123,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Unsubscribe]
 
-        public void UnsubscribeQueue<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationQueueHandler<T>
+        public void UnsubscribeQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>
         {
-            this.SubsManager?.RemoveSubscriptionQueue<T, TH>(routingKey);
+            this.SubsManager?.RemoveSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(routingKey);
         }
 
         #endregion

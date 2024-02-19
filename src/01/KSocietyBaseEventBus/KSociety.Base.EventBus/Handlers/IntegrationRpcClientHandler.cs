@@ -12,7 +12,7 @@ namespace KSociety.Base.EventBus.Handlers
     ///<inheritdoc cref="IIntegrationQueueHandler{TIntegrationEventReply}"/>
     public class IntegrationRpcClientHandler<TIntegrationEventReply>
         : IntegrationGeneralHandler, IIntegrationRpcClientHandler<TIntegrationEventReply>
-        where TIntegrationEventReply : IIntegrationEventReply
+        where TIntegrationEventReply : IIntegrationEventReply, new()
     {
         protected readonly ILogger<IIntegrationRpcClientHandler<TIntegrationEventReply>> Logger;
 

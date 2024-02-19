@@ -6,21 +6,35 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
     using System.Threading.Tasks;
     using Handler;
 
-    public interface IEventBusRpcClient : IEventBus
+    public interface IEventBusRpcClient<TIntegrationEventReply> : IEventBus
+        where TIntegrationEventReply : IIntegrationEventReply, new()
+        //where TIntegrationEvent : IIntegrationEvent, new()
+        //where TIntegrationEventReply : IIntegrationEventReply, new()
     {
-        Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(IIntegrationEvent @event,
-            CancellationToken cancellationToken = default)
-            where TIntegrationEventReply : IIntegrationEventReply;
+        //Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(T @event,
+        //    CancellationToken cancellationToken = default)
+        //    where TIntegrationEventReply : IIntegrationEventReply;
 
-        IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
-            where TIntegrationEventReply : IIntegrationEventReply;
+        Task<TIntegrationEventReply> CallAsync<TIntegrationEventRpc>(TIntegrationEventRpc @event, CancellationToken cancellationToken = default)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new();
 
-        ValueTask SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
-            where TIntegrationEventReply : IIntegrationEventReply
-            where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
+        //IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
+        //    where TIntegrationEventReply : IIntegrationEventReply;
 
-        void UnsubscribeRpcClient<TIntegrationEventReply, TH>(string routingKey)
-            where TIntegrationEventReply : IIntegrationEventReply
-            where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
+        IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler();
+
+        //ValueTask SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
+        //    where TIntegrationEventReply : IIntegrationEventReply
+        //    where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
+
+        ValueTask SubscribeRpcClient<TIntegrationEventHandler>(string replyRoutingKey)
+            where TIntegrationEventHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>;
+
+        //void UnsubscribeRpcClient<TIntegrationEventReply, TH>(string routingKey)
+        //    where TIntegrationEventReply : IIntegrationEventReply
+        //    where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
+
+        void UnsubscribeRpcClient<TIntegrationEventHandler>(string routingKey)
+            where TIntegrationEventHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>;
     }
 }

@@ -3,6 +3,7 @@
 namespace KSociety.Base.EventBus.Test.ProtoModel
 {
     using System;
+    using Events;
     using IntegrationEvent.Event;
 
     public static class Configuration
@@ -11,22 +12,22 @@ namespace KSociety.Base.EventBus.Test.ProtoModel
         {
             try
             {
-                ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(KSociety.Base.EventBus.Events.IntegrationEvent), true)
-                    .AddSubType(600, typeof(BaseTestIntegrationEvent));
+                //ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(KSociety.Base.EventBus.Events.IntegrationEvent), true)
+                //    .AddSubType(600, typeof(BaseTestIntegrationEvent));
 
-                ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(BaseTestIntegrationEvent), true)
+                ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(IntegrationEvent), true)
                     .AddSubType(600, typeof(TestIntegrationEvent));
 
-                ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Events.IntegrationEventRpc), true)
-                    .AddSubType(601, typeof(BaseTestIntegrationEventRpc));
+                //ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Events.IntegrationEventRpc), true)
+                //    .AddSubType(601, typeof(BaseTestIntegrationEventRpc));
 
-                ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(BaseTestIntegrationEventRpc), true)
+                ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(IntegrationEventRpc), true)
                     .AddSubType(601, typeof(TestIntegrationEventRpc));
 
-                ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Events.IntegrationEventReply), true)
-                    .AddSubType(602, typeof(BaseTestIntegrationEventReply));
+                //ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Events.IntegrationEventReply), true)
+                //    .AddSubType(602, typeof(BaseTestIntegrationEventReply));
 
-                ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(BaseTestIntegrationEventReply), true)
+                ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(IntegrationEventReply), true)
                     .AddSubType(602, typeof(TestIntegrationEventReply));
             }
             catch (Exception ex)

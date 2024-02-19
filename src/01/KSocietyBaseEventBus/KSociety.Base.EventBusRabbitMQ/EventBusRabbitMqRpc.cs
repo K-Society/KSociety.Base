@@ -64,11 +64,11 @@ namespace KSociety.Base.EventBusRabbitMQ
                 new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelReplyAsync(cancel).ConfigureAwait(false));
         }
 
-        public IIntegrationRpcHandler<T, TR> GetIntegrationRpcHandler<T, TR>()
-            where T : IIntegrationEvent
-            where TR : IIntegrationEventReply
+        public IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply> GetIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
         {
-            if (this.EventHandler is IIntegrationRpcHandler<T, TR> queue)
+            if (this.EventHandler is IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply> queue)
             {
                 return queue;
             }
@@ -195,17 +195,17 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask SubscribeRpc<T, TR, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcHandler<T, TR>
+        public async ValueTask SubscribeRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
         {
-            var eventName = this.SubsManager.GetEventKey<T>();
-            var eventNameResult = this.SubsManager.GetEventReplyKey<TR>();
+            var eventName = this.SubsManager.GetEventKey<TIntegrationEvent>();
+            var eventNameResult = this.SubsManager.GetEventReplyKey<TIntegrationEventReply>();
             //this.Logger.LogDebug("SubscribeRpc: eventName: {0}.{1} eventNameResult: {2}.{3}", eventName, routingKey, eventNameResult, routingKey);
             await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey)
                 .ConfigureAwait(false);
-            this.SubsManager.AddSubscriptionRpc<T, TR, TH>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
+            this.SubsManager.AddSubscriptionRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
             await this.StartBasicConsume().ConfigureAwait(false);
             await this.StartBasicConsumeReply().ConfigureAwait(false);
         }
@@ -258,12 +258,12 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Unsubscribe]
 
-        public void UnsubscribeRpc<T, TR, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationRpcHandler<T, TR>
-            where TR : IIntegrationEventReply
+        public void UnsubscribeRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
         {
-            this.SubsManager.RemoveSubscriptionRpc<T, TR, TH>(routingKey);
+            this.SubsManager.RemoveSubscriptionRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(routingKey);
         }
 
         #endregion
