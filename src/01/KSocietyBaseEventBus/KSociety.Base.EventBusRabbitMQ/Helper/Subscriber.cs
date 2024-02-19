@@ -139,7 +139,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName + "_Client", eventBus))
             {
-                ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"]).Initialize();
+                ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"]).Initialize();//.Initialize();
 
                 await ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"])
                     .SubscribeRpcClient<TIntegrationRpcClientHandler>(replyRoutingKey)
@@ -181,7 +181,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName + "_Server", eventBus))
             {
-                ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"]).Initialize();
+                ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"]).InitializeServer<TIntegrationEvent, TIntegrationEventReply>();//.Initialize();
 
                 await ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"])
                     .SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply,
