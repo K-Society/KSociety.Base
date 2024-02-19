@@ -53,15 +53,15 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask Subscribe<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+        public async ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
 
-            var eventName = this.SubsManager?.GetEventKey<T>();
+            var eventName = this.SubsManager?.GetEventKey<TIntegrationEvent>();
             //this.Logger?.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
             await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
-            this.SubsManager?.AddSubscription<T, TH>(eventName + "." + routingKey);
+            this.SubsManager?.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>(eventName + "." + routingKey);
             await this.StartBasicConsume().ConfigureAwait(false);
         }
 
@@ -69,11 +69,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Unsubscribe]
 
-        public void Unsubscribe<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+        public void Unsubscribe<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
-            this.SubsManager?.RemoveSubscription<T, TH>(routingKey);
+            this.SubsManager?.RemoveSubscription<TIntegrationEvent, TIntegrationEventHandler>(routingKey);
         }
 
         #endregion

@@ -12,12 +12,12 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
         void Initialize(CancellationToken cancel = default);
 
-        ValueTask Subscribe<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
+        ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
-        void Unsubscribe<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
+        void Unsubscribe<TIntegrationEvent, TIntegrationEventHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
     }
 }

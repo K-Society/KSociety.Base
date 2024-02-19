@@ -1,4 +1,4 @@
-// Copyright © K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
+// Copyright Â© K-Society and contributors. All rights reserved. Licensed under the K-Society License. See LICENSE.TXT file in the project root for full license information.
 
 namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
@@ -7,12 +7,12 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
     public interface IEventBusTyped : IEventBus
     {
-        ValueTask Subscribe<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
+        ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
-        void Unsubscribe<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>;
+        void Unsubscribe<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
     }
 }

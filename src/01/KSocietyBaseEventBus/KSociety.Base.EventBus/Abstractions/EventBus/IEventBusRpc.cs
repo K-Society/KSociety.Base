@@ -7,18 +7,18 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
     public interface IEventBusRpc : IEventBus
     {
-        IIntegrationRpcHandler<T, TR> GetIntegrationRpcHandler<T, TR>()
-            where T : IIntegrationEvent
-            where TR : IIntegrationEventReply;
+        IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply> GetIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new();
 
-        ValueTask SubscribeRpc<T, TR, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcHandler<T, TR>;
+        ValueTask SubscribeRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>;
 
-        void UnsubscribeRpc<T, TR, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationRpcHandler<T, TR>
-            where TR : IIntegrationEventReply;
+        void UnsubscribeRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>;
     }
 }

@@ -237,14 +237,14 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask Subscribe<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+        public async ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
 
-            var eventName = this.SubsManager.GetEventKey<T>();
+            var eventName = this.SubsManager.GetEventKey<TIntegrationEvent>();
             await this.DoInternalSubscription(eventName).ConfigureAwait(false);
-            this.SubsManager.AddSubscription<T, TH>();
+            this.SubsManager.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>();
             await this.StartBasicConsume().ConfigureAwait(false);
         }
 
@@ -286,11 +286,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Unsubscribe]
 
-        public void Unsubscribe<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationEventHandler<T>
+        public void Unsubscribe<TIntegrationEvent, TIntegrationEventHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
-            this.SubsManager.RemoveSubscription<T, TH>();
+            this.SubsManager.RemoveSubscription<TIntegrationEvent, TIntegrationEventHandler>();
         }
 
         #endregion
@@ -348,6 +348,12 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             return false;
         }
+
+        //protected virtual async ValueTask<bool> StartBasicConsume<TR>()
+        //    where TR : IIntegrationEventReply
+        //{
+
+        //}
 
         protected virtual void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)
         {

@@ -7,16 +7,16 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
     public interface IEventBusQueue : IEventBus
     {
-        IIntegrationQueueHandler<T> GetIntegrationQueueHandler<T, TH>()
-            where T : IIntegrationEvent
-            where TH : IIntegrationQueueHandler<T>;
+        IIntegrationQueueHandler<TIntegrationEvent> GetIntegrationQueueHandler<TIntegrationEvent, TIntegrationQueueHandler>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>;
 
-        ValueTask SubscribeQueue<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationQueueHandler<T>;
+        ValueTask SubscribeQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>;
 
-        void UnsubscribeQueue<T, TH>(string routingKey)
-            where T : IIntegrationEvent
-            where TH : IIntegrationQueueHandler<T>;
+        void UnsubscribeQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>;
     }
 }

@@ -3,22 +3,27 @@
 namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
     using Handler;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public interface IEventBusRpcServer : IEventBusBase
     {
-        IIntegrationRpcServerHandler<T, TR> GetIntegrationRpcServerHandler<T, TR>()
-            where T : IIntegrationEventRpc
-            where TR : IIntegrationEventReply;
+        void InitializeServer<TIntegrationEvent, TIntegrationEventReply>(CancellationToken cancel = default)
+            where TIntegrationEvent : IIntegrationEvent, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new();
 
-        ValueTask SubscribeRpcServer<T, TR, TH>(string routingKey)
-            where T : IIntegrationEventRpc
-            where TR : IIntegrationEventReply
-            where TH : IIntegrationRpcServerHandler<T, TR>;
+        IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply> GetIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>()
+            where TIntegrationEvent : IIntegrationEventRpc, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new();
 
-        void UnsubscribeRpcServer<T, TR, TH>(string routingKey)
-            where T : IIntegrationEventRpc
-            where TH : IIntegrationRpcServerHandler<T, TR>
-            where TR : IIntegrationEventReply;
+        ValueTask SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEventRpc, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>;
+
+        void UnsubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
+            where TIntegrationEvent : IIntegrationEventRpc, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>;
     }
 }
