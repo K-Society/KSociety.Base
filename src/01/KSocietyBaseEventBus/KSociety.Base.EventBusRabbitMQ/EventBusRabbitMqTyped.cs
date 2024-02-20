@@ -2,12 +2,12 @@
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
+    using System.Threading.Tasks;
     using EventBus;
     using EventBus.Abstractions;
-    using KSociety.Base.EventBus.Abstractions.EventBus;
     using EventBus.Abstractions.Handler;
+    using KSociety.Base.EventBus.Abstractions.EventBus;
     using Microsoft.Extensions.Logging;
-    using System.Threading.Tasks;
 
     public sealed class EventBusRabbitMqTyped : EventBusRabbitMq, IEventBusTyped
     {
@@ -62,7 +62,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             //this.Logger?.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
             await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
             this.SubsManager?.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>(eventName + "." + routingKey);
-            await this.StartBasicConsume().ConfigureAwait(false);
+            await this.StartBasicConsume <TIntegrationEvent>().ConfigureAwait(false);
         }
 
         #endregion
