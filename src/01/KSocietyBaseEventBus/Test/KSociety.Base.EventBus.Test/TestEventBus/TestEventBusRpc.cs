@@ -55,7 +55,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
                 this.PersistentConnection, this.LoggerFactory,
                 new TestRpcHandler(this.LoggerFactory, this.ComponentContext), null, this.EventBusParameters,
                 "RpcTest");
-            this._eventBusRpc.Initialize();
+            this._eventBusRpc.Initialize<TestIntegrationEventRpc>();
             await this._eventBusRpc.SubscribeRpc<TestIntegrationEventRpc, TestIntegrationEventReply, TestRpcHandler>("pippo.rpc");
 
         }

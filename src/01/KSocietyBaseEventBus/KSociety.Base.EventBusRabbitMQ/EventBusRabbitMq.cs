@@ -102,10 +102,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public virtual void Initialize(CancellationToken cancel = default)
+        public virtual void Initialize<TIntegrationEvent>(CancellationToken cancel = default)
+            where TIntegrationEvent : IIntegrationEvent, new()
         {
             this.ConsumerChannel =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync<TIntegrationEvent>(cancel).ConfigureAwait(false));
         }
 
         private async void SubsManager_OnEventRemoved(object sender, string eventName)
@@ -245,7 +246,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             var eventName = this.SubsManager.GetEventKey<TIntegrationEvent>();
             await this.DoInternalSubscription(eventName).ConfigureAwait(false);
             this.SubsManager.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>();
-            await this.StartBasicConsume().ConfigureAwait(false);
+            await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
         }
 
         protected async ValueTask DoInternalSubscription(string eventName)
@@ -311,7 +312,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        protected virtual async ValueTask<bool> StartBasicConsume()
+        protected virtual async ValueTask<bool> StartBasicConsume<TIntegrationEvent>()
+            where TIntegrationEvent : IIntegrationEvent, new()
         {
             //this.Logger.LogTrace("EventBusRabbitMq Starting RabbitMQ basic consume.");
             try
@@ -326,7 +328,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     var consumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
 
-                    consumer.Received += this.ConsumerReceivedAsync;
+                    consumer.Received += this.ConsumerReceivedAsync<TIntegrationEvent>;
 
                     (await this.ConsumerChannel).BasicConsume(
                         queue: this.QueueName,
@@ -355,14 +357,15 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         //}
 
-        protected virtual void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)
+        protected virtual void ConsumerReceived<TIntegrationEvent>(object sender, BasicDeliverEventArgs eventArgs)
+            where TIntegrationEvent : IIntegrationEvent, new()
         {
             var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
 
             try
             {
-                this.ProcessEvent(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
+                this.ProcessEventAsync<TIntegrationEvent>(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -383,14 +386,15 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
+        protected virtual async Task ConsumerReceivedAsync<TIntegrationEvent>(object sender, BasicDeliverEventArgs eventArgs)
+            where TIntegrationEvent : IIntegrationEvent, new()
         {
             var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
 
             try
             {
-                await this.ProcessEvent(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
+                await this.ProcessEventAsync<TIntegrationEvent>(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -414,7 +418,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        protected virtual async ValueTask<IModel> CreateConsumerChannelAsync<TIntegrationEvent>(CancellationToken cancel = default)
+            where TIntegrationEvent : IIntegrationEvent, new()
         {
             //this.Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
             if (this.PersistentConnection is null)
@@ -445,8 +450,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                     this.ConsumerChannel.Value.Dispose();
                     this.ConsumerChannel = new AsyncLazy<IModel>(async () =>
-                        await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
-                    await this.StartBasicConsume().ConfigureAwait(false);
+                        await this.CreateConsumerChannelAsync<TIntegrationEvent>(cancel).ConfigureAwait(false));
+                    await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
                 };
 
                 return channel;
@@ -455,8 +460,11 @@ namespace KSociety.Base.EventBusRabbitMQ
             return null;
         }
 
-        protected virtual async ValueTask ProcessEvent(string routingKey, string eventName,
+        //protected virtual async ValueTask ProcessEvent(string routingKey, string eventName,
+        //    ReadOnlyMemory<byte> message, CancellationToken cancel = default)
+        protected virtual async ValueTask ProcessEventAsync<TIntegrationEvent>(string routingKey, string eventName,
             ReadOnlyMemory<byte> message, CancellationToken cancel = default)
+            where TIntegrationEvent : IIntegrationEvent, new()
         {
             if (this.SubsManager is null)
             {
@@ -492,12 +500,20 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                                     using (var ms = new MemoryStream(message.ToArray()))
                                     {
-                                        var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                        var integrationEvent = Serializer.Deserialize<TIntegrationEvent>(ms);
                                         var concreteType =
                                             typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
-                                        await ((ValueTask)concreteType.GetMethod("Handle")
-                                                .Invoke(this.EventHandler, new[] {integrationEvent, cancel}))
-                                            .ConfigureAwait(false);
+
+                                        var generic = concreteType.GetMethod("Handle");
+
+                                        var result = (ValueTask)generic.Invoke(this.EventHandler,
+                                            new[] { (object)integrationEvent, cancel });
+
+                                        await result.ConfigureAwait(false);
+
+                                        //await ((ValueTask)concreteType.GetMethod("Handle")
+                                        //        .Invoke(this.EventHandler, new[] {(object)integrationEvent, cancel}))
+                                        //    .ConfigureAwait(false);
                                     }
                                 }
                             }

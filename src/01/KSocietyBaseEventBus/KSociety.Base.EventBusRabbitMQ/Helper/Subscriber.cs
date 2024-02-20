@@ -220,14 +220,15 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
-                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize();
+                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
 
                 await ((IEventBusTyped)this.EventBus[eventBusName])
                     .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey).ConfigureAwait(false);
             }
         }
 
-        public void SubscribeTyped(string eventBusName, string queueName = null)
+        public void SubscribeTyped<TIntegrationEvent>(string eventBusName, string queueName = null)
+            where TIntegrationEvent : IIntegrationEvent, new()
         {
             if (this.EventBus.ContainsKey(eventBusName))
             {
@@ -254,7 +255,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
-                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize();
+                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
             }
         }
 
@@ -263,7 +264,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             TIntegrationEventHandler integrationEventHandler
         )
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
-            where TIntegrationEvent : IIntegrationEvent
+            where TIntegrationEvent : IIntegrationEvent, new()
         {
             if (this.EventBus.ContainsKey(eventBusName))
             {
@@ -290,7 +291,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
-                ((IEventBusQueue)this.EventBus[eventBusName]).Initialize();
+                ((IEventBusQueue)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
             }
         }
     }

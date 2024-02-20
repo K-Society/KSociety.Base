@@ -2,15 +2,12 @@
 
 namespace KSociety.Base.EventBus.Handlers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Threading.Tasks.Dataflow;
-    using Autofac;
     using Abstractions;
     using Abstractions.Handler;
+    using Autofac;
     using Microsoft.Extensions.Logging;
 
     ///<inheritdoc cref="IIntegrationQueueHandler{TIntegrationEvent}"/>

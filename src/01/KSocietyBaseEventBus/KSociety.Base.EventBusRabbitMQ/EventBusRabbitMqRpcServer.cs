@@ -711,6 +711,10 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     }
                                 }
                             }
+                            catch (ProtoException pex)
+                            {
+                                this.Logger.LogError(pex, "ProcessEventRpcServerAsync ProtoException: ");
+                            }
                             catch (Exception ex)
                             {
                                 this.Logger.LogError(ex, "ProcessEventRpcServerAsync: ");
