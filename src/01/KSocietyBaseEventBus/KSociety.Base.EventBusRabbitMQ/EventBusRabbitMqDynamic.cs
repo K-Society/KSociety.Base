@@ -40,12 +40,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask SubscribeDynamic<TH>(string eventName)
-            where TH : IDynamicIntegrationEventHandler
+        public async ValueTask SubscribeDynamic<TDynamicIntegrationEventHandler>(string eventName)
+            where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler
         {
             await this.DoInternalSubscription(eventName).ConfigureAwait(false);
-            this.SubsManager?.AddDynamicSubscription<TH>(eventName);
-            await this.StartBasicConsume().ConfigureAwait(false);
+            this.SubsManager?.AddDynamicSubscription<TDynamicIntegrationEventHandler>(eventName);
+            //ToDo
+            //await this.StartBasicConsume().ConfigureAwait(false);
         }
 
         #endregion
@@ -60,7 +61,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        protected override async ValueTask ProcessEvent(string routingKey, string eventName,
+        //ToDo
+        protected async ValueTask ProcessEvent(string routingKey, string eventName,
             ReadOnlyMemory<byte> message, CancellationToken cancel = default)
         {
             if (this.SubsManager is null)

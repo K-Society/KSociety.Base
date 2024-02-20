@@ -55,7 +55,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
                 this.PersistentConnection, this.LoggerFactory,
                 new TestRpcHandler(this.LoggerFactory, this.ComponentContext), null, this.EventBusParameters,
                 "RpcTest");
-            this._eventBusRpc.Initialize();
+            this._eventBusRpc.Initialize<TestIntegrationEventRpc>();
             await this._eventBusRpc.SubscribeRpc<TestIntegrationEventRpc, TestIntegrationEventReply, TestRpcHandler>("pippo.rpc");
 
         }
@@ -65,7 +65,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
             this._eventBusRpcServer = new EventBusRabbitMqRpcServer(this.PersistentConnection, this.LoggerFactory,
                 new TestRpcServerHandler(this.LoggerFactory, this.ComponentContext), null, this.EventBusParameters,
                 "ServerTest");
-            this._eventBusRpcServer.InitializeServer<TestIntegrationEvent, TestIntegrationEventReply>();
+            this._eventBusRpcServer.InitializeServer<TestIntegrationEventRpc, TestIntegrationEventReply>();
             await this._eventBusRpcServer.SubscribeRpcServer<TestIntegrationEventRpc, TestIntegrationEventReply, TestRpcServerHandler>("pippo.server");
 
         }

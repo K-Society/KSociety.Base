@@ -51,7 +51,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public override void Initialize(CancellationToken cancel = default)
+        public void Initialize(CancellationToken cancel = default)
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient Initialize.");
             //this._callbackMapper = new ConcurrentDictionary<string, TaskCompletionSource<TIntegrationEventReply>>();
@@ -417,7 +417,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
 
 
-        protected override async ValueTask<bool> StartBasicConsume()
+        protected async ValueTask<bool> StartBasicConsume()
         {
             this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
 
@@ -460,7 +460,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             return false;
         }
 
-        protected override void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)
+        protected void ConsumerReceived(object sender, BasicDeliverEventArgs eventArgs)
         {
             var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
@@ -485,7 +485,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             //ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
         }
 
-        protected override async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
+        protected async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
         {
             var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
@@ -519,7 +519,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             //ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
         }
 
-        protected override async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        protected async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
             try

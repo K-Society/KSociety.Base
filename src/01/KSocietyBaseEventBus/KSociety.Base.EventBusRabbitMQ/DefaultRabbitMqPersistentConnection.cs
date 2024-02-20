@@ -2,7 +2,7 @@
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
-    using KSociety.Base.EventBusRabbitMQ.Helper;
+    using Helper;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
     using Polly;

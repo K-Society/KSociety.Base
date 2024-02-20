@@ -8,22 +8,22 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
     public interface IEventBusRpcServer : IEventBusBase
     {
-        void InitializeServer<TIntegrationEvent, TIntegrationEventReply>(CancellationToken cancel = default)
-            where TIntegrationEvent : IIntegrationEvent, new()
+        void InitializeServer<TIntegrationEventRpc, TIntegrationEventReply>(CancellationToken cancel = default)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new();
 
-        IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply> GetIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>()
-            where TIntegrationEvent : IIntegrationEventRpc, new()
+        IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply> GetIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>()
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new();
 
-        ValueTask SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
-            where TIntegrationEvent : IIntegrationEventRpc, new()
+        ValueTask SubscribeRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
-            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>;
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>;
 
-        void UnsubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
-            where TIntegrationEvent : IIntegrationEventRpc, new()
+        void UnsubscribeRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
-            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>;
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>;
     }
 }

@@ -87,22 +87,22 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
         public async ValueTask SubscribeClientServer<
             TIntegrationRpcClientHandler, TIntegrationRpcServerHandler,
-            TIntegrationEvent, TIntegrationEventReply>(
+            TIntegrationEventRpc, TIntegrationEventReply>(
             string eventBusName, string queueName,
             string routingKey, string replyRoutingKey,
             TIntegrationRpcClientHandler integrationRpcClientHandler,
             TIntegrationRpcServerHandler integrationRpcServerHandler
         )
             where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
-            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
-            where TIntegrationEvent : IIntegrationEventRpc, new()
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
             await this.SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
                 eventBusName, queueName,
                 replyRoutingKey, integrationRpcClientHandler).ConfigureAwait(false);
 
-            await this.SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
+            await this.SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEventRpc, TIntegrationEventReply>(
                 eventBusName, queueName,
                 routingKey, integrationRpcServerHandler).ConfigureAwait(false);
         }
@@ -139,7 +139,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName + "_Client", eventBus))
             {
-                ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"]).Initialize();
+                ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"]).Initialize();//.Initialize();
 
                 await ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"])
                     .SubscribeRpcClient<TIntegrationRpcClientHandler>(replyRoutingKey)
@@ -147,11 +147,11 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             }
         }
 
-        public async ValueTask SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEvent, TIntegrationEventReply>(
+        public async ValueTask SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEventRpc, TIntegrationEventReply>(
             string eventBusName, string queueName,
             string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler)
-            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEvent, TIntegrationEventReply>
-            where TIntegrationEvent : IIntegrationEventRpc, new()
+            where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
             if (this.EventBus.ContainsKey(eventBusName + "_Server"))
@@ -181,10 +181,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName + "_Server", eventBus))
             {
-                ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"]).Initialize();
+                ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"]).InitializeServer<TIntegrationEventRpc, TIntegrationEventReply>();//.Initialize();
 
                 await ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"])
-                    .SubscribeRpcServer<TIntegrationEvent, TIntegrationEventReply,
+                    .SubscribeRpcServer<TIntegrationEventRpc, TIntegrationEventReply,
                         TIntegrationRpcServerHandler>(routingKey).ConfigureAwait(false);
             }
         }
@@ -220,14 +220,15 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
-                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize();
+                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
 
                 await ((IEventBusTyped)this.EventBus[eventBusName])
                     .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey).ConfigureAwait(false);
             }
         }
 
-        public void SubscribeTyped(string eventBusName, string queueName = null)
+        public void SubscribeTyped<TIntegrationEvent>(string eventBusName, string queueName = null)
+            where TIntegrationEvent : IIntegrationEvent, new()
         {
             if (this.EventBus.ContainsKey(eventBusName))
             {
@@ -254,7 +255,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
-                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize();
+                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
             }
         }
 
@@ -263,7 +264,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             TIntegrationEventHandler integrationEventHandler
         )
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
-            where TIntegrationEvent : IIntegrationEvent
+            where TIntegrationEvent : IIntegrationEvent, new()
         {
             if (this.EventBus.ContainsKey(eventBusName))
             {
@@ -290,7 +291,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
-                ((IEventBusQueue)this.EventBus[eventBusName]).Initialize();
+                ((IEventBusQueue)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
             }
         }
     }

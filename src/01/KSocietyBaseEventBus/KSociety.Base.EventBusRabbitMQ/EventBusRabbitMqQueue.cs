@@ -116,7 +116,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             var eventName = this.SubsManager?.GetEventKey<TIntegrationEvent>();
             await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
             this.SubsManager?.AddSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(eventName + "." + routingKey);
-            await this.StartBasicConsume().ConfigureAwait(false);
+            await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
         }
 
         #endregion
@@ -132,7 +132,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        protected override async ValueTask ProcessEvent(string routingKey, string eventName,
+        protected override async ValueTask ProcessEventAsync<TIntegrationEvent>(string routingKey, string eventName,
             ReadOnlyMemory<byte> message, CancellationToken cancel = default)
         {
             if (this.SubsManager is null)
@@ -160,7 +160,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                     var eventType = this.SubsManager.GetEventTypeByName(routingKey);
                                     using (var ms = new MemoryStream(message.ToArray()))
                                     {
-                                        var integrationEvent = Serializer.Deserialize(eventType, ms);
+                                        var integrationEvent = Serializer.Deserialize<TIntegrationEvent>(ms);
                                         var concreteType =
                                             typeof(IIntegrationQueueHandler<>).MakeGenericType(eventType);
 
@@ -168,7 +168,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                                         if (enqueue != null)
                                         {
                                             await ((ValueTask<bool>)enqueue
-                                                    .Invoke(this.EventHandler, new[] {integrationEvent, cancel}))
+                                                    .Invoke(this.EventHandler, new[] {(object)integrationEvent, cancel}))
                                                 .ConfigureAwait(false);
                                         }
                                     }
