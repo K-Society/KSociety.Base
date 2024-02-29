@@ -18,24 +18,27 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         private readonly ILogger<EventBusRabbitMq> _loggerEventBusRabbitMq;
         private readonly IEventBusParameters _eventBusParameters;
         public IRabbitMqPersistentConnection PersistentConnection { get; }
-        public ConcurrentDictionary<string, IEventBus> EventBus { get; } = new ConcurrentDictionary<string, IEventBus>();
+        public ConcurrentDictionary<string, IEventBus> EventBus { get; } // = new ConcurrentDictionary<string, IEventBus>();
 
         #region [Constructor]
 
         public Subscriber(
             ILoggerFactory loggerFactory,
             IConnectionFactory connectionFactory,
-            IEventBusParameters eventBusParameters)
+            IEventBusParameters eventBusParameters, int eventBusNumber)
         {
             this._loggerFactory = loggerFactory;
             this._eventBusParameters = eventBusParameters;
 
             this.PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, this._loggerFactory);
+
+            this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
         }
 
         public Subscriber(
             IConnectionFactory connectionFactory,
             IEventBusParameters eventBusParameters,
+            int eventBusNumber,
             ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default,
             ILogger<DefaultRabbitMqPersistentConnection> loggerDefaultRabbitMqPersistentConnection = default)
         {
@@ -54,22 +57,25 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             }
 
             this.PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, loggerDefaultRabbitMqPersistentConnection);
+
+            this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
         }
 
         public Subscriber(
             ILoggerFactory loggerFactory,
             IRabbitMqPersistentConnection persistentConnection,
-            IEventBusParameters eventBusParameters)
+            IEventBusParameters eventBusParameters, int eventBusNumber)
         {
             this._loggerFactory = loggerFactory;
             this._eventBusParameters = eventBusParameters;
-
             this.PersistentConnection = persistentConnection;
+
+            this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
         }
 
         public Subscriber(
             IRabbitMqPersistentConnection persistentConnection,
-            IEventBusParameters eventBusParameters,
+            IEventBusParameters eventBusParameters, int eventBusNumber,
             ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default)
         {
             this._eventBusParameters = eventBusParameters;
@@ -81,6 +87,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 loggerEventBusRabbitMq = new NullLogger<EventBusRabbitMq>();
             }
             this._loggerEventBusRabbitMq = loggerEventBusRabbitMq;
+            this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
         }
 
         #endregion
