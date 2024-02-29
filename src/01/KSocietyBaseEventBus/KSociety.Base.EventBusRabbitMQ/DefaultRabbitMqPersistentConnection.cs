@@ -90,17 +90,17 @@ namespace KSociety.Base.EventBusRabbitMQ
         public bool TryConnect()
         {
             bool output;
-            this._connectionLock.Wait(this._closeToken);
+            //this._connectionLock.Wait(this._closeToken);
 
-            try
-            {
+            //try
+            //{
                 var policy = Policy.Handle<SocketException>()
                     .Or<BrokerUnreachableException>()
                     .Or<Exception>()
                     .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                         (ex, time) =>
                         {
-                            this._logger?.LogWarning(ex, "TryConnectAsync: ");
+                            this._logger?.LogWarning(ex, "TryConnect: ");
                         });
 
 
@@ -128,11 +128,11 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                     output = false;
                 }
-            }
-            finally
-            {
-                this._connectionLock.Release();
-            }
+            //}
+            //finally
+            //{
+            //    this._connectionLock.Release();
+            //}
 
             return output;
         }
@@ -140,10 +140,10 @@ namespace KSociety.Base.EventBusRabbitMQ
         public async ValueTask<bool> TryConnectAsync()
         {
             bool output;
-            await this._connectionLock.WaitAsync(this._closeToken).ConfigureAwait(false);
+            //await this._connectionLock.WaitAsync(this._closeToken).ConfigureAwait(false);
 
-            try
-            {
+            //try
+            //{
                 var policy = Policy.Handle<SocketException>()
                     .Or<BrokerUnreachableException>()
                     .Or<Exception>()
@@ -156,8 +156,9 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 await policy.ExecuteAsync(async () =>
                 {
-                    await Task.Run(this.CreateConnection, this._closeToken).ConfigureAwait(false);
-
+                    await this.CreateConnection().ConfigureAwait(false);
+                    //await Task.Run(this.CreateConnection, this._closeToken).ConfigureAwait(false);
+                    //this._closeToken;
                 }).ConfigureAwait(false);
 
                 if (this.IsConnected)
@@ -182,20 +183,33 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                     output = false;
                 }
-            }
-            finally
-            {
-                this._connectionLock.Release();
-            }
+            //}
+            //finally
+            //{
+            //    this._connectionLock.Release();
+            //}
 
             return output;
         }
 
-        private void CreateConnection()
+        private async ValueTask CreateConnection()
         {
-            if (this._connection == null)
+            await this._connectionLock.WaitAsync(this._closeToken).ConfigureAwait(false);
+            try
             {
-                this._connection = this._connectionFactory.CreateConnection();
+                if (this._connection == null)
+                {
+                    this._logger?.LogTrace("CreateConnection");
+                    this._connection = this._connectionFactory.CreateConnection();
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger?.LogError(ex, "CreateConnection: ");
+            }
+            finally
+            {
+                this._connectionLock.Release();
             }
         }
 
