@@ -2,9 +2,9 @@
 
 namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
-    using Handler;
     using System.Threading;
     using System.Threading.Tasks;
+    using Handler;
 
     public interface IEventBusBase
     {
