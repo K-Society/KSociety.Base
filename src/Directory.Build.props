@@ -19,7 +19,7 @@
 	
     <Authors>K-Society Team</Authors>
     <Company>K-Society</Company>
-    <Copyright>Copyright © K-Society and contributors 2023. All rights reserved.</Copyright>
+    <Copyright>Copyright © K-Society and contributors 2024. All rights reserved.</Copyright>
 	<PackageLicenseExpression>MS-RL</PackageLicenseExpression>
 	<Description>K-Society Base is a full stack framework for microservices.</Description>
     <Product>K-Society Base</Product>
