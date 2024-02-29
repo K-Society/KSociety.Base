@@ -80,8 +80,8 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             if (!this.PersistentConnection.IsConnected)
             {
-                //await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                this.PersistentConnection.TryConnect();
+                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                //this.PersistentConnection.TryConnect();
             }
 
             using (var channel = this.PersistentConnection.CreateModel())
@@ -228,8 +228,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (!this.PersistentConnection.IsConnected)
                 {
-                    //var connection = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                    this.PersistentConnection.TryConnect();
+                    var connection = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                    //this.PersistentConnection.TryConnect();
                 }
 
                 using (var channel = this.PersistentConnection.CreateModel())
@@ -459,8 +459,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             //this.Logger.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", this.QueueName);
             if (!this.PersistentConnection.IsConnected)
             {
-                //await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                this.PersistentConnection.TryConnect();
+                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                //this.PersistentConnection.TryConnect();
             }
 
             var channel = this.PersistentConnection.CreateModel();
@@ -496,8 +496,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             //this.Logger.LogTrace("CreateConsumerChannelReplyAsync queue name: {0}", this._queueNameReply);
             if (!this.PersistentConnection.IsConnected)
             {
-                //await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                this.PersistentConnection.TryConnect();
+                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                //this.PersistentConnection.TryConnect();
             }
 
             var channel = this.PersistentConnection.CreateModel();
