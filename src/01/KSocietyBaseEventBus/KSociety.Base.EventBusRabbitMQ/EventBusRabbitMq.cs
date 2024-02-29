@@ -118,7 +118,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                //await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                this.PersistentConnection.TryConnect();
             }
 
             using (var channel = this.PersistentConnection.CreateModel())
@@ -153,7 +154,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (!this.PersistentConnection.IsConnected)
                 {
-                    await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                    //await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                    this.PersistentConnection.TryConnect();
                 }
 
                 var policy = Policy.Handle<BrokerUnreachableException>()
@@ -264,7 +266,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                //await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                this.PersistentConnection.TryConnect();
             }
 
             using (var channel = this.PersistentConnection.CreateModel())
@@ -429,7 +432,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                //await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                this.PersistentConnection.TryConnect();
             }
 
             var channel = this.PersistentConnection.CreateModel();
