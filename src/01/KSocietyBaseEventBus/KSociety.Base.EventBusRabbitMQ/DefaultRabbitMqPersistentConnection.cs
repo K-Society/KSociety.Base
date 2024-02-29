@@ -52,7 +52,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public bool IsConnected => this._connection?.IsOpen == true && !this.IsDisposed;
+        public bool IsConnected => this._connection != null && this._connection.IsOpen && !this.IsDisposed;
 
         public IModel CreateModel()
         {
@@ -104,17 +104,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                         });
 
 
-                policy.Execute(() =>
-                {
-                    //await Task.Run(() =>
-                    //{
-                        //this._logger?.LogInformation("RabbitMQ CreateConnection.");
-                        //_logger.LogTrace("RabbitMQ CreateConnection StackTrace: {0}", System.Environment.StackTrace);
-                        this._connection = this._connectionFactory
-                            .CreateConnection(); //ToDo
-                    //}, this._closeToken);
-
-                });
+                policy.Execute(this.CreateConnection);
 
                 if (this.IsConnected)
                 {
@@ -166,13 +156,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 await policy.ExecuteAsync(async () =>
                 {
-                    await Task.Run(() =>
-                    {
-                        //this._logger?.LogInformation("RabbitMQ CreateConnection.");
-                        //_logger.LogTrace("RabbitMQ CreateConnection StackTrace: {0}", System.Environment.StackTrace);
-                        this._connection = this._connectionFactory
-                            .CreateConnection(); //ToDo
-                    }, this._closeToken).ConfigureAwait(false);
+                    await Task.Run(this.CreateConnection, this._closeToken).ConfigureAwait(false);
 
                 }).ConfigureAwait(false);
 
@@ -205,6 +189,14 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
 
             return output;
+        }
+
+        private void CreateConnection()
+        {
+            if (this._connection == null)
+            {
+                this._connection = this._connectionFactory.CreateConnection();
+            }
         }
 
         private void OnConnectionBlocked(object sender, ConnectionBlockedEventArgs e)
