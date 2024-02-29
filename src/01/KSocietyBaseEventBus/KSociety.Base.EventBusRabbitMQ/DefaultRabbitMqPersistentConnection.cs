@@ -199,7 +199,6 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (this._connection == null)
                 {
-                    this._logger?.LogTrace("CreateConnection");
                     this._connection = this._connectionFactory.CreateConnection();
                 }
             }

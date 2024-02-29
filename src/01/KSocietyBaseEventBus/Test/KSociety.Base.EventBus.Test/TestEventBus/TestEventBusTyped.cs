@@ -21,17 +21,19 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
             //    new TestEventHandler(this.LoggerFactory), null, this.EventBusParameters, "Test");
             //this._eventBusTyped.Subscribe<TestIntegrationEvent, TestEventHandler>("pippo");
 
-            for (var i = 0; i < 600; i++)
-            {
-                var routingKey = "pippo." + i;
-                this.Subscriber.SubscribeTyped<TestEventHandler, TestIntegrationEvent>("Test_" + i, "TestQueue" + i,
-                    routingKey, new TestEventHandler(this.LoggerFactory)).ConfigureAwait(false);
-            }
+            
         }
 
         [Fact]
         public async void SendData()
         {
+            for (var i = 0; i < 600; i++)
+            {
+                var routingKey = "pippo." + i;
+                await this.Subscriber.SubscribeTyped<TestEventHandler, TestIntegrationEvent>("Test_" + i, "TestQueue" + i,
+                    routingKey, new TestEventHandler(this.LoggerFactory));
+            }
+
             const string expectedName1 = "SuperPippo1";
             const string expectedName2 = "SuperPippo2";
             const string expectedName3 = "SuperPippo3";
