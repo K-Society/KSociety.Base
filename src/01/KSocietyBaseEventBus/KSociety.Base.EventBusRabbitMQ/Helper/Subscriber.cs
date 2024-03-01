@@ -12,13 +12,13 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
     using Microsoft.Extensions.Logging.Abstractions;
     using RabbitMQ.Client;
 
-    public class Subscriber
+    public class Subscriber : ISubscriber
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<EventBusRabbitMq> _loggerEventBusRabbitMq;
         private readonly IEventBusParameters _eventBusParameters;
         public IRabbitMqPersistentConnection PersistentConnection { get; }
-        public ConcurrentDictionary<string, IEventBus> EventBus { get; } // = new ConcurrentDictionary<string, IEventBus>();
+        public ConcurrentDictionary<string, IEventBus> EventBus { get; } 
 
         #region [Constructor]
 
