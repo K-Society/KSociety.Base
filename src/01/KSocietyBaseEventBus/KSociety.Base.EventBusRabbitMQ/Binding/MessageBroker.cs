@@ -122,16 +122,17 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
                 DispatchConsumersAsync = true
             };
 
-            builder.RegisterInstance(exchangeDeclareParameters).As<TExchangeDeclareParametersClass>().As<TExchangeDeclareParameters>();
-            builder.RegisterInstance(queueDeclareParameters).As<TQueueDeclareParametersClass>().As<TQueueDeclareParameters>();
+            builder.RegisterInstance(exchangeDeclareParameters).As<TExchangeDeclareParametersClass>()
+                .As<TExchangeDeclareParameters>().SingleInstance();
+            builder.RegisterInstance(queueDeclareParameters).As<TQueueDeclareParametersClass>().As<TQueueDeclareParameters>().SingleInstance();
             //builder.RegisterInstance(eventBusParameters).As<TEventBusParameters>().As<IEventBusParameters>().SingleInstance();
-            builder.RegisterInstance(eventBusParameters).As<TEventBusParametersClass>().As<TEventBusParameters>();
-            builder.RegisterInstance(rabbitMqConnectionFactory).As<TConnectionFactory>();
+            builder.RegisterInstance(eventBusParameters).As<TEventBusParametersClass>().As<TEventBusParameters>().SingleInstance();
+            builder.RegisterInstance(rabbitMqConnectionFactory).As<TConnectionFactory>().SingleInstance();
 
             //builder.RegisterType<TEventBusParametersClass>().As<TEventBusParameters>().SingleInstance();
             builder.RegisterType<DefaultRabbitMqPersistentConnection>().As<IRabbitMqPersistentConnection>()
-                .UsingConstructor(typeof(TConnectionFactory), typeof(ILogger<DefaultRabbitMqPersistentConnection>));
-                //.SingleInstance();
+                .UsingConstructor(typeof(TConnectionFactory), typeof(ILogger<DefaultRabbitMqPersistentConnection>)).SingleInstance();
+            //.SingleInstance();
 
             builder.RegisterType<TSubscriberClass>().UsingConstructor(typeof(IRabbitMqPersistentConnection), typeof(TEventBusParameters), typeof(int), typeof(ILogger<EventBusRabbitMq>)).WithParameter("eventBusNumber", this._eventBusNumber).As<TSubscriber>().SingleInstance();
         }
