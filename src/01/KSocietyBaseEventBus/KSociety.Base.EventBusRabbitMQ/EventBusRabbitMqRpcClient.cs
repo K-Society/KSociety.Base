@@ -180,9 +180,6 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        //public async Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(T @event,
-        //    CancellationToken cancellationToken = default)
-        //    where TIntegrationEventReply : IIntegrationEventReply
         public async Task<TIntegrationEventReply> CallAsync<TIntegrationEventRpc>(TIntegrationEventRpc @event,
             CancellationToken cancellationToken = default)
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
@@ -194,63 +191,76 @@ namespace KSociety.Base.EventBusRabbitMQ
                     return default;
                 }
 
-                if (!this.PersistentConnection.IsConnected)
+                bool isConnected;
+                if (this.PersistentConnection.IsConnected)
                 {
-                    await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                    //this.PersistentConnection.TryConnect();
+                    isConnected = true;
+                }
+                else
+                {
+                    isConnected = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
                 }
 
-                var policy = Policy.Handle<BrokerUnreachableException>()
-                    .Or<SocketException>()
-                    .Or<Exception>()
-                    .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
-                    {
-                        this.Logger.LogWarning(ex, "CallAsync: ");
-                    });
-
-                var correlationId = Guid.NewGuid().ToString();
-
-                var tcs = new TaskCompletionSource<TIntegrationEventReply>(TaskCreationOptions.RunContinuationsAsynchronously);
-                var addResult = this._callbackMapper.TryAdd(correlationId, tcs);
-
-                using (var channel = this.PersistentConnection.CreateModel())
+                if (isConnected)
                 {
-                    if (channel != null)
-                    {
-                        var routingKey = @event.RoutingKey;
-                        if (this.EventBusParameters.ExchangeDeclareParameters != null)
-                        {
-                            channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
-
-                            using (var ms = new MemoryStream())
+                    var policy = Policy.Handle<BrokerUnreachableException>()
+                        .Or<SocketException>()
+                        .Or<Exception>()
+                        .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                            (ex, time) =>
                             {
-                                Serializer.Serialize(ms, @event);
-                                var body = ms.ToArray();
+                                this.Logger.LogWarning(ex, "CallAsync: ");
+                            });
 
-                                policy.Execute(() =>
+                    var correlationId = Guid.NewGuid().ToString();
+
+                    var tcs = new TaskCompletionSource<TIntegrationEventReply>(TaskCreationOptions
+                        .RunContinuationsAsynchronously);
+                    var addResult = this._callbackMapper.TryAdd(correlationId, tcs);
+
+                    using (var channel = this.PersistentConnection.CreateModel())
+                    {
+                        if (channel != null)
+                        {
+                            var routingKey = @event.RoutingKey;
+                            if (this.EventBusParameters.ExchangeDeclareParameters != null)
+                            {
+                                channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+
+                                using (var ms = new MemoryStream())
                                 {
-                                    var properties = channel.CreateBasicProperties();
+                                    Serializer.Serialize(ms, @event);
+                                    var body = ms.ToArray();
 
-                                    properties.DeliveryMode = 1; //2 = persistent, write on disk
-                                    properties.CorrelationId = correlationId;
-                                    properties.ReplyTo = this._queueNameReply; //ToDo
+                                    policy.Execute(() =>
+                                    {
+                                        var properties = channel.CreateBasicProperties();
 
-                                    channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,true, properties, body);
-                                });
+                                        properties.DeliveryMode = 1; //2 = persistent, write on disk
+                                        properties.CorrelationId = correlationId;
+                                        properties.ReplyTo = this._queueNameReply; //ToDo
+
+                                        channel.BasicPublish(
+                                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,
+                                            true, properties, body);
+                                    });
+                                }
                             }
                         }
                     }
+
+                    //cancellationToken.Register(() => this._callbackMapper.TryRemove(correlationId, out var tmp));
+                    cancellationToken.Register(() => this.HandleResponse(correlationId, cancellationToken));
+
+                    var result = await tcs.Task.ConfigureAwait(false);
+
+                    return result;
                 }
 
-                //cancellationToken.Register(() => this._callbackMapper.TryRemove(correlationId, out var tmp));
-                cancellationToken.Register(() => this.HandleResponse(correlationId, cancellationToken));
-
-                var result = await tcs.Task.ConfigureAwait(false);
-
-                return result;
+                this.Logger.LogWarning("CallAsync: {0}", "Not connected to bus!");
             }
             catch (TaskCanceledException)
             {
