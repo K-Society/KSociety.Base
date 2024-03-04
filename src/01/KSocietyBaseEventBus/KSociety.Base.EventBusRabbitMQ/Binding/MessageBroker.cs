@@ -26,10 +26,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
         where TEventBusParameters : IEventBusParameters
         where TConnectionFactory : IConnectionFactory
         where TSubscriber : ISubscriber
-        where TExchangeDeclareParametersClass : EventBus.ExchangeDeclareParameters, new()
-        where TQueueDeclareParametersClass : EventBus.QueueDeclareParameters, new()
-        where TEventBusParametersClass : EventBusParameters, new()
-        where TSubscriberClass : Subscriber
+        where TExchangeDeclareParametersClass : EventBus.ExchangeDeclareParameters, TExchangeDeclareParameters, new()
+        where TQueueDeclareParametersClass : EventBus.QueueDeclareParameters, TQueueDeclareParameters, new()
+        where TEventBusParametersClass : EventBusParameters, TEventBusParameters, new()
+        where TSubscriberClass : Subscriber, TSubscriber
     {
         private readonly bool _debug;
         private readonly int _eventBusNumber;
@@ -122,15 +122,16 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
                 DispatchConsumersAsync = true
             };
 
-            builder.RegisterInstance(exchangeDeclareParameters).As<TExchangeDeclareParameters>().SingleInstance();
-            builder.RegisterInstance(queueDeclareParameters).As<TQueueDeclareParameters>().SingleInstance();
+            builder.RegisterInstance(exchangeDeclareParameters).As<TExchangeDeclareParametersClass>().As<TExchangeDeclareParameters>();
+            builder.RegisterInstance(queueDeclareParameters).As<TQueueDeclareParametersClass>().As<TQueueDeclareParameters>();
             //builder.RegisterInstance(eventBusParameters).As<TEventBusParameters>().As<IEventBusParameters>().SingleInstance();
-            builder.RegisterInstance(eventBusParameters).As<TEventBusParametersClass>().As<TEventBusParameters>().SingleInstance();
-            builder.RegisterInstance(rabbitMqConnectionFactory).As<TConnectionFactory>().SingleInstance();
+            builder.RegisterInstance(eventBusParameters).As<TEventBusParametersClass>().As<TEventBusParameters>();
+            builder.RegisterInstance(rabbitMqConnectionFactory).As<TConnectionFactory>();
 
             //builder.RegisterType<TEventBusParametersClass>().As<TEventBusParameters>().SingleInstance();
-            builder.RegisterType<DefaultRabbitMqPersistentConnection>().As<IRabbitMqPersistentConnection>().UsingConstructor(typeof(TConnectionFactory), typeof(ILogger<DefaultRabbitMqPersistentConnection>))
-                .SingleInstance();
+            builder.RegisterType<DefaultRabbitMqPersistentConnection>().As<IRabbitMqPersistentConnection>()
+                .UsingConstructor(typeof(TConnectionFactory), typeof(ILogger<DefaultRabbitMqPersistentConnection>));
+                //.SingleInstance();
 
             builder.RegisterType<TSubscriberClass>().UsingConstructor(typeof(IRabbitMqPersistentConnection), typeof(TEventBusParameters), typeof(int), typeof(ILogger<EventBusRabbitMq>)).WithParameter("eventBusNumber", this._eventBusNumber).As<TSubscriber>().SingleInstance();
         }
