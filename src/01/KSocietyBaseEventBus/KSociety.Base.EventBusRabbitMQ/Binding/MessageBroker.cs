@@ -132,7 +132,6 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
             //builder.RegisterType<TEventBusParametersClass>().As<TEventBusParameters>().SingleInstance();
             builder.RegisterType<DefaultRabbitMqPersistentConnection>().As<IRabbitMqPersistentConnection>()
                 .UsingConstructor(typeof(TConnectionFactory), typeof(ILogger<DefaultRabbitMqPersistentConnection>)).SingleInstance();
-            //.SingleInstance();
 
             builder.RegisterType<TSubscriberClass>().UsingConstructor(typeof(IRabbitMqPersistentConnection), typeof(TEventBusParameters), typeof(int), typeof(ILogger<EventBusRabbitMq>)).WithParameter("eventBusNumber", this._eventBusNumber).As<TSubscriber>().SingleInstance();
         }
