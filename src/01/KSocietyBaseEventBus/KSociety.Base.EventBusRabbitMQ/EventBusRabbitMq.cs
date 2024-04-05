@@ -113,7 +113,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             else
             {
                 this.ConsumerChannel =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannel<TIntegrationEvent>().ConfigureAwait(false));
+                new AsyncLazy<IModel>(() => this.CreateConsumerChannel<TIntegrationEvent>());
             }  
         }
 
@@ -476,7 +476,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual async ValueTask<IModel> CreateConsumerChannel<TIntegrationEvent>()
+        protected virtual IModel CreateConsumerChannel<TIntegrationEvent>()
             where TIntegrationEvent : IIntegrationEvent, new()
         {
             //this.Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
@@ -487,7 +487,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                this.PersistentConnection.TryConnect();
                 //this.PersistentConnection.TryConnect();
             }
 
@@ -508,8 +508,8 @@ namespace KSociety.Base.EventBusRabbitMQ
                     }
 
                     this.ConsumerChannel.Value.Dispose();
-                    this.ConsumerChannel = new AsyncLazy<IModel>(async () =>
-                        await this.CreateConsumerChannel<TIntegrationEvent>().ConfigureAwait(false));
+                    this.ConsumerChannel = new AsyncLazy<IModel>(() =>
+                        this.CreateConsumerChannel<TIntegrationEvent>());
                     this.StartBasicConsume<TIntegrationEvent>();
                 };
 

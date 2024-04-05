@@ -70,7 +70,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             else
             {
                 this.ConsumerChannel =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannel().ConfigureAwait(false));
+                new AsyncLazy<IModel>(() => this.CreateConsumerChannel());
             }
         }
 
@@ -600,7 +600,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             //ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
         }
 
-        protected async ValueTask<IModel> CreateConsumerChannel()
+        protected IModel CreateConsumerChannel()
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannel queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
             try
@@ -612,7 +612,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (!this.PersistentConnection.IsConnected)
                 {
-                    await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                    this.PersistentConnection.TryConnect(); //.TryConnectAsync().ConfigureAwait(false);
                     //this.PersistentConnection.TryConnect();
                 }
 
@@ -625,7 +625,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     {
                         this.Logger.LogError(ea.Exception, "CallbackException: ");
                         this.ConsumerChannel.Value.Dispose();
-                        this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannel());
+                        this.ConsumerChannel = new AsyncLazy<IModel>(() => this.CreateConsumerChannel());
                         this.StartBasicConsume();
                     };
 
