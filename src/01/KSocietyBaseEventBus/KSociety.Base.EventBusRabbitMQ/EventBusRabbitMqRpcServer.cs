@@ -64,7 +64,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             else
             {
                 this.ConsumerChannel =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelServer<TIntegrationEventRpc, TIntegrationEventReply>(cancel).ConfigureAwait(false));
+                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelServer<TIntegrationEventRpc, TIntegrationEventReply>().ConfigureAwait(false));
             }
 
             //this.ConsumerChannel =
@@ -512,7 +512,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected async ValueTask<IModel> CreateConsumerChannelServer<TIntegrationEventRpc, TIntegrationEventReply>(CancellationToken cancel = default)
+        protected async ValueTask<IModel> CreateConsumerChannelServer<TIntegrationEventRpc, TIntegrationEventReply>()
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
@@ -541,7 +541,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     this.Logger.LogError(ea.Exception, "CallbackException: ");
                     this.ConsumerChannel.Value.Dispose();
-                    this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelServer<TIntegrationEventRpc, TIntegrationEventReply>(cancel).ConfigureAwait(false));
+                    this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelServer<TIntegrationEventRpc, TIntegrationEventReply>().ConfigureAwait(false));
                     this.StartBasicConsumeServer<TIntegrationEventRpc, TIntegrationEventReply>();
                 };
 
