@@ -53,7 +53,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+        public async ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>(string routingKey, bool asyncMode = false)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
@@ -62,7 +62,14 @@ namespace KSociety.Base.EventBusRabbitMQ
             //this.Logger?.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
             await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
             this.SubsManager?.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>(eventName + "." + routingKey);
-            await this.StartBasicConsume <TIntegrationEvent>().ConfigureAwait(false);
+            if(asyncMode)
+            {
+                await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
+            }
+            else
+            {
+                await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
+            }   
         }
 
         #endregion

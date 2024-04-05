@@ -240,7 +240,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>()
+        public async ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>(bool asyncMode = true)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
@@ -248,7 +248,15 @@ namespace KSociety.Base.EventBusRabbitMQ
             var eventName = this.SubsManager.GetEventKey<TIntegrationEvent>();
             await this.DoInternalSubscription(eventName).ConfigureAwait(false);
             this.SubsManager.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>();
-            await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
+            if (asyncMode)
+            {
+                await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
+            }
+            else
+            {
+                await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
+            }
+            
         }
 
         protected async ValueTask DoInternalSubscription(string eventName)
@@ -329,9 +337,9 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (this.ConsumerChannel.Value != null)
                 {
-                    var consumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
+                    var consumer = new EventingBasicConsumer(await this.ConsumerChannel);
 
-                    consumer.Received += this.ConsumerReceivedAsync<TIntegrationEvent>;
+                    consumer.Received += this.ConsumerReceived<TIntegrationEvent>;
 
                     (await this.ConsumerChannel).BasicConsume(
                         queue: this.QueueName,
@@ -345,6 +353,45 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 this.Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
                 
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "StartBasicConsume: ");
+            }
+
+            return false;
+        }
+
+        protected virtual async ValueTask<bool> StartBasicConsumeAsync<TIntegrationEvent>()
+            where TIntegrationEvent : IIntegrationEvent, new()
+        {
+            //this.Logger.LogTrace("EventBusRabbitMq Starting RabbitMQ basic consume.");
+            try
+            {
+                if (this.ConsumerChannel is null)
+                {
+                    this.Logger.LogWarning("ConsumerChannel is null!");
+                    return false;
+                }
+
+                if (this.ConsumerChannel.Value != null)
+                {
+                    var asyncConsumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
+
+                    asyncConsumer.Received += this.ConsumerReceivedAsync<TIntegrationEvent>;
+
+                    (await this.ConsumerChannel).BasicConsume(
+                        queue: this.QueueName,
+                        autoAck: false,
+                        consumer: asyncConsumer);
+
+                    //this.Logger.LogInformation("EventBusRabbitMq StartBasicConsume done. Queue name: {0}, autoAck: {1}", this.QueueName, true);
+
+                    return true;
+                }
+
+                this.Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
+
             }
             catch (Exception ex)
             {

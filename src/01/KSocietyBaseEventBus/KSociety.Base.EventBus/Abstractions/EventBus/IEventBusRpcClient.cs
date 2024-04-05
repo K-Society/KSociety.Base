@@ -29,7 +29,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
         //    where TIntegrationEventReply : IIntegrationEventReply
         //    where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
 
-        ValueTask SubscribeRpcClient<TIntegrationEventHandler>(string replyRoutingKey)
+        ValueTask SubscribeRpcClient<TIntegrationEventHandler>(string replyRoutingKey, bool asyncMode = true)
             where TIntegrationEventHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>;
 
         //void UnsubscribeRpcClient<TIntegrationEventReply, TH>(string routingKey)

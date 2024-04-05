@@ -341,14 +341,22 @@ namespace KSociety.Base.EventBusRabbitMQ
         //    await this.StartBasicConsume<TIntegrationEventReply>().ConfigureAwait(false);
         //}
 
-        public async ValueTask SubscribeRpcClient<TIntegrationRpcClientHandler>(string replyRoutingKey)
+        public async ValueTask SubscribeRpcClient<TIntegrationRpcClientHandler>(string replyRoutingKey, bool asyncMode = true)
             where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         {
             var eventNameResult = this.SubsManager.GetEventReplyKey<TIntegrationEventReply>();
             //this.Logger.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
             await this.DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey).ConfigureAwait(false);
             this.SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(eventNameResult + "." + replyRoutingKey);
-            await this.StartBasicConsume().ConfigureAwait(false);
+            if (asyncMode)
+            {
+                await this.StartBasicConsumeAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                await this.StartBasicConsume().ConfigureAwait(false);
+            }
+            
         }
 
         private async ValueTask DoInternalSubscriptionRpc(string eventNameResult)
@@ -445,6 +453,53 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (this.ConsumerChannel.Value != null)
                 {
+                    var consumer = new EventingBasicConsumer(await this.ConsumerChannel);
+
+                    consumer.Received += this.ConsumerReceived;
+
+                    //var consumer = new EventingBasicConsumer(await this.ConsumerChannel);
+
+                    //consumer.Received += this.ConsumerReceived;
+
+
+                    // autoAck specifies that as soon as the consumer gets the message,
+                    // it will ack, even if it dies mid-way through the callback
+
+                    (await this.ConsumerChannel).BasicConsume(
+                        queue: this._queueNameReply, //ToDo
+                        autoAck: true, //ToDo
+                        consumer: consumer);
+
+                    //this.Logger.LogInformation("EventBusRabbitMqRpcClient StartBasicConsume done. Queue name: {0}, autoAck: {1}", this._queueNameReply, true);
+
+                    return true;
+                }
+
+                this.Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
+                
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "StartBasicConsume: ");
+            }
+
+            return false;
+        }
+
+        protected async ValueTask<bool> StartBasicConsumeAsync()
+        {
+            this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
+
+            try
+            {
+                if (this.ConsumerChannel is null)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMqRpcClient ConsumerChannel is null!");
+                    return false;
+                }
+
+                if (this.ConsumerChannel.Value != null)
+                {
                     var asyncConsumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
 
                     asyncConsumer.Received += this.ConsumerReceivedAsync;
@@ -468,7 +523,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 }
 
                 this.Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
-                
+
             }
             catch (Exception ex)
             {
