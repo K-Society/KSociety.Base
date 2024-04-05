@@ -7,7 +7,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
     public interface IEventBusTyped : IEventBus
     {
-        ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
+        ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>(string routingKey, bool asyncMode = false)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
