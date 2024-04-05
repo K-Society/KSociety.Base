@@ -541,7 +541,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     this.Logger.LogError(ea.Exception, "CallbackException: ");
                     this.ConsumerChannel.Value.Dispose();
-                    this.ConsumerChannel = new AsyncLazy<IModel>(() => this.CreateConsumerChannelServer<TIntegrationEventRpc, TIntegrationEventReply>(cancel).Result);
+                    this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelServer<TIntegrationEventRpc, TIntegrationEventReply>(cancel).ConfigureAwait(false));
                     this.StartBasicConsumeServer<TIntegrationEventRpc, TIntegrationEventReply>();
                 };
 

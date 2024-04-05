@@ -33,6 +33,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
     {
         private readonly bool _debug;
         private readonly int _eventBusNumber;
+        private readonly bool _dispatchConsumersAsync;
         private readonly string _brokerName;
         private readonly EventBus.ExchangeType _exchangeType;
         private readonly bool _exchangeDurable;
@@ -46,7 +47,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
         private readonly string _mqPassword;
 
         public MessageBroker(
-            int eventBusNumber,
+            int eventBusNumber, bool dispatchConsumersAsync,
             string brokerName, EventBus.ExchangeType exchangeType,
             bool exchangeDurable, bool exchangeAutoDelete,
             string mqHostName, string mqUserName, string mqPassword, bool debug,
@@ -56,6 +57,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
         {
             this._debug = debug;
             this._eventBusNumber = eventBusNumber;
+            this._dispatchConsumersAsync = dispatchConsumersAsync;
             this._brokerName = brokerName;
             this._exchangeType = exchangeType;
             this._exchangeDurable = exchangeDurable;
@@ -74,6 +76,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
         {
             this._debug = debug;
             this._eventBusNumber = messageBroker.EventBusNumber;
+            this._dispatchConsumersAsync = messageBroker.DispatchConsumersAsync;
             this._brokerName = messageBroker.ExchangeDeclareParameters.BrokerName;
             this._exchangeType = messageBroker.ExchangeDeclareParameters.ExchangeType;
             this._exchangeDurable = messageBroker.ExchangeDeclareParameters.ExchangeDurable;
@@ -119,7 +122,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(10),
                 RequestedHeartbeat = TimeSpan.FromSeconds(10),
                 ContinuationTimeout = TimeSpan.FromSeconds(120),
-                DispatchConsumersAsync = true
+                DispatchConsumersAsync = this._dispatchConsumersAsync
             };
 
             builder.RegisterInstance(exchangeDeclareParameters).As<TExchangeDeclareParametersClass>()
