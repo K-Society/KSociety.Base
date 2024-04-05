@@ -147,7 +147,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName + "_Client", eventBus))
             {
-                ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"]).Initialize();
+                ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"]).Initialize(asyncMode);
 
                 await ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"])
                     .SubscribeRpcClient<TIntegrationRpcClientHandler>(replyRoutingKey, asyncMode)
@@ -228,7 +228,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
-                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
+                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>(asyncMode);
 
                 await ((IEventBusTyped)this.EventBus[eventBusName])
                     .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey, asyncMode).ConfigureAwait(false);

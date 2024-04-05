@@ -51,7 +51,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public void Initialize(CancellationToken cancel = default)
+        public void Initialize(bool asyncMode = true, CancellationToken cancel = default)
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient Initialize.");
             //this._callbackMapper = new ConcurrentDictionary<string, TaskCompletionSource<TIntegrationEventReply>>();
@@ -62,8 +62,16 @@ namespace KSociety.Base.EventBusRabbitMQ
                 this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
             }
 
-            this.ConsumerChannel =
+            if(asyncMode)
+            {
+                this.ConsumerChannel =
                 new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+            }
+            else
+            {
+                this.ConsumerChannel =
+                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannel(cancel).ConfigureAwait(false));
+            }
         }
 
         public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler()
@@ -354,9 +362,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             else
             {
-                await this.StartBasicConsume().ConfigureAwait(false);
+                this.StartBasicConsume();
             }
-            
         }
 
         private async ValueTask DoInternalSubscriptionRpc(string eventNameResult)
@@ -439,7 +446,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
 
 
-        protected async ValueTask<bool> StartBasicConsume()
+        protected bool StartBasicConsume()
         {
             this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
 
@@ -453,7 +460,8 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (this.ConsumerChannel.Value != null)
                 {
-                    var consumer = new EventingBasicConsumer(await this.ConsumerChannel);
+                    var model = this.ConsumerChannel.Value.Result;
+                    var consumer = new EventingBasicConsumer(model);
 
                     consumer.Received += this.ConsumerReceived;
 
@@ -465,7 +473,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     // autoAck specifies that as soon as the consumer gets the message,
                     // it will ack, even if it dies mid-way through the callback
 
-                    (await this.ConsumerChannel).BasicConsume(
+                    model.BasicConsume(
                         queue: this._queueNameReply, //ToDo
                         autoAck: true, //ToDo
                         consumer: consumer);
@@ -592,6 +600,46 @@ namespace KSociety.Base.EventBusRabbitMQ
             //ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
         }
 
+        protected async ValueTask<IModel> CreateConsumerChannel(CancellationToken cancel = default)
+        {
+            //this.Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
+            try
+            {
+                if (this.PersistentConnection is null)
+                {
+                    return null;
+                }
+
+                if (!this.PersistentConnection.IsConnected)
+                {
+                    await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                    //this.PersistentConnection.TryConnect();
+                }
+
+                var channel = this.PersistentConnection.CreateModel();
+                if (channel != null)
+                {
+                    //this.QueueInitialize(channel);
+
+                    channel.CallbackException += (sender, ea) =>
+                    {
+                        this.Logger.LogError(ea.Exception, "CallbackException: ");
+                        this.ConsumerChannel.Value.Dispose();
+                        this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannel(cancel));
+                        this.StartBasicConsume();
+                    };
+
+                    return channel;
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "CreateConsumerChannelAsync: ");
+            }
+
+            return null;
+        }
+
         protected async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
@@ -618,7 +666,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                         this.Logger.LogError(ea.Exception, "CallbackException: ");
                         this.ConsumerChannel.Value.Dispose();
                         this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel));
-                        await this.StartBasicConsume().ConfigureAwait(false);
+                        await this.StartBasicConsumeAsync().ConfigureAwait(false);
                     };
 
                     return channel;
