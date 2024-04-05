@@ -19,7 +19,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             string eventBusName, string queueName,
             string routingKey, string replyRoutingKey,
             TIntegrationRpcClientHandler integrationRpcClientHandler,
-            TIntegrationRpcServerHandler integrationRpcServerHandler, bool asyncMode = true)
+            TIntegrationRpcServerHandler integrationRpcServerHandler)
             where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
             where TIntegrationRpcServerHandler :
             IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>
@@ -28,13 +28,13 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
         ValueTask SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
             string eventBusName, string queueName,
-            string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler, bool asyncMode = true)
+            string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler)
             where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
             where TIntegrationEventReply : IIntegrationEventReply, new();
 
         ValueTask SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEventRpc, TIntegrationEventReply>(
             string eventBusName, string queueName,
-            string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler, bool asyncMode = true)
+            string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler)
             where TIntegrationRpcServerHandler :
             IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
@@ -42,7 +42,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
         ValueTask SubscribeTyped<TIntegrationEventHandler, TIntegrationEvent>(
             string eventBusName, string queueName,
-            string routingKey, TIntegrationEventHandler integrationEventHandler, bool asyncMode = true)
+            string routingKey, TIntegrationEventHandler integrationEventHandler)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
