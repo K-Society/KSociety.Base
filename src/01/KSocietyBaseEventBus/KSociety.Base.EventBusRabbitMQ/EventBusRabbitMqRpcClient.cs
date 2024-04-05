@@ -445,9 +445,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (this.ConsumerChannel.Value != null)
                 {
-                    var consumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
+                    var asyncConsumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
 
-                    consumer.Received += this.ConsumerReceivedAsync;
+                    asyncConsumer.Received += this.ConsumerReceivedAsync;
+
+                    //var consumer = new EventingBasicConsumer(await this.ConsumerChannel);
+
+                    //consumer.Received += this.ConsumerReceived;
 
 
                     // autoAck specifies that as soon as the consumer gets the message,
@@ -456,7 +460,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     (await this.ConsumerChannel).BasicConsume(
                         queue: this._queueNameReply, //ToDo
                         autoAck: true, //ToDo
-                        consumer: consumer);
+                        consumer: asyncConsumer);
 
                     //this.Logger.LogInformation("EventBusRabbitMqRpcClient StartBasicConsume done. Queue name: {0}, autoAck: {1}", this._queueNameReply, true);
 

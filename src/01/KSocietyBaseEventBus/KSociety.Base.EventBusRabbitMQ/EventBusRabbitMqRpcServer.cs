@@ -202,7 +202,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask SubscribeRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
+        public async ValueTask SubscribeRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey, bool asyncMode = true)
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
             where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>
@@ -213,7 +213,15 @@ namespace KSociety.Base.EventBusRabbitMQ
             await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey)
                 .ConfigureAwait(false);
             this.SubsManager.AddSubscriptionRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
-            await this.StartBasicConsumeServer<TIntegrationEventRpc, TIntegrationEventReply>().ConfigureAwait(false);
+
+            if (asyncMode)
+            {
+                await this.StartBasicConsumeServerAsync<TIntegrationEventRpc, TIntegrationEventReply>().ConfigureAwait(false);
+            }
+            else
+            {
+                await this.StartBasicConsumeServer<TIntegrationEventRpc, TIntegrationEventReply>().ConfigureAwait(false);
+            }
         }
 
         private async ValueTask DoInternalSubscriptionRpc(string eventName, string eventNameResult)
@@ -316,6 +324,45 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (this.ConsumerChannel.Value != null)
                 {
+                    var consumer = new EventingBasicConsumer(await this.ConsumerChannel);
+
+                    consumer.Received += this.ConsumerReceivedServer<TIntegrationEventRpc, TIntegrationEventReply>;
+
+                    (await this.ConsumerChannel).BasicConsume(
+                        queue: this.QueueName,
+                        autoAck: false,
+                        consumer: consumer);
+                    //this.Logger.LogInformation("EventBusRabbitMqRpcServer StartBasicConsume done. Queue name: {0}, autoAck: {1}", this.QueueName, false);
+
+                    return true;
+                }
+
+                this.Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "StartBasicConsume: ");
+            }
+
+            return false;
+        }
+
+        protected async ValueTask<bool> StartBasicConsumeServerAsync<TIntegrationEventRpc, TIntegrationEventReply>()
+            where TIntegrationEventRpc : IIntegrationEventRpc, new()
+            where TIntegrationEventReply : IIntegrationEventReply, new()
+        {
+            //this.Logger.LogTrace("EventBusRabbitMqRpcServer Starting RabbitMQ basic consume.");
+
+            try
+            {
+                if (this.ConsumerChannel is null)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMqRpcServer ConsumerChannel is null!");
+                    return false;
+                }
+
+                if (this.ConsumerChannel.Value != null)
+                {
                     var consumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
 
                     consumer.Received += this.ConsumerReceivedServerAsync<TIntegrationEventRpc, TIntegrationEventReply>;
@@ -361,7 +408,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                         var ms = new MemoryStream();
                         Serializer.Serialize(ms, response);
                         var body = ms.ToArray();
-                        if (!String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                        if (this._consumerChannelReply != null && !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
                         {
                             this._consumerChannelReply.Value.Result.BasicPublish(
                                 this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
