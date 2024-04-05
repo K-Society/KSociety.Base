@@ -102,11 +102,19 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public virtual void Initialize<TIntegrationEvent>(CancellationToken cancel = default)
+        public virtual void Initialize<TIntegrationEvent>(bool asyncMode = true, CancellationToken cancel = default)
             where TIntegrationEvent : IIntegrationEvent, new()
         {
-            this.ConsumerChannel =
+            if(asyncMode)
+            {
+                this.ConsumerChannel =
                 new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync<TIntegrationEvent>(cancel).ConfigureAwait(false));
+            }
+            else
+            {
+                this.ConsumerChannel =
+                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannel<TIntegrationEvent>(cancel).ConfigureAwait(false));
+            }  
         }
 
         private async void SubsManager_OnEventRemoved(object sender, string eventName)
@@ -254,9 +262,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             else
             {
-                await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
+                this.StartBasicConsume<TIntegrationEvent>();
             }
-            
         }
 
         protected async ValueTask DoInternalSubscription(string eventName)
@@ -323,7 +330,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        protected virtual async ValueTask<bool> StartBasicConsume<TIntegrationEvent>()
+        protected virtual bool StartBasicConsume<TIntegrationEvent>()
             where TIntegrationEvent : IIntegrationEvent, new()
         {
             //this.Logger.LogTrace("EventBusRabbitMq Starting RabbitMQ basic consume.");
@@ -337,11 +344,12 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (this.ConsumerChannel.Value != null)
                 {
-                    var consumer = new EventingBasicConsumer(await this.ConsumerChannel);
+                    var model = this.ConsumerChannel.Value.Result;
+                    var consumer = new EventingBasicConsumer(model);
 
                     consumer.Received += this.ConsumerReceived<TIntegrationEvent>;
 
-                    (await this.ConsumerChannel).BasicConsume(
+                    model.BasicConsume(
                         queue: this.QueueName,
                         autoAck: false,
                         consumer: consumer);
@@ -468,6 +476,49 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
+        protected virtual async ValueTask<IModel> CreateConsumerChannel<TIntegrationEvent>(CancellationToken cancel = default)
+            where TIntegrationEvent : IIntegrationEvent, new()
+        {
+            //this.Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
+            if (this.PersistentConnection is null)
+            {
+                return null;
+            }
+
+            if (!this.PersistentConnection.IsConnected)
+            {
+                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                //this.PersistentConnection.TryConnect();
+            }
+
+            var channel = this.PersistentConnection.CreateModel();
+            if (channel != null)
+            {
+                //this.QueueInitialize(channel);
+
+                channel.BasicQos(0, 1, false);
+
+                channel.CallbackException += (sender, ea) =>
+                {
+                    if (!String.IsNullOrEmpty(this.QueueName) &&
+                        !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                    {
+                        this.Logger.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}",
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.QueueName);
+                    }
+
+                    this.ConsumerChannel.Value.Dispose();
+                    this.ConsumerChannel = new AsyncLazy<IModel>(async () =>
+                        await this.CreateConsumerChannel<TIntegrationEvent>(cancel).ConfigureAwait(false));
+                    this.StartBasicConsume<TIntegrationEvent>();
+                };
+
+                return channel;
+            }
+
+            return null;
+        }
+
         protected virtual async ValueTask<IModel> CreateConsumerChannelAsync<TIntegrationEvent>(CancellationToken cancel = default)
             where TIntegrationEvent : IIntegrationEvent, new()
         {
@@ -502,7 +553,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     this.ConsumerChannel.Value.Dispose();
                     this.ConsumerChannel = new AsyncLazy<IModel>(async () =>
                         await this.CreateConsumerChannelAsync<TIntegrationEvent>(cancel).ConfigureAwait(false));
-                    await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
+                    await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
                 };
 
                 return channel;

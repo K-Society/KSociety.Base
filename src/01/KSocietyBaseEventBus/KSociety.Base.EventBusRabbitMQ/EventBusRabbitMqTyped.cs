@@ -68,7 +68,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
             else
             {
-                await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
+                this.StartBasicConsume<TIntegrationEvent>();
             }   
         }
 
