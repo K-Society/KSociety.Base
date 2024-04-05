@@ -113,7 +113,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             else
             {
                 this.ConsumerChannel =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannel<TIntegrationEvent>(cancel).ConfigureAwait(false));
+                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannel<TIntegrationEvent>().ConfigureAwait(false));
             }  
         }
 
@@ -476,7 +476,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual async ValueTask<IModel> CreateConsumerChannel<TIntegrationEvent>(CancellationToken cancel = default)
+        protected virtual async ValueTask<IModel> CreateConsumerChannel<TIntegrationEvent>()
             where TIntegrationEvent : IIntegrationEvent, new()
         {
             //this.Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
@@ -509,7 +509,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                     this.ConsumerChannel.Value.Dispose();
                     this.ConsumerChannel = new AsyncLazy<IModel>(async () =>
-                        await this.CreateConsumerChannel<TIntegrationEvent>(cancel).ConfigureAwait(false));
+                        await this.CreateConsumerChannel<TIntegrationEvent>().ConfigureAwait(false));
                     this.StartBasicConsume<TIntegrationEvent>();
                 };
 
