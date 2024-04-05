@@ -117,7 +117,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             var eventName = this.SubsManager?.GetEventKey<TIntegrationEvent>();
             await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
             this.SubsManager?.AddSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(eventName + "." + routingKey);
-            await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
+            await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
         }
 
         #endregion
