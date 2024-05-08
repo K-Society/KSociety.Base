@@ -209,7 +209,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask SubscribeRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
+        public async ValueTask<bool> SubscribeRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
             where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>
@@ -217,21 +217,28 @@ namespace KSociety.Base.EventBusRabbitMQ
             var eventName = this.SubsManager.GetEventKey<TIntegrationEvent>();
             var eventNameResult = this.SubsManager.GetEventReplyKey<TIntegrationEventReply>();
             //this.Logger.LogDebug("SubscribeRpc: eventName: {0}.{1} eventNameResult: {2}.{3}", eventName, routingKey, eventNameResult, routingKey);
-            await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey)
+            var internalSubscriptionResult = await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey)
                 .ConfigureAwait(false);
-            this.SubsManager.AddSubscriptionRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
-            await this.StartBasicConsumeServer<TIntegrationEvent, TIntegrationEventReply>().ConfigureAwait(false);
-            await this.StartBasicConsumeReplyAsync<TIntegrationEventReply>().ConfigureAwait(false);
+            if (internalSubscriptionResult)
+            {
+                this.SubsManager.AddSubscriptionRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(eventName + "." + routingKey, eventNameResult + "." + routingKey);
+                await this.StartBasicConsumeServer<TIntegrationEvent, TIntegrationEventReply>().ConfigureAwait(false);
+                await this.StartBasicConsumeReplyAsync<TIntegrationEventReply>().ConfigureAwait(false);
+
+                return true;
+            }
+
+            return false;
         }
 
-        private async ValueTask DoInternalSubscriptionRpc(string eventName, string eventNameResult)
+        private async ValueTask<bool> DoInternalSubscriptionRpc(string eventName, string eventNameResult)
         {
             try
             {
                 //var containsKey = this.SubsManager.HasSubscriptionsForEvent(eventName);
                 if (this.SubsManager.HasSubscriptionsForEvent(eventName))
                 {
-                    return;
+                    return false;
                 }
 
                 if (!this.PersistentConnection.IsConnected)
@@ -241,7 +248,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     if (!connectionResult)
                     {
                         this.Logger.LogWarning("EventBusRabbitMqRpc DoInternalSubscriptionRpc: {0}!", "no connection");
-                        return;
+                        return false;
                     }
                 }
 
@@ -260,6 +267,8 @@ namespace KSociety.Base.EventBusRabbitMQ
                             channel.QueueBind(this._queueNameReply,
                                 this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                                 eventNameResult);
+
+                            return true;
                         }
                     }
                 }
@@ -272,6 +281,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 this.Logger.LogError(ex, "EventBusRabbitMqRpc DoInternalSubscriptionRpc: ");
             }
+
+            return false;
         }
 
         #endregion
@@ -486,8 +497,12 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if (!connectionResult)
+                {
+                    return null;
+                }
             }
 
             var channel = this.PersistentConnection.CreateModel();
@@ -516,8 +531,9 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if(!connectionResult) { return null; }
             }
 
             var channel = this.PersistentConnection.CreateModel();

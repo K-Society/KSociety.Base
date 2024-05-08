@@ -115,14 +115,18 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask SubscribeQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+        public async ValueTask<bool> SubscribeQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>
         {
             var eventName = this.SubsManager?.GetEventKey<TIntegrationEvent>();
-            await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
-            this.SubsManager?.AddSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(eventName + "." + routingKey);
-            await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
+            var internalSubscriptionResult = await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
+            if (internalSubscriptionResult)
+            {
+                this.SubsManager?.AddSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(eventName + "." + routingKey);
+                return await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
+            }
+            return false;
         }
 
         #endregion
