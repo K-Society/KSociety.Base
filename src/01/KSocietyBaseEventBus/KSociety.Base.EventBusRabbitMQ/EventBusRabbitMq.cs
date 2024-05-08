@@ -126,8 +126,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if (!connectionResult)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMq SubsManager_OnEventRemoved: {0}!", "no connection");
+                    return;
+                }
             }
 
             using (var channel = this.PersistentConnection.CreateModel())
@@ -162,8 +167,13 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (!this.PersistentConnection.IsConnected)
                 {
-                    await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                    //this.PersistentConnection.TryConnect();
+                    var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                    if (!connectionResult)
+                    {
+                        this.Logger.LogWarning("EventBusRabbitMq Publish: {0}!", "no connection");
+                        return;
+                    }
                 }
 
                 var policy = Policy.Handle<BrokerUnreachableException>()
@@ -281,8 +291,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if (!connectionResult)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMq DoInternalSubscriptionRpc: {0}!", "no connection");
+                    return;
+                }
             }
 
             using (var channel = this.PersistentConnection.CreateModel())
@@ -530,8 +545,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if (!connectionResult)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMq CreateConsumerChannelAsync: {0}!", "no connection");
+                    return null;
+                }
             }
 
             var channel = this.PersistentConnection.CreateModel();

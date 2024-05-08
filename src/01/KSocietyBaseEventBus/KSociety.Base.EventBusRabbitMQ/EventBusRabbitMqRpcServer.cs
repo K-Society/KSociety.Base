@@ -92,8 +92,13 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if (!connectionResult)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMqRpcServer SubsManager_OnEventReplyRemoved: {0}!", "no connection");
+                    return;
+                }
             }
 
             using (var channel = this.PersistentConnection.CreateModel())
@@ -248,8 +253,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (!this.PersistentConnection.IsConnected)
                 {
-                    var connection = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                    //this.PersistentConnection.TryConnect();
+                    var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                    if (!connectionResult)
+                    {
+                        this.Logger.LogWarning("EventBusRabbitMqRpcServer DoInternalSubscriptionRpc: {0}!", "no connection");
+                        return;
+                    }
                 }
 
                 using (var channel = this.PersistentConnection.CreateModel())

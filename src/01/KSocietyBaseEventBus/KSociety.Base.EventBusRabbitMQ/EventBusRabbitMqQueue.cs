@@ -63,8 +63,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if (!connectionResult)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMqQueue Publish: {0}!", "no connection");
+                    return;
+                }
             }
 
             var policy = Policy.Handle<BrokerUnreachableException>()
