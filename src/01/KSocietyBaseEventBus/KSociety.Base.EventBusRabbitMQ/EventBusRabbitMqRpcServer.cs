@@ -578,8 +578,11 @@ namespace KSociety.Base.EventBusRabbitMQ
             //this.Logger.LogTrace("EventBusRabbitMqRpcServer CreateConsumerChannelAsync queue name: {0}", this.QueueName);
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                if (!connectionResult)
+                {
+                    return null;
+                }
             }
 
             var channel = this.PersistentConnection.CreateModel();
@@ -615,8 +618,11 @@ namespace KSociety.Base.EventBusRabbitMQ
             //this.Logger.LogTrace("CreateConsumerChannelReplyAsync queue name: {0}", this._queueNameReply);
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                if (connectionResult)
+                {
+                    return null;
+                }
             }
 
             var channel = this.PersistentConnection.CreateModel();

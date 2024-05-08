@@ -497,8 +497,12 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if (!connectionResult)
+                {
+                    return null;
+                }
             }
 
             var channel = this.PersistentConnection.CreateModel();
@@ -527,8 +531,9 @@ namespace KSociety.Base.EventBusRabbitMQ
         {
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
-                //this.PersistentConnection.TryConnect();
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if(!connectionResult) { return null; }
             }
 
             var channel = this.PersistentConnection.CreateModel();
