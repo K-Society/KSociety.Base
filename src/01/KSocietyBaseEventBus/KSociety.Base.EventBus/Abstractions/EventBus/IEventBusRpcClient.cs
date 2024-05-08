@@ -15,7 +15,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
         //    CancellationToken cancellationToken = default)
         //    where TIntegrationEventReply : IIntegrationEventReply;
 
-        void Initialize(CancellationToken cancel = default);
+        void Initialize(bool asyncMode = true, CancellationToken cancel = default);
 
         Task<TIntegrationEventReply> CallAsync<TIntegrationEventRpc>(TIntegrationEventRpc @event, CancellationToken cancellationToken = default)
             where TIntegrationEventRpc : IIntegrationEventRpc, new();
@@ -29,7 +29,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
         //    where TIntegrationEventReply : IIntegrationEventReply
         //    where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
 
-        ValueTask SubscribeRpcClient<TIntegrationEventHandler>(string replyRoutingKey)
+        ValueTask SubscribeRpcClient<TIntegrationEventHandler>(string replyRoutingKey, bool asyncMode = true)
             where TIntegrationEventHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>;
 
         //void UnsubscribeRpcClient<TIntegrationEventReply, TH>(string routingKey)

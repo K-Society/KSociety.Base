@@ -63,7 +63,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if (!connectionResult)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMqQueue Publish: {0}!", "no connection");
+                    return;
+                }
             }
 
             var policy = Policy.Handle<BrokerUnreachableException>()
@@ -116,7 +122,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             var eventName = this.SubsManager?.GetEventKey<TIntegrationEvent>();
             await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
             this.SubsManager?.AddSubscriptionQueue<TIntegrationEvent, TIntegrationQueueHandler>(eventName + "." + routingKey);
-            await this.StartBasicConsume<TIntegrationEvent>().ConfigureAwait(false);
+            await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
         }
 
         #endregion

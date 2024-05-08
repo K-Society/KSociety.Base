@@ -8,7 +8,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
     public interface IEventBusRpcServer : IEventBusBase
     {
-        void InitializeServer<TIntegrationEventRpc, TIntegrationEventReply>(CancellationToken cancel = default)
+        void InitializeServer<TIntegrationEventRpc, TIntegrationEventReply>(bool asyncMode = true, CancellationToken cancel = default)
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new();
 
@@ -16,7 +16,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new();
 
-        ValueTask SubscribeRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey)
+        ValueTask SubscribeRpcServer<TIntegrationEventRpc, TIntegrationEventReply, TIntegrationRpcServerHandler>(string routingKey, bool asyncMode = true)
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
             where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>;

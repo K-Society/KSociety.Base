@@ -47,13 +47,12 @@ namespace KSociety.Base.EventBusRabbitMQ
         public DefaultRabbitMqPersistentConnection(IConnectionFactory connectionFactory, ILoggerFactory loggerFactory)
         :this(connectionFactory)
         {
-            this._logger = loggerFactory.CreateLogger<DefaultRabbitMqPersistentConnection>() ??
-                           throw new ArgumentNullException(nameof(loggerFactory));
+            this._logger = loggerFactory.CreateLogger<DefaultRabbitMqPersistentConnection>();
         }
 
         #endregion
 
-        public bool IsConnected => this._connection?.IsOpen == true && !this.IsDisposed;
+        public bool IsConnected => this._connection != null && this._connection.IsOpen && !this.IsDisposed;
 
         public IModel CreateModel()
         {
@@ -88,13 +87,63 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
+        public bool TryConnect()
+        {
+            bool output;
+            //this._connectionLock.Wait(this._closeToken);
+
+            //try
+            //{
+                var policy = Policy.Handle<SocketException>()
+                    .Or<BrokerUnreachableException>()
+                    .Or<Exception>()
+                    .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                        (ex, time) =>
+                        {
+                            this._logger?.LogWarning(ex, "TryConnect: ");
+                        });
+
+
+                policy.Execute(this.CreateConnection);
+
+                if (this.IsConnected)
+                {
+                    if (this._connection != null)
+                    {
+                        this._connection.ConnectionShutdown += this.OnConnectionShutdown;
+                        this._connection.CallbackException += this.OnCallbackException;
+                        this._connection.ConnectionBlocked += this.OnConnectionBlocked;
+
+                        //this._logger?.LogInformation($"RabbitMQ persistent connection acquired a connection {this._connection.Endpoint.HostName} and is subscribed to failure events");
+                        output = true;
+                    }
+                    else
+                    {
+                        output = false;
+                    }
+                }
+                else
+                {
+                    this._logger?.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
+
+                    output = false;
+                }
+            //}
+            //finally
+            //{
+            //    this._connectionLock.Release();
+            //}
+
+            return output;
+        }
+
         public async ValueTask<bool> TryConnectAsync()
         {
             bool output;
-            await this._connectionLock.WaitAsync(this._closeToken).ConfigureAwait(false);
+            //await this._connectionLock.WaitAsync(this._closeToken).ConfigureAwait(false);
 
-            try
-            {
+            //try
+            //{
                 var policy = Policy.Handle<SocketException>()
                     .Or<BrokerUnreachableException>()
                     .Or<Exception>()
@@ -107,15 +156,10 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 await policy.ExecuteAsync(async () =>
                 {
-                    await Task.Run(() =>
-                    {
-                        //this._logger?.LogInformation("RabbitMQ CreateConnection.");
-                        //_logger.LogTrace("RabbitMQ CreateConnection StackTrace: {0}", System.Environment.StackTrace);
-                        this._connection = this._connectionFactory
-                            .CreateConnection(); //ToDo
-                    }, this._closeToken);
-
-                });
+                    await this.CreateConnection().ConfigureAwait(false);
+                    //await Task.Run(this.CreateConnection, this._closeToken).ConfigureAwait(false);
+                    //this._closeToken;
+                }).ConfigureAwait(false);
 
                 if (this.IsConnected)
                 {
@@ -139,13 +183,66 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                     output = false;
                 }
+            //}
+            //finally
+            //{
+            //    this._connectionLock.Release();
+            //}
+
+            return output;
+        }
+
+        private async ValueTask CreateConnection()
+        {
+            await this._connectionLock.WaitAsync(this._closeToken).ConfigureAwait(false);
+            try
+            {
+                if (this._connection == null)
+                {
+                    this._connection = this._connectionFactory.CreateConnection();
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger?.LogError(ex, "CreateConnection: ");
             }
             finally
             {
                 this._connectionLock.Release();
             }
+        }
 
-            return output;
+        private void OnConnectionBlocked(object sender, ConnectionBlockedEventArgs e)
+        {
+            if (this.IsDisposed)
+            {
+                return;
+            }
+
+            this._logger?.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
+            this.TryConnect();
+        }
+
+        private void OnCallbackException(object sender, CallbackExceptionEventArgs e)
+        {
+            if (this.IsDisposed)
+            {
+                return;
+            }
+
+            this._logger?.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
+            this.TryConnect();
+        }
+
+        private void OnConnectionShutdown(object sender, ShutdownEventArgs reason)
+        {
+            if (this.IsDisposed)
+            {
+                return;
+            }
+
+            this._logger?.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
+            this.TryConnect();
         }
 
         private async void OnConnectionBlockedAsync(object sender, ConnectionBlockedEventArgs e)

@@ -51,7 +51,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public void Initialize(CancellationToken cancel = default)
+        public void Initialize(bool asyncMode = true, CancellationToken cancel = default)
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient Initialize.");
             //this._callbackMapper = new ConcurrentDictionary<string, TaskCompletionSource<TIntegrationEventReply>>();
@@ -62,8 +62,16 @@ namespace KSociety.Base.EventBusRabbitMQ
                 this.SubsManager.OnEventReplyRemoved += this.SubsManager_OnEventReplyRemoved;
             }
 
-            this.ConsumerChannel =
+            if(asyncMode)
+            {
+                this.ConsumerChannel =
                 new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
+            }
+            else
+            {
+                this.ConsumerChannel =
+                new AsyncLazy<IModel>(() => this.CreateConsumerChannel());
+            }
         }
 
         public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler()
@@ -86,7 +94,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if (!connectionResult)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMqRpcClient SubsManager_OnEventReplyRemoved: {0}!", "no connection");
+                    return;
+                }
             }
 
             using (var channel = this.PersistentConnection.CreateModel())
@@ -129,7 +143,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             if (!this.PersistentConnection.IsConnected)
             {
-                await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                if (!connectionResult)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMqRpcClient Publish: {0}!", "no connection");
+                    return;
+                }
             }
 
             var policy = Policy.Handle<BrokerUnreachableException>()
@@ -178,9 +198,6 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        //public async Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(T @event,
-        //    CancellationToken cancellationToken = default)
-        //    where TIntegrationEventReply : IIntegrationEventReply
         public async Task<TIntegrationEventReply> CallAsync<TIntegrationEventRpc>(TIntegrationEventRpc @event,
             CancellationToken cancellationToken = default)
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
@@ -192,62 +209,76 @@ namespace KSociety.Base.EventBusRabbitMQ
                     return default;
                 }
 
-                if (!this.PersistentConnection.IsConnected)
+                bool isConnected;
+                if (this.PersistentConnection.IsConnected)
                 {
-                    await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                    isConnected = true;
+                }
+                else
+                {
+                    isConnected = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
                 }
 
-                var policy = Policy.Handle<BrokerUnreachableException>()
-                    .Or<SocketException>()
-                    .Or<Exception>()
-                    .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
-                    {
-                        this.Logger.LogWarning(ex, "CallAsync: ");
-                    });
-
-                var correlationId = Guid.NewGuid().ToString();
-
-                var tcs = new TaskCompletionSource<TIntegrationEventReply>(TaskCreationOptions.RunContinuationsAsynchronously);
-                var addResult = this._callbackMapper.TryAdd(correlationId, tcs);
-
-                using (var channel = this.PersistentConnection.CreateModel())
+                if (isConnected)
                 {
-                    if (channel != null)
-                    {
-                        var routingKey = @event.RoutingKey;
-                        if (this.EventBusParameters.ExchangeDeclareParameters != null)
-                        {
-                            channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
-
-                            using (var ms = new MemoryStream())
+                    var policy = Policy.Handle<BrokerUnreachableException>()
+                        .Or<SocketException>()
+                        .Or<Exception>()
+                        .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                            (ex, time) =>
                             {
-                                Serializer.Serialize(ms, @event);
-                                var body = ms.ToArray();
+                                this.Logger.LogWarning(ex, "CallAsync: ");
+                            });
 
-                                policy.Execute(() =>
+                    var correlationId = Guid.NewGuid().ToString();
+
+                    var tcs = new TaskCompletionSource<TIntegrationEventReply>(TaskCreationOptions
+                        .RunContinuationsAsynchronously);
+                    var addResult = this._callbackMapper.TryAdd(correlationId, tcs);
+
+                    using (var channel = this.PersistentConnection.CreateModel())
+                    {
+                        if (channel != null)
+                        {
+                            var routingKey = @event.RoutingKey;
+                            if (this.EventBusParameters.ExchangeDeclareParameters != null)
+                            {
+                                channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+
+                                using (var ms = new MemoryStream())
                                 {
-                                    var properties = channel.CreateBasicProperties();
+                                    Serializer.Serialize(ms, @event);
+                                    var body = ms.ToArray();
 
-                                    properties.DeliveryMode = 1; //2 = persistent, write on disk
-                                    properties.CorrelationId = correlationId;
-                                    properties.ReplyTo = this._queueNameReply; //ToDo
+                                    policy.Execute(() =>
+                                    {
+                                        var properties = channel.CreateBasicProperties();
 
-                                    channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,true, properties, body);
-                                });
+                                        properties.DeliveryMode = 1; //2 = persistent, write on disk
+                                        properties.CorrelationId = correlationId;
+                                        properties.ReplyTo = this._queueNameReply; //ToDo
+
+                                        channel.BasicPublish(
+                                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, routingKey,
+                                            true, properties, body);
+                                    });
+                                }
                             }
                         }
                     }
+
+                    //cancellationToken.Register(() => this._callbackMapper.TryRemove(correlationId, out var tmp));
+                    cancellationToken.Register(() => this.HandleResponse(correlationId, cancellationToken));
+
+                    var result = await tcs.Task.ConfigureAwait(false);
+
+                    return result;
                 }
 
-                //cancellationToken.Register(() => this._callbackMapper.TryRemove(correlationId, out var tmp));
-                cancellationToken.Register(() => this.HandleResponse(correlationId, cancellationToken));
-
-                var result = await tcs.Task.ConfigureAwait(false);
-
-                return result;
+                this.Logger.LogWarning("CallAsync: {0}", "Not connected to bus!");
             }
             catch (TaskCanceledException)
             {
@@ -328,14 +359,21 @@ namespace KSociety.Base.EventBusRabbitMQ
         //    await this.StartBasicConsume<TIntegrationEventReply>().ConfigureAwait(false);
         //}
 
-        public async ValueTask SubscribeRpcClient<TIntegrationRpcClientHandler>(string replyRoutingKey)
+        public async ValueTask SubscribeRpcClient<TIntegrationRpcClientHandler>(string replyRoutingKey, bool asyncMode = true)
             where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         {
             var eventNameResult = this.SubsManager.GetEventReplyKey<TIntegrationEventReply>();
             //this.Logger.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
             await this.DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey).ConfigureAwait(false);
             this.SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(eventNameResult + "." + replyRoutingKey);
-            await this.StartBasicConsume().ConfigureAwait(false);
+            if (asyncMode)
+            {
+                await this.StartBasicConsumeAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                this.StartBasicConsume();
+            }
         }
 
         private async ValueTask DoInternalSubscriptionRpc(string eventNameResult)
@@ -350,7 +388,13 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (!this.PersistentConnection.IsConnected)
                 {
-                    var connection = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                    var connectionResult = await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+
+                    if (!connectionResult)
+                    {
+                        this.Logger.LogWarning("EventBusRabbitMqRpcClient DoInternalSubscriptionRpc: {0}!", "no connection");
+                        return;
+                    }
                 }
 
                 using (var channel = this.PersistentConnection.CreateModel())
@@ -417,7 +461,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
 
 
-        protected async ValueTask<bool> StartBasicConsume()
+        protected bool StartBasicConsume()
         {
             this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
 
@@ -431,15 +475,20 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 if (this.ConsumerChannel.Value != null)
                 {
-                    var consumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
+                    var model = this.ConsumerChannel.Value.Result;
+                    var consumer = new EventingBasicConsumer(model);
 
-                    consumer.Received += this.ConsumerReceivedAsync;
+                    consumer.Received += this.ConsumerReceived;
+
+                    //var consumer = new EventingBasicConsumer(await this.ConsumerChannel);
+
+                    //consumer.Received += this.ConsumerReceived;
 
 
                     // autoAck specifies that as soon as the consumer gets the message,
                     // it will ack, even if it dies mid-way through the callback
 
-                    (await this.ConsumerChannel).BasicConsume(
+                    model.BasicConsume(
                         queue: this._queueNameReply, //ToDo
                         autoAck: true, //ToDo
                         consumer: consumer);
@@ -451,6 +500,53 @@ namespace KSociety.Base.EventBusRabbitMQ
 
                 this.Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
                 
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "StartBasicConsume: ");
+            }
+
+            return false;
+        }
+
+        protected async ValueTask<bool> StartBasicConsumeAsync()
+        {
+            this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
+
+            try
+            {
+                if (this.ConsumerChannel is null)
+                {
+                    this.Logger.LogWarning("EventBusRabbitMqRpcClient ConsumerChannel is null!");
+                    return false;
+                }
+
+                if (this.ConsumerChannel.Value != null)
+                {
+                    var asyncConsumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
+
+                    asyncConsumer.Received += this.ConsumerReceivedAsync;
+
+                    //var consumer = new EventingBasicConsumer(await this.ConsumerChannel);
+
+                    //consumer.Received += this.ConsumerReceived;
+
+
+                    // autoAck specifies that as soon as the consumer gets the message,
+                    // it will ack, even if it dies mid-way through the callback
+
+                    (await this.ConsumerChannel).BasicConsume(
+                        queue: this._queueNameReply, //ToDo
+                        autoAck: true, //ToDo
+                        consumer: asyncConsumer);
+
+                    //this.Logger.LogInformation("EventBusRabbitMqRpcClient StartBasicConsume done. Queue name: {0}, autoAck: {1}", this._queueNameReply, true);
+
+                    return true;
+                }
+
+                this.Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
+
             }
             catch (Exception ex)
             {
@@ -519,6 +615,46 @@ namespace KSociety.Base.EventBusRabbitMQ
             //ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
         }
 
+        protected IModel CreateConsumerChannel()
+        {
+            //this.Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannel queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
+            try
+            {
+                if (this.PersistentConnection is null)
+                {
+                    return null;
+                }
+
+                if (!this.PersistentConnection.IsConnected)
+                {
+                    this.PersistentConnection.TryConnect(); //.TryConnectAsync().ConfigureAwait(false);
+                    //this.PersistentConnection.TryConnect();
+                }
+
+                var channel = this.PersistentConnection.CreateModel();
+                if (channel != null)
+                {
+                    //this.QueueInitialize(channel);
+
+                    channel.CallbackException += (sender, ea) =>
+                    {
+                        this.Logger.LogError(ea.Exception, "CallbackException: ");
+                        this.ConsumerChannel.Value.Dispose();
+                        this.ConsumerChannel = new AsyncLazy<IModel>(() => this.CreateConsumerChannel());
+                        this.StartBasicConsume();
+                    };
+
+                    return channel;
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "CreateConsumerChannel: ");
+            }
+
+            return null;
+        }
+
         protected async ValueTask<IModel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
@@ -532,6 +668,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (!this.PersistentConnection.IsConnected)
                 {
                     await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false);
+                    //this.PersistentConnection.TryConnect();
                 }
 
                 var channel = this.PersistentConnection.CreateModel();
@@ -544,7 +681,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                         this.Logger.LogError(ea.Exception, "CallbackException: ");
                         this.ConsumerChannel.Value.Dispose();
                         this.ConsumerChannel = new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync(cancel));
-                        await this.StartBasicConsume().ConfigureAwait(false);
+                        await this.StartBasicConsumeAsync().ConfigureAwait(false);
                     };
 
                     return channel;

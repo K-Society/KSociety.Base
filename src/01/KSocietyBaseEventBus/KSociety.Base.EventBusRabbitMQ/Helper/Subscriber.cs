@@ -12,30 +12,35 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
     using Microsoft.Extensions.Logging.Abstractions;
     using RabbitMQ.Client;
 
-    public class Subscriber
+    public class Subscriber : ISubscriber
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<EventBusRabbitMq> _loggerEventBusRabbitMq;
         private readonly IEventBusParameters _eventBusParameters;
+        private readonly bool _dispatchConsumersAsync;
         public IRabbitMqPersistentConnection PersistentConnection { get; }
-        public ConcurrentDictionary<string, IEventBus> EventBus { get; } = new ConcurrentDictionary<string, IEventBus>();
+        public ConcurrentDictionary<string, IEventBus> EventBus { get; } 
 
         #region [Constructor]
 
         public Subscriber(
             ILoggerFactory loggerFactory,
             IConnectionFactory connectionFactory,
-            IEventBusParameters eventBusParameters)
+            IEventBusParameters eventBusParameters, int eventBusNumber,
+            bool dispatchConsumersAsync)
         {
             this._loggerFactory = loggerFactory;
             this._eventBusParameters = eventBusParameters;
-
+            this._dispatchConsumersAsync = dispatchConsumersAsync;
             this.PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, this._loggerFactory);
+
+            this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
         }
 
         public Subscriber(
             IConnectionFactory connectionFactory,
             IEventBusParameters eventBusParameters,
+            int eventBusNumber, bool dispatchConsumersAsync,
             ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default,
             ILogger<DefaultRabbitMqPersistentConnection> loggerDefaultRabbitMqPersistentConnection = default)
         {
@@ -53,27 +58,33 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 loggerDefaultRabbitMqPersistentConnection = new NullLogger<DefaultRabbitMqPersistentConnection>();
             }
 
+            this._dispatchConsumersAsync = dispatchConsumersAsync;
+
             this.PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, loggerDefaultRabbitMqPersistentConnection);
+
+            this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
         }
 
         public Subscriber(
             ILoggerFactory loggerFactory,
             IRabbitMqPersistentConnection persistentConnection,
-            IEventBusParameters eventBusParameters)
+            IEventBusParameters eventBusParameters, int eventBusNumber, bool dispatchConsumersAsync)
         {
             this._loggerFactory = loggerFactory;
             this._eventBusParameters = eventBusParameters;
-
+            this._dispatchConsumersAsync = dispatchConsumersAsync;
             this.PersistentConnection = persistentConnection;
+
+            this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
         }
 
         public Subscriber(
             IRabbitMqPersistentConnection persistentConnection,
-            IEventBusParameters eventBusParameters,
+            IEventBusParameters eventBusParameters, int eventBusNumber, bool dispatchConsumersAsync,
             ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default)
         {
             this._eventBusParameters = eventBusParameters;
-
+            this._dispatchConsumersAsync = dispatchConsumersAsync;
             this.PersistentConnection = persistentConnection;
 
             if (loggerEventBusRabbitMq == null)
@@ -81,6 +92,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 loggerEventBusRabbitMq = new NullLogger<EventBusRabbitMq>();
             }
             this._loggerEventBusRabbitMq = loggerEventBusRabbitMq;
+            this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
         }
 
         #endregion
@@ -139,10 +151,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName + "_Client", eventBus))
             {
-                ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"]).Initialize();//.Initialize();
+                ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"]).Initialize(this._dispatchConsumersAsync);
 
                 await ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"])
-                    .SubscribeRpcClient<TIntegrationRpcClientHandler>(replyRoutingKey)
+                    .SubscribeRpcClient<TIntegrationRpcClientHandler>(replyRoutingKey, this._dispatchConsumersAsync)
                     .ConfigureAwait(false);
             }
         }
@@ -181,11 +193,11 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName + "_Server", eventBus))
             {
-                ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"]).InitializeServer<TIntegrationEventRpc, TIntegrationEventReply>();//.Initialize();
+                ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"]).InitializeServer<TIntegrationEventRpc, TIntegrationEventReply>(this._dispatchConsumersAsync);//.Initialize();
 
                 await ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"])
                     .SubscribeRpcServer<TIntegrationEventRpc, TIntegrationEventReply,
-                        TIntegrationRpcServerHandler>(routingKey).ConfigureAwait(false);
+                        TIntegrationRpcServerHandler>(routingKey, this._dispatchConsumersAsync).ConfigureAwait(false);
             }
         }
 
@@ -220,10 +232,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
-                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
+                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>(this._dispatchConsumersAsync);
 
                 await ((IEventBusTyped)this.EventBus[eventBusName])
-                    .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey).ConfigureAwait(false);
+                    .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey, this._dispatchConsumersAsync).ConfigureAwait(false);
             }
         }
 

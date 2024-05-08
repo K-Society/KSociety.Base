@@ -2,18 +2,18 @@
 
 namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
-    using Handler;
     using System.Threading;
     using System.Threading.Tasks;
+    using Handler;
 
     public interface IEventBusBase
     {
         IIntegrationGeneralHandler EventHandler { get; }
 
-        void Initialize<TIntegrationEvent>(CancellationToken cancel = default)
+        void Initialize<TIntegrationEvent>(bool asyncMode = true, CancellationToken cancel = default)
             where TIntegrationEvent : IIntegrationEvent, new();
 
-        ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>()
+        ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>(bool asyncMode = true)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
