@@ -258,35 +258,41 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask Subscribe<TIntegrationEvent, TIntegrationEventHandler>(bool asyncMode = true)
+        public async ValueTask<bool> Subscribe<TIntegrationEvent, TIntegrationEventHandler>(bool asyncMode = true)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
 
             var eventName = this.SubsManager.GetEventKey<TIntegrationEvent>();
-            await this.DoInternalSubscription(eventName).ConfigureAwait(false);
-            this.SubsManager.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>();
-            if (asyncMode)
+            var internalSubscriptionResult = await this.DoInternalSubscription(eventName).ConfigureAwait(false);
+
+            if (internalSubscriptionResult)
             {
-                await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
+                this.SubsManager.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>();
+                if (asyncMode)
+                {
+                    return await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
+                }
+                else
+                {
+                    return this.StartBasicConsume<TIntegrationEvent>();
+                }
             }
-            else
-            {
-                this.StartBasicConsume<TIntegrationEvent>();
-            }
+
+            return false;
         }
 
-        protected async ValueTask DoInternalSubscription(string eventName)
+        protected async ValueTask<bool> DoInternalSubscription(string eventName)
         {
             //var containsKey = this.SubsManager.HasSubscriptionsForEvent(eventName);
             if (this.SubsManager.HasSubscriptionsForEvent(eventName))
             {
-                return;
+                return false;
             }
 
             if (this.PersistentConnection is null)
             {
-                return;
+                return false;
             }
 
             if (!this.PersistentConnection.IsConnected)
@@ -296,7 +302,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (!connectionResult)
                 {
                     this.Logger.LogWarning("EventBusRabbitMq DoInternalSubscriptionRpc: {0}!", "no connection");
-                    return;
+                    return false;
                 }
             }
 
@@ -311,9 +317,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                     {
                         channel.QueueBind(this.QueueName,
                             this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
+                        return true;
                     }
                 }
             }
+
+            return false;
         }
 
         #endregion

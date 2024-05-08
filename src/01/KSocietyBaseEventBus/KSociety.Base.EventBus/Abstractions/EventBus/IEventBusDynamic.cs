@@ -7,7 +7,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
     public interface IEventBusDynamic
     {
-        ValueTask SubscribeDynamic<TDynamicIntegrationEventHandler>(string routingKey)
+        ValueTask<bool> SubscribeDynamic<TDynamicIntegrationEventHandler>(string routingKey)
             where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler;
 
         void UnsubscribeDynamic<TDynamicIntegrationEventHandler>(string routingKey)

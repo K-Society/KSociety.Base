@@ -11,7 +11,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventReply : IIntegrationEventReply, new();
 
-        ValueTask SubscribeRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
+        ValueTask<bool> SubscribeRpc<TIntegrationEvent, TIntegrationEventReply, TIntegrationRpcHandler>(string routingKey)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
             where TIntegrationRpcHandler : IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>;

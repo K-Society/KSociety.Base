@@ -22,7 +22,7 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
         public TestEventBusRpc()
         {
 
-            this.Subscriber = new Subscriber(this.LoggerFactory, this.PersistentConnection, this.EventBusParameters, 10);
+            this.Subscriber = new Subscriber(this.LoggerFactory, this.PersistentConnection, this.EventBusParameters, 10, true);
 
             //this.Subscriber.
             new Thread(async () =>
