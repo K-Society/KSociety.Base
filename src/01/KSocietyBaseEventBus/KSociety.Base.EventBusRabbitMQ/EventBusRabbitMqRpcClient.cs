@@ -359,31 +359,37 @@ namespace KSociety.Base.EventBusRabbitMQ
         //    await this.StartBasicConsume<TIntegrationEventReply>().ConfigureAwait(false);
         //}
 
-        public async ValueTask SubscribeRpcClient<TIntegrationRpcClientHandler>(string replyRoutingKey, bool asyncMode = true)
+        public async ValueTask<bool> SubscribeRpcClient<TIntegrationRpcClientHandler>(string replyRoutingKey, bool asyncMode = true)
             where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
         {
             var eventNameResult = this.SubsManager.GetEventReplyKey<TIntegrationEventReply>();
             //this.Logger.LogTrace("SubscribeRpcClient reply routing key: {0}, event name result: {1}", replyRoutingKey, eventNameResult);
-            await this.DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey).ConfigureAwait(false);
-            this.SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(eventNameResult + "." + replyRoutingKey);
-            if (asyncMode)
+            var internalSubscriptionResult = await this.DoInternalSubscriptionRpc(eventNameResult + "." + replyRoutingKey).ConfigureAwait(false);
+
+            if (internalSubscriptionResult)
             {
-                await this.StartBasicConsumeAsync().ConfigureAwait(false);
+                this.SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(eventNameResult + "." + replyRoutingKey);
+                if (asyncMode)
+                {
+                    return await this.StartBasicConsumeAsync().ConfigureAwait(false);
+                }
+                else
+                {
+                    return this.StartBasicConsume();
+                }
             }
-            else
-            {
-                this.StartBasicConsume();
-            }
+
+            return false;
         }
 
-        private async ValueTask DoInternalSubscriptionRpc(string eventNameResult)
+        private async ValueTask<bool> DoInternalSubscriptionRpc(string eventNameResult)
         {
             try
             {
                 //var containsKey = this.SubsManager.HasSubscriptionsForEvent(eventNameResult);
                 if (this.SubsManager.HasSubscriptionsForEvent(eventNameResult))
                 {
-                    return;
+                    return false;
                 }
 
                 if (!this.PersistentConnection.IsConnected)
@@ -393,7 +399,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     if (!connectionResult)
                     {
                         this.Logger.LogWarning("EventBusRabbitMqRpcClient DoInternalSubscriptionRpc: {0}!", "no connection");
-                        return;
+                        return false;
                     }
                 }
 
@@ -409,6 +415,8 @@ namespace KSociety.Base.EventBusRabbitMQ
                             channel.QueueBind(this._queueNameReply,
                                 this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                                 eventNameResult); //ToDo
+
+                            return true;
                         }
                     }
                 }
@@ -421,6 +429,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 this.Logger.LogError(ex, "EventBusRabbitMqRpcClient DoInternalSubscriptionRpc: ");
             }
+
+            return false;
         }
 
         #endregion

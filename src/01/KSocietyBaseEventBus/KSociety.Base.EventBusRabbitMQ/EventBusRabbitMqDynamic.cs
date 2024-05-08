@@ -43,8 +43,12 @@ namespace KSociety.Base.EventBusRabbitMQ
         public async ValueTask SubscribeDynamic<TDynamicIntegrationEventHandler>(string eventName)
             where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler
         {
-            await this.DoInternalSubscription(eventName).ConfigureAwait(false);
-            this.SubsManager?.AddDynamicSubscription<TDynamicIntegrationEventHandler>(eventName);
+            var internalSubscriptionResult = await this.DoInternalSubscription(eventName).ConfigureAwait(false);
+
+            if (internalSubscriptionResult)
+            {
+                this.SubsManager?.AddDynamicSubscription<TDynamicIntegrationEventHandler>(eventName);
+            }
             //ToDo
             //await this.StartBasicConsume().ConfigureAwait(false);
         }

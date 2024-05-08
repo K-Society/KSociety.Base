@@ -11,7 +11,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>;
 
-        ValueTask SubscribeQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
+        ValueTask<bool> SubscribeQueue<TIntegrationEvent, TIntegrationQueueHandler>(string routingKey)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationQueueHandler : IIntegrationQueueHandler<TIntegrationEvent>;
 
