@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="32.0.2" />   
+    <PackageReference Include="CsvHelper" Version="32.0.3" />   
     <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />   
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.4" />
-    <PackageReference Include="Quartz" Version="3.8.1" />
+    <PackageReference Include="Quartz" Version="3.9.0" />
   </ItemGroup>
 
 </Project>
