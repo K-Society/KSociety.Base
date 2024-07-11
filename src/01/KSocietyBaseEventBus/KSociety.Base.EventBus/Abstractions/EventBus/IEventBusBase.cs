@@ -10,7 +10,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
     {
         IIntegrationGeneralHandler EventHandler { get; }
 
-        void Initialize<TIntegrationEvent>(bool asyncMode = true, CancellationToken cancel = default)
+        bool Initialize<TIntegrationEvent>(bool asyncMode = true, CancellationToken cancel = default)
             where TIntegrationEvent : IIntegrationEvent, new();
 
         ValueTask<bool> Subscribe<TIntegrationEvent, TIntegrationEventHandler>(bool asyncMode = true)

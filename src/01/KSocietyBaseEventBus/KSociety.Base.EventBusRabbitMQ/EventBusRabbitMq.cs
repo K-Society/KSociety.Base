@@ -102,7 +102,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public virtual void Initialize<TIntegrationEvent>(bool asyncMode = true, CancellationToken cancel = default)
+        public virtual bool Initialize<TIntegrationEvent>(bool asyncMode = true, CancellationToken cancel = default)
             where TIntegrationEvent : IIntegrationEvent, new()
         {
             if(asyncMode)
@@ -114,7 +114,14 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 this.ConsumerChannel =
                 new AsyncLazy<IModel>(() => this.CreateConsumerChannel<TIntegrationEvent>());
-            }  
+            }
+
+            if (this.ConsumerChannel != null)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private async void SubsManager_OnEventRemoved(object sender, string eventName)
