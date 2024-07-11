@@ -8,33 +8,16 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
 
     public interface IEventBusRpcClient<TIntegrationEventReply> : IEventBus
         where TIntegrationEventReply : IIntegrationEventReply, new()
-        //where TIntegrationEvent : IIntegrationEvent, new()
-        //where TIntegrationEventReply : IIntegrationEventReply, new()
     {
-        //Task<TIntegrationEventReply> CallAsync<TIntegrationEventReply>(T @event,
-        //    CancellationToken cancellationToken = default)
-        //    where TIntegrationEventReply : IIntegrationEventReply;
-
-        void Initialize(bool asyncMode = true, CancellationToken cancel = default);
+        bool Initialize(bool asyncMode = true, CancellationToken cancel = default);
 
         Task<TIntegrationEventReply> CallAsync<TIntegrationEventRpc>(TIntegrationEventRpc @event, CancellationToken cancellationToken = default)
             where TIntegrationEventRpc : IIntegrationEventRpc, new();
 
-        //IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler<TIntegrationEventReply>()
-        //    where TIntegrationEventReply : IIntegrationEventReply;
-
         IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler();
-
-        //ValueTask SubscribeRpcClient<TIntegrationEventReply, TH>(string replyRoutingKey)
-        //    where TIntegrationEventReply : IIntegrationEventReply
-        //    where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
 
         ValueTask<bool> SubscribeRpcClient<TIntegrationEventHandler>(string replyRoutingKey, bool asyncMode = true)
             where TIntegrationEventHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>;
-
-        //void UnsubscribeRpcClient<TIntegrationEventReply, TH>(string routingKey)
-        //    where TIntegrationEventReply : IIntegrationEventReply
-        //    where TH : IIntegrationRpcClientHandler<TIntegrationEventReply>;
 
         void UnsubscribeRpcClient<TIntegrationEventHandler>(string routingKey)
             where TIntegrationEventHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>;
