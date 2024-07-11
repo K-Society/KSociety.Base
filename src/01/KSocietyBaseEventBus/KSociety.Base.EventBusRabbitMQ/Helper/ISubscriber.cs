@@ -13,7 +13,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         IRabbitMqPersistentConnection PersistentConnection { get; }
         ConcurrentDictionary<string, IEventBus> EventBus { get; }
 
-        ValueTask SubscribeClientServer<
+        ValueTask<bool> SubscribeClientServer<
             TIntegrationRpcClientHandler, TIntegrationRpcServerHandler,
             TIntegrationEventRpc, TIntegrationEventReply>(
             string eventBusName, string queueName,
@@ -26,13 +26,13 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new();
 
-        ValueTask SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
+        ValueTask<bool> SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
             string eventBusName, string queueName,
             string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler)
             where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
             where TIntegrationEventReply : IIntegrationEventReply, new();
 
-        ValueTask SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEventRpc, TIntegrationEventReply>(
+        ValueTask<bool> SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEventRpc, TIntegrationEventReply>(
             string eventBusName, string queueName,
             string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler)
             where TIntegrationRpcServerHandler :
@@ -40,16 +40,16 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new();
 
-        ValueTask SubscribeTyped<TIntegrationEventHandler, TIntegrationEvent>(
+        ValueTask<bool> SubscribeTyped<TIntegrationEventHandler, TIntegrationEvent>(
             string eventBusName, string queueName,
             string routingKey, TIntegrationEventHandler integrationEventHandler)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
-        void SubscribeTyped<TIntegrationEvent>(string eventBusName, string queueName = null)
+        bool SubscribeTyped<TIntegrationEvent>(string eventBusName, string queueName = null)
             where TIntegrationEvent : IIntegrationEvent, new();
 
-        void SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
+        bool SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
             string eventBusName, string queueName,
             TIntegrationEventHandler integrationEventHandler)
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>

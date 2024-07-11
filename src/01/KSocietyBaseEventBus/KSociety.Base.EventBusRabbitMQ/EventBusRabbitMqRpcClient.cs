@@ -51,7 +51,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public void Initialize(bool asyncMode = true, CancellationToken cancel = default)
+        public bool Initialize(bool asyncMode = true, CancellationToken cancel = default)
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient Initialize.");
             //this._callbackMapper = new ConcurrentDictionary<string, TaskCompletionSource<TIntegrationEventReply>>();
@@ -72,6 +72,13 @@ namespace KSociety.Base.EventBusRabbitMQ
                 this.ConsumerChannel =
                 new AsyncLazy<IModel>(() => this.CreateConsumerChannel());
             }
+
+            if (this.ConsumerChannel != null)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler()
