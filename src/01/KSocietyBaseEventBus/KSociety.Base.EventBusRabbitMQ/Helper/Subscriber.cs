@@ -97,7 +97,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
         #endregion
 
-        public async ValueTask SubscribeClientServer<
+        public async ValueTask<bool> SubscribeClientServer<
             TIntegrationRpcClientHandler, TIntegrationRpcServerHandler,
             TIntegrationEventRpc, TIntegrationEventReply>(
             string eventBusName, string queueName,
@@ -110,16 +110,18 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
-            await this.SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
+            var clientResult = await this.SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
                 eventBusName, queueName,
                 replyRoutingKey, integrationRpcClientHandler).ConfigureAwait(false);
 
-            await this.SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEventRpc, TIntegrationEventReply>(
+            var serverResult = await this.SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEventRpc, TIntegrationEventReply>(
                 eventBusName, queueName,
                 routingKey, integrationRpcServerHandler).ConfigureAwait(false);
+
+            return clientResult && serverResult;
         }
 
-        public async ValueTask SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
+        public async ValueTask<bool> SubscribeClient<TIntegrationRpcClientHandler, TIntegrationEventReply>(
             string eventBusName, string queueName,
             string replyRoutingKey, TIntegrationRpcClientHandler integrationRpcClientHandler)
             where TIntegrationRpcClientHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>
@@ -127,7 +129,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             if (this.EventBus.ContainsKey(eventBusName + "_Client"))
             {
-                return;
+                return false;
             }
 
             IEventBus eventBus = null;
@@ -146,20 +148,24 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (eventBus == null)
             {
-                return;
+                return false;
             }
 
             if (this.EventBus.TryAdd(eventBusName + "_Client", eventBus))
             {
                 ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"]).Initialize(this._dispatchConsumersAsync);
 
-                await ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"])
+                var result = await ((IEventBusRpcClient<TIntegrationEventReply>)this.EventBus[eventBusName + "_Client"])
                     .SubscribeRpcClient<TIntegrationRpcClientHandler>(replyRoutingKey, this._dispatchConsumersAsync)
                     .ConfigureAwait(false);
+
+                return result;
             }
+
+            return false;
         }
 
-        public async ValueTask SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEventRpc, TIntegrationEventReply>(
+        public async ValueTask<bool> SubscribeServer<TIntegrationRpcServerHandler, TIntegrationEventRpc, TIntegrationEventReply>(
             string eventBusName, string queueName,
             string routingKey, TIntegrationRpcServerHandler integrationRpcServerHandler)
             where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>
@@ -168,7 +174,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             if (this.EventBus.ContainsKey(eventBusName + "_Server"))
             {
-                return;
+                return false;
             }
 
             IEventBus eventBus = null;
@@ -188,20 +194,24 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (eventBus == null)
             {
-                return;
+                return false;
             }
 
             if (this.EventBus.TryAdd(eventBusName + "_Server", eventBus))
             {
                 ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"]).InitializeServer<TIntegrationEventRpc, TIntegrationEventReply>(this._dispatchConsumersAsync);//.Initialize();
 
-                await ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"])
+                var result = await ((IEventBusRpcServer)this.EventBus[eventBusName + "_Server"])
                     .SubscribeRpcServer<TIntegrationEventRpc, TIntegrationEventReply,
                         TIntegrationRpcServerHandler>(routingKey, this._dispatchConsumersAsync).ConfigureAwait(false);
+
+                return result;
             }
+
+            return false;
         }
 
-        public async ValueTask SubscribeTyped<TIntegrationEventHandler, TIntegrationEvent>(
+        public async ValueTask<bool> SubscribeTyped<TIntegrationEventHandler, TIntegrationEvent>(
             string eventBusName, string queueName,
             string routingKey, TIntegrationEventHandler integrationEventHandler)
             where TIntegrationEvent : IIntegrationEvent, new()
@@ -209,7 +219,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             if (this.EventBus.ContainsKey(eventBusName))
             {
-                return;
+                return false;
             }
 
             IEventBus eventBus = null;
@@ -227,24 +237,28 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (eventBus == null)
             {
-                return;
+                return false;
             }
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
                 ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>(this._dispatchConsumersAsync);
 
-                await ((IEventBusTyped)this.EventBus[eventBusName])
+                var result = await ((IEventBusTyped)this.EventBus[eventBusName])
                     .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey, this._dispatchConsumersAsync).ConfigureAwait(false);
+
+                return result;
             }
+
+            return false;
         }
 
-        public void SubscribeTyped<TIntegrationEvent>(string eventBusName, string queueName = null)
+        public bool SubscribeTyped<TIntegrationEvent>(string eventBusName, string queueName = null)
             where TIntegrationEvent : IIntegrationEvent, new()
         {
             if (this.EventBus.ContainsKey(eventBusName))
             {
-                return;
+                return false;
             }
 
             IEventBus eventBus = null;
@@ -262,16 +276,19 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (eventBus == null)
             {
-                return;
+                return false;
             }
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
-                ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
+                var result = ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
+                return result;
             }
+
+            return false;
         }
 
-        public void SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
+        public bool SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
             string eventBusName, string queueName,
             TIntegrationEventHandler integrationEventHandler
         )
@@ -280,7 +297,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             if (this.EventBus.ContainsKey(eventBusName))
             {
-                return;
+                return false;
             }
 
             IEventBus eventBus = null;
@@ -298,13 +315,15 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
             if (eventBus == null)
             {
-                return;
+                return false;
             }
 
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
-                ((IEventBusQueue)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
+                var result = ((IEventBusQueue)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
+                return result;
             }
+            return false;
         }
     }
 }

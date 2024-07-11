@@ -49,7 +49,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public void Initialize<TIntegrationEvent, TIntegrationEventReply>(CancellationToken cancel = default)
+        public bool Initialize<TIntegrationEvent, TIntegrationEventReply>(CancellationToken cancel = default)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
@@ -64,6 +64,13 @@ namespace KSociety.Base.EventBusRabbitMQ
             this._queueNameReply = this.QueueName + "_Reply";
             this._consumerChannelReply =
                 new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelReplyAsync<TIntegrationEventReply>(cancel).ConfigureAwait(false));
+
+            if (this.ConsumerChannel != null && this._consumerChannelReply != null)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public IIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply> GetIntegrationRpcHandler<TIntegrationEvent, TIntegrationEventReply>()
