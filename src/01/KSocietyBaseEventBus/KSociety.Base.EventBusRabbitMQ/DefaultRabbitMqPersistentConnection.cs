@@ -94,40 +94,40 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             //try
             //{
-                var policy = Policy.Handle<SocketException>()
-                    .Or<BrokerUnreachableException>()
-                    .Or<Exception>()
-                    .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                        (ex, time) =>
-                        {
-                            this._logger?.LogWarning(ex, "TryConnect: ");
-                        });
+            var policy = Policy.Handle<SocketException>()
+                .Or<BrokerUnreachableException>()
+                .Or<Exception>()
+                .WaitAndRetryForever(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    (ex, time) =>
+                    {
+                        this._logger?.LogWarning(ex, "TryConnect: ");
+                    });
 
 
-                policy.Execute(this.CreateConnection);
+            policy.Execute(this.CreateConnection);
 
-                if (this.IsConnected)
+            if (this.IsConnected)
+            {
+                if (this._connection != null)
                 {
-                    if (this._connection != null)
-                    {
-                        this._connection.ConnectionShutdown += this.OnConnectionShutdown;
-                        this._connection.CallbackException += this.OnCallbackException;
-                        this._connection.ConnectionBlocked += this.OnConnectionBlocked;
+                    this._connection.ConnectionShutdown += this.OnConnectionShutdown;
+                    this._connection.CallbackException += this.OnCallbackException;
+                    this._connection.ConnectionBlocked += this.OnConnectionBlocked;
 
-                        //this._logger?.LogInformation($"RabbitMQ persistent connection acquired a connection {this._connection.Endpoint.HostName} and is subscribed to failure events");
-                        output = true;
-                    }
-                    else
-                    {
-                        output = false;
-                    }
+                    //this._logger?.LogInformation($"RabbitMQ persistent connection acquired a connection {this._connection.Endpoint.HostName} and is subscribed to failure events");
+                    output = true;
                 }
                 else
                 {
-                    this._logger?.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
-
                     output = false;
                 }
+            }
+            else
+            {
+                this._logger?.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
+
+                output = false;
+            }
             //}
             //finally
             //{
