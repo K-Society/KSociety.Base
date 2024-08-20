@@ -10,18 +10,12 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
 
     public class TestEventBusTyped : Test
     {
-        //private readonly IEventBusTyped _eventBusTyped;
 
         public Subscriber Subscriber { get; }
 
         public TestEventBusTyped()
         {
             this.Subscriber = new Subscriber(this.LoggerFactory, this.PersistentConnection, this.EventBusParameters, 700);
-            //this._eventBusTyped = new EventBusRabbitMqTyped(this.PersistentConnection, this.LoggerFactory,
-            //    new TestEventHandler(this.LoggerFactory), null, this.EventBusParameters, "Test");
-            //this._eventBusTyped.Subscribe<TestIntegrationEvent, TestEventHandler>("pippo");
-
-            
         }
 
         [Fact]

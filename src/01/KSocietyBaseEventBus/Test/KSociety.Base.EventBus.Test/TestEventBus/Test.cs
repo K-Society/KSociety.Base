@@ -22,7 +22,6 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
         private readonly IQueueDeclareParameters _queueDeclareParameters;
         protected readonly IComponentContext ComponentContext;
         protected IEventBus EventBus;
-        //protected readonly IEventBusRpcServer _eventBusRpcServer;
 
         public Test()
         {
@@ -38,8 +37,6 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
                 HostName = "localhost",
                 UserName = "KSociety",
                 Password = "KSociety",
-                //UserName = "guest",
-                //Password = "guest",
                 AutomaticRecoveryEnabled = true,
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(10),
                 RequestedHeartbeat = TimeSpan.FromSeconds(10),
