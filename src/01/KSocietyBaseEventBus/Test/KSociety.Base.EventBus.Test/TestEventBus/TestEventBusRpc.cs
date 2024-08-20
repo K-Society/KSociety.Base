@@ -24,24 +24,13 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
 
             this.Subscriber = new Subscriber(this.LoggerFactory, this.PersistentConnection, this.EventBusParameters, 10, true);
 
-            //this.Subscriber.
             new Thread(async () =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                //await this.StartServer().ConfigureAwait(false);
                 await this.Subscriber
                     .SubscribeServer<TestRpcServerHandler, TestIntegrationEventRpc, TestIntegrationEventReply>("TestBus", "ServerTest", "pippo.server", new TestRpcServerHandler(this.LoggerFactory, this.ComponentContext))
                     .ConfigureAwait(false);
             }).Start();
-
-            //Thread client = new Thread(StartClient);
-            //StartServer();
-
-            //new Thread(StartClient).Start();
-            //_ = this.StartServer();
-            //this.StartClient();
-
-            //this.StartRpc();
 
             this.Subscriber
                 .SubscribeClient<TestRpcClientHandler, TestIntegrationEventReply>("TestBus", "ClientTest", "pippo.client", new TestRpcClientHandler(this.LoggerFactory, this.ComponentContext))
