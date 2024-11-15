@@ -4,7 +4,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
@@ -24,9 +24,9 @@
   </ItemGroup>
 
   <!-- .NET 9.0 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+  <!--<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
     <ProjectReference Include="..\KSociety.Base.Infra.Shared\KSociety.Base.Infra.Shared.csproj" />
