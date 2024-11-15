@@ -123,8 +123,7 @@ namespace KSociety.Base.Srv.Host.Shared.Bindings
                 AutomaticRecoveryEnabled = true,
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(10),
                 RequestedHeartbeat = TimeSpan.FromSeconds(10),
-                ContinuationTimeout = TimeSpan.FromSeconds(120),
-                DispatchConsumersAsync = true
+                ContinuationTimeout = TimeSpan.FromSeconds(120)
             };
 
             builder.RegisterInstance(exchangeDeclareParameters).As<TExchangeDeclareParameters>().SingleInstance();

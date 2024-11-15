@@ -9,14 +9,14 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
     public interface IEventBusRpcClient<TIntegrationEventReply> : IEventBus
         where TIntegrationEventReply : IIntegrationEventReply, new()
     {
-        bool Initialize(bool asyncMode = true, CancellationToken cancel = default);
+        bool Initialize(CancellationToken cancel = default);
 
         Task<TIntegrationEventReply> CallAsync<TIntegrationEventRpc>(TIntegrationEventRpc @event, CancellationToken cancellationToken = default)
             where TIntegrationEventRpc : IIntegrationEventRpc, new();
 
         IIntegrationRpcClientHandler<TIntegrationEventReply> GetIntegrationRpcClientHandler();
 
-        ValueTask<bool> SubscribeRpcClient<TIntegrationEventHandler>(string replyRoutingKey, bool asyncMode = true)
+        ValueTask<bool> SubscribeRpcClient<TIntegrationEventHandler>(string replyRoutingKey)
             where TIntegrationEventHandler : IIntegrationRpcClientHandler<TIntegrationEventReply>;
 
         void UnsubscribeRpcClient<TIntegrationEventHandler>(string routingKey)
