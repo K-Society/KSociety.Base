@@ -184,7 +184,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected override async void QueueInitialize(IChannel channel)
+        protected override async ValueTask<(QueueDeclareOk, QueueDeclareOk)> QueueInitialize(IChannel channel)
         {
             try
             {
@@ -200,16 +200,20 @@ namespace KSociety.Base.EventBusRabbitMQ
                     //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
                     //};
 
-                    await channel.QueueDeclareAsync(this.QueueName,
+                    var resultQueue = await channel.QueueDeclareAsync(this.QueueName,
                         this.EventBusParameters.QueueDeclareParameters.QueueDurable,
                         this.EventBusParameters.QueueDeclareParameters.QueueExclusive,
                         this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null).ConfigureAwait(false);
 
-                    await channel.QueueDeclareAsync(this._queueNameReply,
+                    var resultQueueReply =  await channel.QueueDeclareAsync(this._queueNameReply,
                         this.EventBusParameters.QueueDeclareParameters.QueueDurable,
                         this.EventBusParameters.QueueDeclareParameters.QueueExclusive,
                         this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null).ConfigureAwait(false);
+
+                    return (resultQueue, resultQueueReply);
                 }
+
+                return (null, null);
             }
             catch (RabbitMQClientException rex)
             {
@@ -219,6 +223,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 this.Logger.LogError(ex, "EventBusRabbitMqRpc QueueInitialize: ");
             }
+
+            return (null, null);
         }
 
         #region [Subscribe]
@@ -270,19 +276,22 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     if (channel != null)
                     {
-                        this.QueueInitialize(channel);
+                        var result = await this.QueueInitialize(channel).ConfigureAwait(false);
 
-                        if (!String.IsNullOrEmpty(this.QueueName) &&
-                            !String.IsNullOrEmpty(this._queueNameReply) &&
-                            !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                        if (result.Item1 != null && result.Item2 != null)
                         {
-                            await channel.QueueBindAsync(this.QueueName,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName).ConfigureAwait(false);
-                            await channel.QueueBindAsync(this._queueNameReply,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                                eventNameResult).ConfigureAwait(false);
+                            if (!String.IsNullOrEmpty(this.QueueName) &&
+                                !String.IsNullOrEmpty(this._queueNameReply) &&
+                                !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                            {
+                                await channel.QueueBindAsync(this.QueueName,
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName).ConfigureAwait(false);
+                                await channel.QueueBindAsync(this._queueNameReply,
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                    eventNameResult).ConfigureAwait(false);
 
-                            return true;
+                                return true;
+                            }
                         }
                     }
                 }

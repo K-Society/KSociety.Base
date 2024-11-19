@@ -152,7 +152,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected override async void QueueInitialize(IChannel channel)
+        protected override async ValueTask<(QueueDeclareOk, QueueDeclareOk)> QueueInitialize(IChannel channel)
         {
             try
             {
@@ -168,7 +168,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
                     //};
 
-                    await channel.QueueDeclareAsync(this.QueueName, this.EventBusParameters.QueueDeclareParameters.QueueDurable,
+                    var result = await channel.QueueDeclareAsync(this.QueueName, this.EventBusParameters.QueueDeclareParameters.QueueDurable,
                         this.EventBusParameters.QueueDeclareParameters.QueueExclusive,
                         this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null).ConfigureAwait(false);
 
@@ -176,7 +176,11 @@ namespace KSociety.Base.EventBusRabbitMQ
                     //    this.EventBusParameters.QueueDeclareParameters.QueueDurable,
                     //    this.EventBusParameters.QueueDeclareParameters.QueueExclusive,
                     //    this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
+
+                    return (result, null);
                 }
+
+                return (null, null);
             }
             catch (RabbitMQClientException rex)
             {
@@ -186,6 +190,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 this.Logger.LogError(ex, "EventBusRabbitMqRpcServer QueueInitialize: ");
             }
+
+            return (null, null);
         }
 
         //private void QueueInitializeReply(IChannel channel)
@@ -234,7 +240,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             var eventName = this.SubsManager.GetEventKey<TIntegrationEventRpc>();
             var eventNameResult = this.SubsManager.GetEventReplyKey<TIntegrationEventReply>();
             //this.Logger.LogTrace("SubscribeRpcServer routing key: {0}, event name: {1}, event name result: {2}", routingKey, eventName, eventNameResult);
-            var internalSubscriptionResult = await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey)
+            //var internalSubscriptionResult = await this.DoInternalSubscriptionRpc(eventName + "." + routingKey, eventNameResult + "." + routingKey)
+            //    .ConfigureAwait(false);
+
+            var internalSubscriptionResult = await this.DoInternalSubscriptionRpc(eventName + "." + routingKey)
                 .ConfigureAwait(false);
 
             if (internalSubscriptionResult)
@@ -254,7 +263,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             return false;
         }
 
-        private async ValueTask<bool> DoInternalSubscriptionRpc(string eventName, string eventNameResult)
+        private async ValueTask<bool> DoInternalSubscriptionRpc(string eventName)
         {
             try
             {
@@ -279,7 +288,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     if (channel != null)
                     {
-                        this.QueueInitialize(channel);
+                        var queueResult = await this.QueueInitialize(channel).ConfigureAwait(false);
                         //this.QueueInitializeReply(channel);
 
                         //if (this.EventBusParameters != null && this.EventBusParameters.ExchangeDeclareParameters != null)
@@ -288,17 +297,20 @@ namespace KSociety.Base.EventBusRabbitMQ
                         //    channel.QueueBind(this._queueNameReply, this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventNameResult);
                         //}
 
-                        if (!String.IsNullOrEmpty(this.QueueName) &&
-                            //!String.IsNullOrEmpty(this._queueNameReply) &&
-                            !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                        if (queueResult.Item1 != null)
                         {
-                            await channel.QueueBindAsync(this.QueueName,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName).ConfigureAwait(false);
+                            if (!String.IsNullOrEmpty(this.QueueName) &&
+                                //!String.IsNullOrEmpty(this._queueNameReply) &&
+                                !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                            {
+                                await channel.QueueBindAsync(this.QueueName,
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName).ConfigureAwait(false);
 
-                            return true;
-                            //channel.QueueBind(this._queueNameReply,
-                            //    this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                            //    eventNameResult);
+                                return true;
+                                //channel.QueueBind(this._queueNameReply,
+                                //    this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                //    eventNameResult);
+                            }
                         }
                     }
                 }
