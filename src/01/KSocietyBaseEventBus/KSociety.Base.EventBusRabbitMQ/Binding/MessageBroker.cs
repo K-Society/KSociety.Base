@@ -33,7 +33,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
     {
         private readonly bool _debug;
         private readonly int _eventBusNumber;
-        private readonly bool _dispatchConsumersAsync;
+        //private readonly bool _dispatchConsumersAsync;
         private readonly string _brokerName;
         private readonly EventBus.ExchangeType _exchangeType;
         private readonly bool _exchangeDurable;
@@ -47,7 +47,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
         private readonly string _mqPassword;
 
         public MessageBroker(
-            int eventBusNumber, bool dispatchConsumersAsync,
+            int eventBusNumber, /*bool dispatchConsumersAsync,*/
             string brokerName, EventBus.ExchangeType exchangeType,
             bool exchangeDurable, bool exchangeAutoDelete,
             string mqHostName, string mqUserName, string mqPassword, bool debug,
@@ -57,7 +57,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
         {
             this._debug = debug;
             this._eventBusNumber = eventBusNumber;
-            this._dispatchConsumersAsync = dispatchConsumersAsync;
+            //this._dispatchConsumersAsync = dispatchConsumersAsync;
             this._brokerName = brokerName;
             this._exchangeType = exchangeType;
             this._exchangeDurable = exchangeDurable;
@@ -76,7 +76,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
         {
             this._debug = debug;
             this._eventBusNumber = messageBroker.EventBusNumber;
-            this._dispatchConsumersAsync = messageBroker.DispatchConsumersAsync;
+            //this._dispatchConsumersAsync = messageBroker.DispatchConsumersAsync;
             this._brokerName = messageBroker.ExchangeDeclareParameters.BrokerName;
             this._exchangeType = messageBroker.ExchangeDeclareParameters.ExchangeType;
             this._exchangeDurable = messageBroker.ExchangeDeclareParameters.ExchangeDurable;
@@ -121,8 +121,8 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
                 AutomaticRecoveryEnabled = true,
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(10),
                 RequestedHeartbeat = TimeSpan.FromSeconds(10),
-                ContinuationTimeout = TimeSpan.FromSeconds(120),
-                DispatchConsumersAsync = this._dispatchConsumersAsync
+                ContinuationTimeout = TimeSpan.FromSeconds(120)
+                //DispatchConsumersAsync = this._dispatchConsumersAsync
             };
 
             builder.RegisterInstance(exchangeDeclareParameters).As<TExchangeDeclareParametersClass>()
@@ -136,7 +136,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
             builder.RegisterType<DefaultRabbitMqPersistentConnection>().As<IRabbitMqPersistentConnection>()
                 .UsingConstructor(typeof(TConnectionFactory), typeof(ILogger<DefaultRabbitMqPersistentConnection>)).SingleInstance();
 
-            builder.RegisterType<TSubscriberClass>().UsingConstructor(typeof(IRabbitMqPersistentConnection), typeof(TEventBusParameters), typeof(int), typeof(bool), typeof(ILogger<EventBusRabbitMq>)).WithParameter("eventBusNumber", this._eventBusNumber).WithParameter("dispatchConsumersAsync", this._dispatchConsumersAsync).As<TSubscriber>().SingleInstance();
+            builder.RegisterType<TSubscriberClass>().UsingConstructor(typeof(IRabbitMqPersistentConnection), typeof(TEventBusParameters), typeof(int), /*typeof(bool),*/ typeof(ILogger<EventBusRabbitMq>)).WithParameter("eventBusNumber", this._eventBusNumber)/*.WithParameter("dispatchConsumersAsync", this._dispatchConsumersAsync)*/.As<TSubscriber>().SingleInstance();
         }
     }
 }

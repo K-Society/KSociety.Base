@@ -80,33 +80,39 @@ namespace KSociety.Base.EventBusRabbitMQ
                     this.Logger?.LogWarning(ex, "Publish: ");
                 });
 
-            using (var channel = this.PersistentConnection.CreateModel())
+            using (var channel = await this.PersistentConnection.CreateModel().ConfigureAwait(false))
             {
                 if (channel != null)
                 {
                     var routingKey = @event.RoutingKey;
                     if (this.EventBusParameters?.ExchangeDeclareParameters != null)
                     {
-                        channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                        await channel.ExchangeDeclareAsync(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                             this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
                             this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
-                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete).ConfigureAwait(false);
 
                         using (var ms = new MemoryStream())
                         {
                             Serializer.Serialize(ms, @event);
                             var body = ms.ToArray();
 
-                            policy.Execute(() =>
+                            await policy.Execute(async () =>
                             {
-                                var properties = channel.CreateBasicProperties();
-                                properties.DeliveryMode = 1; //2 = persistent, write on disk
+                                //var properties = channel.CreateBasicProperties();
+                                //var properties = BasicProperties();
+                                //properties.DeliveryMode = 1; //2 = persistent, write on disk
 
-                                channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                var props = new BasicProperties
+                                {
+                                    DeliveryMode = DeliveryModes.Transient
+                                };
+
+                                await channel.BasicPublishAsync(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                                     routingKey,
                                     true,
-                                    properties, body);
-                            });
+                                    props, body).ConfigureAwait(false);
+                            }).ConfigureAwait(false);
                         }
                     }
                 }

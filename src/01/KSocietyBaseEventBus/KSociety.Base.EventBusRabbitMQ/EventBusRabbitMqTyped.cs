@@ -53,7 +53,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #region [Subscribe]
 
-        public async ValueTask<bool> Subscribe<TIntegrationEvent, TIntegrationEventHandler>(string routingKey, bool asyncMode = false)
+        public async ValueTask<bool> Subscribe<TIntegrationEvent, TIntegrationEventHandler>(string routingKey)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
@@ -65,14 +65,14 @@ namespace KSociety.Base.EventBusRabbitMQ
             if (internalSubscriptionResult)
             {
                 this.SubsManager?.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>(eventName + "." + routingKey);
-                if (asyncMode)
-                {
+                //if (asyncMode)
+                //{
                     return await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
-                }
-                else
-                {
-                    return this.StartBasicConsume<TIntegrationEvent>();
-                }
+                //}
+                //else
+                //{
+                //    return this.StartBasicConsume<TIntegrationEvent>();
+                //}
             }
 
             return false;

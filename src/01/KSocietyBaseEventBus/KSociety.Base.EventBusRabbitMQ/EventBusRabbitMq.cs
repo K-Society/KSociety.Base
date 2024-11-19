@@ -2,10 +2,16 @@
 
 namespace KSociety.Base.EventBusRabbitMQ
 {
+    using System;
+    using System.IO;
+    using System.Net.Sockets;
+    using System.Threading;
+    using System.Threading.Tasks;
     using EventBus;
     using EventBus.Abstractions;
-    using KSociety.Base.EventBus.Abstractions.EventBus;
     using EventBus.Abstractions.Handler;
+    using Helper;
+    using KSociety.Base.EventBus.Abstractions.EventBus;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
     using Polly;
@@ -13,12 +19,6 @@ namespace KSociety.Base.EventBusRabbitMQ
     using RabbitMQ.Client;
     using RabbitMQ.Client.Events;
     using RabbitMQ.Client.Exceptions;
-    using System;
-    using System.IO;
-    using System.Net.Sockets;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Helper;
 
     public class EventBusRabbitMq : Disposable, IEventBus
     {
@@ -28,9 +28,11 @@ namespace KSociety.Base.EventBusRabbitMQ
         protected readonly IEventBusSubscriptionsManager SubsManager;
         protected readonly IEventBusParameters EventBusParameters;
 
+        //protected readonly BasicProperties Properties;
+
         public IIntegrationGeneralHandler EventHandler { get; }
 
-        protected AsyncLazy<IModel> ConsumerChannel;
+        protected AsyncLazy<IChannel> ConsumerChannel;
         protected string QueueName;
 
         #region [Constructor]
@@ -40,6 +42,10 @@ namespace KSociety.Base.EventBusRabbitMQ
             IEventBusParameters eventBusParameters,
             string queueName = null)
         {
+            //this.Properties = new BasicProperties
+            //{
+            //    DeliveryMode = DeliveryModes.Transient
+            //};
             //if (eventBusParameters.Debug != null)
             //{
             //    this.Debug = eventBusParameters.Debug.Value;
@@ -102,19 +108,12 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public virtual bool Initialize<TIntegrationEvent>(bool asyncMode = true, CancellationToken cancel = default)
+        public virtual bool Initialize<TIntegrationEvent>(CancellationToken cancel = default)
             where TIntegrationEvent : IIntegrationEvent, new()
         {
-            if(asyncMode)
-            {
-                this.ConsumerChannel =
-                new AsyncLazy<IModel>(async () => await this.CreateConsumerChannelAsync<TIntegrationEvent>(cancel).ConfigureAwait(false));
-            }
-            else
-            {
-                this.ConsumerChannel =
-                new AsyncLazy<IModel>(() => this.CreateConsumerChannel<TIntegrationEvent>());
-            }
+
+            this.ConsumerChannel =
+            new AsyncLazy<IChannel>(async () => await this.CreateConsumerChannelAsync<TIntegrationEvent>(cancel).ConfigureAwait(false));           
 
             if (this.ConsumerChannel != null)
             {
@@ -142,16 +141,16 @@ namespace KSociety.Base.EventBusRabbitMQ
                 }
             }
 
-            using (var channel = this.PersistentConnection.CreateModel())
+            using (var channel = await this.PersistentConnection.CreateModel().ConfigureAwait(false))
             {
                 if (channel != null)
                 {
                     if (!String.IsNullOrEmpty(this.QueueName) &&
                         !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
                     {
-                        channel.QueueUnbind(this.QueueName,
+                        await channel.QueueUnbindAsync(this.QueueName,
                             this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                            eventName);
+                            eventName).ConfigureAwait(false);
 
                         if (!this.SubsManager.IsEmpty)
                         {
@@ -161,7 +160,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                         this.QueueName = String.Empty;
                         if (this.ConsumerChannel != null)
                         {
-                            (await this.ConsumerChannel).Close();
+                            await (await this.ConsumerChannel).CloseAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -191,32 +190,39 @@ namespace KSociety.Base.EventBusRabbitMQ
                         this.Logger.LogWarning(ex, "Publish: ");
                     });
 
-                using (var channel = this.PersistentConnection.CreateModel())
+                using (var channel = await this.PersistentConnection.CreateModel().ConfigureAwait(false))
                 {
                     if (channel != null)
                     {
                         var routingKey = @event.RoutingKey;
                         if (this.EventBusParameters.ExchangeDeclareParameters != null)
                         {
-                            channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                            await channel.ExchangeDeclareAsync(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
                                 this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
                                 this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete).ConfigureAwait(false);
 
                             using (var ms = new MemoryStream())
                             {
                                 Serializer.Serialize(ms, @event);
                                 var body = ms.ToArray();
 
-                                policy.Execute(() =>
+                                await policy.Execute(async () =>
                                 {
-                                    var properties = channel.CreateBasicProperties();
-                                    properties.DeliveryMode = 1; //2 = persistent, write on disk
+                                    //var properties = channel.CreateBasicProperties();
+                                    //var properties = BasicProperties();
+                                    //properties.DeliveryMode = 1; //2 = persistent, write on disk
 
-                                    channel.BasicPublish(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                                        routingKey, true, properties,
-                                        body);
-                                });
+                                    var props = new BasicProperties
+                                    {
+                                        DeliveryMode = DeliveryModes.Transient
+                                    };
+
+                                    await channel.BasicPublishAsync(
+                                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                        routingKey, true, props,
+                                        body).ConfigureAwait(false);
+                                }).ConfigureAwait(false);
                             }
                         }
                     }
@@ -228,30 +234,32 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual void QueueInitialize(IModel channel)
+        protected virtual async ValueTask<(QueueDeclareOk, QueueDeclareOk)> QueueInitialize(IChannel channel)
         {
             try
             {
                 if (this.EventBusParameters is null)
                 {
-                    return;
+                    return (null, null);
                 }
 
                 //if (this.EventBusParameters != null)
                 //{
-                    channel.ExchangeDeclare(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
-                        this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete);
+                await channel.ExchangeDeclareAsync(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeType,
+                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeDurable,
+                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeAutoDelete).ConfigureAwait(false);
                     //var args = new Dictionary<string, object>
                     //{
                     //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
                     //    //{"x-dead-letter-routing-key", "some-routing-key" }
                     //};
-                    channel.QueueDeclare(this.QueueName, this.EventBusParameters.QueueDeclareParameters.QueueDurable,
+                    var result = await channel.QueueDeclareAsync(this.QueueName, this.EventBusParameters.QueueDeclareParameters.QueueDurable,
                         this.EventBusParameters.QueueDeclareParameters.QueueExclusive,
-                        this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
+                        this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null).ConfigureAwait(false);
                 //}
+
+                return (result, null);
             }
             catch (RabbitMQClientException rex)
             {
@@ -261,29 +269,24 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 this.Logger.LogError(ex, "EventBusRabbitMq QueueInitialize: ");
             }
+
+            return (null, null);
         }
 
         #region [Subscribe]
 
-        public async ValueTask<bool> Subscribe<TIntegrationEvent, TIntegrationEventHandler>(bool asyncMode = true)
+        public async ValueTask<bool> Subscribe<TIntegrationEvent, TIntegrationEventHandler>()
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
-
             var eventName = this.SubsManager.GetEventKey<TIntegrationEvent>();
             var internalSubscriptionResult = await this.DoInternalSubscription(eventName).ConfigureAwait(false);
 
             if (internalSubscriptionResult)
             {
                 this.SubsManager.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>();
-                if (asyncMode)
-                {
-                    return await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
-                }
-                else
-                {
-                    return this.StartBasicConsume<TIntegrationEvent>();
-                }
+
+                return await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
             }
 
             return false;
@@ -313,18 +316,21 @@ namespace KSociety.Base.EventBusRabbitMQ
                 }
             }
 
-            using (var channel = this.PersistentConnection.CreateModel())
+            using (var channel = await this.PersistentConnection.CreateModel().ConfigureAwait(false))
             {
                 if (channel != null)
                 {
-                    this.QueueInitialize(channel);
+                    var result = await this.QueueInitialize(channel).ConfigureAwait(false);
 
-                    if (!String.IsNullOrEmpty(this.QueueName) &&
-                        !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                    if (result.Item1 != null)
                     {
-                        channel.QueueBind(this.QueueName,
-                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName);
-                        return true;
+                        if (!String.IsNullOrEmpty(this.QueueName) &&
+                            !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                        {
+                            await channel.QueueBindAsync(this.QueueName,
+                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName).ConfigureAwait(false);
+                            return true;
+                        }
                     }
                 }
             }
@@ -361,7 +367,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        protected virtual bool StartBasicConsume<TIntegrationEvent>()
+        protected virtual async ValueTask<bool> StartBasicConsume<TIntegrationEvent>()
             where TIntegrationEvent : IIntegrationEvent, new()
         {
             //this.Logger.LogTrace("EventBusRabbitMq Starting RabbitMQ basic consume.");
@@ -376,14 +382,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                 if (this.ConsumerChannel.Value != null)
                 {
                     var model = this.ConsumerChannel.Value.Result;
-                    var consumer = new EventingBasicConsumer(model);
+                    var consumer = new AsyncEventingBasicConsumer(model);
 
-                    consumer.Received += this.ConsumerReceived<TIntegrationEvent>;
+                    consumer.ReceivedAsync += this.ConsumerReceived<TIntegrationEvent>;
 
-                    model.BasicConsume(
+                    await model.BasicConsumeAsync(
                         queue: this.QueueName,
                         autoAck: false,
-                        consumer: consumer);
+                        consumer: consumer).ConfigureAwait(false);
 
                     //this.Logger.LogInformation("EventBusRabbitMq StartBasicConsume done. Queue name: {0}, autoAck: {1}", this.QueueName, true);
 
@@ -417,12 +423,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     var asyncConsumer = new AsyncEventingBasicConsumer(await this.ConsumerChannel);
 
-                    asyncConsumer.Received += this.ConsumerReceivedAsync<TIntegrationEvent>;
+                    asyncConsumer.ReceivedAsync += this.ConsumerReceivedAsync<TIntegrationEvent>;
 
-                    (await this.ConsumerChannel).BasicConsume(
+                    await (await this.ConsumerChannel).BasicConsumeAsync(
                         queue: this.QueueName,
                         autoAck: false,
-                        consumer: asyncConsumer);
+                        consumer: asyncConsumer).ConfigureAwait(false);
 
                     //this.Logger.LogInformation("EventBusRabbitMq StartBasicConsume done. Queue name: {0}, autoAck: {1}", this.QueueName, true);
 
@@ -446,7 +452,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         //}
 
-        protected virtual void ConsumerReceived<TIntegrationEvent>(object sender, BasicDeliverEventArgs eventArgs)
+        protected virtual async Task ConsumerReceived<TIntegrationEvent>(object sender, BasicDeliverEventArgs eventArgs)
             where TIntegrationEvent : IIntegrationEvent, new()
         {
             var result = eventArgs.RoutingKey.Split('.');
@@ -454,7 +460,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
             try
             {
-                this.ProcessEventAsync<TIntegrationEvent>(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
+                await this.ProcessEventAsync<TIntegrationEvent>(eventArgs.RoutingKey, eventName, eventArgs.Body).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -467,7 +473,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // Even on exception we take the message off the queue.
                 // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
                 // For more information see: https://www.rabbitmq.com/dlx.html
-                this.ConsumerChannel.Value.Result.BasicAck(eventArgs.DeliveryTag, multiple: false);
+                await this.ConsumerChannel.Value.Result.BasicAckAsync(eventArgs.DeliveryTag, multiple: false).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -498,7 +504,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                 // For more information see: https://www.rabbitmq.com/dlx.html
                 if (this.ConsumerChannel != null)
                 {
-                    (await this.ConsumerChannel).BasicAck(eventArgs.DeliveryTag, multiple: false);
+                    await (await this.ConsumerChannel).BasicAckAsync(eventArgs.DeliveryTag, multiple: false).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -507,50 +513,50 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual IModel CreateConsumerChannel<TIntegrationEvent>()
-            where TIntegrationEvent : IIntegrationEvent, new()
-        {
-            //this.Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
-            if (this.PersistentConnection is null)
-            {
-                return null;
-            }
+        //protected virtual async IChannel CreateConsumerChannel<TIntegrationEvent>()
+        //    where TIntegrationEvent : IIntegrationEvent, new()
+        //{
+        //    //this.Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
+        //    if (this.PersistentConnection is null)
+        //    {
+        //        return null;
+        //    }
 
-            if (!this.PersistentConnection.IsConnected)
-            {
-                this.PersistentConnection.TryConnect();
-                //this.PersistentConnection.TryConnect();
-            }
+        //    if (!this.PersistentConnection.IsConnected)
+        //    {
+        //        await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false)
+        //        //this.PersistentConnection.TryConnect();
+        //    }
 
-            var channel = this.PersistentConnection.CreateModel();
-            if (channel != null)
-            {
-                //this.QueueInitialize(channel);
+        //    var channel = this.PersistentConnection.CreateModel();
+        //    if (channel != null)
+        //    {
+        //        //this.QueueInitialize(channel);
 
-                channel.BasicQos(0, 1, false);
+        //        channel.BasicQos(0, 1, false);
 
-                channel.CallbackException += (sender, ea) =>
-                {
-                    if (!String.IsNullOrEmpty(this.QueueName) &&
-                        !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
-                    {
-                        this.Logger.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}",
-                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.QueueName);
-                    }
+        //        channel.CallbackException += (sender, ea) =>
+        //        {
+        //            if (!String.IsNullOrEmpty(this.QueueName) &&
+        //                !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+        //            {
+        //                this.Logger.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}",
+        //                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.QueueName);
+        //            }
 
-                    this.ConsumerChannel.Value.Dispose();
-                    this.ConsumerChannel = new AsyncLazy<IModel>(() =>
-                        this.CreateConsumerChannel<TIntegrationEvent>());
-                    this.StartBasicConsume<TIntegrationEvent>();
-                };
+        //            this.ConsumerChannel.Value.Dispose();
+        //            this.ConsumerChannel = new AsyncLazy<IChannel>(() =>
+        //                this.CreateConsumerChannel<TIntegrationEvent>());
+        //            this.StartBasicConsume<TIntegrationEvent>();
+        //        };
 
-                return channel;
-            }
+        //        return channel;
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
-        protected virtual async ValueTask<IModel> CreateConsumerChannelAsync<TIntegrationEvent>(CancellationToken cancel = default)
+        protected virtual async ValueTask<IChannel> CreateConsumerChannelAsync<TIntegrationEvent>(CancellationToken cancel = default)
             where TIntegrationEvent : IIntegrationEvent, new()
         {
             //this.Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
@@ -570,14 +576,14 @@ namespace KSociety.Base.EventBusRabbitMQ
                 }
             }
 
-            var channel = this.PersistentConnection.CreateModel();
+            var channel = await this.PersistentConnection.CreateModel().ConfigureAwait(false);
             if (channel != null)
             {
                 //this.QueueInitialize(channel);
 
-                channel.BasicQos(0, 1, false);
+                await channel.BasicQosAsync(0, 1, false).ConfigureAwait(false);
 
-                channel.CallbackException += async (sender, ea) =>
+                channel.CallbackExceptionAsync += async (sender, ea) =>
                 {
                     if (!String.IsNullOrEmpty(this.QueueName) &&
                         !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
@@ -587,7 +593,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     }
 
                     this.ConsumerChannel.Value.Dispose();
-                    this.ConsumerChannel = new AsyncLazy<IModel>(async () =>
+                    this.ConsumerChannel = new AsyncLazy<IChannel>(async () =>
                         await this.CreateConsumerChannelAsync<TIntegrationEvent>(cancel).ConfigureAwait(false));
                     await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
                 };
