@@ -435,16 +435,19 @@ namespace KSociety.Base.EventBusRabbitMQ
                 {
                     if (channel != null)
                     {
-                        this.QueueInitialize(channel);
+                        var result = await this.QueueInitialize(channel).ConfigureAwait(false);
 
-                        if (!String.IsNullOrEmpty(this._queueNameReply) &&
-                            !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                        if (result.Item1 != null)
                         {
-                            await channel.QueueBindAsync(this._queueNameReply,
-                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
-                                eventNameResult).ConfigureAwait(false); //ToDo
+                            if (!String.IsNullOrEmpty(this._queueNameReply) &&
+                                !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                            {
+                                await channel.QueueBindAsync(this._queueNameReply,
+                                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeName,
+                                    eventNameResult).ConfigureAwait(false); //ToDo
 
-                            return true;
+                                return true;
+                            }
                         }
                     }
                 }
@@ -721,7 +724,7 @@ namespace KSociety.Base.EventBusRabbitMQ
                     {
                         this.Logger.LogError(ea.Exception, "CallbackException: ");
                         this.ConsumerChannel.Value.Dispose();
-                        this.ConsumerChannel = new AsyncLazy<IChannel>(async () => await this.CreateConsumerChannelAsync(cancel));
+                        this.ConsumerChannel = new AsyncLazy<IChannel>(async () => await this.CreateConsumerChannelAsync(cancel).ConfigureAwait(false));
                         await this.StartBasicConsumeAsync().ConfigureAwait(false);
                     };
 
