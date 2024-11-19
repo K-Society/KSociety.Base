@@ -234,13 +234,13 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected virtual async void QueueInitialize(IChannel channel)
+        protected virtual async ValueTask<(QueueDeclareOk, QueueDeclareOk)> QueueInitialize(IChannel channel)
         {
             try
             {
                 if (this.EventBusParameters is null)
                 {
-                    return;
+                    return (null, null);
                 }
 
                 //if (this.EventBusParameters != null)
@@ -254,10 +254,12 @@ namespace KSociety.Base.EventBusRabbitMQ
                     //    { "x-dead-letter-exchange", EventBusParameters.ExchangeDeclareParameters.ExchangeName }
                     //    //{"x-dead-letter-routing-key", "some-routing-key" }
                     //};
-                    await channel.QueueDeclareAsync(this.QueueName, this.EventBusParameters.QueueDeclareParameters.QueueDurable,
+                    var result = await channel.QueueDeclareAsync(this.QueueName, this.EventBusParameters.QueueDeclareParameters.QueueDurable,
                         this.EventBusParameters.QueueDeclareParameters.QueueExclusive,
                         this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null).ConfigureAwait(false);
                 //}
+
+                return (result, null);
             }
             catch (RabbitMQClientException rex)
             {
@@ -267,6 +269,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 this.Logger.LogError(ex, "EventBusRabbitMq QueueInitialize: ");
             }
+
+            return (null, null);
         }
 
         #region [Subscribe]
@@ -316,14 +320,17 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 if (channel != null)
                 {
-                    this.QueueInitialize(channel);
+                    var result = await this.QueueInitialize(channel).ConfigureAwait(false);
 
-                    if (!String.IsNullOrEmpty(this.QueueName) &&
-                        !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                    if (result.Item1 != null)
                     {
-                        await channel.QueueBindAsync(this.QueueName,
-                            this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName).ConfigureAwait(false);
-                        return true;
+                        if (!String.IsNullOrEmpty(this.QueueName) &&
+                            !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
+                        {
+                            await channel.QueueBindAsync(this.QueueName,
+                                this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, eventName).ConfigureAwait(false);
+                            return true;
+                        }
                     }
                 }
             }

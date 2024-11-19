@@ -331,7 +331,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected override async void QueueInitialize(IChannel channel)
+        protected override async ValueTask<(QueueDeclareOk, QueueDeclareOk)> QueueInitialize(IChannel channel)
         {
             try
             {
@@ -352,11 +352,15 @@ namespace KSociety.Base.EventBusRabbitMQ
                     //    this.EventBusParameters.QueueDeclareParameters.QueueExclusive,
                     //    this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null);
                     //ToDo
-                    await channel.QueueDeclareAsync(this._queueNameReply,
+                    var result = await channel.QueueDeclareAsync(this._queueNameReply,
                         this.EventBusParameters.QueueDeclareParameters.QueueDurable,
                         this.EventBusParameters.QueueDeclareParameters.QueueExclusive,
                         this.EventBusParameters.QueueDeclareParameters.QueueAutoDelete, null).ConfigureAwait(false);
+
+                    return (result, null);
                 }
+
+                return (null, null);
             }
             catch (RabbitMQClientException rex)
             {
@@ -366,6 +370,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             {
                 this.Logger.LogError(ex, "EventBusRabbitMqRpcClient QueueInitialize: ");
             }
+
+            return (null, null);
         }
 
         #region [Subscribe]
