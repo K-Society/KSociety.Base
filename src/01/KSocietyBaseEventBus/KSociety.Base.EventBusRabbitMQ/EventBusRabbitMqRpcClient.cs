@@ -397,14 +397,8 @@ namespace KSociety.Base.EventBusRabbitMQ
             if (internalSubscriptionResult)
             {
                 this.SubsManager.AddSubscriptionRpcClient<TIntegrationEventReply, TIntegrationRpcClientHandler>(eventNameResult + "." + replyRoutingKey);
-                //if (asyncMode)
-                //{
-                    return await this.StartBasicConsumeAsync().ConfigureAwait(false);
-                //}
-                //else
-                //{
-                //    return this.StartBasicConsume();
-                //}
+
+                return await this.StartBasicConsumeAsync().ConfigureAwait(false);
             }
 
             return false;
