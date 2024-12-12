@@ -57,22 +57,14 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
         {
-
             var eventName = this.SubsManager?.GetEventKey<TIntegrationEvent>();
-            //this.Logger?.LogTrace("SubscribeTyped routing key: {0}, event name: {1}", routingKey, eventName);
             var internalSubscriptionResult = await this.DoInternalSubscription(eventName + "." + routingKey).ConfigureAwait(false);
 
             if (internalSubscriptionResult)
             {
                 this.SubsManager?.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>(eventName + "." + routingKey);
-                //if (asyncMode)
-                //{
-                    return await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
-                //}
-                //else
-                //{
-                //    return this.StartBasicConsume<TIntegrationEvent>();
-                //}
+
+                return await this.StartBasicConsumeAsync<TIntegrationEvent>().ConfigureAwait(false);
             }
 
             return false;

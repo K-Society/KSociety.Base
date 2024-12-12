@@ -11,7 +11,6 @@ namespace KSociety.Base.EventBusRabbitMQ
     {
         bool IsConnected { get; }
         ValueTask<bool> TryConnectAsync();
-        //bool TryConnect();
         Task<IChannel> CreateModel();
     }
 }
