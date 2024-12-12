@@ -64,7 +64,7 @@ namespace KSociety.Base.Srv.Agent
 
             if (this.DebugFlag)
             {
-                this.Logger.LogTrace(@"Grpc Agent Connection for: {0}", this._agentConfiguration.ConnectionUrl);
+                this.Logger?.LogTrace(@"Grpc Agent Connection for: {0}", this._agentConfiguration.ConnectionUrl);
             }
         }
 

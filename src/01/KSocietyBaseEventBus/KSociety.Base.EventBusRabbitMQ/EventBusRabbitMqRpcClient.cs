@@ -494,8 +494,6 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-
-
         //protected async ValueTask<bool> StartBasicConsume()
         //{
         //    this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
@@ -534,7 +532,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         //        }
 
         //        this.Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
-                
+
         //    }
         //    catch (Exception ex)
         //    {

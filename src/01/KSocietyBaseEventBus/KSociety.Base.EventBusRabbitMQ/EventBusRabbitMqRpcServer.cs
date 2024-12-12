@@ -359,6 +359,33 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
+        public async ValueTask<uint> QueueReplyPurge(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (this._consumerChannelReply is null)
+                {
+                    this.Logger.LogWarning("ConsumerChannelReply is null!");
+                    return 0;
+                }
+
+                if (this._consumerChannelReply.Value != null && !String.IsNullOrEmpty(this._queueNameReply))
+                {
+                    var result = await (await this._consumerChannelReply).QueuePurgeAsync(this._queueNameReply, cancellationToken);
+
+                    return result;
+                }
+
+                this.Logger.LogError("QueueReplyPurge can't call on ConsumerChannelReply is null or queue name is null.");
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "QueueReplyPurge: ");
+            }
+
+            return 0;
+        }
+
         //protected async ValueTask<bool> StartBasicConsumeServer<TIntegrationEventRpc, TIntegrationEventReply>()
         //    where TIntegrationEventRpc : IIntegrationEventRpc, new()
         //    where TIntegrationEventReply : IIntegrationEventReply, new()
