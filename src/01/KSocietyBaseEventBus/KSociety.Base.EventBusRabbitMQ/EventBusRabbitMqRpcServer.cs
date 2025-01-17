@@ -430,7 +430,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             where TIntegrationEventRpc : IIntegrationEventRpc, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
-            this.Logger.LogTrace("EventBusRabbitMqRpcServer Starting RabbitMQ basic consume async.");
+            //this.Logger.LogTrace("EventBusRabbitMqRpcServer Starting RabbitMQ basic consume async.");
 
             try
             {
