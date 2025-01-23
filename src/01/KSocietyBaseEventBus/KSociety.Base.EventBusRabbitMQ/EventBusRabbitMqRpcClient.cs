@@ -544,7 +544,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         protected async ValueTask<bool> StartBasicConsumeAsync()
         {
-            this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
+            //this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
 
             try
             {
