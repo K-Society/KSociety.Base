@@ -10,8 +10,8 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.2.0" />
     <PackageReference Include="protobuf-net" Version="3.2.46" />
-    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
   </ItemGroup>
 
 </Project>
