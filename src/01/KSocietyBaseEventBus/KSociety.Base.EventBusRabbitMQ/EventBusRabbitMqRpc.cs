@@ -340,7 +340,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        public async ValueTask<uint> QueueReplyPurge(CancellationToken cancellationToken = default)
+        public override async ValueTask<uint> QueueReplyPurge(CancellationToken cancellationToken = default)
         {
             try
             {
