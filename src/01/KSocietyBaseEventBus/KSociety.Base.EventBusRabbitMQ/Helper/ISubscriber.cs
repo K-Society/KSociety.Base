@@ -3,6 +3,7 @@
 namespace KSociety.Base.EventBusRabbitMQ.Helper
 {
     using System.Collections.Concurrent;
+    using System.Threading;
     using System.Threading.Tasks;
     using EventBus.Abstractions;
     using EventBus.Abstractions.EventBus;
@@ -54,5 +55,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             TIntegrationEventHandler integrationEventHandler)
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
             where TIntegrationEvent : IIntegrationEvent, new();
+
+        ValueTask QueuesPurge(CancellationToken cancellationToken = default);
     }
 }

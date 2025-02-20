@@ -22,5 +22,7 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
         ValueTask<uint> QueuePurge(CancellationToken cancellationToken = default);
+
+        ValueTask<uint> QueueReplyPurge(CancellationToken cancellationToken = default);
     }
 }

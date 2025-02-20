@@ -2,7 +2,9 @@
 
 namespace KSociety.Base.EventBusRabbitMQ.Helper
 {
+    using System;
     using System.Collections.Concurrent;
+    using System.Threading;
     using System.Threading.Tasks;
     using EventBus;
     using EventBus.Abstractions;
@@ -17,7 +19,6 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<EventBusRabbitMq> _loggerEventBusRabbitMq;
         private readonly IEventBusParameters _eventBusParameters;
-        //private readonly bool _dispatchConsumersAsync;
         public IRabbitMqPersistentConnection PersistentConnection { get; }
         public ConcurrentDictionary<string, IEventBus> EventBus { get; } 
 
@@ -30,7 +31,6 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             this._loggerFactory = loggerFactory;
             this._eventBusParameters = eventBusParameters;
-            //this._dispatchConsumersAsync = dispatchConsumersAsync;
             this.PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, this._loggerFactory);
 
             this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
@@ -57,8 +57,6 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 loggerDefaultRabbitMqPersistentConnection = new NullLogger<DefaultRabbitMqPersistentConnection>();
             }
 
-            //this._dispatchConsumersAsync = dispatchConsumersAsync;
-
             this.PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, loggerDefaultRabbitMqPersistentConnection);
 
             this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
@@ -71,7 +69,6 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         {
             this._loggerFactory = loggerFactory;
             this._eventBusParameters = eventBusParameters;
-            //this._dispatchConsumersAsync = dispatchConsumersAsync;
             this.PersistentConnection = persistentConnection;
 
             this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
@@ -83,7 +80,6 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default)
         {
             this._eventBusParameters = eventBusParameters;
-            //this._dispatchConsumersAsync = dispatchConsumersAsync;
             this.PersistentConnection = persistentConnection;
 
             if (loggerEventBusRabbitMq == null)
@@ -323,6 +319,24 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 return result;
             }
             return false;
+        }
+
+        public async ValueTask QueuesPurge(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                foreach (var eventBus in this.EventBus)
+                {
+                    var queuePurge = await eventBus.Value.QueuePurge(cancellationToken).ConfigureAwait(false);
+
+                    var queueReplyPurge = await eventBus.Value.QueueReplyPurge(cancellationToken).ConfigureAwait(false);
+
+                    this._loggerEventBusRabbitMq?.LogTrace("QueuesPurge eventBus: {0}, queuePurge: {1}, queueReplyPurge: {2}", eventBus.Key, queuePurge, queueReplyPurge);
+                }
+            }catch(Exception ex)
+            {
+                this._loggerEventBusRabbitMq?.LogError(ex, "QueuesPurge: ");
+            }
         }
     }
 }
