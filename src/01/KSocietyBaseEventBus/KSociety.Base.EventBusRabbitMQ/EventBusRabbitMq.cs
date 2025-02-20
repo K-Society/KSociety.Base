@@ -394,6 +394,11 @@ namespace KSociety.Base.EventBusRabbitMQ
             return 0;
         }
 
+        public virtual async ValueTask<uint> QueueReplyPurge(CancellationToken cancellationToken = default)
+        {
+            return 0;
+        }
+
         protected virtual async ValueTask<bool> StartBasicConsume<TIntegrationEvent>()
             where TIntegrationEvent : IIntegrationEvent, new()
         {
