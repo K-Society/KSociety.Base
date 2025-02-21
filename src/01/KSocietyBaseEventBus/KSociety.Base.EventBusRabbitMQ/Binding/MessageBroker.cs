@@ -32,6 +32,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
         where TSubscriberClass : Subscriber, TSubscriber
     {
         private readonly bool _debug;
+        private readonly bool _purgeQueue;
         private readonly int _eventBusNumber;
         private readonly string _brokerName;
         private readonly EventBus.ExchangeType _exchangeType;
@@ -49,12 +50,13 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
             int eventBusNumber,
             string brokerName, EventBus.ExchangeType exchangeType,
             bool exchangeDurable, bool exchangeAutoDelete,
-            string mqHostName, string mqUserName, string mqPassword, bool debug,
+            string mqHostName, string mqUserName, string mqPassword, bool debug, bool purgeQueue,
             bool queueDurable,
             bool queueExclusive,
             bool queueAutoDelete)
         {
             this._debug = debug;
+            this._purgeQueue = purgeQueue;
             this._eventBusNumber = eventBusNumber;
             this._brokerName = brokerName;
             this._exchangeType = exchangeType;
@@ -70,9 +72,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
             this._mqPassword = mqPassword;
         }
 
-        public MessageBroker(MessageBrokerOptions messageBroker, bool debug = false)
+        public MessageBroker(MessageBrokerOptions messageBroker, bool debug = false, bool purgeQueue = false)
         {
             this._debug = debug;
+            this._purgeQueue = purgeQueue;
             this._eventBusNumber = messageBroker.EventBusNumber;
             this._brokerName = messageBroker.ExchangeDeclareParameters.BrokerName;
             this._exchangeType = messageBroker.ExchangeDeclareParameters.ExchangeType;
@@ -130,7 +133,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
             builder.RegisterType<DefaultRabbitMqPersistentConnection>().As<IRabbitMqPersistentConnection>()
                 .UsingConstructor(typeof(TConnectionFactory), typeof(ILogger<DefaultRabbitMqPersistentConnection>)).SingleInstance();
 
-            builder.RegisterType<TSubscriberClass>().UsingConstructor(typeof(IRabbitMqPersistentConnection), typeof(TEventBusParameters), typeof(int), /*typeof(bool),*/ typeof(ILogger<EventBusRabbitMq>)).WithParameter("eventBusNumber", this._eventBusNumber)/*.WithParameter("dispatchConsumersAsync", this._dispatchConsumersAsync)*/.As<TSubscriber>().SingleInstance();
+            builder.RegisterType<TSubscriberClass>().UsingConstructor(
+                typeof(IRabbitMqPersistentConnection), typeof(TEventBusParameters), typeof(int), typeof(ILogger<EventBusRabbitMq>), typeof(bool))
+                .WithParameter("eventBusNumber", this._eventBusNumber)
+                .WithParameter("purgeQueue", this._purgeQueue).As<TSubscriber>().SingleInstance();
         }
     }
 }
