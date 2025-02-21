@@ -19,21 +19,25 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<EventBusRabbitMq> _loggerEventBusRabbitMq;
         private readonly IEventBusParameters _eventBusParameters;
+        private readonly bool _purgeQueue;
         public IRabbitMqPersistentConnection PersistentConnection { get; }
-        public ConcurrentDictionary<string, IEventBus> EventBus { get; } 
+        public ConcurrentDictionary<string, IEventBus> EventBus { get; }
+
+        private readonly SemaphoreSlim _connectionLock = new SemaphoreSlim(1, 1);
 
         #region [Constructor]
 
         public Subscriber(
             ILoggerFactory loggerFactory,
             IConnectionFactory connectionFactory,
-            IEventBusParameters eventBusParameters, int eventBusNumber)
+            IEventBusParameters eventBusParameters, int eventBusNumber, bool purgeQueue = false)
         {
             this._loggerFactory = loggerFactory;
             this._eventBusParameters = eventBusParameters;
             this.PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, this._loggerFactory);
 
             this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
+            this._purgeQueue = purgeQueue;
         }
 
         public Subscriber(
@@ -41,7 +45,8 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             IEventBusParameters eventBusParameters,
             int eventBusNumber,
             ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default,
-            ILogger<DefaultRabbitMqPersistentConnection> loggerDefaultRabbitMqPersistentConnection = default)
+            ILogger<DefaultRabbitMqPersistentConnection> loggerDefaultRabbitMqPersistentConnection = default,
+            bool purgeQueue = false)
         {
             this._eventBusParameters = eventBusParameters;
 
@@ -60,24 +65,30 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             this.PersistentConnection = new DefaultRabbitMqPersistentConnection(connectionFactory, loggerDefaultRabbitMqPersistentConnection);
 
             this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
+
+            this._purgeQueue = purgeQueue;
         }
 
         public Subscriber(
             ILoggerFactory loggerFactory,
             IRabbitMqPersistentConnection persistentConnection,
-            IEventBusParameters eventBusParameters, int eventBusNumber)
+            IEventBusParameters eventBusParameters, int eventBusNumber,
+            bool purgeQueue = false)
         {
             this._loggerFactory = loggerFactory;
             this._eventBusParameters = eventBusParameters;
             this.PersistentConnection = persistentConnection;
 
             this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
+
+            this._purgeQueue = purgeQueue;
         }
 
         public Subscriber(
             IRabbitMqPersistentConnection persistentConnection,
             IEventBusParameters eventBusParameters, int eventBusNumber,
-            ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default)
+            ILogger<EventBusRabbitMq> loggerEventBusRabbitMq = default,
+            bool purgeQueue = false)
         {
             this._eventBusParameters = eventBusParameters;
             this.PersistentConnection = persistentConnection;
@@ -88,6 +99,8 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             }
             this._loggerEventBusRabbitMq = loggerEventBusRabbitMq;
             this.EventBus = new ConcurrentDictionary<string, IEventBus>(1, eventBusNumber);
+
+            this._purgeQueue = purgeQueue;
         }
 
         #endregion
@@ -154,6 +167,11 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                     .SubscribeRpcClient<TIntegrationRpcClientHandler>(replyRoutingKey)
                     .ConfigureAwait(false);
 
+                //if (result && this._purgeQueue)
+                //{
+                //    await this.QueuesPurge().ConfigureAwait(false);
+                //}
+
                 return result;
             }
 
@@ -200,6 +218,11 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                     .SubscribeRpcServer<TIntegrationEventRpc, TIntegrationEventReply,
                         TIntegrationRpcServerHandler>(routingKey).ConfigureAwait(false);
 
+                //if (result && this._purgeQueue)
+                //{
+                //    await this.QueuesPurge().ConfigureAwait(false);
+                //}
+
                 return result;
             }
 
@@ -242,13 +265,17 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
                 var result = await ((IEventBusTyped)this.EventBus[eventBusName])
                     .Subscribe<TIntegrationEvent, TIntegrationEventHandler>(routingKey).ConfigureAwait(false);
 
+                //if (result && this._purgeQueue)
+                //{
+                //    await this.QueuesPurge().ConfigureAwait(false);
+                //}
                 return result;
             }
 
             return false;
         }
 
-        public bool SubscribeTyped<TIntegrationEvent>(string eventBusName, string queueName = null)
+        public async ValueTask<bool> SubscribeTyped<TIntegrationEvent>(string eventBusName, string queueName = null)
             where TIntegrationEvent : IIntegrationEvent, new()
         {
             if (this.EventBus.ContainsKey(eventBusName))
@@ -277,13 +304,19 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
                 var result = ((IEventBusTyped)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
+
+                //if (result && this._purgeQueue)
+                //{
+                //    await this.QueuesPurge().ConfigureAwait(false);
+                //}
+                await Task.Delay(1).ConfigureAwait(false);
                 return result;
             }
 
             return false;
         }
 
-        public bool SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
+        public async ValueTask<bool> SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
             string eventBusName, string queueName,
             TIntegrationEventHandler integrationEventHandler
         )
@@ -316,6 +349,12 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             if (this.EventBus.TryAdd(eventBusName, eventBus))
             {
                 var result = ((IEventBusQueue)this.EventBus[eventBusName]).Initialize<TIntegrationEvent>();
+
+                //if (result && this._purgeQueue)
+                //{
+                //    await this.QueuesPurge().ConfigureAwait(false);
+                //}
+                await Task.Delay(1).ConfigureAwait(false);
                 return result;
             }
             return false;
@@ -323,19 +362,27 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
         public async ValueTask QueuesPurge(CancellationToken cancellationToken = default)
         {
+            await this._connectionLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
-                foreach (var eventBus in this.EventBus)
+                if (this.EventBus.Count > 0)
                 {
-                    var queuePurge = await eventBus.Value.QueuePurge(cancellationToken).ConfigureAwait(false);
+                    foreach (var eventBus in this.EventBus)
+                    {
+                        var queuePurge = await eventBus.Value.QueuePurge(cancellationToken).ConfigureAwait(false);
 
-                    var queueReplyPurge = await eventBus.Value.QueueReplyPurge(cancellationToken).ConfigureAwait(false);
+                        var queueReplyPurge = await eventBus.Value.QueueReplyPurge(cancellationToken).ConfigureAwait(false);
 
-                    this._loggerEventBusRabbitMq?.LogTrace("QueuesPurge eventBus: {0}, queuePurge: {1}, queueReplyPurge: {2}", eventBus.Key, queuePurge, queueReplyPurge);
+                        this._loggerEventBusRabbitMq?.LogTrace("QueuesPurge eventBus: {0}, queuePurge: {1}, queueReplyPurge: {2}", eventBus.Key, queuePurge, queueReplyPurge);
+                    }
                 }
             }catch(Exception ex)
             {
                 this._loggerEventBusRabbitMq?.LogError(ex, "QueuesPurge: ");
+            }
+            finally
+            {
+                this._connectionLock.Release();
             }
         }
     }
