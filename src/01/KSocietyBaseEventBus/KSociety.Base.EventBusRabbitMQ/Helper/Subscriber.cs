@@ -21,7 +21,9 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
         private readonly IEventBusParameters _eventBusParameters;
         private readonly bool _purgeQueue;
         public IRabbitMqPersistentConnection PersistentConnection { get; }
-        public ConcurrentDictionary<string, IEventBus> EventBus { get; } 
+        public ConcurrentDictionary<string, IEventBus> EventBus { get; }
+
+        private readonly SemaphoreSlim _connectionLock = new SemaphoreSlim(1, 1);
 
         #region [Constructor]
 
@@ -361,6 +363,7 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
 
         public async ValueTask QueuesPurge(CancellationToken cancellationToken = default)
         {
+            await this._connectionLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 if (this.EventBus.Count > 0)
@@ -377,6 +380,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             }catch(Exception ex)
             {
                 this._loggerEventBusRabbitMq?.LogError(ex, "QueuesPurge: ");
+            }
+            finally
+            {
+                this._connectionLock.Release();
             }
         }
     }
