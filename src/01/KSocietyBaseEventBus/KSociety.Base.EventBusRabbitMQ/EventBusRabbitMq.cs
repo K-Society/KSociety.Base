@@ -396,6 +396,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         public virtual async ValueTask<uint> QueueReplyPurge(CancellationToken cancellationToken = default)
         {
+            await Task.Delay(1).ConfigureAwait(false);
             return 0;
         }
 
