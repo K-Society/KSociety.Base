@@ -47,10 +47,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Helper
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>;
 
-        bool SubscribeTyped<TIntegrationEvent>(string eventBusName, string queueName = null)
+        ValueTask<bool> SubscribeTyped<TIntegrationEvent>(string eventBusName, string queueName = null)
             where TIntegrationEvent : IIntegrationEvent, new();
 
-        bool SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
+        ValueTask<bool> SubscribeInvoke<TIntegrationEventHandler, TIntegrationEvent>(
             string eventBusName, string queueName,
             TIntegrationEventHandler integrationEventHandler)
             where TIntegrationEventHandler : IIntegrationEventHandler<TIntegrationEvent>
