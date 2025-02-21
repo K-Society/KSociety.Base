@@ -72,10 +72,10 @@ namespace KSociety.Base.EventBusRabbitMQ.Binding
             this._mqPassword = mqPassword;
         }
 
-        public MessageBroker(MessageBrokerOptions messageBroker, bool debug = false, bool purgeQueue = false)
+        public MessageBroker(MessageBrokerOptions messageBroker, bool debug = false)
         {
             this._debug = debug;
-            this._purgeQueue = purgeQueue;
+            this._purgeQueue = messageBroker.PurgeQueue;
             this._eventBusNumber = messageBroker.EventBusNumber;
             this._brokerName = messageBroker.ExchangeDeclareParameters.BrokerName;
             this._exchangeType = messageBroker.ExchangeDeclareParameters.ExchangeType;
