@@ -70,7 +70,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         #endregion
 
         //ToDo
-        protected async ValueTask ProcessEvent(string routingKey, string eventName,
+        /*protected*/private async ValueTask ProcessEvent(string routingKey, string eventName,
             ReadOnlyMemory<byte> message, CancellationToken cancel = default)
         {
             if (this.SubsManager is null)

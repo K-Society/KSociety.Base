@@ -2,9 +2,9 @@
 
 namespace KSociety.Base.EventBus.Abstractions.EventBus
 {
-    using Handler;
     using System.Threading;
     using System.Threading.Tasks;
+    using Handler;
 
     public interface IEventBusRpcServer : IEventBusBase
     {
@@ -26,6 +26,6 @@ namespace KSociety.Base.EventBus.Abstractions.EventBus
             where TIntegrationEventReply : IIntegrationEventReply, new()
             where TIntegrationRpcServerHandler : IIntegrationRpcServerHandler<TIntegrationEventRpc, TIntegrationEventReply>;
 
-        ValueTask<uint> QueueReplyPurge(CancellationToken cancellationToken = default);
+        //ValueTask<uint> QueueReplyPurge(CancellationToken cancellationToken = default);
     }
 }

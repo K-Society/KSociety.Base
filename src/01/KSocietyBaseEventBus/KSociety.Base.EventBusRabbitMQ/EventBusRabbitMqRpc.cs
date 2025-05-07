@@ -367,7 +367,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             return 0;
         }
 
-        protected async ValueTask<bool> StartBasicConsumeServer<TIntegrationEvent, TIntegrationEventReply>()
+        /*protected*/private async ValueTask<bool> StartBasicConsumeServer<TIntegrationEvent, TIntegrationEventReply>()
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
@@ -438,7 +438,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected async Task ConsumerReceivedServerAsync<TIntegrationEvent, TIntegrationEventReply>(object sender, BasicDeliverEventArgs eventArgs)
+        /*protected*/private async Task ConsumerReceivedServerAsync<TIntegrationEvent, TIntegrationEventReply>(object sender, BasicDeliverEventArgs eventArgs)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {
@@ -548,7 +548,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             }
         }
 
-        protected async ValueTask<IChannel> CreateConsumerChannelServerAsync<TIntegrationEvent, TIntegrationEventReply>(CancellationToken cancel = default)
+        /*protected*/private async ValueTask<IChannel> CreateConsumerChannelServerAsync<TIntegrationEvent, TIntegrationEventReply>(CancellationToken cancel = default)
             where TIntegrationEvent : IIntegrationEvent, new()
             where TIntegrationEventReply : IIntegrationEventReply, new()
         {

@@ -494,55 +494,7 @@ namespace KSociety.Base.EventBusRabbitMQ
 
         #endregion
 
-        //protected async ValueTask<bool> StartBasicConsume()
-        //{
-        //    this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
-
-        //    try
-        //    {
-        //        if (this.ConsumerChannel is null)
-        //        {
-        //            this.Logger.LogWarning("EventBusRabbitMqRpcClient ConsumerChannel is null!");
-        //            return false;
-        //        }
-
-        //        if (this.ConsumerChannel.Value != null)
-        //        {
-        //            var model = this.ConsumerChannel.Value.Result;
-        //            var consumer = new AsyncEventingBasicConsumer(model);
-
-        //            consumer.ReceivedAsync += this.ConsumerReceived;
-
-        //            //var consumer = new EventingBasicConsumer(await this.ConsumerChannel);
-
-        //            //consumer.Received += this.ConsumerReceived;
-
-
-        //            // autoAck specifies that as soon as the consumer gets the message,
-        //            // it will ack, even if it dies mid-way through the callback
-
-        //            await model.BasicConsumeAsync(
-        //                queue: this._queueNameReply, //ToDo
-        //                autoAck: true, //ToDo
-        //                consumer: consumer).ConfigureAwait(false);
-
-        //            //this.Logger.LogInformation("EventBusRabbitMqRpcClient StartBasicConsume done. Queue name: {0}, autoAck: {1}", this._queueNameReply, true);
-
-        //            return true;
-        //        }
-
-        //        this.Logger.LogError("StartBasicConsume can't call on ConsumerChannel is null");
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.Logger.LogError(ex, "StartBasicConsume: ");
-        //    }
-
-        //    return false;
-        //}
-
-        protected async ValueTask<bool> StartBasicConsumeAsync()
+        /*protected*/private async ValueTask<bool> StartBasicConsumeAsync()
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
 
@@ -614,7 +566,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         //    //ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
         //}
 
-        protected async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
+        /*protected*/private async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
         {
             var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
@@ -648,47 +600,7 @@ namespace KSociety.Base.EventBusRabbitMQ
             //ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
         }
 
-        //protected IChannel CreateConsumerChannel()
-        //{
-        //    //this.Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannel queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
-        //    try
-        //    {
-        //        if (this.PersistentConnection is null)
-        //        {
-        //            return null;
-        //        }
-
-        //        if (!this.PersistentConnection.IsConnected)
-        //        {
-        //            this.PersistentConnection.TryConnect(); //.TryConnectAsync().ConfigureAwait(false);
-        //            //this.PersistentConnection.TryConnect();
-        //        }
-
-        //        var channel = this.PersistentConnection.CreateModel();
-        //        if (channel != null)
-        //        {
-        //            //this.QueueInitialize(channel);
-
-        //            channel.CallbackException += (sender, ea) =>
-        //            {
-        //                this.Logger.LogError(ea.Exception, "CallbackException: ");
-        //                this.ConsumerChannel.Value.Dispose();
-        //                this.ConsumerChannel = new AsyncLazy<IChannel>(() => this.CreateConsumerChannel());
-        //                this.StartBasicConsume();
-        //            };
-
-        //            return channel;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.Logger.LogError(ex, "CreateConsumerChannel: ");
-        //    }
-
-        //    return null;
-        //}
-
-        protected async ValueTask<IChannel> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        /*protected*/private async ValueTask<IChannel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
             try
