@@ -479,12 +479,6 @@ namespace KSociety.Base.EventBusRabbitMQ
             return false;
         }
 
-        //protected virtual async ValueTask<bool> StartBasicConsume<TR>()
-        //    where TR : IIntegrationEventReply
-        //{
-
-        //}
-
         protected virtual async Task ConsumerReceived<TIntegrationEvent>(object sender, BasicDeliverEventArgs eventArgs)
             where TIntegrationEvent : IIntegrationEvent, new()
         {
@@ -545,49 +539,6 @@ namespace KSociety.Base.EventBusRabbitMQ
                 this.Logger.LogError(ex, "CreateConsumerChannel RPC Received 2: ");
             }
         }
-
-        //protected virtual async IChannel CreateConsumerChannel<TIntegrationEvent>()
-        //    where TIntegrationEvent : IIntegrationEvent, new()
-        //{
-        //    //this.Logger.LogTrace("CreateConsumerChannelAsync queue name: {0}", this.QueueName);
-        //    if (this.PersistentConnection is null)
-        //    {
-        //        return null;
-        //    }
-
-        //    if (!this.PersistentConnection.IsConnected)
-        //    {
-        //        await this.PersistentConnection.TryConnectAsync().ConfigureAwait(false)
-        //        //this.PersistentConnection.TryConnect();
-        //    }
-
-        //    var channel = this.PersistentConnection.CreateModel();
-        //    if (channel != null)
-        //    {
-        //        //this.QueueInitialize(channel);
-
-        //        channel.BasicQos(0, 1, false);
-
-        //        channel.CallbackException += (sender, ea) =>
-        //        {
-        //            if (!String.IsNullOrEmpty(this.QueueName) &&
-        //                !String.IsNullOrEmpty(this.EventBusParameters.ExchangeDeclareParameters.ExchangeName))
-        //            {
-        //                this.Logger.LogError(ea.Exception, "CallbackException ExchangeName: {0} - QueueName: {1}",
-        //                    this.EventBusParameters.ExchangeDeclareParameters.ExchangeName, this.QueueName);
-        //            }
-
-        //            this.ConsumerChannel.Value.Dispose();
-        //            this.ConsumerChannel = new AsyncLazy<IChannel>(() =>
-        //                this.CreateConsumerChannel<TIntegrationEvent>());
-        //            this.StartBasicConsume<TIntegrationEvent>();
-        //        };
-
-        //        return channel;
-        //    }
-
-        //    return null;
-        //}
 
         protected virtual async ValueTask<IChannel> CreateConsumerChannelAsync<TIntegrationEvent>(CancellationToken cancel = default)
             where TIntegrationEvent : IIntegrationEvent, new()
