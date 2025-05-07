@@ -39,8 +39,8 @@ namespace KSociety.Base.EventBus.Test.TestEventBus
                 Password = "KSociety",
                 AutomaticRecoveryEnabled = true,
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(10),
-                RequestedHeartbeat = TimeSpan.FromSeconds(10),
-                DispatchConsumersAsync = true
+                RequestedHeartbeat = TimeSpan.FromSeconds(10)
+                //DispatchConsumersAsync = true
             };
 
             this._exchangeDeclareParameters = new ExchangeDeclareParameters("k-society_test",

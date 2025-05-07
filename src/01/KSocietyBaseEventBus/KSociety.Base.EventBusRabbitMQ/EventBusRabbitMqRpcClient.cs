@@ -542,7 +542,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         //    return false;
         //}
 
-        protected async ValueTask<bool> StartBasicConsumeAsync()
+        /*protected*/private async ValueTask<bool> StartBasicConsumeAsync()
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient Starting RabbitMQ basic consume");
 
@@ -614,7 +614,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         //    //ConsumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false); //ToDo
         //}
 
-        protected async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
+        /*protected*/private async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
         {
             var result = eventArgs.RoutingKey.Split('.');
             var eventName = result.Length > 1 ? result[0] : eventArgs.RoutingKey;
@@ -688,7 +688,7 @@ namespace KSociety.Base.EventBusRabbitMQ
         //    return null;
         //}
 
-        protected async ValueTask<IChannel> CreateConsumerChannelAsync(CancellationToken cancel = default)
+        /*protected*/private async ValueTask<IChannel> CreateConsumerChannelAsync(CancellationToken cancel = default)
         {
             //this.Logger.LogTrace("EventBusRabbitMqRpcClient CreateConsumerChannelAsync queue name: {0} - queue reply name: {1}", this.QueueName, this._queueNameReply);
             try
