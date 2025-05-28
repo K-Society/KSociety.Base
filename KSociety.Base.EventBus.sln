@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Infrastructure Sub Layer", "01. Infrastructure Sub Layer", "{FF8D64B5-39E0-4AC2-BBDC-EC5E9F765828}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KSocietyBaseEventBus", "KSocietyBaseEventBus", "{CF73F26D-A353-4070-B365-902C95836192}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.EventBus", "src\01\KSocietyBaseEventBus\KSociety.Base.EventBus\KSociety.Base.EventBus.csproj", "{B90E03E8-82E8-4F37-A22E-B1806AC35A5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.EventBusRabbitMQ", "src\01\KSocietyBaseEventBus\KSociety.Base.EventBusRabbitMQ\KSociety.Base.EventBusRabbitMQ.csproj", "{1598697C-A104-4F16-A3ED-FAF9EFE2B567}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FADFC311-ABBF-4761-95DC-333CE85202A4}"
+	ProjectSection(SolutionItems) = preProject
+		BuildKSociety.Base.EventBus.cmd = BuildKSociety.Base.EventBus.cmd
+		global.json = global.json
+		NuGet.config = NuGet.config
+		README.MD = README.MD
+		version.json = version.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{C5602DDC-0CF9-47DF-A6CE-2DDF9338D31B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSociety.Base.EventBus.Test", "src\01\KSocietyBaseEventBus\Test\KSociety.Base.EventBus.Test\KSociety.Base.EventBus.Test.csproj", "{DE64BA52-68C2-4800-8939-D902ADFC79C4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B90E03E8-82E8-4F37-A22E-B1806AC35A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B90E03E8-82E8-4F37-A22E-B1806AC35A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B90E03E8-82E8-4F37-A22E-B1806AC35A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B90E03E8-82E8-4F37-A22E-B1806AC35A5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1598697C-A104-4F16-A3ED-FAF9EFE2B567}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1598697C-A104-4F16-A3ED-FAF9EFE2B567}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1598697C-A104-4F16-A3ED-FAF9EFE2B567}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1598697C-A104-4F16-A3ED-FAF9EFE2B567}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE64BA52-68C2-4800-8939-D902ADFC79C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE64BA52-68C2-4800-8939-D902ADFC79C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE64BA52-68C2-4800-8939-D902ADFC79C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CF73F26D-A353-4070-B365-902C95836192} = {FF8D64B5-39E0-4AC2-BBDC-EC5E9F765828}
+		{B90E03E8-82E8-4F37-A22E-B1806AC35A5B} = {CF73F26D-A353-4070-B365-902C95836192}
+		{1598697C-A104-4F16-A3ED-FAF9EFE2B567} = {CF73F26D-A353-4070-B365-902C95836192}
+		{C5602DDC-0CF9-47DF-A6CE-2DDF9338D31B} = {CF73F26D-A353-4070-B365-902C95836192}
+		{DE64BA52-68C2-4800-8939-D902ADFC79C4} = {C5602DDC-0CF9-47DF-A6CE-2DDF9338D31B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {99171B9C-B7B3-4746-8EE3-E488C03B00D9}
+	EndGlobalSection
+EndGlobal
