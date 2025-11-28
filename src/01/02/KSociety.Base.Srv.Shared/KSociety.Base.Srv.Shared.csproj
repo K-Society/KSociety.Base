@@ -9,8 +9,8 @@
     
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.5.0" />     
-    <PackageReference Include="Autofac" Version="8.4.0" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="9.0.8" />
+    <PackageReference Include="Autofac" Version="9.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="10.0.0" />
   </ItemGroup>
   
   <ItemGroup>

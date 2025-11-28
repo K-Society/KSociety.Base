@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="8.4.0" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.8" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+    <PackageReference Include="Autofac" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
   </ItemGroup>
 
 </Project>
