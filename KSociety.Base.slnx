@@ -1,0 +1,52 @@
+<Solution>
+  <Folder Name="/01. Infrastructure Sub Layer/">
+    <Project Path="src/01/KSociety.Base.InfraSub.Shared/KSociety.Base.InfraSub.Shared.csproj" />
+  </Folder>
+  <Folder Name="/01. Infrastructure Sub Layer/01. Presentation Layer/">
+    <Project Path="src/01/01/KSociety.Base.Pre.Model/KSociety.Base.Pre.Model.csproj" />
+  </Folder>
+  <Folder Name="/01. Infrastructure Sub Layer/01. Presentation Layer/Form/">
+    <Project Path="src/01/01/Form/KSociety.Base.Pre.Form.Presenter/KSociety.Base.Pre.Form.Presenter.csproj" />
+    <Project Path="src/01/01/Form/KSociety.Base.Pre.Form.View/KSociety.Base.Pre.Form.View.csproj" />
+  </Folder>
+  <Folder Name="/01. Infrastructure Sub Layer/02. Service Layer/">
+    <Project Path="src/01/02/KSociety.Base.Srv.Agent/KSociety.Base.Srv.Agent.csproj" />
+    <Project Path="src/01/02/KSociety.Base.Srv.Behavior/KSociety.Base.Srv.Behavior.csproj" />
+    <Project Path="src/01/02/KSociety.Base.Srv.Contract/KSociety.Base.Srv.Contract.csproj" />
+    <Project Path="src/01/02/KSociety.Base.Srv.Dto/KSociety.Base.Srv.Dto.csproj" />
+    <Project Path="src/01/02/KSociety.Base.Srv.Shared/KSociety.Base.Srv.Shared.csproj" />
+  </Folder>
+  <Folder Name="/01. Infrastructure Sub Layer/02. Service Layer/Host/">
+    <Project Path="src/01/02/Host/KSociety.Base.Srv.Host.Shared/KSociety.Base.Srv.Host.Shared.csproj" />
+  </Folder>
+  <Folder Name="/01. Infrastructure Sub Layer/03. Application Layer/">
+    <Project Path="src/01/03/KSociety.Base.App.Shared/KSociety.Base.App.Shared.csproj" />
+    <Project Path="src/01/03/KSociety.Base.App.Utility/KSociety.Base.App.Utility.csproj" />
+  </Folder>
+  <Folder Name="/01. Infrastructure Sub Layer/04. Business Layer/" />
+  <Folder Name="/01. Infrastructure Sub Layer/05. Domain Layer/">
+    <Project Path="src/01/05/KSociety.Base.Domain.Shared/KSociety.Base.Domain.Shared.csproj" />
+  </Folder>
+  <Folder Name="/01. Infrastructure Sub Layer/06. Infrastructure Layer/">
+    <Project Path="src/01/06/KSociety.Base.Infra.Abstraction/KSociety.Base.Infra.Abstraction.csproj" />
+    <Project Path="src/01/06/KSociety.Base.Infra.Shared.Identity/KSociety.Base.Infra.Shared.Identity.csproj" />
+    <Project Path="src/01/06/KSociety.Base.Infra.Shared/KSociety.Base.Infra.Shared.csproj" />
+  </Folder>
+  <Folder Name="/01. Infrastructure Sub Layer/06. Infrastructure Layer/Test/">
+    <Project Path="src/01/06/Test/KSociety.Base.Infra.Shared.Test/KSociety.Base.Infra.Shared.Test.csproj">
+      <Build Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/01. Infrastructure Sub Layer/Test/">
+    <Project Path="src/01/Test/KSociety.Base.InfraSub.Test/KSociety.Base.InfraSub.Test.csproj">
+      <Build Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="build.cmd" />
+    <File Path="global.json" />
+    <File Path="NuGet.config" />
+    <File Path="README.MD" />
+    <File Path="version.json" />
+  </Folder>
+</Solution>

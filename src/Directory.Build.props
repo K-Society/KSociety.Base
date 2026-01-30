@@ -19,7 +19,7 @@
 	
     <Authors>K-Society Team</Authors>
     <Company>K-Society</Company>
-    <Copyright>Copyright © K-Society and contributors 2024. All rights reserved.</Copyright>
+    <Copyright>Copyright © K-Society and contributors 2026. All rights reserved.</Copyright>
 	<PackageLicenseExpression>MS-RL</PackageLicenseExpression>
 	<Description>K-Society Base is a full stack framework for microservices.</Description>
     <Product>K-Society Base</Product>
@@ -42,7 +42,7 @@
       <PrivateAssets>all</PrivateAssets>
       <Version>3.9.50</Version>
     </PackageReference>
-	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.102">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
